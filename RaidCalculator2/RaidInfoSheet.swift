@@ -11,6 +11,17 @@ struct RaidInfoSheet: View {
     let level: RaidLevel
     @Environment(\.dismiss) private var dismiss
     
+    private var fullRaidName: String {
+        switch level {
+        case .raid0: return "RAID 0"
+        case .raid1: return "RAID 1"
+        case .raid5: return "RAID 5"
+        case .raid6: return "RAID 6"
+        case .raid10: return "RAID 10"
+        case .jbod: return "JBOD"
+        }
+    }
+    
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -30,7 +41,7 @@ struct RaidInfoSheet: View {
                 )
                 .ignoresSafeArea()
             )
-            .navigationTitle(level.rawValue)
+            .navigationTitle(fullRaidName)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
