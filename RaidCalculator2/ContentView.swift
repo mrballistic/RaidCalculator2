@@ -105,13 +105,35 @@ struct ContentView: View {
                     Text("number_of_drives".localized())
                         .font(.subheadline)
                     Spacer()
-                    Text("\(viewModel.driveCount)")
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(.primary)
+                    HStack(spacing: 8) {
+                        Button(action: { 
+                            if viewModel.driveCount > 1 {
+                                viewModel.driveCount -= 1 
+                            }
+                        }) {
+                            Image(systemName: "minus.circle.fill")
+                                .font(.system(size: 24))
+                                .foregroundStyle(.orange)
+                        }
+                        .disabled(viewModel.driveCount <= 1)
+                        
+                        Text("\(viewModel.driveCount)")
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(.primary)
+                            .frame(minWidth: 30)
+                        
+                        Button(action: { 
+                            if viewModel.driveCount < 24 {
+                                viewModel.driveCount += 1 
+                            }
+                        }) {
+                            Image(systemName: "plus.circle.fill")
+                                .font(.system(size: 24))
+                                .foregroundStyle(.orange)
+                        }
+                        .disabled(viewModel.driveCount >= 24)
+                    }
                 }
-                
-                Stepper("", value: $viewModel.driveCount, in: 1...24)
-                    .labelsHidden()
                 
                 Divider()
                 
