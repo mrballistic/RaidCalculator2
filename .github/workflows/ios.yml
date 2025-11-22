@@ -26,18 +26,9 @@ jobs:
                      -destination "platform=iOS Simulator,name=iPhone 16 Pro" \
                      clean build
                      
-      - name: Run Unit Tests
+      - name: Run Tests
         run: |
-          # Run unit tests
+          # Run all tests configured in the scheme
           xcodebuild test -project "RAID Calc.xcodeproj" \
                           -scheme "RAID Calc" \
-                          -destination "platform=iOS Simulator,name=iPhone 16 Pro" \
-                          -only-testing:RaidCalculator2Tests
-                          
-      - name: Run UI Tests
-        run: |
-          # Run UI tests
-          xcodebuild test -project "RAID Calc.xcodeproj" \
-                          -scheme "RAID Calc" \
-                          -destination "platform=iOS Simulator,name=iPhone 16 Pro" \
-                          -only-testing:RaidCalculator2UITests
+                          -destination "platform=iOS Simulator,name=iPhone 16 Pro"
