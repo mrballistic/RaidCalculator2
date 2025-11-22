@@ -8,11 +8,11 @@
 import Foundation
 
 enum RaidLevel: String, CaseIterable, Identifiable {
-    case raid0 = "RAID 0"
-    case raid1 = "RAID 1"
-    case raid5 = "RAID 5"
-    case raid6 = "RAID 6"
-    case raid10 = "RAID 10"
+    case raid0 = "R 0"
+    case raid1 = "R 1"
+    case raid5 = "R 5"
+    case raid6 = "R 6"
+    case raid10 = "R 10"
     case jbod = "JBOD"
 
     var id: String { rawValue }

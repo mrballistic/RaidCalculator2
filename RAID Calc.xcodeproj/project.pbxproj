@@ -172,6 +172,7 @@
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1620;
 				LastUpgradeCheck = 1620;
+				ORGANIZATIONNAME = com.mrballistic;
 				TargetAttributes = {
 					05D08A9E2ED247C700011453 = {
 						CreatedOnToolsVersion = 16.2;

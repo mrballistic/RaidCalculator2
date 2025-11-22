@@ -28,10 +28,15 @@ struct ContentView: View {
             .padding()
         }
         .background(
-            LinearGradient(
-                colors: [.blue.opacity(0.1), .purple.opacity(0.1)],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
+            RadialGradient(
+                colors: [
+                    .orange.opacity(0.15),
+                    .blue.opacity(0.2), 
+                    .purple.opacity(0.15)
+                ],
+                center: .topLeading,
+                startRadius: 50,
+                endRadius: 400
             )
             .ignoresSafeArea()
         )
@@ -48,9 +53,11 @@ struct ContentView: View {
         HStack {
             Image(systemName: "square.stack.3d.up")
                 .font(.system(size: 32))
-                .foregroundStyle(.primary)
+                .foregroundStyle(.orange)
+                .shadow(color: .orange.opacity(0.3), radius: 4)
             Text("RAID Calculator")
                 .font(.title.bold())
+                .foregroundStyle(.primary)
             Spacer()
         }
         .padding(.horizontal, 4)
@@ -77,11 +84,12 @@ struct ContentView: View {
             .pickerStyle(.segmented)
         }
         .padding()
-        .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
         .overlay(
-            RoundedRectangle(cornerRadius: 16, style: .continuous)
-                .stroke(.primary.opacity(0.1), lineWidth: 1)
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                .stroke(.white.opacity(0.2), lineWidth: 1)
         )
+        .shadow(color: .black.opacity(0.1), radius: 10, x: 0, y: 5)
     }
     
     private var driveConfiguration: some View {
@@ -126,11 +134,12 @@ struct ContentView: View {
             }
         }
         .padding()
-        .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
         .overlay(
-            RoundedRectangle(cornerRadius: 16, style: .continuous)
-                .stroke(.primary.opacity(0.1), lineWidth: 1)
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                .stroke(.white.opacity(0.2), lineWidth: 1)
         )
+        .shadow(color: .black.opacity(0.1), radius: 10, x: 0, y: 5)
     }
     
     private func resultsCard(_ result: RaidResult) -> some View {
@@ -167,11 +176,12 @@ struct ContentView: View {
             }
         }
         .padding()
-        .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
         .overlay(
-            RoundedRectangle(cornerRadius: 16, style: .continuous)
-                .stroke(.primary.opacity(0.1), lineWidth: 1)
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                .stroke(.white.opacity(0.2), lineWidth: 1)
         )
+        .shadow(color: .black.opacity(0.1), radius: 10, x: 0, y: 5)
     }
     
     private func warningCard(_ message: String) -> some View {
@@ -185,11 +195,12 @@ struct ContentView: View {
             Spacer()
         }
         .padding()
-        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
         .overlay(
-            RoundedRectangle(cornerRadius: 16, style: .continuous)
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
                 .stroke(.orange.opacity(0.3), lineWidth: 1)
         )
+        .shadow(color: .orange.opacity(0.2), radius: 8, x: 0, y: 4)
     }
     
     private func starRating(_ rating: Int) -> String {
