@@ -26,10 +26,10 @@ jobs:
                      -destination "platform=iOS Simulator,name=iPhone 16 Pro" \
                      clean build
                      
-      - name: Run Unit Tests Only
+      - name: Run Tests
         run: |
-          # Run only unit tests, skip UI tests
+          # Run tests configured in the scheme
           xcodebuild test -project "RAID Calculator.xcodeproj" \
                           -scheme "RAID Calc" \
                           -destination "platform=iOS Simulator,name=iPhone 16 Pro" \
-                          -only-testing:RaidCalculator2Tests
+                          -resultBundlePath TestResults.xcresult
