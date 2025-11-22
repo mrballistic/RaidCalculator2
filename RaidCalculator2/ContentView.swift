@@ -40,6 +40,9 @@ struct ContentView: View {
             )
             .ignoresSafeArea()
         )
+        .onTapGesture {
+            hideKeyboard()
+        }
         .onChange(of: viewModel.selectedLevel) { _, _ in viewModel.recalculate() }
         .onChange(of: viewModel.driveCount) { _, _ in viewModel.recalculate() }
         .onChange(of: viewModel.driveSize) { _, _ in viewModel.recalculate() }
