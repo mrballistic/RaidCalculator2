@@ -119,6 +119,7 @@ struct ContentView: View {
                             .font(.subheadline.weight(.semibold))
                             .foregroundStyle(.primary)
                             .frame(minWidth: 30)
+                            .accessibilityIdentifier("driveCount")
                         
                         Button(action: { 
                             if viewModel.driveCount < 24 {

@@ -18,10 +18,26 @@ jobs:
       - name: Select Xcode
         run: sudo xcode-select -switch /Applications/Xcode.app/Contents/Developer
         
-      - name: Build and Test
+      - name: Build
         run: |
-          # Use the specific project file with an available simulator
+          # Build the project
           xcodebuild -project "RAID Calc.xcodeproj" \
                      -scheme "RAID Calc" \
                      -destination "platform=iOS Simulator,name=iPhone 16 Pro" \
-                     clean build test
+                     clean build
+                     
+      - name: Run Unit Tests
+        run: |
+          # Run unit tests
+          xcodebuild test -project "RAID Calc.xcodeproj" \
+                          -scheme "RAID Calc" \
+                          -destination "platform=iOS Simulator,name=iPhone 16 Pro" \
+                          -only-testing:RAID_CalcTests
+                          
+      - name: Run UI Tests
+        run: |
+          # Run UI tests
+          xcodebuild test -project "RAID Calc.xcodeproj" \
+                          -scheme "RAID Calc" \
+                          -destination "platform=iOS Simulator,name=iPhone 16 Pro" \
+                          -only-testing:RAID_CalcUITests
