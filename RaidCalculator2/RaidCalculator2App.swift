@@ -13,8 +13,7 @@ struct RaidCalculator2App: App {
         WindowGroup {
             NavigationStack {
                 ContentView()
-                    .navigationTitle("app_title".localized())
-                    .navigationBarTitleDisplayMode(.large)
+                    .navigationBarHidden(true)
             }
         }
     }
