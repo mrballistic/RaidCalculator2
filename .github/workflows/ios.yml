@@ -21,7 +21,7 @@ jobs:
       - name: Build
         run: |
           # Build the project
-          xcodebuild -project "RAID Calc.xcodeproj" \
+          xcodebuild -project "RAID Calculator.xcodeproj" \
                      -scheme "RAID Calc" \
                      -destination "platform=iOS Simulator,name=iPhone 16 Pro" \
                      clean build
@@ -29,6 +29,6 @@ jobs:
       - name: Run Tests
         run: |
           # Run all tests configured in the scheme
-          xcodebuild test -project "RAID Calc.xcodeproj" \
+          xcodebuild test -project "RAID Calculator.xcodeproj" \
                           -scheme "RAID Calc" \
                           -destination "platform=iOS Simulator,name=iPhone 16 Pro"
