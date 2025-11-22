@@ -49,6 +49,8 @@ struct ContentView: View {
             Image(systemName: "square.stack.3d.up")
                 .font(.system(size: 32))
                 .foregroundStyle(.primary)
+            Text("RAID Calculator")
+                .font(.title.bold())
             Spacer()
         }
         .padding(.horizontal, 4)

@@ -13,13 +13,7 @@ struct RaidCalculator2App: App {
         WindowGroup {
             NavigationStack {
                 ContentView()
-                    .navigationTitle {
-                        HStack(spacing: 8) {
-                            Image(systemName: "square.stack.3d.up")
-                                .font(.system(size: 20))
-                            Text("app_title".localized())
-                        }
-                    }
+                    .navigationTitle("app_title".localized())
                     .navigationBarTitleDisplayMode(.large)
             }
         }
