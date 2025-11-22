@@ -24,9 +24,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		05D08A9F2ED247C700011453 /* RaidCalculator2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RaidCalculator2.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		05D08AAF2ED247CB00011453 /* RaidCalculator2Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RaidCalculator2Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		05D08AB92ED247CB00011453 /* RaidCalculator2UITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RaidCalculator2UITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		05D08A9F2ED247C700011453 /* RAID Calc.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "RAID Calc.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		05D08AAF2ED247CB00011453 /* RAID CalcTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "RAID CalcTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		05D08AB92ED247CB00011453 /* RAID CalcUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "RAID CalcUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -85,9 +85,9 @@
 		05D08AA02ED247C700011453 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				05D08A9F2ED247C700011453 /* RaidCalculator2.app */,
-				05D08AAF2ED247CB00011453 /* RaidCalculator2Tests.xctest */,
-				05D08AB92ED247CB00011453 /* RaidCalculator2UITests.xctest */,
+				05D08A9F2ED247C700011453 /* RAID Calc.app */,
+				05D08AAF2ED247CB00011453 /* RAID CalcTests.xctest */,
+				05D08AB92ED247CB00011453 /* RAID CalcUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -95,9 +95,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		05D08A9E2ED247C700011453 /* RaidCalculator2 */ = {
+		05D08A9E2ED247C700011453 /* RAID Calc */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 05D08AC32ED247CB00011453 /* Build configuration list for PBXNativeTarget "RaidCalculator2" */;
+			buildConfigurationList = 05D08AC32ED247CB00011453 /* Build configuration list for PBXNativeTarget "RAID Calc" */;
 			buildPhases = (
 				05D08A9B2ED247C700011453 /* Sources */,
 				05D08A9C2ED247C700011453 /* Frameworks */,
@@ -110,16 +110,16 @@
 			fileSystemSynchronizedGroups = (
 				05D08AA12ED247C700011453 /* RaidCalculator2 */,
 			);
-			name = RaidCalculator2;
+			name = "RAID Calc";
 			packageProductDependencies = (
 			);
 			productName = RaidCalculator2;
-			productReference = 05D08A9F2ED247C700011453 /* RaidCalculator2.app */;
+			productReference = 05D08A9F2ED247C700011453 /* RAID Calc.app */;
 			productType = "com.apple.product-type.application";
 		};
-		05D08AAE2ED247CB00011453 /* RaidCalculator2Tests */ = {
+		05D08AAE2ED247CB00011453 /* RAID CalcTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 05D08AC62ED247CB00011453 /* Build configuration list for PBXNativeTarget "RaidCalculator2Tests" */;
+			buildConfigurationList = 05D08AC62ED247CB00011453 /* Build configuration list for PBXNativeTarget "RAID CalcTests" */;
 			buildPhases = (
 				05D08AAB2ED247CB00011453 /* Sources */,
 				05D08AAC2ED247CB00011453 /* Frameworks */,
@@ -133,16 +133,16 @@
 			fileSystemSynchronizedGroups = (
 				05D08AB22ED247CB00011453 /* RaidCalculator2Tests */,
 			);
-			name = RaidCalculator2Tests;
+			name = "RAID CalcTests";
 			packageProductDependencies = (
 			);
 			productName = RaidCalculator2Tests;
-			productReference = 05D08AAF2ED247CB00011453 /* RaidCalculator2Tests.xctest */;
+			productReference = 05D08AAF2ED247CB00011453 /* RAID CalcTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		05D08AB82ED247CB00011453 /* RaidCalculator2UITests */ = {
+		05D08AB82ED247CB00011453 /* RAID CalcUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 05D08AC92ED247CB00011453 /* Build configuration list for PBXNativeTarget "RaidCalculator2UITests" */;
+			buildConfigurationList = 05D08AC92ED247CB00011453 /* Build configuration list for PBXNativeTarget "RAID CalcUITests" */;
 			buildPhases = (
 				05D08AB52ED247CB00011453 /* Sources */,
 				05D08AB62ED247CB00011453 /* Frameworks */,
@@ -156,11 +156,11 @@
 			fileSystemSynchronizedGroups = (
 				05D08ABC2ED247CB00011453 /* RaidCalculator2UITests */,
 			);
-			name = RaidCalculator2UITests;
+			name = "RAID CalcUITests";
 			packageProductDependencies = (
 			);
 			productName = RaidCalculator2UITests;
-			productReference = 05D08AB92ED247CB00011453 /* RaidCalculator2UITests.xctest */;
+			productReference = 05D08AB92ED247CB00011453 /* RAID CalcUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
@@ -186,7 +186,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 05D08A9A2ED247C700011453 /* Build configuration list for PBXProject "RaidCalculator2" */;
+			buildConfigurationList = 05D08A9A2ED247C700011453 /* Build configuration list for PBXProject "RAID Calc" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -204,9 +204,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				05D08A9E2ED247C700011453 /* RaidCalculator2 */,
-				05D08AAE2ED247CB00011453 /* RaidCalculator2Tests */,
-				05D08AB82ED247CB00011453 /* RaidCalculator2UITests */,
+				05D08A9E2ED247C700011453 /* RAID Calc */,
+				05D08AAE2ED247CB00011453 /* RAID CalcTests */,
+				05D08AB82ED247CB00011453 /* RAID CalcUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -262,12 +262,12 @@
 /* Begin PBXTargetDependency section */
 		05D08AB12ED247CB00011453 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 05D08A9E2ED247C700011453 /* RaidCalculator2 */;
+			target = 05D08A9E2ED247C700011453 /* RAID Calc */;
 			targetProxy = 05D08AB02ED247CB00011453 /* PBXContainerItemProxy */;
 		};
 		05D08ABB2ED247CB00011453 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 05D08A9E2ED247C700011453 /* RaidCalculator2 */;
+			target = 05D08A9E2ED247C700011453 /* RAID Calc */;
 			targetProxy = 05D08ABA2ED247CB00011453 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -466,7 +466,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/RaidCalculator2.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/RaidCalculator2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/RAID Calc.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/RAID Calc";
 			};
 			name = Debug;
 		};
@@ -485,7 +485,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/RaidCalculator2.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/RaidCalculator2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/RAID Calc.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/RAID Calc";
 			};
 			name = Release;
 		};
@@ -526,7 +526,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		05D08A9A2ED247C700011453 /* Build configuration list for PBXProject "RaidCalculator2" */ = {
+		05D08A9A2ED247C700011453 /* Build configuration list for PBXProject "RAID Calc" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				05D08AC12ED247CB00011453 /* Debug */,
@@ -535,7 +535,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		05D08AC32ED247CB00011453 /* Build configuration list for PBXNativeTarget "RaidCalculator2" */ = {
+		05D08AC32ED247CB00011453 /* Build configuration list for PBXNativeTarget "RAID Calc" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				05D08AC42ED247CB00011453 /* Debug */,
@@ -544,7 +544,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		05D08AC62ED247CB00011453 /* Build configuration list for PBXNativeTarget "RaidCalculator2Tests" */ = {
+		05D08AC62ED247CB00011453 /* Build configuration list for PBXNativeTarget "RAID CalcTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				05D08AC72ED247CB00011453 /* Debug */,
@@ -553,7 +553,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		05D08AC92ED247CB00011453 /* Build configuration list for PBXNativeTarget "RaidCalculator2UITests" */ = {
+		05D08AC92ED247CB00011453 /* Build configuration list for PBXNativeTarget "RAID CalcUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				05D08ACA2ED247CB00011453 /* Debug */,
