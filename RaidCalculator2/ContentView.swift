@@ -12,21 +12,19 @@ struct ContentView: View {
     @State private var showingInfoSheet = false
     
     var body: some View {
-        ScrollView {
-            LazyVStack(spacing: 24) {
-                headerSection
-                raidLevelSelector
-                driveConfiguration
-                if let result = viewModel.result {
-                    if result.warningMessage != nil {
-                        warningCard(result.warningMessage!)
-                    } else {
-                        resultsCard(result)
-                    }
+        VStack(spacing: 24) {
+            headerSection
+            raidLevelSelector
+            driveConfiguration
+            if let result = viewModel.result {
+                if result.warningMessage != nil {
+                    warningCard(result.warningMessage!)
+                } else {
+                    resultsCard(result)
                 }
             }
-            .padding()
         }
+        .padding()
         .background(
             RadialGradient(
                 colors: [
