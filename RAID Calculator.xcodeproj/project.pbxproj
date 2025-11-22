@@ -187,7 +187,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 05D08A9A2ED247C700011453 /* Build configuration list for PBXProject "RAID Calc" */;
+			buildConfigurationList = 05D08A9A2ED247C700011453 /* Build configuration list for PBXProject "RAID Calculator" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -541,7 +541,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		05D08A9A2ED247C700011453 /* Build configuration list for PBXProject "RAID Calc" */ = {
+		05D08A9A2ED247C700011453 /* Build configuration list for PBXProject "RAID Calculator" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				05D08AC12ED247CB00011453 /* Debug */,
