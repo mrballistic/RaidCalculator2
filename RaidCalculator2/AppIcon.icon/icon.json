@@ -1,0 +1,53 @@
+{
+  "fill" : "automatic",
+  "groups" : [
+    {
+      "layers" : [
+
+      ],
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.5
+      },
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.5
+      }
+    },
+    {
+      "layers" : [
+        {
+          "hidden" : true,
+          "image-name" : "Image 2.png",
+          "name" : "Image 2"
+        },
+        {
+          "image-name" : "Image 4.png",
+          "name" : "Image 4"
+        },
+        {
+          "image-name" : "Image 5.png",
+          "name" : "Image 5"
+        },
+        {
+          "hidden" : true,
+          "image-name" : "Image 3.png",
+          "name" : "Image 3"
+        }
+      ],
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.5
+      },
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.5
+      }
+    }
+  ],
+  "supported-platforms" : {
+    "squares" : [
+      "iOS"
+    ]
+  }
+}
