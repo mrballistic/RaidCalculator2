@@ -1,0 +1,88 @@
+/* 
+  Localizable.strings (Spanish)
+  RaidCalculator2
+
+  Created by todd.greco on 11/22/25.
+*/
+
+// App Title and Navigation
+"app_title" = "Calculadora RAID";
+
+// RAID Level Selector
+"raid_level" = "Nivel RAID";
+
+// Drive Configuration
+"drive_configuration" = "Configuración de Unidades";
+"number_of_drives" = "Número de Unidades";
+"drive_size" = "Tamaño de Unidad";
+
+// Results Section
+"results" = "Resultados";
+"usable_capacity" = "Capacidad Utilizable";
+"drive_failures_tolerated" = "Fallos de Unidad Tolerados";
+"speed" = "Velocidad";
+"availability" = "Disponibilidad";
+
+// Performance Labels
+"very_high" = "Muy Alta";
+"high" = "Alta";
+"medium" = "Media";
+"low" = "Baja";
+"very_low" = "Muy Baja";
+
+// RAID Info Sheet
+"done" = "Hecho";
+"overview" = "Descripción General";
+"pros_cons" = "Pros y Contras";
+"pros" = "Pros";
+"cons" = "Contras";
+"typical_use_cases" = "Casos de Uso Típicos";
+"performance_ratings" = "Calificaciones de Rendimiento";
+
+// RAID Descriptions
+"raid0_description" = "RAID 0 (Striping) divide los datos en múltiples unidades para máximo rendimiento, pero no proporciona redundancia. Si alguna unidad falla, todos los datos se pierden.";
+"raid1_description" = "RAID 1 (Mirroring) crea copias exactas de datos en múltiples unidades. Proporciona excelente redundancia pero reduce a la mitad la capacidad utilizable.";
+"raid5_description" = "RAID 5 (Striping con Paridad) distribuye datos y paridad en todas las unidades. Proporciona buen rendimiento y redundancia con sobrecarga mínima de capacidad.";
+"raid6_description" = "RAID 6 (Striping con Doble Paridad) similar a RAID 5 pero con dos conjuntos de paridad. Puede sobrevivir a dos fallos simultáneos de unidades.";
+"raid10_description" = "RAID 10 (Stripe de Mirrors) combina mirroring y striping. Proporciona excelente rendimiento y redundancia pero requiere un número par de unidades.";
+"jbod_description" = "JBOD (Just a Bunch Of Disks) combina múltiples unidades como un solo volumen grande sin características RAID. Cada unidad opera independientemente.";
+
+// RAID Pros
+"raid0_pros" = "Máximo rendimiento y velocidad\nUtilización completa de capacidad de almacenamiento\nSimple de implementar";
+"raid1_pros" = "Redundancia de datos completa\nBuen rendimiento de lectura\nRecuperación simple de fallos de unidad";
+"raid5_pros" = "Buen equilibrio de rendimiento y redundancia\nUso eficiente de capacidad de almacenamiento\nPuede sobrevivir a un fallo de unidad";
+"raid6_pros" = "Excelente redundancia (tolera 2 fallos de unidad)\nBuena protección durante operaciones de reconstrucción\nAdecuado para unidades de gran capacidad";
+"raid10_pros" = "Excelente rendimiento para lecturas y escrituras\nAlta redundancia con reconstrucción rápida\nPuede sobrevivir a múltiples fallos de unidad (si en diferentes mirrors)";
+"jbod_pros" = "Simple y flexible\nUtilización completa de toda la capacidad de unidades\nSin sobrecarga de rendimiento de cálculos RAID";
+
+// RAID Cons
+"raid0_cons" = "Sin redundancia o protección de datos\nUn solo fallo de unidad causa pérdida total de datos\nNo adecuado para datos críticos";
+"raid1_cons" = "Eficiencia de capacidad de almacenamiento del 50%%\nCosto más alto por GB utilizable\nRendimiento de escritura similar a unidad única";
+"raid5_cons" = "Rendimiento de escritura más lento debido al cálculo de paridad\nLa reconstrucción puede ser lenta con unidades grandes\nRiesgo de pérdida de datos durante reconstrucción si otra unidad falla";
+"raid6_cons" = "Mayor sobrecarga de capacidad que RAID 5\nRendimiento de escritura más lento que RAID 5\nImplementación más compleja";
+"raid10_cons" = "Eficiencia de capacidad de almacenamiento del 50%%\nRequiere número par de unidades (mínimo 4)\nCosto más alto por GB utilizable";
+"jbod_cons" = "Sin redundancia o protección de datos\nEl fallo de unidad afecta solo datos en esa unidad\nSin beneficios de rendimiento de striping";
+
+// RAID Use Cases
+"raid0_use_cases" = "Edición de video y archivos de trabajo temporales\nJuegos y aplicaciones que necesitan I/O rápido\nSistemas caché o almacenamiento temporal";
+"raid1_use_cases" = "Unidades de arranque y sistemas operativos\nBases de datos críticas y aplicaciones\nServidores de pequeñas empresas";
+"raid5_use_cases" = "Servidores de archivos y almacenamiento conectado en red\nAlmacenamiento de servidor de propósito general\nSistemas de backup y archivo";
+"raid6_use_cases" = "Grandes sistemas de almacenamiento empresarial\nArchivos de datos críticos\nSistemas con largos tiempos de reconstrucción";
+"raid10_use_cases" = "Bases de datos de alto rendimiento\nVirtualización y clústeres de servidores\nAplicaciones críticas que necesitan velocidad y redundancia";
+"jbod_use_cases" = "Necesidades de almacenamiento de volumen único grande\nArchivado y sistemas de backup\nServidores multimedia y bibliotecas";
+
+// RAID Failure Messages
+"raid0_failures" = "0";
+"raid1_failures" = "%d";
+"raid5_failures" = "1";
+"raid6_failures" = "2";
+"raid10_failures" = "Hasta %d (depende de qué unidades fallen)";
+"jbod_failures" = "0 (pierdes datos en cualquier unidad que falle)";
+
+// Validation Messages
+"raid0_validation" = "RAID 0 requiere al menos 1 unidad.";
+"raid1_validation" = "RAID 1 requiere al menos 2 unidades.";
+"raid5_validation" = "RAID 5 requiere al menos 3 unidades.";
+"raid6_validation" = "RAID 6 requiere al menos 4 unidades.";
+"raid10_validation" = "RAID 10 requiere un número par de unidades (4 o más).";
+"jbod_validation" = "JBOD requiere al menos 1 unidad.";

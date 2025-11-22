@@ -1,0 +1,88 @@
+/* 
+  Localizable.strings
+  RaidCalculator2
+
+  Created by todd.greco on 11/22/25.
+*/
+
+// App Title and Navigation
+"app_title" = "RAID Calculator";
+
+// RAID Level Selector
+"raid_level" = "RAID Level";
+
+// Drive Configuration
+"drive_configuration" = "Drive Configuration";
+"number_of_drives" = "Number of Drives";
+"drive_size" = "Drive Size";
+
+// Results Section
+"results" = "Results";
+"usable_capacity" = "Usable Capacity";
+"drive_failures_tolerated" = "Drive Failures Tolerated";
+"speed" = "Speed";
+"availability" = "Availability";
+
+// Performance Labels
+"very_high" = "Very High";
+"high" = "High";
+"medium" = "Medium";
+"low" = "Low";
+"very_low" = "Very Low";
+
+// RAID Info Sheet
+"done" = "Done";
+"overview" = "Overview";
+"pros_cons" = "Pros & Cons";
+"pros" = "Pros";
+"cons" = "Cons";
+"typical_use_cases" = "Typical Use Cases";
+"performance_ratings" = "Performance Ratings";
+
+// RAID Descriptions
+"raid0_description" = "RAID 0 (Striping) splits data across multiple drives for maximum performance, but provides no redundancy. If any drive fails, all data is lost.";
+"raid1_description" = "RAID 1 (Mirroring) creates exact copies of data on multiple drives. Provides excellent redundancy but halves the usable capacity.";
+"raid5_description" = "RAID 5 (Striping with Parity) distributes data and parity across all drives. Provides good performance and redundancy with minimal capacity overhead.";
+"raid6_description" = "RAID 6 (Striping with Dual Parity) similar to RAID 5 but with two parity sets. Can survive two simultaneous drive failures.";
+"raid10_description" = "RAID 10 (Stripe of Mirrors) combines mirroring and striping. Provides excellent performance and redundancy but requires even number of drives.";
+"jbod_description" = "JBOD (Just a Bunch Of Disks) combines multiple drives as one large volume without any RAID features. Each drive operates independently.";
+
+// RAID Pros
+"raid0_pros" = "Maximum performance and speed\nFull storage capacity utilization\nSimple to implement";
+"raid1_pros" = "Complete data redundancy\nFast read performance\nSimple recovery from drive failure";
+"raid5_pros" = "Good balance of performance and redundancy\nEfficient use of storage capacity\nCan survive one drive failure";
+"raid6_pros" = "Excellent redundancy (tolerates 2 drive failures)\nGood protection during rebuild operations\nSuitable for large capacity drives";
+"raid10_pros" = "Excellent performance for reads and writes\nHigh redundancy with fast rebuild\nCan survive multiple drive failures (if in different mirrors)";
+"jbod_pros" = "Simple and flexible\nFull utilization of all drive capacity\nNo performance overhead from RAID calculations";
+
+// RAID Cons
+"raid0_cons" = "No data redundancy or protection\nSingle drive failure causes complete data loss\nNot suitable for critical data";
+"raid1_cons" = "50%% storage capacity efficiency\nHigher cost per usable GB\nWrite performance similar to single drive";
+"raid5_cons" = "Slower write performance due to parity calculation\nRebuild can be slow with large drives\nRisk of data loss during rebuild if another drive fails";
+"raid6_cons" = "Higher capacity overhead than RAID 5\nSlower write performance than RAID 5\nMore complex implementation";
+"raid10_cons" = "50%% storage capacity efficiency\nRequires even number of drives (minimum 4)\nHigher cost per usable GB";
+"jbod_cons" = "No redundancy or data protection\nDrive failure affects only data on that drive\nNo performance benefits of striping";
+
+// RAID Use Cases
+"raid0_use_cases" = "Video editing and temporary work files\nGaming and applications needing fast I/O\nCache or temporary storage systems";
+"raid1_use_cases" = "Boot drives and operating systems\nCritical databases and applications\nSmall business servers";
+"raid5_use_cases" = "File servers and network attached storage\nGeneral purpose server storage\nBackup and archive systems";
+"raid6_use_cases" = "Large enterprise storage systems\nCritical data archives\nSystems with long rebuild times";
+"raid10_use_cases" = "High-performance databases\nVirtualization and server clusters\nCritical applications needing both speed and redundancy";
+"jbod_use_cases" = "Large single-volume storage needs\nArchiving and backup systems\nMedia servers and libraries";
+
+// RAID Failure Messages
+"raid0_failures" = "0";
+"raid1_failures" = "%d";
+"raid5_failures" = "1";
+"raid6_failures" = "2";
+"raid10_failures" = "Up to %d (depends on which drives fail)";
+"jbod_failures" = "0 (you lose data on any failed drive)";
+
+// Validation Messages
+"raid0_validation" = "RAID 0 requires at least 1 drive.";
+"raid1_validation" = "RAID 1 requires at least 2 drives.";
+"raid5_validation" = "RAID 5 requires at least 3 drives.";
+"raid6_validation" = "RAID 6 requires at least 4 drives.";
+"raid10_validation" = "RAID 10 requires an even number of drives (4 or more).";
+"jbod_validation" = "JBOD requires at least 1 drive.";

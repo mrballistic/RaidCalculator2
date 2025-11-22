@@ -1,0 +1,88 @@
+/* 
+  Localizable.strings (Japanese)
+  RaidCalculator2
+
+  Created by todd.greco on 11/22/25.
+*/
+
+// App Title and Navigation
+"app_title" = "RAID計算機";
+
+// RAID Level Selector
+"raid_level" = "RAIDレベル";
+
+// Drive Configuration
+"drive_configuration" = "ドライブ構成";
+"number_of_drives" = "ドライブ数";
+"drive_size" = "ドライブサイズ";
+
+// Results Section
+"results" = "結果";
+"usable_capacity" = "使用可能容量";
+"drive_failures_tolerated" = "許容ドライブ故障数";
+"speed" = "速度";
+"availability" = "可用性";
+
+// Performance Labels
+"very_high" = "非常に高い";
+"high" = "高い";
+"medium" = "中程度";
+"low" = "低い";
+"very_low" = "非常に低い";
+
+// RAID Info Sheet
+"done" = "完了";
+"overview" = "概要";
+"pros_cons" = "長所と短所";
+"pros" = "長所";
+"cons" = "短所";
+"typical_use_cases" = "典型的な使用例";
+"performance_ratings" = "パフォーマンス評価";
+
+// RAID Descriptions
+"raid0_description" = "RAID 0（ストライピング）は最大のパフォーマンスのために複数のドライブにデータを分割しますが、冗長性を提供しません。ドライブが1つでも故障すると、すべてのデータが失われます。";
+"raid1_description" = "RAID 1（ミラーリング）は複数のドライブにデータの正確なコピーを作成します。優れた冗長性を提供しますが、使用可能容量は半分になります。";
+"raid5_description" = "RAID 5（パリティ付きストライピング）はすべてのドライブにデータとパリティを分散します。最小限の容量オーバーヘッドで良いパフォーマンスと冗長性を提供します。";
+"raid6_description" = "RAID 6（デュアルパリティ付きストライピング）はRAID 5に似ていますが、2つのパリティセットがあります。2つの同時ドライブ故障から復旧できます。";
+"raid10_description" = "RAID 10（ストライプオブミラー）はミラーリングとストライピングを組み合わせます。優れたパフォーマンスと冗長性を提供しますが、偶数のドライブが必要です。";
+"jbod_description" = "JBOD（ジャストアバンチオブディスクス）はRAID機能なしで複数のドライブを1つの大きなボリュームとして結合します。各ドライブは独立して動作します。";
+
+// RAID Pros
+"raid0_pros" = "最大のパフォーマンスと速度\nストレージ容量の完全な利用\n実装が簡単";
+"raid1_pros" = "完全なデータ冗長性\n高速な読み取りパフォーマンス\nドライブ故障からの簡単な復旧";
+"raid5_pros" = "パフォーマンスと冗長性の良いバランス\nストレージ容量の効率的な使用\n1つのドライブ故障に耐えられる";
+"raid6_pros" = "優れた冗長性（2つのドライブ故障に耐える）\n再構築操作中の良い保護\n大容量ドライブに適している";
+"raid10_pros" = "読み取りと書き込みの優れたパフォーマンス\n高速な再構築での高い冗長性\n複数のドライブ故障に耐えられる（異なるミラーの場合）";
+"jbod_pros" = "シンプルで柔軟\nすべてのドライブ容量の完全な利用\nRAID計算からのパフォーマンスオーバーヘッドなし";
+
+// RAID Cons
+"raid0_cons" = "データ冗長性または保護なし\n単一ドライブ故障で完全なデータ損失\n重要なデータには不適切";
+"raid1_cons" = "ストレージ容量効率50%%\n使用可能GBあたりのコストが高い\n単一ドライブに類似した書き込みパフォーマンス";
+"raid5_cons" = "パリティ計算により書き込みパフォーマンスが遅い\n大容量ドライブでの再構築が遅い場合がある\n他のドライブが故障した場合の再構築中のデータ損失リスク";
+"raid6_cons" = "RAID 5より容量オーバーヘッドが大きい\nRAID 5より書き込みパフォーマンスが遅い\nより複雑な実装";
+"raid10_cons" = "ストレージ容量効率50%%\n偶数のドライブが必要（最小4）\n使用可能GBあたりのコストが高い";
+"jbod_cons" = "データ冗長性または保護なし\nドライブ故障はそのドライブのデータのみに影響\nストライピングのパフォーマンス利点なし";
+
+// RAID Use Cases
+"raid0_use_cases" = "ビデオ編集と一時作業ファイル\n高速I/Oを必要とするゲームとアプリケーション\nキャッシュまたは一時ストレージシステム";
+"raid1_use_cases" = "ブートドライブとオペレーティングシステム\n重要なデータベースとアプリケーション\n小規模ビジネスサーバー";
+"raid5_use_cases" = "ファイルサーバーとネットワーク接続ストレージ\n汎用サーバーストレージ\nバックアップとアーカイブシステム";
+"raid6_use_cases" = "大規模エンタープライズストレージシステム\n重要なデータアーカイブ\n再構築時間が長いシステム";
+"raid10_use_cases" = "高パフォーマンスデータベース\n仮想化とサーバークラスター\n速度と冗長性の両方を必要とする重要なアプリケーション";
+"jbod_use_cases" = "大規模単一ボリュームストレージニーズ\nアーカイブとバックアップシステム\nメディアサーバーとライブラリ";
+
+// RAID Failure Messages
+"raid0_failures" = "0";
+"raid1_failures" = "%d";
+"raid5_failures" = "1";
+"raid6_failures" = "2";
+"raid10_failures" = "最大%d（どのドライブが故障するかによる）";
+"jbod_failures" = "0（故障したドライブでデータを失います）";
+
+// Validation Messages
+"raid0_validation" = "RAID 0には少なくとも1つのドライブが必要です。";
+"raid1_validation" = "RAID 1には少なくとも2つのドライブが必要です。";
+"raid5_validation" = "RAID 5には少なくとも3つのドライブが必要です。";
+"raid6_validation" = "RAID 6には少なくとも4つのドライブが必要です。";
+"raid10_validation" = "RAID 10には偶数のドライブ（4以上）が必要です。";
+"jbod_validation" = "JBODには少なくとも1つのドライブが必要です。";

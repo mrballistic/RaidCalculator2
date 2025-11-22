@@ -57,7 +57,7 @@ struct ContentView: View {
     private var raidLevelSelector: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
-                Text("RAID Level")
+                Text("raid_level".localized())
                     .font(.headline)
                 Spacer()
                 Button(action: { showingInfoSheet = true }) {
@@ -84,12 +84,12 @@ struct ContentView: View {
     
     private var driveConfiguration: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("Drive Configuration")
+            Text("drive_configuration".localized())
                 .font(.headline)
             
             VStack(spacing: 16) {
                 HStack {
-                    Text("Number of Drives")
+                    Text("number_of_drives".localized())
                         .font(.subheadline)
                     Spacer()
                     Text("\(viewModel.driveCount)")
@@ -103,7 +103,7 @@ struct ContentView: View {
                 Divider()
                 
                 HStack {
-                    Text("Drive Size")
+                    Text("drive_size".localized())
                         .font(.subheadline)
                     Spacer()
                     HStack {
@@ -133,31 +133,31 @@ struct ContentView: View {
     
     private func resultsCard(_ result: RaidResult) -> some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("Results")
+            Text("results".localized())
                 .font(.headline)
             
             VStack(spacing: 12) {
                 ResultRow(
-                    title: "Usable Capacity",
+                    title: "usable_capacity".localized(),
                     value: "\(String(format: "%.1f", result.usableCapacity)) \(viewModel.unit.rawValue)",
                     icon: "externaldrive.fill"
                 )
                 
                 ResultRow(
-                    title: "Drive Failures Tolerated",
+                    title: "drive_failures_tolerated".localized(),
                     value: result.failuresTolerated,
                     icon: "shield.fill"
                 )
                 
                 ResultRow(
-                    title: "Speed",
+                    title: "speed".localized(),
                     value: starRating(result.speedRating),
                     icon: "speedometer",
                     subtitle: speedLabel(result.speedRating)
                 )
                 
                 ResultRow(
-                    title: "Availability",
+                    title: "availability".localized(),
                     value: starRating(result.availabilityRating),
                     icon: "checkmark.shield.fill",
                     subtitle: availabilityLabel(result.availabilityRating)
@@ -198,22 +198,22 @@ struct ContentView: View {
     
     private func speedLabel(_ rating: Int) -> String {
         switch rating {
-        case 5: return "Very High"
-        case 4: return "High"
-        case 3: return "Medium"
-        case 2: return "Low"
-        case 1: return "Very Low"
+        case 5: return "very_high".localized()
+        case 4: return "high".localized()
+        case 3: return "medium".localized()
+        case 2: return "low".localized()
+        case 1: return "very_low".localized()
         default: return ""
         }
     }
     
     private func availabilityLabel(_ rating: Int) -> String {
         switch rating {
-        case 5: return "Very High"
-        case 4: return "High"
-        case 3: return "Medium"
-        case 2: return "Low"
-        case 1: return "Very Low"
+        case 5: return "very_high".localized()
+        case 4: return "high".localized()
+        case 3: return "medium".localized()
+        case 2: return "low".localized()
+        case 1: return "very_low".localized()
         default: return ""
         }
     }

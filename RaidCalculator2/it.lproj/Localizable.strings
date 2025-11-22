@@ -1,0 +1,88 @@
+/* 
+  Localizable.strings (Italian)
+  RaidCalculator2
+
+  Created by todd.greco on 11/22/25.
+*/
+
+// App Title and Navigation
+"app_title" = "Calcolatore RAID";
+
+// RAID Level Selector
+"raid_level" = "Livello RAID";
+
+// Drive Configuration
+"drive_configuration" = "Configurazione Dischi";
+"number_of_drives" = "Numero di Dischi";
+"drive_size" = "Dimensione Disco";
+
+// Results Section
+"results" = "Risultati";
+"usable_capacity" = "Capacità Utilizzabile";
+"drive_failures_tolerated" = "Guasti Dischi Tollerati";
+"speed" = "Velocità";
+"availability" = "Disponibilità";
+
+// Performance Labels
+"very_high" = "Molto Alta";
+"high" = "Alta";
+"medium" = "Media";
+"low" = "Bassa";
+"very_low" = "Molto Bassa";
+
+// RAID Info Sheet
+"done" = "Fatto";
+"overview" = "Panoramica";
+"pros_cons" = "Pro e Contro";
+"pros" = "Pro";
+"cons" = "Contro";
+"typical_use_cases" = "Casi d'Uso Tipici";
+"performance_ratings" = "Valutazioni Prestazioni";
+
+// RAID Descriptions
+"raid0_description" = "RAID 0 (Striping) suddivide i dati su più dischi per prestazioni massime, ma non fornisce ridondanza. Se un disco si guasta, tutti i dati vengono persi.";
+"raid1_description" = "RAID 1 (Mirroring) crea copie esatte dei dati su più dischi. Fornisce eccellente ridondanza ma dimezza la capacità utilizzabile.";
+"raid5_description" = "RAID 5 (Striping con Parità) distribuisce dati e parità su tutti i dischi. Fornisce buone prestazioni e ridondanza con overhead minimo della capacità.";
+"raid6_description" = "RAID 6 (Striping con Doppia Parità) simile a RAID 5 ma con due set di parità. Può sopravvivere a due guasti simultanei dei dischi.";
+"raid10_description" = "RAID 10 (Stripe di Mirror) combina mirroring e striping. Fornisce eccellenti prestazioni e ridondanza ma richiede un numero pari di dischi.";
+"jbod_description" = "JBOD (Just a Bunch Of Disks) combina più dischi come un unico volume grande senza funzionalità RAID. Ogni disco opera indipendentemente.";
+
+// RAID Pros
+"raid0_pros" = "Prestazioni e velocità massime\nUtilizzazione completa della capacità di archiviazione\nSemplice da implementare";
+"raid1_pros" = "Ridondanza dati completa\nBuone prestazioni in lettura\nRecupero semplice dal guasto del disco";
+"raid5_pros" = "Buon equilibrio tra prestazioni e ridondanza\nUso efficiente della capacità di archiviazione\nPuò sopravvivere a un guasto del disco";
+"raid6_pros" = "Eccellente ridondanza (tollera 2 guasti dei dischi)\nBuona protezione durante le operazioni di ricostruzione\nAdatto a dischi di grande capacità";
+"raid10_pros" = "Eccellenti prestazioni in lettura e scrittura\nAlta ridondanza con ricostruzione rapida\nPuò sopravvivere a più guasti dei dischi (se in mirror diversi)";
+"jbod_pros" = "Semplice e flessibile\nUtilizzazione completa di tutta la capacità dei dischi\nNessun overhead prestazioni dai calcoli RAID";
+
+// RAID Cons
+"raid0_cons" = "Nessuna ridondanza o protezione dati\nUn singolo guasto del disco causa perdita totale dei dati\nNon adatto a dati critici";
+"raid1_cons" = "Efficienza capacità di archiviazione del 50%%\nCosto più alto per GB utilizzabile\nPrestazioni in scrittura simili a un singolo disco";
+"raid5_cons" = "Prestazioni in scrittura più lente a causa del calcolo della parità\nLa ricostruzione può essere lenta con dischi grandi\nRischio di perdita dati durante la ricostruzione se un altro disco si guasta";
+"raid6_cons" = "Overhead capacità maggiore di RAID 5\nPrestazioni in scrittura più lente di RAID 5\nImplementazione più complessa";
+"raid10_cons" = "Efficienza capacità di archiviazione del 50%%\nRichiede numero pari di dischi (minimo 4)\nCosto più alto per GB utilizzabile";
+"jbod_cons" = "Nessuna ridondanza o protezione dati\nIl guasto del disco influisce solo sui dati su quel disco\nNessun beneficio prestazioni dello striping";
+
+// RAID Use Cases
+"raid0_use_cases" = "Editing video e file di lavoro temporanei\nGiochi e applicazioni che richiedono I/O veloce\nSistemi cache o archiviazione temporanea";
+"raid1_use_cases" = "Dischi di avvio e sistemi operativi\nDatabase critici e applicazioni\nServer piccole imprese";
+"raid5_use_cases" = "Server file e archiviazione collegata in rete\nArchiviazione server scopo generale\nSistemi backup e archiviazione";
+"raid6_use_cases" = "Grandi sistemi di archiviazione enterprise\nArchivi dati critici\nSistemi con lunghi tempi di ricostruzione";
+"raid10_use_cases" = "Database ad alte prestazioni\nVirtualizzazione e cluster server\nApplicazioni critiche che richiedono sia velocità che ridondanza";
+"jbod_use_cases" = "Esigenze di archiviazione a singolo volume grande\nArchiviazione e sistemi backup\nServer media e biblioteche";
+
+// RAID Failure Messages
+"raid0_failures" = "0";
+"raid1_failures" = "%d";
+"raid5_failures" = "1";
+"raid6_failures" = "2";
+"raid10_failures" = "Fino a %d (dipende da quali dischi si guastano)";
+"jbod_failures" = "0 (perdi dati su qualsiasi disco guasto)";
+
+// Validation Messages
+"raid0_validation" = "RAID 0 richiede almeno 1 disco.";
+"raid1_validation" = "RAID 1 richiede almeno 2 dischi.";
+"raid5_validation" = "RAID 5 richiede almeno 3 dischi.";
+"raid6_validation" = "RAID 6 richiede almeno 4 dischi.";
+"raid10_validation" = "RAID 10 richiede un numero pari di dischi (4 o più).";
+"jbod_validation" = "JBOD richiede almeno 1 disco.";
