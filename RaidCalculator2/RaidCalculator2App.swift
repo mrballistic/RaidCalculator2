@@ -11,7 +11,11 @@ import SwiftUI
 struct RaidCalculator2App: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            NavigationStack {
+                ContentView()
+                    .navigationTitle("RAID Calculator")
+                    .navigationBarTitleDisplayMode(.large)
+            }
         }
     }
 }
