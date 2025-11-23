@@ -12,19 +12,17 @@ struct ContentView: View {
     @State private var showingInfoSheet = false
     
     var body: some View {
-        VStack(spacing: 24) {
-            headerSection
-            raidLevelSelector
-            driveConfiguration
-            if let result = viewModel.result {
-                if result.warningMessage != nil {
-                    warningCard(result.warningMessage!)
+        GeometryReader { geometry in
+            ScrollView {
+                if geometry.size.width > 700 {
+                    // iPad Layout - Two columns
+                    ipadLayout
                 } else {
-                    resultsCard(result)
+                    // iPhone Layout - Single column
+                    iphoneLayout
                 }
             }
         }
-        .padding()
         .background(
             RadialGradient(
                 colors: [
@@ -48,6 +46,53 @@ struct ContentView: View {
         .sheet(isPresented: $showingInfoSheet) {
             RaidInfoSheet(level: viewModel.selectedLevel)
         }
+    }
+    
+    private var iphoneLayout: some View {
+        VStack(spacing: 24) {
+            headerSection
+            raidLevelSelector
+            driveConfiguration
+            if let result = viewModel.result {
+                if result.warningMessage != nil {
+                    warningCard(result.warningMessage!)
+                } else {
+                    resultsCard(result)
+                }
+            }
+        }
+        .padding()
+    }
+    
+    private var ipadLayout: some View {
+        VStack(spacing: 32) {
+            headerSection
+            
+            HStack(alignment: .top, spacing: 24) {
+                // Left column - Input controls
+                VStack(spacing: 24) {
+                    raidLevelSelector
+                    driveConfiguration
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                
+                // Right column - Results
+                VStack(spacing: 24) {
+                    if let result = viewModel.result {
+                        if result.warningMessage != nil {
+                            warningCard(result.warningMessage!)
+                        } else {
+                            resultsCard(result)
+                        }
+                    } else {
+                        // Placeholder card for consistent layout
+                        placeholderResultsCard
+                    }
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+            }
+        }
+        .padding(32)
     }
     
     private var headerSection: some View {
@@ -253,6 +298,62 @@ struct ContentView: View {
         case 1: return "very_low".localized()
         default: return ""
         }
+    }
+    
+    private var placeholderResultsCard: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            Text("results".localized())
+                .font(.headline)
+            
+            VStack(spacing: 12) {
+                HStack {
+                    Text("usable_capacity".localized())
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                    Spacer()
+                    Text("--")
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(.secondary)
+                }
+                
+                HStack {
+                    Text("drive_failures_tolerated".localized())
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                    Spacer()
+                    Text("--")
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(.secondary)
+                }
+                
+                HStack {
+                    Text("minimum_drives".localized())
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                    Spacer()
+                    Text("--")
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(.secondary)
+                }
+                
+                HStack {
+                    Text("storage_efficiency".localized())
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                    Spacer()
+                    Text("--")
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(.secondary)
+                }
+            }
+        }
+        .padding()
+        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                .stroke(.white.opacity(0.2), lineWidth: 1)
+        )
+        .shadow(color: .black.opacity(0.1), radius: 10, x: 0, y: 5)
     }
 }
 
