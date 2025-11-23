@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		05C58E582ED3A5A5007363A7 /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 05C58E572ED3A5A5007363A7 /* AppIcon.icon */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		05D08AB02ED247CB00011453 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -24,6 +28,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		05C58E572ED3A5A5007363A7 /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AppIcon.icon; sourceTree = SOURCE_ROOT; };
 		05D08A9F2ED247C700011453 /* RAID Calc.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "RAID Calc.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		05D08AAF2ED247CB00011453 /* RAID CalcTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "RAID CalcTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		05D08AB92ED247CB00011453 /* RAID CalcUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "RAID CalcUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -79,6 +84,7 @@
 				05D08AB22ED247CB00011453 /* RaidCalculator2Tests */,
 				05D08ABC2ED247CB00011453 /* RaidCalculator2UITests */,
 				05D08AA02ED247C700011453 /* Products */,
+				05C58E572ED3A5A5007363A7 /* AppIcon.icon */,
 			);
 			sourceTree = "<group>";
 		};
@@ -217,6 +223,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				05C58E582ED3A5A5007363A7 /* AppIcon.icon in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
