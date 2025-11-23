@@ -28,7 +28,7 @@ struct ContentView: View {
         .background(
             RadialGradient(
                 colors: [
-                    .orange.opacity(0.15),
+                    Color.accentColor.opacity(0.15),
                     .blue.opacity(0.2), 
                     .purple.opacity(0.15)
                 ],
@@ -54,8 +54,8 @@ struct ContentView: View {
         HStack {
             Image(systemName: "square.stack.3d.up")
                 .font(.system(size: 32))
-                .foregroundStyle(.orange)
-                .shadow(color: .orange.opacity(0.3), radius: 4)
+                .foregroundStyle(Color.accentColor)
+                .shadow(color: Color.accentColor.opacity(0.3), radius: 4)
             Text("RAID Calculator")
                 .font(.title.bold())
                 .foregroundStyle(.primary)
@@ -111,7 +111,7 @@ struct ContentView: View {
                         }) {
                             Image(systemName: "minus.circle.fill")
                                 .font(.system(size: 24))
-                                .foregroundStyle(.orange)
+                                .foregroundStyle(Color.accentColor)
                         }
                         .disabled(viewModel.driveCount <= 1)
                         
@@ -128,7 +128,7 @@ struct ContentView: View {
                         }) {
                             Image(systemName: "plus.circle.fill")
                                 .font(.system(size: 24))
-                                .foregroundStyle(.orange)
+                                .foregroundStyle(Color.accentColor)
                         }
                         .disabled(viewModel.driveCount >= 24)
                     }
@@ -212,7 +212,7 @@ struct ContentView: View {
         HStack(spacing: 12) {
             Image(systemName: "exclamationmark.triangle.fill")
                 .font(.system(size: 20))
-                .foregroundStyle(.orange)
+                .foregroundStyle(Color.accentColor)
             Text(message)
                 .font(.subheadline)
                 .foregroundStyle(.primary)
@@ -222,9 +222,9 @@ struct ContentView: View {
         .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
         .overlay(
             RoundedRectangle(cornerRadius: 20, style: .continuous)
-                .stroke(.orange.opacity(0.3), lineWidth: 1)
+                .stroke(Color.accentColor.opacity(0.3), lineWidth: 1)
         )
-        .shadow(color: .orange.opacity(0.2), radius: 8, x: 0, y: 4)
+        .shadow(color: Color.accentColor.opacity(0.2), radius: 8, x: 0, y: 4)
     }
     
     private func starRating(_ rating: Int) -> String {
