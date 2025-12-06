@@ -1,5 +1,13 @@
 {
-  "fill" : "automatic",
+  "fill-specializations" : [
+    {
+      "value" : "automatic"
+    },
+    {
+      "appearance" : "dark",
+      "value" : "automatic"
+    }
+  ],
   "groups" : [
     {
       "layers" : [
@@ -17,17 +25,37 @@
     {
       "layers" : [
         {
-          "hidden" : true,
+          "blend-mode-specializations" : [
+            {
+              "appearance" : "tinted",
+              "value" : "plus-darker"
+            }
+          ],
+          "fill-specializations" : [
+            {
+              "appearance" : "tinted",
+              "value" : "automatic"
+            }
+          ],
+          "hidden" : false,
           "image-name" : "Image 2.png",
           "name" : "Image 2"
         },
         {
+          "hidden" : true,
           "image-name" : "Image 4.png",
           "name" : "Image 4"
         },
         {
+          "hidden" : false,
           "image-name" : "Image 5.png",
-          "name" : "Image 5"
+          "name" : "Image 5",
+          "opacity-specializations" : [
+            {
+              "appearance" : "dark",
+              "value" : 0
+            }
+          ]
         },
         {
           "hidden" : true,

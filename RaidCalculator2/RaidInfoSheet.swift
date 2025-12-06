@@ -45,7 +45,12 @@ struct RaidInfoSheet: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Done") { dismiss() }
+                    if #available(iOS 26, *) {
+                        Button("Done") { dismiss() }
+                            .buttonStyle(.glassProminent)
+                    } else {
+                        Button("Done") { dismiss() }
+                    }
                 }
             }
         }

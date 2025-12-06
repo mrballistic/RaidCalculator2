@@ -115,10 +115,18 @@ struct ContentView: View {
                 Text("raid_level".localized())
                     .font(.headline)
                 Spacer()
-                Button(action: { showingInfoSheet = true }) {
-                    Image(systemName: "info.circle")
-                        .font(.system(size: 20))
-                        .foregroundStyle(.secondary)
+                if #available(iOS 26, *) {
+                    Button(action: { showingInfoSheet = true }) {
+                        Image(systemName: "info.circle")
+                            .font(.system(size: 20))
+                    }
+                    .buttonStyle(.glass)
+                } else {
+                    Button(action: { showingInfoSheet = true }) {
+                        Image(systemName: "info.circle")
+                            .font(.system(size: 20))
+                            .foregroundStyle(.secondary)
+                    }
                 }
             }
             
@@ -148,35 +156,7 @@ struct ContentView: View {
                     Text("number_of_drives".localized())
                         .font(.subheadline)
                     Spacer()
-                    HStack(spacing: 8) {
-                        Button(action: { 
-                            if viewModel.driveCount > 1 {
-                                viewModel.driveCount -= 1 
-                            }
-                        }) {
-                            Image(systemName: "minus.circle.fill")
-                                .font(.system(size: 24))
-                                .foregroundStyle(Color.accentColor)
-                        }
-                        .disabled(viewModel.driveCount <= 1)
-                        
-                        Text("\(viewModel.driveCount)")
-                            .font(.subheadline.weight(.semibold))
-                            .foregroundStyle(.primary)
-                            .frame(minWidth: 30)
-                            .accessibilityIdentifier("driveCount")
-                        
-                        Button(action: { 
-                            if viewModel.driveCount < 24 {
-                                viewModel.driveCount += 1 
-                            }
-                        }) {
-                            Image(systemName: "plus.circle.fill")
-                                .font(.system(size: 24))
-                                .foregroundStyle(Color.accentColor)
-                        }
-                        .disabled(viewModel.driveCount >= 24)
-                    }
+                    driveCountStepper
                 }
                 
                 Divider()
@@ -209,6 +189,73 @@ struct ContentView: View {
                 .stroke(.white.opacity(0.2), lineWidth: 1)
         )
         .shadow(color: .black.opacity(0.1), radius: 10, x: 0, y: 5)
+    }
+    
+    @ViewBuilder
+    private var driveCountStepper: some View {
+        if #available(iOS 26, *) {
+            GlassEffectContainer {
+                HStack(spacing: 8) {
+                    Button(action: { 
+                        if viewModel.driveCount > 1 {
+                            viewModel.driveCount -= 1 
+                        }
+                    }) {
+                        Image(systemName: "minus")
+                            .frame(width: 32, height: 32)
+                    }
+                    .glassEffect()
+                    .disabled(viewModel.driveCount <= 1)
+                    
+                    Text("\(viewModel.driveCount)")
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(.primary)
+                        .frame(minWidth: 30)
+                        .accessibilityIdentifier("driveCount")
+                    
+                    Button(action: { 
+                        if viewModel.driveCount < 24 {
+                            viewModel.driveCount += 1 
+                        }
+                    }) {
+                        Image(systemName: "plus")
+                            .frame(width: 32, height: 32)
+                    }
+                    .glassEffect()
+                    .disabled(viewModel.driveCount >= 24)
+                }
+            }
+        } else {
+            HStack(spacing: 8) {
+                Button(action: { 
+                    if viewModel.driveCount > 1 {
+                        viewModel.driveCount -= 1 
+                    }
+                }) {
+                    Image(systemName: "minus.circle.fill")
+                        .font(.system(size: 24))
+                        .foregroundStyle(Color.accentColor)
+                }
+                .disabled(viewModel.driveCount <= 1)
+                
+                Text("\(viewModel.driveCount)")
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(.primary)
+                    .frame(minWidth: 30)
+                    .accessibilityIdentifier("driveCount")
+                
+                Button(action: { 
+                    if viewModel.driveCount < 24 {
+                        viewModel.driveCount += 1 
+                    }
+                }) {
+                    Image(systemName: "plus.circle.fill")
+                        .font(.system(size: 24))
+                        .foregroundStyle(Color.accentColor)
+                }
+                .disabled(viewModel.driveCount >= 24)
+            }
+        }
     }
     
     private func resultsCard(_ result: RaidResult) -> some View {
