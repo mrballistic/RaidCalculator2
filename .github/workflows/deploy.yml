@@ -1,0 +1,128 @@
+name: Deploy to App Store Connect
+
+# The only path that uploads a build. Runs on a version tag (vX.Y.Z) or by hand,
+# re-runs the full CI gate first, then archives and uploads with an App Store
+# Connect API key. The upload lands in App Store Connect ready for TestFlight and
+# App Store submission; submitting for review stays a manual step.
+# Setup: docs/RELEASE.md.
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    name: CI gate
+    uses: ./.github/workflows/ios.yml
+
+  upload:
+    name: Archive and upload
+    needs: ci
+    runs-on: macos-26
+    environment: app-store
+    timeout-minutes: 60
+    env:
+      APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+      ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+      ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Version and build number
+        run: |
+          # Build numbers only need to increase within one marketing version, and
+          # every hand-uploaded build so far was build 1, so the run number is enough.
+          echo "BUILD_NUMBER=$GITHUB_RUN_NUMBER" >> "$GITHUB_ENV"
+          # A tag sets the marketing version (v1.4.0 -> 1.4.0); a manual run keeps the project's.
+          if [ "$GITHUB_REF_TYPE" = "tag" ]; then
+            version="${GITHUB_REF_NAME#v}"
+            if ! [[ "$version" =~ ^[0-9]+\.[0-9]+(\.[0-9]+)?$ ]]; then
+              echo "::error::Tag $GITHUB_REF_NAME is not vMAJOR.MINOR[.PATCH]"
+              exit 1
+            fi
+            echo "MARKETING_VERSION=$version" >> "$GITHUB_ENV"
+          fi
+
+      - name: Check configuration
+        run: |
+          missing=0
+          for name in APPLE_TEAM_ID ASC_KEY_ID ASC_ISSUER_ID; do
+            if [ -z "${!name}" ]; then echo "::error::$name is not set (see docs/RELEASE.md)"; missing=1; fi
+          done
+          exit $missing
+
+      - name: Select Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
+      - name: Write the App Store Connect key
+        env:
+          ASC_KEY_P8_BASE64: ${{ secrets.ASC_KEY_P8_BASE64 }}
+        run: |
+          key="$RUNNER_TEMP/AuthKey_${ASC_KEY_ID}.p8"
+          printf '%s' "$ASC_KEY_P8_BASE64" | base64 --decode > "$key"
+          chmod 600 "$key"
+          echo "ASC_KEY_PATH=$key" >> "$GITHUB_ENV"
+
+      - name: Archive
+        run: |
+          set -o pipefail
+          version_override=()
+          if [ -n "${MARKETING_VERSION:-}" ]; then version_override=("MARKETING_VERSION=$MARKETING_VERSION"); fi
+          xcodebuild archive \
+            -project "RAID Calculator.xcodeproj" \
+            -scheme "RAID Calc" \
+            -configuration Release \
+            -destination 'generic/platform=iOS' \
+            -archivePath "$RUNNER_TEMP/RAIDCalculator.xcarchive" \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath "$ASC_KEY_PATH" \
+            -authenticationKeyID "$ASC_KEY_ID" \
+            -authenticationKeyIssuerID "$ASC_ISSUER_ID" \
+            DEVELOPMENT_TEAM="$APPLE_TEAM_ID" \
+            CURRENT_PROJECT_VERSION="$BUILD_NUMBER" \
+            "${version_override[@]}" | xcbeautify
+
+      - name: Export and upload to App Store Connect
+        run: |
+          set -o pipefail
+          cp ExportOptions.plist "$RUNNER_TEMP/ExportOptions.plist"
+          plutil -replace teamID -string "$APPLE_TEAM_ID" "$RUNNER_TEMP/ExportOptions.plist"
+          xcodebuild -exportArchive \
+            -archivePath "$RUNNER_TEMP/RAIDCalculator.xcarchive" \
+            -exportOptionsPlist "$RUNNER_TEMP/ExportOptions.plist" \
+            -exportPath "$RUNNER_TEMP/export" \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath "$ASC_KEY_PATH" \
+            -authenticationKeyID "$ASC_KEY_ID" \
+            -authenticationKeyIssuerID "$ASC_ISSUER_ID" | xcbeautify
+
+      - name: Delete the key
+        if: always()
+        run: rm -f "$RUNNER_TEMP"/AuthKey_*.p8
+
+      - name: Summary
+        run: |
+          plist="$RUNNER_TEMP/RAIDCalculator.xcarchive/Info.plist"
+          version=$(/usr/libexec/PlistBuddy -c 'Print :ApplicationProperties:CFBundleShortVersionString' "$plist")
+          bundle=$(/usr/libexec/PlistBuddy -c 'Print :ApplicationProperties:CFBundleIdentifier' "$plist")
+          {
+            echo "### Uploaded to App Store Connect"
+            echo ""
+            echo "| | |"
+            echo "|---|---|"
+            echo "| Bundle ID | ${bundle} |"
+            echo "| Version | ${version} |"
+            echo "| Build | ${BUILD_NUMBER} |"
+            echo "| Commit | ${GITHUB_SHA::7} |"
+            echo ""
+            echo "Processing usually takes 5 to 20 minutes. Then pick the build on the version page in App Store Connect and submit it for review."
+          } >> "$GITHUB_STEP_SUMMARY"
