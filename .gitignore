@@ -149,3 +149,7 @@ Carthage/Build/
 
 # Log files
 *.log
+
+## App Store Connect API keys: never commit (this repo is public)
+*.p8
+AuthKey_*
