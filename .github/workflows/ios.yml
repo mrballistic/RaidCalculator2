@@ -1,27 +1,65 @@
-name: iOS Build
+name: iOS CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [main]
   pull_request:
-    branches: [ "main" ]
+    branches: [main]
+  # deploy.yml re-runs this as its gate before archiving.
+  workflow_call:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
-  build:
-    name: Build RAID Calculator
-    runs-on: macos-latest
-
+  build-and-test:
+    name: Build and test
+    # The app targets iOS 26 and the project is Xcode 27 format; macos-26 ships
+    # current Xcode with iOS 26+ simulator runtimes (macos-latest lagged behind).
+    runs-on: macos-26
+    timeout-minutes: 45
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        
+      - uses: actions/checkout@v7
+
       - name: Select Xcode
-        run: sudo xcode-select -switch /Applications/Xcode.app/Contents/Developer
-        
-      - name: Build
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
+      - name: Pick an iPhone simulator
         run: |
-          # Build the project
-          xcodebuild -project "RAID Calculator.xcodeproj" \
-                     -scheme "RAID Calc" \
-                     -destination "platform=iOS Simulator,name=iPhone 16 Pro" \
-                     clean build
+          # Device names change with every Xcode; take the newest available iPhone.
+          udid=$(xcrun simctl list devices available -j | python3 -c '
+          import json, sys
+          rt = json.load(sys.stdin)["devices"]
+          ios = sorted((k for k in rt if ".iOS-" in k), key=lambda k: [int(x) for x in k.split(".iOS-")[1].split("-")])
+          for k in reversed(ios):
+              phones = [d for d in rt[k] if d["name"].startswith("iPhone")]
+              if phones:
+                  print(phones[-1]["udid"]); break
+          ')
+          if [ -z "$udid" ]; then echo "::error::No available iPhone simulator"; xcrun simctl list devices available; exit 1; fi
+          echo "SIM_UDID=$udid" >> "$GITHUB_ENV"
+          xcrun simctl list devices available | grep "$udid"
+
+      - name: Build and test on the iOS simulator
+        run: |
+          set -o pipefail
+          xcodebuild \
+            -project "RAID Calculator.xcodeproj" \
+            -scheme "RAID Calc" \
+            -destination "id=$SIM_UDID" \
+            -resultBundlePath "$RUNNER_TEMP/TestResults.xcresult" \
+            build test | xcbeautify
+
+      - name: Upload test results
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: TestResults
+          path: ${{ runner.temp }}/TestResults.xcresult
+          retention-days: 7

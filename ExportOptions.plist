@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!-- Upload straight to App Store Connect. The build is eligible for App Store
+	     submission (and TestFlight); it is not limited to internal testing. -->
+	<key>method</key>
+	<string>app-store-connect</string>
+	<key>destination</key>
+	<string>upload</string>
+	<key>signingStyle</key>
+	<string>automatic</string>
+	<!-- deploy.yml replaces this with the APPLE_TEAM_ID secret; never commit a real value. -->
+	<key>teamID</key>
+	<string>TEAM_ID_FROM_CI</string>
+	<key>manageAppVersionAndBuildNumber</key>
+	<false/>
+	<key>uploadSymbols</key>
+	<true/>
+	<key>testFlightInternalTestingOnly</key>
+	<false/>
+</dict>
+</plist>
