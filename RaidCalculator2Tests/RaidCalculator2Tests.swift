@@ -6,7 +6,7 @@
 //
 
 import Testing
-@testable import RaidCalculator2
+@testable import RAID_Calc
 
 struct RaidCalculator2Tests {
 
