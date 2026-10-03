@@ -16,14 +16,15 @@ final class RaidCalculator2UITests: XCTestCase {
     /// Launches with a known configuration. Launch arguments override the
     /// persisted UserDefaults, so each test starts from RAID 5, 4 × 4 TB.
     @MainActor
-    private func launchApp(level: String = "R 5", drives: Int = 4) -> XCUIApplication {
+    private func launchApp(level: String = "R 5", drives: Int = 4, language: String = "en", locale: String = "en_US") -> XCUIApplication {
         let app = XCUIApplication()
         app.launchArguments += [
             "-selectedLevel", level,
             "-driveCount", "\(drives)",
             "-driveSize", "4",
             "-unit", "TB",
-            "-AppleLanguages", "(en)",
+            "-AppleLanguages", "(\(language))",
+            "-AppleLocale", locale,
         ]
         app.launch()
         return app
@@ -91,6 +92,74 @@ final class RaidCalculator2UITests: XCTestCase {
         sizeField.clearAndEnterText(text: "8")
         XCTAssertEqual(sizeField.value as? String, "8")
         XCTAssertTrue(capacity(app).hasPrefix("Usable Capacity, 24 TB,"), capacity(app))
+    }
+
+    /// A person taps wherever their thumb lands, not the field's right edge.
+    /// Wherever the tap lands, deleting and retyping must replace the size.
+    @MainActor
+    func testDriveSizeReplacedAfterTappingMiddle() throws {
+        let app = launchApp()
+        let sizeField = app.textFields["driveSizeField"]
+        XCTAssertTrue(sizeField.waitForExistence(timeout: 5))
+
+        sizeField.coordinate(withNormalizedOffset: CGVector(dx: 0.3, dy: 0.5)).tap()
+        sizeField.typeText(XCUIKeyboardKey.delete.rawValue + "8")
+        XCTAssertEqual(sizeField.value as? String, "8")
+    }
+
+    /// Deleting every digit leaves the field empty instead of restoring the
+    /// old size.
+    @MainActor
+    func testDriveSizeCanBeCleared() throws {
+        let app = launchApp()
+        let sizeField = app.textFields["driveSizeField"]
+        XCTAssertTrue(sizeField.waitForExistence(timeout: 5))
+
+        sizeField.coordinate(withNormalizedOffset: CGVector(dx: 0.98, dy: 0.5)).tap()
+        sizeField.typeText(XCUIKeyboardKey.delete.rawValue)
+        let value = sizeField.value as? String ?? ""
+        XCTAssertTrue(value.isEmpty || value == sizeField.placeholderValue, "field still shows “\(value)”")
+    }
+
+    /// Leaving the field empty and tapping Done brings the last size back
+    /// rather than leaving a blank field beside a stale result.
+    @MainActor
+    func testEmptyDriveSizeRestoredOnDone() throws {
+        let app = launchApp()
+        let sizeField = app.textFields["driveSizeField"]
+        XCTAssertTrue(sizeField.waitForExistence(timeout: 5))
+
+        sizeField.coordinate(withNormalizedOffset: CGVector(dx: 0.3, dy: 0.5)).tap()
+        sizeField.typeText(XCUIKeyboardKey.delete.rawValue)
+        app.buttons["Done"].tap()
+        XCTAssertEqual(sizeField.value as? String, "4")
+    }
+
+    /// Spanish, French and Italian type decimals with a comma. If “12,5”
+    /// didn't parse, Done would bring back the old 4.
+    @MainActor
+    func testDriveSizeAcceptsDecimalCommaInSpanish() throws {
+        let app = launchApp(language: "es", locale: "es_ES")
+        let sizeField = app.textFields["driveSizeField"]
+        XCTAssertTrue(sizeField.waitForExistence(timeout: 5))
+
+        sizeField.coordinate(withNormalizedOffset: CGVector(dx: 0.3, dy: 0.5)).tap()
+        sizeField.typeText(XCUIKeyboardKey.delete.rawValue + "12,5")
+        app.buttons["Hecho"].tap()
+        XCTAssertEqual(sizeField.value as? String, "12,5")
+    }
+
+    /// A decimal survives being typed one keystroke at a time; reformatting
+    /// on every keystroke would drop the trailing point of “12.”.
+    @MainActor
+    func testDriveSizeAcceptsDecimal() throws {
+        let app = launchApp()
+        let sizeField = app.textFields["driveSizeField"]
+        XCTAssertTrue(sizeField.waitForExistence(timeout: 5))
+
+        sizeField.clearAndEnterText(text: "12.5")
+        XCTAssertEqual(sizeField.value as? String, "12.5")
+        XCTAssertTrue(capacity(app).hasPrefix("Usable Capacity, 37.5 TB,"), capacity(app))
     }
 
     @MainActor

@@ -77,17 +77,8 @@ struct ContentView: View {
 
                 LabeledContent("drive_size".localized()) {
                     HStack(spacing: 12) {
-                        TextField(
-                            "drive_size".localized(),
-                            value: $viewModel.driveSize,
-                            format: .number.precision(.fractionLength(0...3))
-                        )
-                        .keyboardType(.decimalPad)
-                        .multilineTextAlignment(.trailing)
-                        .focused($sizeFieldFocused)
-                        .monospacedDigit()
-                        .frame(minWidth: 56, maxWidth: 140)
-                        .accessibilityIdentifier("driveSizeField")
+                        DriveSizeField(value: $viewModel.driveSize, focus: $sizeFieldFocused)
+                            .frame(minWidth: 56, maxWidth: 140)
 
                         Picker(selection: $viewModel.unit) {
                             ForEach(CapacityUnit.allCases) { unit in
@@ -317,6 +308,51 @@ struct RatingRow: View {
         }
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(String(format: "rating_accessibility".localized(), title, rating, label))
+    }
+}
+
+/// The drive-size entry. It's trailing-aligned in a frame much wider than a
+/// short number like “4”, so a tap left of the digits would otherwise put the
+/// cursor before them, where backspace deletes nothing. On focus the cursor
+/// moves to the end, wherever the tap landed.
+///
+/// That needs `selection:`, which SwiftUI only offers on text-bound fields, so
+/// the field edits its own text and pushes each value that parses. An empty or
+/// unparseable field leaves the last value in place and shows it again when
+/// editing ends, as the value-bound field did.
+struct DriveSizeField: View {
+    @Binding var value: Double
+    var focus: FocusState<Bool>.Binding
+
+    @State private var text = ""
+    @State private var selection: TextSelection?
+
+    private static let format = FloatingPointFormatStyle<Double>.number.precision(.fractionLength(0...3))
+
+    var body: some View {
+        TextField("drive_size".localized(), text: $text, selection: $selection)
+            .keyboardType(.decimalPad)
+            .multilineTextAlignment(.trailing)
+            .focused(focus)
+            .monospacedDigit()
+            .accessibilityIdentifier("driveSizeField")
+            .onAppear { text = value.formatted(Self.format) }
+            .onChange(of: text) {
+                // Parsing follows the current locale, so “12,5” works in Spanish, French and Italian.
+                if let parsed = try? Self.format.parseStrategy.parse(text) { value = parsed }
+            }
+            .onChange(of: value) {
+                // Changes from elsewhere (loading, clamping) show once editing is done.
+                if !focus.wrappedValue { text = value.formatted(Self.format) }
+            }
+            .onChange(of: focus.wrappedValue) { _, focused in
+                if focused {
+                    // Runs after the tap has placed the cursor, so this placement wins.
+                    Task { @MainActor in selection = TextSelection(insertionPoint: text.endIndex) }
+                } else {
+                    text = value.formatted(Self.format)
+                }
+            }
     }
 }
 
