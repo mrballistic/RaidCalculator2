@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<!-- Source for the link-preview card (1200 × 630). Not part of the site;
+     render it with a 1200 × 630 viewport screenshot (JPEG, quality 88) to
+     www/assets/og-image.jpg when the card changes. -->
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; width: 1200px; height: 630px; overflow: hidden; background: #FAF8F5; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', Inter, 'Helvetica Neue', sans-serif; color: #1C1917; -webkit-font-smoothing: antialiased; position: relative; }
+  .copy { position: absolute; left: 80px; top: 76px; width: 560px; }
+  .brand { display: flex; align-items: center; gap: 16px; font-size: 26px; font-weight: 600; letter-spacing: -0.01em; }
+  .brand img { width: 64px; height: 64px; border-radius: 15px; display: block; }
+  h1 { text-wrap: balance; margin: 54px 0 0; font-size: 74px; line-height: 1.0; letter-spacing: -0.04em; font-weight: 700; }
+  p { margin: 26px 0 0; font-size: 27px; line-height: 1.35; color: #57534E; letter-spacing: -0.01em; }
+  .phones { position: absolute; left: 700px; top: 70px; width: 440px; height: 700px; }
+  .phone { position: absolute; width: 270px; container-type: inline-size; }
+  .phone img { display: block; box-sizing: border-box; width: 100%; border: 3cqi solid #1C1917; border-radius: 14.3cqi; }
+  .front { left: 20px; top: 0; z-index: 2; rotate: -5deg; }
+  .front img { box-shadow: 0 40px 70px -24px rgba(28, 25, 23, 0.5); }
+  .back { left: 175px; top: 40px; z-index: 1; rotate: 7deg; }
+  .back img { box-shadow: 0 30px 60px -24px rgba(28, 25, 23, 0.3); }
+</style>
+</head>
+<body>
+  <div class="copy">
+    <div class="brand"><img src="../www/assets/app-icon.png" alt=""><span>RAID Calculator</span></div>
+    <h1>How much space will you actually get?</h1>
+    <p>Usable capacity, fault tolerance and the one drive worth buying next. For iPhone and iPad.</p>
+  </div>
+  <div class="phones">
+    <div class="phone back"><img src="../www/assets/02-iphone-synology-8bay.webp" alt=""></div>
+    <div class="phone front"><img src="../www/assets/03-iphone-raid-raid6.webp" alt=""></div>
+  </div>
+</body>
+</html>

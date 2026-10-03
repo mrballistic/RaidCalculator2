@@ -66,3 +66,30 @@ Processing takes 5–20 minutes. Then, in App Store Connect, open the version pa
 | `The train version … is closed for new build submissions` | That version is already approved or released. Tag a higher version. |
 | Upload lands on the wrong app | `PRODUCT_BUNDLE_IDENTIFIER` points at the other record. See “Which App Store record this ships to”. |
 | Fails at “Check configuration” | One of the four secrets is missing from the `app-store` environment. |
+
+# Releasing the website
+
+The product page in `www/` deploys to <https://mrballistic.com/raid/> through `.github/workflows/www.yml`. It runs on `www-v*` tags only, so it never collides with the `v*` tags above that upload the app.
+
+## One-time setup
+
+Add two repository secrets (Settings → Secrets and variables → Actions), the same values `mrballistic/new-site` uses:
+
+| Secret | Value |
+|---|---|
+| `SSH_PRIVATE_KEY` | The dedicated ed25519 deploy key for `toddgreco@132.148.79.144` |
+| `SSH_KNOWN_HOSTS` | The server’s pinned host key line, so the workflow never falls back to `StrictHostKeyChecking=no` |
+
+## Shipping the site
+
+1. Merge the change to `main`.
+2. Run **Deploy website** from the Actions tab on `main`, with `dry_run` left on. It lists every file it would add, change or delete in `/var/www/html/raid` without writing anything. Check the deletions: the sync uses `--delete`, scoped to that one directory.
+3. Tag and push:
+
+   ```bash
+   git tag -a www-v1.0.1 -m "Website: …" && git push origin www-v1.0.1
+   ```
+
+The workflow refuses to write unless the tag is on `main` and named `www-vMAJOR.MINOR.PATCH`. It also checks that every local `src`, `href`, `srcset` and CSS `url()` in `www/` points at a real file, and it stops if `DEPLOY_PATH` ever stops ending in `/raid`, since `--delete` against the shared `/var/www/html` would destroy the other sites in it.
+
+After a release that changes the link preview, re-scrape the URL in Facebook’s Sharing Debugger or LinkedIn’s Post Inspector; both cache previews.

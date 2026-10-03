@@ -1,0 +1,69 @@
+/* Glass top bar, shared by every page. Sticky rather than fixed, so it keeps
+   its place in the flow and nothing below needs an offset. It starts clear
+   over the page and frosts in (tint, blur, hairline) over the first 120px of
+   scroll; browsers without scroll timelines get the frosted bar from the
+   start, and Reduce Transparency gets a solid one. */
+.topbar {
+  position: sticky; top: 0; z-index: 50;
+  background: rgba(250, 248, 245, 0.72);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  backdrop-filter: saturate(180%) blur(20px);
+  box-shadow: 0 1px 0 rgba(28, 25, 23, 0.08);
+}
+.topbar-inner {
+  max-width: 1140px; margin: 0 auto; padding: 12px 24px;
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  min-height: 64px;
+}
+.topbar .brand { display: inline-flex; align-items: center; gap: 12px; min-height: 44px; font-weight: 600; letter-spacing: -0.01em; color: #1C1917; }
+.topbar .brand img { width: 36px; height: 36px; border-radius: 9px; display: block; }
+.topbar .badge { display: block; line-height: 0; }
+.topbar .badge img { display: block; height: 36px; width: auto; }
+
+/* Over dark sections (set by topbar.js) the bar becomes dark glass. */
+.topbar--dark {
+  background: rgba(28, 25, 23, 0.62);
+  box-shadow: 0 1px 0 rgba(250, 248, 245, 0.08);
+}
+.topbar--dark .brand { color: #FAF8F5; }
+.topbar--dark .brand:focus-visible { outline-color: #FAF8F5; }
+
+@supports (animation-timeline: scroll()) {
+  .topbar {
+    animation: topbar-frost linear both;
+    animation-timeline: scroll(root);
+    animation-range: 0 120px;
+  }
+}
+@keyframes topbar-frost {
+  from {
+    background: rgba(250, 248, 245, 0);
+    -webkit-backdrop-filter: saturate(100%) blur(0);
+    backdrop-filter: saturate(100%) blur(0);
+    box-shadow: 0 1px 0 rgba(28, 25, 23, 0);
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .topbar { animation: none; background: #FAF8F5; -webkit-backdrop-filter: none; backdrop-filter: none; box-shadow: 0 1px 0 #EDE8E0; }
+  .topbar--dark { background: #1C1917; box-shadow: 0 1px 0 #39342F; }
+}
+
+/* Phones: the hero's own badge is right below the bar, so the bar's badge
+   waits until the hero has scrolled away. Without scroll timelines it stays
+   hidden, as before. */
+@media (max-width: 599px) {
+  .topbar .badge { display: none; }
+  @supports (animation-timeline: scroll()) {
+    .topbar .badge {
+      display: block;
+      animation: topbar-badge linear both;
+      animation-timeline: scroll(root);
+      animation-range: 45vh 65vh;
+    }
+  }
+}
+@keyframes topbar-badge {
+  from { opacity: 0; visibility: hidden; }
+  to { opacity: 1; visibility: visible; }
+}

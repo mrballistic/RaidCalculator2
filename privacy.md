@@ -1,6 +1,6 @@
 # Privacy Policy – RAID Calculator
 
-**Last updated: November 22, 2025**
+**Last updated: October 1, 2026**
 
 This Privacy Policy describes how RAID Calculator ("the App") handles information when you use it. RAID Calculator is developed and operated by mrBallistic ("we", "us", or "our").
 
@@ -12,8 +12,10 @@ We do not collect, store, or share any personal data from you. Specifically:
 - We do not collect device identifiers
 - We do not collect location data
 - We do not collect usage analytics or telemetry
-- We do not store your RAID configurations or any values you enter into the App
+- We do not receive your RAID configurations or any values you enter into the App
 - We do not use cookies or similar tracking technologies
+
+Your last configuration is saved only on your device so the App can restore it. It is never sent to us or anyone else.
 
 All RAID-related calculations are performed locally on your device. The data you enter never leaves your device as part of the App's functionality.
 
@@ -40,11 +42,15 @@ Since we do not collect or store any personal data, there is nothing for you to 
 
 We may update this Privacy Policy from time to time. Any changes will be posted at:
 
-https://mrballistic.com/raid-calculator/privacy
+https://mrballistic.com/raid/privacy/
 
 with an updated "Last updated" date. Your continued use of the App after changes are posted constitutes your acceptance of the revised policy.
 
-## 6. Contact
+## 6. This Website
+
+This policy covers the App. The website at https://mrballistic.com/raid/ is separate: if you accept analytics cookies, it uses Google Analytics to count visits and see which pages people read. If you decline, Google's code isn't loaded at all and no analytics cookies are set. You can change your choice at any time with "Cookie settings" at the bottom of each page. Nothing from the App is ever sent to the website, and the App itself makes no network calls.
+
+## 7. Contact
 
 If you have any questions about this Privacy Policy, please contact us:
 
@@ -81,7 +87,7 @@ You are solely responsible for verifying any calculations and for decisions rela
 
 The App does not collect personal data from you, and your inputs are processed locally on your device. For more information, see our Privacy Policy at:
 
-https://github.com/mrballistic/raidcalc2/blob/main/privacy.md
+https://mrballistic.com/raid/privacy/
 
 ## 4. Third-Party Services
 

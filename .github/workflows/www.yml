@@ -1,0 +1,151 @@
+# Deploys the product page (www/) to https://mrballistic.com/raid/ when a
+# website tag is pushed. Same release model as mrballistic/new-site, with two
+# differences that matter:
+#
+# - Website tags are www-v<version> (www-v1.0.0). Plain v* tags already belong
+#   to deploy.yml and upload the iOS app, so the two can never trigger each
+#   other.
+# - The target is /var/www/html/raid, a directory that holds only this site.
+#   That makes a --delete sync safe here (it prunes renamed or removed assets),
+#   unlike new-site's main sync into the shared /var/www/html. A guard step
+#   refuses to run if DEPLOY_PATH ever stops ending in /raid.
+#
+# Release:  git tag -a www-v1.0.0 -m "…" && git push origin www-v1.0.0
+#
+# Manual runs: dispatch with dry_run (on by default) to list every change,
+# including deletions, without writing. A real (non-dry) dispatch is only
+# accepted from a www-v* tag ref, so the tag checks still apply.
+name: Deploy website
+
+on:
+  push:
+    tags: ["www-v*"]
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "List changes without writing to the server"
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+# Never let two deploys rsync into the same directory at once.
+concurrency:
+  group: deploy-www
+  cancel-in-progress: false
+
+env:
+  DEPLOY_HOST: 132.148.79.144
+  DEPLOY_USER: toddgreco
+  DEPLOY_PATH: /var/www/html/raid
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Only deploy commits on main
+        run: |
+          git fetch --no-tags origin main
+          if ! git merge-base --is-ancestor "$GITHUB_SHA" origin/main; then
+            echo "::error::$GITHUB_REF_NAME is not on main; refusing to deploy."
+            exit 1
+          fi
+
+      # Dry runs may come from main itself; anything that writes must be a
+      # website release tag.
+      - name: Writes need a www-v tag
+        if: inputs.dry_run != true
+        run: |
+          if [ "$GITHUB_REF_TYPE" != "tag" ] || ! [[ "$GITHUB_REF_NAME" =~ ^www-v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::$GITHUB_REF_NAME is not a www-vMAJOR.MINOR.PATCH tag; refusing to deploy."
+            exit 1
+          fi
+
+      # --delete below is only safe because the destination is this site's own
+      # directory. If someone repoints DEPLOY_PATH at the shared web root, stop.
+      - name: Guard the deploy path
+        run: |
+          case "$DEPLOY_PATH" in
+            */raid) ;;
+            *) echo "::error::DEPLOY_PATH ($DEPLOY_PATH) must end in /raid; --delete would reach other sites."; exit 1 ;;
+          esac
+
+      # Static site, no build step, so check what would ship: the key files are
+      # present and every local src/href/srcset/url() in the HTML and CSS points
+      # at a file that exists.
+      - name: Verify the site
+        run: |
+          python3 - <<'EOF'
+          import pathlib, re, sys
+          root = pathlib.Path("www")
+          required = ["index.html", "privacy/index.html", "site.webmanifest",
+                      "assets/consent.js", "assets/topbar.js", "assets/og-image.jpg"]
+          missing = [p for p in required if not (root / p).is_file()]
+          broken = []
+          for page in [*root.rglob("*.html"), *root.rglob("*.css")]:
+              text = page.read_text()
+              refs = re.findall(r'(?:src|href)="([^"]+)"', text)
+              refs += [u.split()[0] for s in re.findall(r'srcset="([^"]+)"', text) for u in s.split(",")]
+              refs += re.findall(r"url\('([^']+)'\)", text)
+              for ref in refs:
+                  if re.match(r"(?:[a-z]+:|//|#)", ref):
+                      continue
+                  target = (page.parent / ref.split("#")[0].split("?")[0]).resolve()
+                  if target.is_dir():
+                      target = target / "index.html"
+                  if not target.is_file():
+                      broken.append(f"{page.relative_to(root)} -> {ref}")
+          for p in missing:
+              print(f"::error::missing www/{p}")
+          for b in broken:
+              print(f"::error::broken reference: {b}")
+          sys.exit(1 if missing or broken else 0)
+          EOF
+          echo "www contains $(find www -type f | wc -l) files"
+
+      # Secrets go through env, not ${{ }} interpolation into the shell, so a
+      # key containing shell metacharacters can't be mangled or expanded.
+      - name: Configure SSH
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
+        run: |
+          mkdir -p ~/.ssh
+          install -m 600 /dev/null ~/.ssh/deploy_key
+          printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/deploy_key
+          printf '%s\n' "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
+          ssh-keygen -y -f ~/.ssh/deploy_key > /dev/null || {
+            echo "::error::SSH_PRIVATE_KEY is not a valid private key"; exit 1; }
+
+      # The trailing slashes matter: they sync the *contents* of www/ into
+      # DEPLOY_PATH, and rsync's --delete cannot reach outside the destination
+      # it's given. .DS_Store and local browser-test captures never ship.
+      # -t keeps mtimes so unchanged files are skipped; --omit-dir-times
+      # because directory times may not be settable by the deploy user.
+      - name: Deploy to server
+        env:
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: |
+          if [ "$DRY_RUN" = "true" ]; then
+            echo "::notice::Dry run - no changes will be written"
+            EXTRA=--dry-run
+          else
+            EXTRA=""
+          fi
+          rsync -rltvz --omit-dir-times --delete --itemize-changes $EXTRA \
+            --exclude='.DS_Store' \
+            --exclude='.playwright-mcp/' \
+            --chmod=D755,F644 \
+            -e "ssh -i ~/.ssh/deploy_key -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes" \
+            www/ "${DEPLOY_USER}@${DEPLOY_HOST}:${DEPLOY_PATH}/"
+
+      - name: Clean up key
+        if: always()
+        run: rm -f ~/.ssh/deploy_key

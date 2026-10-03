@@ -1,0 +1,38 @@
+/* Analytics consent banner (see consent.js). A small card pinned to the
+   bottom corner on wide screens, full-width at the bottom on phones. Both
+   choices carry equal weight. */
+.consent {
+  position: fixed; z-index: 100;
+  right: 20px; bottom: 20px; left: auto;
+  max-width: 400px;
+  padding: 18px 20px 20px;
+  background: #FFFFFF; color: #1C1917;
+  border: 1px solid #EDE8E0; border-radius: 20px;
+  box-shadow: 0 18px 40px -16px rgba(28, 25, 23, 0.35);
+  font-size: 15px; line-height: 1.45;
+}
+.consent[hidden] { display: none; }
+.consent p { margin: 0; color: #57534E; }
+.consent a { color: #B45700; white-space: nowrap; }
+.consent a:hover { color: #1C1917; }
+.consent-actions { display: flex; gap: 10px; margin-top: 14px; }
+.consent button {
+  flex: 1 1 0; min-height: 44px; padding: 0 16px;
+  font: inherit; font-weight: 600;
+  color: #1C1917; background: #FAF8F5;
+  border: 1px solid #D6CFC4; border-radius: 12px;
+  cursor: pointer;
+}
+.consent button:hover { background: #F1ECE4; }
+.consent button:focus-visible, .consent a:focus-visible { outline: 2px solid #B45700; outline-offset: 3px; }
+@media (max-width: 599px) {
+  .consent { right: 12px; left: 12px; bottom: 12px; max-width: none; }
+}
+
+/* Footer link that reopens the banner; styled to match the footer's links. */
+.consent-open {
+  display: inline-flex; align-items: center; min-height: 44px; padding: 0;
+  font: inherit; color: #B45700; background: none; border: 0; cursor: pointer; text-align: left;
+}
+.consent-open:hover { color: #1C1917; }
+.consent-open:focus-visible { outline: 2px solid #B45700; outline-offset: 4px; border-radius: 8px; }
