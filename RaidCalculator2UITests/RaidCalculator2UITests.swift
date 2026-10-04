@@ -212,7 +212,7 @@ final class RaidCalculator2UITests: XCTestCase {
         menu.tap()
         app.buttons["RAID 60"].tap()
 
-        XCTAssertTrue(app.staticTexts["configurationWarning"].exists || app.otherElements["configurationWarning"].exists)
+        XCTAssertTrue(app.descendants(matching: .any)["configurationWarning"].waitForExistence(timeout: 5))
         let fix = app.buttons["applySuggestedGroups"]
         XCTAssertTrue(fix.waitForExistence(timeout: 2))
         fix.tap()
@@ -250,7 +250,7 @@ final class RaidCalculator2UITests: XCTestCase {
         let app = launchApp(level: "R 60", drives: 12, groups: 2)
         XCTAssertTrue(app.staticTexts["groupCount"].waitForExistence(timeout: 5))
         app.segmentedControls.firstMatch.buttons.element(boundBy: 2).tap()  // RAID 5
-        XCTAssertFalse(app.staticTexts["groupCount"].exists)
+        XCTAssertTrue(app.staticTexts["groupCount"].waitForNonExistence(timeout: 5))
         XCTAssertTrue(capacity(app).hasPrefix("Usable Capacity, 44 TB,"), capacity(app))
     }
 
@@ -270,15 +270,33 @@ final class RaidCalculator2UITests: XCTestCase {
         XCTAssertTrue(app.staticTexts["wideGroupCaution"].waitForExistence(timeout: 5))
     }
 
-    /// RAID-Z's info sheet explains the estimate; RAID 5's has no such section.
+    /// RAID-Z's info sheet explains the estimate in its “How the App
+    /// Calculates This” section, near the bottom.
     @MainActor
     func testRaidZInfoSheetExplainsEstimate() throws {
         let app = launchApp(level: "Z2", drives: 6)
         app.buttons["raidInfo"].tap()
-        app.swipeUp()
+        XCTAssertTrue(app.navigationBars["RAID-Z2"].waitForExistence(timeout: 5))
         let section = app.staticTexts["howCalculated"]
-        XCTAssertTrue(section.waitForExistence(timeout: 5))
+        for _ in 0..<5 where !section.exists {
+            app.swipeUp()
+        }
+        XCTAssertTrue(section.waitForExistence(timeout: 2))
         XCTAssertTrue(section.label.contains("128 GiB"), section.label)
+    }
+
+    /// RAID 5's info sheet has no such section: it shows only the formula.
+    @MainActor
+    func testRaid5InfoSheetHasNoEstimateSection() throws {
+        let app = launchApp()
+        app.buttons["raidInfo"].tap()
+        XCTAssertTrue(app.navigationBars["RAID 5"].waitForExistence(timeout: 5))
+        for _ in 0..<5 {
+            app.swipeUp()
+        }
+        // The ratings are the sheet's last section, so the whole sheet has been seen.
+        XCTAssertTrue(app.staticTexts["Performance Ratings"].exists || app.otherElements["Performance Ratings"].exists)
+        XCTAssertFalse(app.staticTexts["howCalculated"].exists)
     }
 }
 
