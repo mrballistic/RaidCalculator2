@@ -30,6 +30,7 @@ struct RaidCalculator {
         case .raid5: return max(n, 3)
         case .raid6: return max(n, 4)
         case .raid10: return max(n + n % 2, 4)
+        case .raid50, .raid60, .raidz1, .raidz2, .raidz3: return nil // Task 3 replaces this.
         }
     }
 
@@ -42,6 +43,7 @@ struct RaidCalculator {
         case .raid6: return n < 4 ? "raid6_validation" : nil
         case .raid10: return n < 4 || n % 2 != 0 ? "raid10_validation" : nil
         case .jbod: return n < 1 ? "jbod_validation" : nil
+        case .raid50, .raid60, .raidz1, .raidz2, .raidz3: return nil // Task 3 replaces this.
         }
     }
 
@@ -79,6 +81,9 @@ struct RaidCalculator {
             usable = Double(n) * size
             failures = "jbod_failures".localized()
             roles = Array(repeating: .data, count: n)
+        case .raid50, .raid60, .raidz1, .raidz2, .raidz3:
+            // Task 3 replaces this.
+            usable = 0; failures = "0"; roles = []
         }
 
         return RaidResult(
@@ -99,6 +104,7 @@ struct RaidCalculator {
         case .raid10: return 4
         case .raid5: return 3
         case .raid6, .raid1, .jbod: return 2
+        case .raid50, .raid60, .raidz1, .raidz2, .raidz3: return 3 // Task 3 replaces this.
         }
     }
 
@@ -108,6 +114,7 @@ struct RaidCalculator {
         case .raid5: return 3
         case .raid6: return 4
         case .raid1, .raid10: return 5
+        case .raid50, .raid60, .raidz1, .raidz2, .raidz3: return 3 // Task 3 replaces this.
         }
     }
 
