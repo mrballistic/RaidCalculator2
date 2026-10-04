@@ -26,7 +26,7 @@ It is a focused, native, offline utility that does one calculation well and teac
 
 ## Capabilities and Constraints
 
-- Live on the App Store, published by mrBallistic. **1.4.0** (the iOS 26 rebuild, adding the Synology tab) is in App Review as of 2026-10-02 and not yet released. **1.4.1** fixes the drive-size field’s cursor (`prd-update.md` FR-19). The upload workflow sets each version from its `v*` tag, and the project file now matches (1.4.1).
+- Live on the App Store, published by mrBallistic. **1.4.0** (the iOS 26 rebuild, adding the Synology tab) is in App Review as of 2026-10-02 and not yet released. **1.4.1** fixes the drive-size field’s cursor (`prd-update.md` FR-19). **1.5.0** adds RAID 50/60 and RAID-Z to the RAID tab, with the ZFS estimate. The upload workflow sets each version from its `v*` tag, and the project file matches (1.5.0).
 - Native SwiftUI, MVVM-lite, no third-party dependencies. Deployment target iOS 26.0, with Liquid Glass styling on buttons and steppers.
 - Runs on iPhone and iPad. A two-column iPad layout exists. **iPad becomes a binding design target in the next feature release** (`prd-update.md` FR-14): wide bay diagrams, side-by-side system comparison and grouped drive strips. Layouts are size-class adaptive, never iPad-only.
 - Localized into English, Spanish, French, Italian and Japanese. Layouts must survive longer translated strings and Japanese text.
@@ -34,7 +34,7 @@ It is a focused, native, offline utility that does one calculation well and teac
 - Calculations use simplified standard formulas (see `prd.md` §FR-3). Speed and availability are fixed 1–5 ratings per level, not measured benchmarks. RAID 10’s fault tolerance is shown as “up to n/2, depending on which drives fail.”
 - Inline validation covers minimum drive counts (RAID 5 ≥ 3, RAID 6 ≥ 4, RAID 10 ≥ 4 and even).
 - **Synology mode** (second tab): per-bay drive sizes, SHR-1/SHR-2 alongside Synology's RAID 1/5/6, presets for current DiskStation models by bay count, unused-capacity explanation, upgrade suggestions and before/after comparison. Its job is upgrade and purchase planning for owners with mixed drive sizes.
-- **Planned next** (`prd-update.md`; `prd.md` stays the original v1 spec until the two are merged at release):
+- **Planned** (`prd-update.md`; `prd.md` stays the original v1 spec until the two are merged at release). 1.5.0 delivered the RAID-tab items below; the NAS tab and the rest ship in 1.6.0:
   - **The tabs split by question, not vendor.** The RAID tab is for identical drives; the second tab is for mixed drives, bay by bay. There is no third tab.
   - **The RAID tab gains** RAID 50, RAID 60 and RAID-Z1/Z2/Z3, with a Groups input.
   - **The Synology tab becomes NAS**, with a system picker: Synology (presets kept), Unraid, ZFS (one RAID-Z group), SnapRAID and Btrfs RAID1. Drives are shared across systems, so the same drives can be compared under each, side by side on iPad.

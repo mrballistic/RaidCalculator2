@@ -1,6 +1,6 @@
-## PRD update: nested RAID, ZFS and the NAS tab (1.5.0)
+## PRD update: nested RAID, ZFS and the NAS tab (1.5.0 and 1.6.0)
 
-Planned work for **1.5.0**, the next feature release. This file holds only the delta; `prd.md` stays as the original v1 spec, and the two get merged when this ships.
+Planned work for the next feature releases. **1.5.0** shipped the RAID tab (plan 1: FR-8, FR-9, the RAID-tab half of FR-17, and FR-20’s RAID-tab motion), tagged `v1.5.0` on 2026-10-04. **1.6.0** carries the rest: the NAS tab, compare systems, iPad layouts, and copy, trademarks and the website. This file holds only the delta; `prd.md` stays as the original v1 spec, and the two get merged when this ships.
 
 It describes changes against 1.4.0, which is in App Review as of 2026-10-02 and already goes beyond `prd.md`: a second **Synology** tab models drives bay by bay, with SHR/SHR-2, DiskStation presets, unused capacity, Biggest Upgrade and a before/after comparison.
 
