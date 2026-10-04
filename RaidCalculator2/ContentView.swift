@@ -13,6 +13,7 @@ struct ContentView: View {
     @State private var contentWidth: CGFloat = 0
     @FocusState private var sizeFieldFocused: Bool
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     /// Widest the form grows on iPad before it centers instead of stretching.
     private let readableWidth: CGFloat = 720
@@ -84,7 +85,14 @@ struct ContentView: View {
                         ForEach(RaidLevel.levels(in: .zfs)) { levelButton($0) }
                     }
                 } label: {
-                    LabeledContent("more_levels".localized()) {
+                    // At accessibility sizes the label sits above the selection,
+                    // so neither has to share the row and break mid-word.
+                    let layout = dynamicTypeSize.isAccessibilitySize
+                        ? AnyLayout(VStackLayout(alignment: .leading, spacing: 4))
+                        : AnyLayout(HStackLayout())
+                    layout {
+                        Text("more_levels".localized())
+                        if !dynamicTypeSize.isAccessibilitySize { Spacer(minLength: 8) }
                         HStack(spacing: 6) {
                             if viewModel.selectedLevel.family != .standard {
                                 Text(viewModel.selectedLevel.displayName)
@@ -93,6 +101,7 @@ struct ContentView: View {
                             Image(systemName: "chevron.up.chevron.down")
                                 .font(.caption)
                                 .foregroundStyle(.tertiary)
+                                .accessibilityHidden(true)
                         }
                     }
                 }
@@ -101,27 +110,26 @@ struct ContentView: View {
             }
 
             Section {
-                Stepper(value: $viewModel.driveCount, in: RaidCalculatorViewModel.driveCountRange) {
-                    LabeledContent("number_of_drives".localized()) {
-                        Text(viewModel.driveCount, format: .number)
-                            .monospacedDigit()
-                            .accessibilityIdentifier("driveCount")
-                    }
-                }
+                CountStepper(
+                    title: "number_of_drives".localized(),
+                    value: $viewModel.driveCount,
+                    range: RaidCalculatorViewModel.driveCountRange,
+                    identifier: "driveCount"
+                )
 
                 if viewModel.selectedLevel.usesGroups {
-                    Stepper(value: Binding(
-                        get: { viewModel.groups },
-                        set: { value in withAnimation(motion) { viewModel.groups = value } }
-                    ), in: 1...max(1, viewModel.driveCount)) {
-                        LabeledContent("groups".localized()) {
-                            Text(viewModel.groups, format: .number)
-                                .monospacedDigit()
-                                .contentTransition(.numericText())
-                                .accessibilityIdentifier("groupCount")
-                        }
-                    }
+                    CountStepper(
+                        title: "groups".localized(),
+                        value: Binding(
+                            get: { viewModel.groups },
+                            set: { value in withAnimation(motion) { viewModel.groups = value } }
+                        ),
+                        range: 1...max(1, viewModel.driveCount),
+                        identifier: "groupCount"
+                    )
                     .sensoryFeedback(.selection, trigger: viewModel.groups)
+                    // Under Reduce Motion the row change runs without animation
+                    // (see `motion`), so the row appears in place rather than sliding.
                     .transition(reduceMotion ? .opacity : .opacity.combined(with: .move(edge: .top)))
                 }
 
@@ -212,10 +220,13 @@ struct ContentView: View {
                 Text(level.displayName)
             }
         }
+        .accessibilityAddTraits(viewModel.selectedLevel == level ? .isSelected : [])
     }
 
-    /// Movement for layout changes; a plain fade when Reduce Motion is on.
-    private var motion: Animation { reduceMotion ? .easeInOut(duration: 0.2) : .snappy }
+    /// Animation for layout changes. None under Reduce Motion, so Form rows
+    /// appear and go in place instead of sliding the rows around them; the
+    /// drive strip and results still crossfade through their own animations.
+    private var motion: Animation? { reduceMotion ? nil : .snappy }
 
     private func caution(_ text: String) -> some View {
         Label {
@@ -225,6 +236,43 @@ struct ContentView: View {
             Image(systemName: "exclamationmark.triangle.fill")
                 .symbolRenderingMode(.multicolor)
         }
+    }
+}
+
+/// A count with a stepper: the drive count and the groups. Normally the label,
+/// count and stepper share one row. At accessibility sizes the label gets its
+/// own line above the count and stepper, so a long label (“Nombre de Disques”,
+/// “ドライブ数”) never squeezes into a narrow column and breaks mid-word.
+struct CountStepper: View {
+    let title: String
+    @Binding var value: Int
+    let range: ClosedRange<Int>
+    /// On the count, so UI tests can read it at any text size.
+    let identifier: String
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
+    var body: some View {
+        if dynamicTypeSize.isAccessibilitySize {
+            VStack(alignment: .leading, spacing: 4) {
+                Text(title)
+                    .accessibilityHidden(true)  // the count below carries it
+                Stepper(value: $value, in: range) {
+                    // Reads “Number of Drives, 12”, as the one-row layout does.
+                    count.accessibilityLabel("\(title), \(value.formatted())")
+                }
+            }
+        } else {
+            Stepper(value: $value, in: range) {
+                LabeledContent(title) { count }
+            }
+        }
+    }
+
+    private var count: some View {
+        Text(value, format: .number)
+            .monospacedDigit()
+            .contentTransition(.numericText())
+            .accessibilityIdentifier(identifier)
     }
 }
 
@@ -283,6 +331,8 @@ struct CapacitySummary: View {
                     VStack(alignment: .leading, spacing: 2) {
                         Text(String(format: "zfs_reported_note".localized(), Self.binaryBytes(estimate.reportedBytes, unit: unit)))
                             .accessibilityIdentifier("zfsReportedNote")
+                            // The info sheet's caveat, for VoiceOver users who don't open it.
+                            .accessibilityHint("zfs_estimate_hint".localized())
                         if estimate.paddingLoss > 0.01 {
                             Text(String(format: "zfs_padding_note".localized(), estimate.paddingLoss.formatted(.percent.precision(.fractionLength(0)))))
                         }
@@ -329,7 +379,8 @@ struct CapacitySummary: View {
 /// doesn't rest on colour alone. Grouped levels open a wider gap before the
 /// first drive of each group. Each bar keeps its identity per drive, so a
 /// change of groups slides the same bars into their new groups and recolors
-/// them in place; under Reduce Motion the strip crossfades instead.
+/// them in place. Under Reduce Motion nothing moves: any change of grouping,
+/// drive count or level replaces the strip, which crossfades instead.
 struct DriveStrip: View {
     let roles: [DriveRole]
     var groupSize: Int? = nil
@@ -363,8 +414,9 @@ struct DriveStrip: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            // Under Reduce Motion a new grouping is a new view, so it fades in
-            // whole rather than sliding; the ZStack overlaps old and new.
+            // Under Reduce Motion a new grouping or drive count is a new view, so
+            // it fades in whole rather than sliding or resizing its bars; the
+            // ZStack overlaps old and new.
             GeometryReader { proxy in
                 let width = barWidth(in: proxy.size.width)
                 ZStack(alignment: .leading) {
@@ -375,14 +427,15 @@ struct DriveStrip: View {
                                 .padding(.leading, isGroupStart(index) ? groupGap : 0)
                         }
                     }
-                    .id(reduceMotion ? groupSize ?? 0 : 0)
+                    .id(reduceMotion ? "\(groupSize ?? 0)-\(roles.count)" : "")
                     .transition(.opacity)
                 }
             }
             .frame(height: barHeight)
             .animation(reduceMotion ? .easeInOut(duration: 0.2) : .snappy, value: roles)
             // Geometry never interpolates under Reduce Motion: the .id swap
-            // replaces the strip, and this animation only drives its fade.
+            // replaces the strip whenever its bars would move or resize, and
+            // these animations only drive the fade and in-place recoloring.
             .animation(reduceMotion ? .easeInOut(duration: 0.2) : .snappy, value: groupSize)
 
             ViewThatFits(in: .horizontal) {
