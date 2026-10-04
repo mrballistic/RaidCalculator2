@@ -56,7 +56,7 @@ struct ContentView: View {
                         caution(String(format: "rebuild_caution_level".localized(), viewModel.selectedLevel.displayName, safer.displayName))
                     }
                     if let width = viewModel.wideZFSGroupWidth {
-                        caution(String(format: "wide_zfs_group_caution".localized(), width))
+                        caution(String(format: (viewModel.groups > 1 ? "wide_zfs_group_caution" : "wide_zfs_group_caution_single").localized(), width))
                             .accessibilityIdentifier("wideGroupCaution")
                     }
                 }

@@ -941,7 +941,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$d台、最大%2$d台（どのドライブが故障するかによる）"
+            "value" : "%1$d、最大%2$d（どのドライブが故障するかによる）"
           }
         }
       }
@@ -2457,31 +2457,31 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "RAID 50 stripes data across two or more RAID 5 groups. Each group keeps one drive’s worth of parity, so it’s faster than a single RAID 5 array, and a rebuild only touches one group."
+            "value" : "RAID 50 stripes data across two or more RAID 5 groups, each keeping one drive’s worth of parity. Writes spread across the groups, so it’s faster than a single RAID 5 array. A rebuild only touches one group."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "RAID 50 distribuye los datos en franjas entre dos o más grupos RAID 5. Cada grupo reserva el equivalente a una unidad para paridad, por lo que es más rápido que un solo conjunto RAID 5, y una reconstrucción solo afecta a un grupo."
+            "value" : "RAID 50 distribuye los datos en franjas entre dos o más grupos RAID 5, y cada uno reserva el equivalente a una unidad para paridad. Las escrituras se reparten entre los grupos, por lo que es más rápido que un solo conjunto RAID 5. Una reconstrucción solo afecta a un grupo."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Le RAID 50 répartit les données en bandes sur deux groupes RAID 5 ou plus. Chaque groupe consacre l’équivalent d’un disque à la parité : il est donc plus rapide qu’une seule grappe RAID 5, et une reconstruction ne concerne qu’un seul groupe."
+            "value" : "Le RAID 50 répartit les données en bandes sur deux groupes RAID 5 ou plus, chacun consacrant l’équivalent d’un disque à la parité. Les écritures sont réparties entre les groupes : il est donc plus rapide qu’une seule grappe RAID 5. Une reconstruction ne concerne qu’un seul groupe."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "RAID 50 distribuisce i dati in striping su due o più gruppi RAID 5. Ogni gruppo riserva l’equivalente di un disco alla parità, quindi è più veloce di un singolo array RAID 5 e una ricostruzione coinvolge un solo gruppo."
+            "value" : "RAID 50 distribuisce i dati in striping su due o più gruppi RAID 5, ognuno dei quali riserva l’equivalente di un disco alla parità. Le scritture si distribuiscono tra i gruppi, quindi è più veloce di un singolo array RAID 5. Una ricostruzione coinvolge un solo gruppo."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "RAID 50は、2つ以上のRAID 5グループにまたがってデータをストライピングします。各グループがドライブ1台分のパリティを持つため、単一のRAID 5アレイより高速で、再構築も1つのグループだけで完了します。"
+            "value" : "RAID 50は、2つ以上のRAID 5グループにまたがってデータをストライピングし、各グループがドライブ1台分のパリティを持ちます。書き込みがグループ間に分散されるため、単一のRAID 5アレイより高速です。再構築は1つのグループだけで完了します。"
           }
         }
       }
@@ -4656,6 +4656,41 @@
         }
       }
     },
+    "use_drive_count_groups" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Use %1$d drives in %2$d groups"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usar %1$d discos en %2$d grupos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Utiliser %1$d disques en %2$d groupes"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usa %1$d dischi in %2$d gruppi"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$d台・%2$dグループに変更"
+          }
+        }
+      }
+    },
     "use_group_count" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4802,31 +4837,101 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Each RAID-Z group is %d drives wide. Very wide groups take a long time to rebuild after a failure; more, narrower groups rebuild faster."
+            "value" : "Each RAID‑Z group is %d drives wide. Very wide groups take a long time to rebuild after a failure; more, narrower groups rebuild faster."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cada grupo RAID-Z tiene %d unidades de ancho. Los grupos muy anchos tardan mucho en reconstruirse tras un fallo; más grupos, y más estrechos, se reconstruyen antes."
+            "value" : "Cada grupo RAID‑Z tiene %d unidades de ancho. Los grupos muy anchos tardan mucho en reconstruirse tras un fallo; más grupos, y más estrechos, se reconstruyen antes."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Chaque groupe RAID-Z compte %d disques de large. Les groupes très larges mettent longtemps à se reconstruire après une panne ; des groupes plus nombreux et plus étroits se reconstruisent plus vite."
+            "value" : "Chaque groupe RAID‑Z fait %d disques de large. Les groupes très larges mettent longtemps à se reconstruire après une panne ; des groupes plus nombreux et plus étroits se reconstruisent plus vite."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ogni gruppo RAID-Z è largo %d dischi. I gruppi molto larghi richiedono molto tempo per la ricostruzione dopo un guasto; più gruppi, più stretti, si ricostruiscono prima."
+            "value" : "Ogni gruppo RAID‑Z è largo %d dischi. I gruppi molto larghi richiedono molto tempo per la ricostruzione dopo un guasto; più gruppi, più stretti, si ricostruiscono prima."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "各RAID-Zグループの幅は%dドライブです。幅が非常に広いグループは故障後の再構築に長い時間がかかります。より狭いグループを増やすと、再構築が速くなります。"
+            "value" : "各RAID‑Zグループの幅は%dドライブです。幅が非常に広いグループは故障後の再構築に長い時間がかかります。より狭いグループを増やすと、再構築が速くなります。"
+          }
+        }
+      }
+    },
+    "wide_zfs_group_caution_single" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This RAID‑Z group is %d drives wide. Very wide groups take a long time to rebuild after a failure; more, narrower groups rebuild faster."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este grupo RAID‑Z tiene %d unidades de ancho. Los grupos muy anchos tardan mucho en reconstruirse tras un fallo; más grupos, y más estrechos, se reconstruyen antes."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ce groupe RAID‑Z fait %d disques de large. Les groupes très larges mettent longtemps à se reconstruire après une panne ; des groupes plus nombreux et plus étroits se reconstruisent plus vite."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Questo gruppo RAID‑Z è largo %d dischi. I gruppi molto larghi richiedono molto tempo per la ricostruzione dopo un guasto; più gruppi, più stretti, si ricostruiscono prima."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このRAID‑Zグループの幅は%dドライブです。幅が非常に広いグループは故障後の再構築に長い時間がかかります。より狭いグループを増やすと、再構築が速くなります。"
+          }
+        }
+      }
+    },
+    "zfs_estimate_hint" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estimated for default ZFS settings. Compression, record size and sector size change the real number."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estimación con la configuración predeterminada de ZFS. La compresión, el tamaño de registro y el tamaño de sector cambian la cifra real."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estimation pour les réglages par défaut de ZFS. La compression, la taille d’enregistrement et la taille de secteur modifient le chiffre réel."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stima con le impostazioni predefinite di ZFS. Compressione, dimensione dei record e dimensione dei settori cambiano il valore reale."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ZFSのデフォルト設定での見積もりです。圧縮、レコードサイズ、セクターサイズによって実際の値は変わります。"
           }
         }
       }
@@ -4872,31 +4977,31 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "This group width loses about %@ more to RAID-Z padding."
+            "value" : "This group width loses about %@ more to RAID‑Z padding."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Con este ancho de grupo se pierde aproximadamente un %@ más por el relleno de RAID-Z."
+            "value" : "Con este ancho de grupo se pierde aproximadamente un %@ más por el relleno de RAID‑Z."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cette largeur de groupe perd environ %@ de plus à cause du remplissage RAID-Z."
+            "value" : "Cette largeur de groupe perd environ %@ de plus à cause du remplissage RAID‑Z."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Con questa larghezza del gruppo si perde circa un altro %@ per il padding di RAID-Z."
+            "value" : "Con questa larghezza del gruppo si perde circa un altro %@ per il padding di RAID‑Z."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "このグループ幅では、RAID-Zのパディングによりさらに約%@が失われます。"
+            "value" : "このグループ幅では、RAID‑Zのパディングによりさらに約%@が失われます。"
           }
         }
       }
