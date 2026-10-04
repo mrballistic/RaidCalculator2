@@ -173,7 +173,7 @@ struct SynologyView: View {
         return (value < 0 ? "−" : "+") + magnitude
     }
 
-    static func describe(_ suggestion: SynologySuggestion) -> String {
+    static func describe(_ suggestion: BaySuggestion) -> String {
         switch suggestion.kind {
         case .add(let bay):
             String(format: "suggest_add".localized(), tb(suggestion.size), bay + 1)
@@ -186,7 +186,7 @@ struct SynologyView: View {
 /// The answer for a Synology: usable space, what it costs, the bay diagram,
 /// and the space this mix of drives leaves unused.
 struct SynologySummary: View {
-    let result: SynologyResult
+    let result: BayResult
 
     private var isValid: Bool { result.warningMessage == nil }
 

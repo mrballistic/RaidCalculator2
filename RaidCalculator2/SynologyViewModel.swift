@@ -26,8 +26,8 @@ final class SynologyViewModel {
         return SynologyModel.presets.first { $0.id == modelID }?.bays ?? 4
     }
 
-    var result: SynologyResult { calculator.calculate(bays: bays, type: raidType) }
-    var suggestion: SynologySuggestion? { calculator.suggestion(bays: bays, type: raidType) }
+    var result: BayResult { calculator.calculate(bays: bays, type: raidType) }
+    var suggestion: BaySuggestion? { calculator.suggestion(bays: bays, type: raidType) }
 
     var differsFromCurrent: Bool { bays != currentBays || raidType != currentRaidType }
 

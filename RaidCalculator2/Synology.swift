@@ -35,7 +35,7 @@ struct SynologyModel: Identifiable, Hashable {
 /// The storage types Synology offers that matter for planning. SHR is the
 /// reason this mode exists; the classic levels are here so owners can see
 /// what SHR saves them.
-enum SynologyRaidType: String, CaseIterable, Identifiable {
+enum SynologyRaidType: String, CaseIterable, Identifiable, Codable {
     case shr1 = "SHR"
     case shr2 = "SHR-2"
     case raid1 = "RAID 1"
@@ -66,45 +66,9 @@ enum SynologyRaidType: String, CaseIterable, Identifiable {
     }
 }
 
-/// What a slice of one drive does. `unused` is capacity the array can't use
-/// with the current mix of drives.
-enum SegmentRole: Hashable {
-    case data
-    case parity
-    case mirror
-    case unused
-}
-
-struct BaySegment: Hashable {
-    let role: SegmentRole
-    let size: Double
-}
-
-struct SynologySuggestion: Equatable {
-    enum Kind: Equatable {
-        case add(bay: Int)
-        case replace(bay: Int, currentSize: Double)
-    }
-    let kind: Kind
-    let size: Double
-    let gain: Double
-}
-
-struct SynologyResult {
-    var usableCapacity: Double
-    var rawCapacity: Double
-    var unusedCapacity: Double
-    var failuresTolerated: Int
-    var warningMessage: String?
-    /// Segments per bay, bottom layer first; nil for an empty bay.
-    var bays: [[BaySegment]?]
-
-    var efficiency: Double { rawCapacity > 0 ? usableCapacity / rawCapacity : 0 }
-}
-
 struct SynologyCalculator {
 
-    func calculate(bays: [Double?], type: SynologyRaidType) -> SynologyResult {
+    func calculate(bays: [Double?], type: SynologyRaidType) -> BayResult {
         let installed = bays.enumerated().compactMap { index, size in size.map { (index: index, size: $0) } }
         let raw = installed.reduce(0) { $0 + $1.size }
         var segments: [[BaySegment]?] = bays.map { $0 == nil ? nil : [] }
@@ -130,7 +94,7 @@ struct SynologyCalculator {
             total + (bay ?? []).filter { $0.role == .unused }.reduce(0) { $0 + $1.size }
         }
 
-        return SynologyResult(
+        return BayResult(
             usableCapacity: warning == nil ? usable : 0,
             rawCapacity: raw,
             unusedCapacity: warning == nil ? unused : 0,
@@ -204,13 +168,13 @@ struct SynologyCalculator {
     /// The single purchase that unlocks the most unused capacity: a drive the
     /// size of the largest one, in an empty bay if there is one, otherwise in
     /// place of the smallest drive.
-    func suggestion(bays: [Double?], type: SynologyRaidType) -> SynologySuggestion? {
+    func suggestion(bays: [Double?], type: SynologyRaidType) -> BaySuggestion? {
         let current = calculate(bays: bays, type: type)
         guard current.warningMessage == nil, current.unusedCapacity > 0,
               let largest = bays.compactMap({ $0 }).max() else { return nil }
 
         var candidate = bays
-        let kind: SynologySuggestion.Kind
+        let kind: BaySuggestion.Kind
         if let empty = bays.firstIndex(where: { $0 == nil }) {
             candidate[empty] = largest
             kind = .add(bay: empty)
@@ -225,6 +189,6 @@ struct SynologyCalculator {
 
         let gain = calculate(bays: candidate, type: type).usableCapacity - current.usableCapacity
         guard gain > 0 else { return nil }
-        return SynologySuggestion(kind: kind, size: largest, gain: gain)
+        return BaySuggestion(kind: kind, size: largest, gain: gain)
     }
 }
