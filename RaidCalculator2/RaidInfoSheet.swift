@@ -38,6 +38,13 @@ struct RaidInfoSheet: View {
                     }
                 }
 
+                if let calculation = optionalText("calculation") {
+                    Section("how_calculated".localized()) {
+                        Text(calculation)
+                            .accessibilityIdentifier("howCalculated")
+                    }
+                }
+
                 Section {
                     // Same ratings the calculator shows, so the two can't drift apart.
                     RatingRow(title: "speed".localized(), rating: calculator.speedRating(for: level))
@@ -67,6 +74,13 @@ struct RaidInfoSheet: View {
     /// Pros, cons and use cases are stored one per line.
     private func lines(_ field: String) -> [String] {
         text(field).split(separator: "\n").map { String($0) }
+    }
+
+    /// Copy some levels have and others don't; nil when the key isn't in the catalog.
+    private func optionalText(_ field: String) -> String? {
+        let key = "\(level.stringKeyPrefix)_\(field)"
+        let value = key.localized()
+        return value == key ? nil : value
     }
 
     private func bullet(_ text: String, systemImage: String, tint: some ShapeStyle) -> some View {

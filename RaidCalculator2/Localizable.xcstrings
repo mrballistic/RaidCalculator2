@@ -1051,6 +1051,41 @@
         }
       }
     },
+    "how_calculated" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "How the App Calculates This"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cómo lo calcula la app"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comment l’app fait ce calcul"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Come lo calcola l’app"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アプリの計算方法"
+          }
+        }
+      }
+    },
     "jbod_cons" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2381,6 +2416,146 @@
         }
       }
     },
+    "raid50_cons" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Two failures in the same group lose the whole array\nNeeds at least six drives\nGives up one drive per group to parity"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dos fallos en el mismo grupo hacen perder todo el conjunto\nRequiere al menos seis unidades\nDedica una unidad por grupo a la paridad"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deux pannes dans le même groupe font perdre toute la grappe\nNécessite au moins six disques\nConsacre un disque par groupe à la parité"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Due guasti nello stesso gruppo fanno perdere l’intero array\nRichiede almeno sei dischi\nDedica un disco per gruppo alla parità"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "同じグループで2台故障するとアレイ全体を失う\n6台以上のドライブが必要\nグループごとに1台分をパリティに使う"
+          }
+        }
+      }
+    },
+    "raid50_description" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "RAID 50 stripes data across two or more RAID 5 groups. Each group keeps one drive’s worth of parity, so it’s faster than a single RAID 5 array, and a rebuild only touches one group."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "RAID 50 distribuye los datos en franjas entre dos o más grupos RAID 5. Cada grupo reserva el equivalente a una unidad para paridad, por lo que es más rápido que un solo conjunto RAID 5, y una reconstrucción solo afecta a un grupo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le RAID 50 répartit les données en bandes sur deux groupes RAID 5 ou plus. Chaque groupe consacre l’équivalent d’un disque à la parité : il est donc plus rapide qu’une seule grappe RAID 5, et une reconstruction ne concerne qu’un seul groupe."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "RAID 50 distribuisce i dati in striping su due o più gruppi RAID 5. Ogni gruppo riserva l’equivalente di un disco alla parità, quindi è più veloce di un singolo array RAID 5 e una ricostruzione coinvolge un solo gruppo."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "RAID 50は、2つ以上のRAID 5グループにまたがってデータをストライピングします。各グループがドライブ1台分のパリティを持つため、単一のRAID 5アレイより高速で、再構築も1つのグループだけで完了します。"
+          }
+        }
+      }
+    },
+    "raid50_pros" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Faster than RAID 5, because writes spread across groups\nA rebuild only reads the drives in one group\nCan survive one failure in every group"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Más rápido que RAID 5, porque las escrituras se reparten entre grupos\nUna reconstrucción solo lee las unidades de un grupo\nPuede sobrevivir a un fallo en cada grupo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plus rapide que le RAID 5, car les écritures sont réparties entre les groupes\nUne reconstruction ne lit que les disques d’un seul groupe\nPeut survivre à une panne dans chaque groupe"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Più veloce di RAID 5, perché le scritture si distribuiscono tra i gruppi\nUna ricostruzione legge solo i dischi di un gruppo\nPuò sopravvivere a un guasto in ogni gruppo"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "書き込みがグループ間に分散されるため、RAID 5より高速\n再構築時に読み取るのは1つのグループのドライブのみ\n各グループで1台の故障に耐えられる"
+          }
+        }
+      }
+    },
+    "raid50_use_cases" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Large arrays that need more speed than RAID 5\nDatabases and virtual machines on many drives\nHardware RAID controllers that support nested levels"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conjuntos grandes que necesitan más velocidad que RAID 5\nBases de datos y máquinas virtuales en muchas unidades\nControladoras RAID por hardware que admiten niveles anidados"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grandes grappes qui exigent plus de vitesse que le RAID 5\nBases de données et machines virtuelles sur de nombreux disques\nContrôleurs RAID matériels qui prennent en charge les niveaux imbriqués"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Array di grandi dimensioni che richiedono più velocità di RAID 5\nDatabase e macchine virtuali su molti dischi\nController RAID hardware che supportano i livelli annidati"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "RAID 5以上の速度が必要な大規模アレイ\n多数のドライブ上のデータベースと仮想マシン\nネストレベルに対応したハードウェアRAIDコントローラー"
+          }
+        }
+      }
+    },
     "raid5_cons" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2587,6 +2762,146 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "RAID 5には少なくとも3つのドライブが必要です。"
+          }
+        }
+      }
+    },
+    "raid60_cons" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gives up two drives per group to parity\nNeeds at least eight drives\nSlower writes than RAID 50"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dedica dos unidades por grupo a la paridad\nRequiere al menos ocho unidades\nEscrituras más lentas que RAID 50"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Consacre deux disques par groupe à la parité\nNécessite au moins huit disques\nÉcritures plus lentes qu’en RAID 50"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dedica due dischi per gruppo alla parità\nRichiede almeno otto dischi\nScritture più lente di RAID 50"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "グループごとに2台分をパリティに使う\n8台以上のドライブが必要\nRAID 50より書き込みが遅い"
+          }
+        }
+      }
+    },
+    "raid60_description" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "RAID 60 stripes data across two or more RAID 6 groups. Each group keeps two drives’ worth of parity, so any two drives can fail, and often more."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "RAID 60 distribuye los datos en franjas entre dos o más grupos RAID 6. Cada grupo reserva el equivalente a dos unidades para paridad, por lo que pueden fallar dos unidades cualesquiera, y a menudo más."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le RAID 60 répartit les données en bandes sur deux groupes RAID 6 ou plus. Chaque groupe consacre l’équivalent de deux disques à la parité : deux disques quelconques peuvent donc tomber en panne, et souvent davantage."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "RAID 60 distribuisce i dati in striping su due o più gruppi RAID 6. Ogni gruppo riserva l’equivalente di due dischi alla parità, quindi possono guastarsi due dischi qualsiasi, e spesso anche di più."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "RAID 60は、2つ以上のRAID 6グループにまたがってデータをストライピングします。各グループがドライブ2台分のパリティを持つため、どの2台が故障しても耐えられ、多くの場合それ以上にも耐えられます。"
+          }
+        }
+      }
+    },
+    "raid60_pros" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Survives any two drive failures, and up to two per group\nFaster than a single RAID 6 array\nA rebuild only reads the drives in one group"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sobrevive a dos fallos de unidad cualesquiera, y hasta dos por grupo\nMás rápido que un solo conjunto RAID 6\nUna reconstrucción solo lee las unidades de un grupo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Survit à deux pannes de disque quelconques, et jusqu’à deux par groupe\nPlus rapide qu’une seule grappe RAID 6\nUne reconstruction ne lit que les disques d’un seul groupe"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sopravvive a due guasti qualsiasi dei dischi, e fino a due per gruppo\nPiù veloce di un singolo array RAID 6\nUna ricostruzione legge solo i dischi di un gruppo"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "どの2台のドライブ故障にも耐え、グループごとに最大2台まで耐えられる\n単一のRAID 6アレイより高速\n再構築時に読み取るのは1つのグループのドライブのみ"
+          }
+        }
+      }
+    },
+    "raid60_use_cases" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Large arrays where losing data isn’t an option\nBackup and archive servers with many big drives\nHardware RAID controllers that support nested levels"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conjuntos grandes en los que perder datos no es una opción\nServidores de backup y archivo con muchas unidades grandes\nControladoras RAID por hardware que admiten niveles anidados"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grandes grappes où la perte de données est exclue\nServeurs de sauvegarde et d’archivage avec de nombreux gros disques\nContrôleurs RAID matériels qui prennent en charge les niveaux imbriqués"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Array di grandi dimensioni in cui perdere dati non è un’opzione\nServer di backup e archiviazione con molti dischi grandi\nController RAID hardware che supportano i livelli annidati"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "データ損失が許されない大規模アレイ\n大容量ドライブを多数搭載したバックアップ・アーカイブサーバー\nネストレベルに対応したハードウェアRAIDコントローラー"
           }
         }
       }
@@ -2867,6 +3182,531 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "RAIDタイプ"
+          }
+        }
+      }
+    },
+    "raidz1_calculation" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usable space is shown two ways. The first figure is the simple formula: drives minus parity, in each group. The second estimates what ZFS will report for default settings (4K sectors and 128K records). It subtracts RAID-Z allocation padding, which makes some group widths less efficient than others, and the space ZFS holds back: 1/32 of the pool, at most 128 GiB. Compression, record size and sector size change the real number, and a little on-disk metadata isn’t counted."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El espacio utilizable se muestra de dos formas. La primera cifra es la fórmula simple: unidades menos paridad, en cada grupo. La segunda estima lo que ZFS mostrará con la configuración predeterminada (sectores de 4K y registros de 128K). Resta el relleno de asignación de RAID-Z, que hace que algunos anchos de grupo sean menos eficientes que otros, y el espacio que ZFS reserva: 1/32 del pool, como máximo 128 GiB. La compresión, el tamaño de registro y el tamaño de sector cambian la cifra real, y no se cuenta una pequeña cantidad de metadatos en disco."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L’espace utilisable est indiqué de deux façons. Le premier chiffre suit la formule simple : disques moins parité, dans chaque groupe. Le second estime ce que ZFS affichera avec les réglages par défaut (secteurs de 4K et enregistrements de 128K). Il déduit le remplissage d’allocation de RAID-Z, qui rend certaines largeurs de groupe moins efficaces que d’autres, ainsi que l’espace que ZFS réserve : 1/32 du pool, 128 GiB au maximum. La compression, la taille d’enregistrement et la taille de secteur modifient le chiffre réel, et une petite quantité de métadonnées sur disque n’est pas comptée."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lo spazio utilizzabile è indicato in due modi. Il primo valore è la formula semplice: dischi meno parità, in ogni gruppo. Il secondo stima ciò che ZFS mostrerà con le impostazioni predefinite (settori da 4K e record da 128K). Sottrae il padding di allocazione di RAID-Z, che rende alcune larghezze di gruppo meno efficienti di altre, e lo spazio che ZFS tiene da parte: 1/32 del pool, al massimo 128 GiB. Compressione, dimensione dei record e dimensione dei settori cambiano il valore reale, e una piccola quantità di metadati su disco non viene conteggiata."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用可能容量は2通りで表示されます。1つ目はシンプルな計算式で、各グループのドライブ数からパリティを引いた値です。2つ目は、デフォルト設定（4Kセクター、128Kレコード）でZFSが表示する容量の見積もりです。RAID-Zの割り当てパディング（グループ幅によって効率が下がる原因）と、ZFSが確保する予約領域（プールの1/32、最大128 GiB）を差し引いています。圧縮、レコードサイズ、セクターサイズによって実際の値は変わります。また、ディスク上のわずかなメタデータは含まれていません。"
+          }
+        }
+      }
+    },
+    "raidz1_cons" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Survives only one failure per group\nRisky with large drives, because rebuilds take a long time\nUses more memory than hardware RAID"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solo sobrevive a un fallo por grupo\nArriesgado con unidades grandes, porque las reconstrucciones tardan mucho\nUsa más memoria que el RAID por hardware"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ne survit qu’à une seule panne par groupe\nRisqué avec de gros disques, car les reconstructions sont longues\nUtilise plus de mémoire que le RAID matériel"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sopravvive a un solo guasto per gruppo\nRischioso con dischi grandi, perché le ricostruzioni richiedono molto tempo\nUsa più memoria del RAID hardware"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "グループごとに1台の故障にしか耐えられない\n再構築に時間がかかるため、大容量ドライブではリスクが高い\nハードウェアRAIDより多くのメモリを使う"
+          }
+        }
+      }
+    },
+    "raidz1_description" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "RAID-Z1 is ZFS’s single-parity layout, similar to RAID 5. A pool can stripe several RAID-Z1 groups together."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "RAID-Z1 es la configuración de paridad simple de ZFS, similar a RAID 5. Un pool puede combinar en franjas varios grupos RAID-Z1."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le RAID-Z1 est la disposition à parité simple de ZFS, semblable au RAID 5. Un pool peut répartir en bandes plusieurs groupes RAID-Z1."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "RAID-Z1 è la configurazione a parità singola di ZFS, simile a RAID 5. Un pool può unire in striping più gruppi RAID-Z1."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "RAID-Z1はZFSのシングルパリティ構成で、RAID 5に似ています。1つのプールで複数のRAID-Z1グループをストライピングできます。"
+          }
+        }
+      }
+    },
+    "raidz1_pros" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Checksums detect and repair silent corruption\nNo RAID 5 write hole, because ZFS never overwrites data in place\nThe most usable space of the RAID-Z levels"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Las sumas de verificación detectan y reparan la corrupción silenciosa\nSin el “write hole” de RAID 5, porque ZFS nunca sobrescribe datos en su lugar\nEl mayor espacio utilizable de los niveles RAID-Z"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les sommes de contrôle détectent et réparent la corruption silencieuse\nPas de “write hole” du RAID 5, car ZFS ne réécrit jamais les données sur place\nLe plus d’espace utilisable parmi les niveaux RAID-Z"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I checksum rilevano e riparano la corruzione silenziosa\nNessun “write hole” di RAID 5, perché ZFS non sovrascrive mai i dati sul posto\nIl maggiore spazio utilizzabile tra i livelli RAID-Z"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "チェックサムがサイレントな破損を検出して修復\nZFSはデータを上書きしないため、RAID 5の「書き込みホール」がない\nRAID-Zレベルの中で使用可能容量が最大"
+          }
+        }
+      }
+    },
+    "raidz1_use_cases" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Small home servers with a few drives\nMedia libraries that are backed up elsewhere\nTrueNAS, Proxmox and other ZFS systems"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pequeños servidores domésticos con pocas unidades\nBibliotecas multimedia con backup en otro lugar\nTrueNAS, Proxmox y otros sistemas ZFS"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Petits serveurs domestiques avec quelques disques\nMédiathèques sauvegardées ailleurs\nTrueNAS, Proxmox et autres systèmes ZFS"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piccoli server domestici con pochi dischi\nLibrerie multimediali con backup altrove\nTrueNAS, Proxmox e altri sistemi ZFS"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "少数のドライブを搭載した小規模ホームサーバー\n別の場所にバックアップがあるメディアライブラリ\nTrueNAS、ProxmoxなどのZFSシステム"
+          }
+        }
+      }
+    },
+    "raidz2_calculation" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usable space is shown two ways. The first figure is the simple formula: drives minus parity, in each group. The second estimates what ZFS will report for default settings (4K sectors and 128K records). It subtracts RAID-Z allocation padding, which makes some group widths less efficient than others, and the space ZFS holds back: 1/32 of the pool, at most 128 GiB. Compression, record size and sector size change the real number, and a little on-disk metadata isn’t counted."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El espacio utilizable se muestra de dos formas. La primera cifra es la fórmula simple: unidades menos paridad, en cada grupo. La segunda estima lo que ZFS mostrará con la configuración predeterminada (sectores de 4K y registros de 128K). Resta el relleno de asignación de RAID-Z, que hace que algunos anchos de grupo sean menos eficientes que otros, y el espacio que ZFS reserva: 1/32 del pool, como máximo 128 GiB. La compresión, el tamaño de registro y el tamaño de sector cambian la cifra real, y no se cuenta una pequeña cantidad de metadatos en disco."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L’espace utilisable est indiqué de deux façons. Le premier chiffre suit la formule simple : disques moins parité, dans chaque groupe. Le second estime ce que ZFS affichera avec les réglages par défaut (secteurs de 4K et enregistrements de 128K). Il déduit le remplissage d’allocation de RAID-Z, qui rend certaines largeurs de groupe moins efficaces que d’autres, ainsi que l’espace que ZFS réserve : 1/32 du pool, 128 GiB au maximum. La compression, la taille d’enregistrement et la taille de secteur modifient le chiffre réel, et une petite quantité de métadonnées sur disque n’est pas comptée."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lo spazio utilizzabile è indicato in due modi. Il primo valore è la formula semplice: dischi meno parità, in ogni gruppo. Il secondo stima ciò che ZFS mostrerà con le impostazioni predefinite (settori da 4K e record da 128K). Sottrae il padding di allocazione di RAID-Z, che rende alcune larghezze di gruppo meno efficienti di altre, e lo spazio che ZFS tiene da parte: 1/32 del pool, al massimo 128 GiB. Compressione, dimensione dei record e dimensione dei settori cambiano il valore reale, e una piccola quantità di metadati su disco non viene conteggiata."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用可能容量は2通りで表示されます。1つ目はシンプルな計算式で、各グループのドライブ数からパリティを引いた値です。2つ目は、デフォルト設定（4Kセクター、128Kレコード）でZFSが表示する容量の見積もりです。RAID-Zの割り当てパディング（グループ幅によって効率が下がる原因）と、ZFSが確保する予約領域（プールの1/32、最大128 GiB）を差し引いています。圧縮、レコードサイズ、セクターサイズによって実際の値は変わります。また、ディスク上のわずかなメタデータは含まれていません。"
+          }
+        }
+      }
+    },
+    "raidz2_cons" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gives up two drives per group to parity\nSome group widths lose extra space to padding\nUses more memory than hardware RAID"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dedica dos unidades por grupo a la paridad\nAlgunos anchos de grupo pierden espacio extra por el relleno\nUsa más memoria que el RAID por hardware"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Consacre deux disques par groupe à la parité\nCertaines largeurs de groupe perdent de l’espace en remplissage\nUtilise plus de mémoire que le RAID matériel"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dedica due dischi per gruppo alla parità\nAlcune larghezze di gruppo perdono spazio extra per il padding\nUsa più memoria del RAID hardware"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "グループごとに2台分をパリティに使う\nグループ幅によってはパディングで余分に容量を失う\nハードウェアRAIDより多くのメモリを使う"
+          }
+        }
+      }
+    },
+    "raidz2_description" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "RAID-Z2 is ZFS’s dual-parity layout, similar to RAID 6. Any two drives in a group can fail."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "RAID-Z2 es la configuración de doble paridad de ZFS, similar a RAID 6. Pueden fallar dos unidades cualesquiera de un grupo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le RAID-Z2 est la disposition à double parité de ZFS, semblable au RAID 6. Deux disques quelconques d’un groupe peuvent tomber en panne."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "RAID-Z2 è la configurazione a doppia parità di ZFS, simile a RAID 6. Possono guastarsi due dischi qualsiasi di un gruppo."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "RAID-Z2はZFSのデュアルパリティ構成で、RAID 6に似ています。グループ内のどの2台が故障しても耐えられます。"
+          }
+        }
+      }
+    },
+    "raidz2_pros" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Survives any two failures per group\nChecksums detect and repair silent corruption\nThe common choice for large home pools"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sobrevive a dos fallos cualesquiera por grupo\nLas sumas de verificación detectan y reparan la corrupción silenciosa\nLa opción habitual para pools domésticos grandes"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Survit à deux pannes quelconques par groupe\nLes sommes de contrôle détectent et réparent la corruption silencieuse\nLe choix courant pour les grands pools domestiques"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sopravvive a due guasti qualsiasi per gruppo\nI checksum rilevano e riparano la corruzione silenziosa\nLa scelta più comune per i grandi pool domestici"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "グループごとにどの2台の故障にも耐えられる\nチェックサムがサイレントな破損を検出して修復\n大規模なホームプールの定番"
+          }
+        }
+      }
+    },
+    "raidz2_use_cases" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Home and small-office pools of 6 to 12 drives\nPhoto and document archives\nTrueNAS, Proxmox and other ZFS systems"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pools domésticos y de pequeña oficina de 6 a 12 unidades\nArchivos de fotos y documentos\nTrueNAS, Proxmox y otros sistemas ZFS"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pools domestiques et de petits bureaux de 6 à 12 disques\nArchives de photos et de documents\nTrueNAS, Proxmox et autres systèmes ZFS"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pool domestici e per piccoli uffici da 6 a 12 dischi\nArchivi di foto e documenti\nTrueNAS, Proxmox e altri sistemi ZFS"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "6〜12台のドライブによる家庭・小規模オフィス向けプール\n写真や文書のアーカイブ\nTrueNAS、ProxmoxなどのZFSシステム"
+          }
+        }
+      }
+    },
+    "raidz3_calculation" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usable space is shown two ways. The first figure is the simple formula: drives minus parity, in each group. The second estimates what ZFS will report for default settings (4K sectors and 128K records). It subtracts RAID-Z allocation padding, which makes some group widths less efficient than others, and the space ZFS holds back: 1/32 of the pool, at most 128 GiB. Compression, record size and sector size change the real number, and a little on-disk metadata isn’t counted."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El espacio utilizable se muestra de dos formas. La primera cifra es la fórmula simple: unidades menos paridad, en cada grupo. La segunda estima lo que ZFS mostrará con la configuración predeterminada (sectores de 4K y registros de 128K). Resta el relleno de asignación de RAID-Z, que hace que algunos anchos de grupo sean menos eficientes que otros, y el espacio que ZFS reserva: 1/32 del pool, como máximo 128 GiB. La compresión, el tamaño de registro y el tamaño de sector cambian la cifra real, y no se cuenta una pequeña cantidad de metadatos en disco."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L’espace utilisable est indiqué de deux façons. Le premier chiffre suit la formule simple : disques moins parité, dans chaque groupe. Le second estime ce que ZFS affichera avec les réglages par défaut (secteurs de 4K et enregistrements de 128K). Il déduit le remplissage d’allocation de RAID-Z, qui rend certaines largeurs de groupe moins efficaces que d’autres, ainsi que l’espace que ZFS réserve : 1/32 du pool, 128 GiB au maximum. La compression, la taille d’enregistrement et la taille de secteur modifient le chiffre réel, et une petite quantité de métadonnées sur disque n’est pas comptée."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lo spazio utilizzabile è indicato in due modi. Il primo valore è la formula semplice: dischi meno parità, in ogni gruppo. Il secondo stima ciò che ZFS mostrerà con le impostazioni predefinite (settori da 4K e record da 128K). Sottrae il padding di allocazione di RAID-Z, che rende alcune larghezze di gruppo meno efficienti di altre, e lo spazio che ZFS tiene da parte: 1/32 del pool, al massimo 128 GiB. Compressione, dimensione dei record e dimensione dei settori cambiano il valore reale, e una piccola quantità di metadati su disco non viene conteggiata."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用可能容量は2通りで表示されます。1つ目はシンプルな計算式で、各グループのドライブ数からパリティを引いた値です。2つ目は、デフォルト設定（4Kセクター、128Kレコード）でZFSが表示する容量の見積もりです。RAID-Zの割り当てパディング（グループ幅によって効率が下がる原因）と、ZFSが確保する予約領域（プールの1/32、最大128 GiB）を差し引いています。圧縮、レコードサイズ、セクターサイズによって実際の値は変わります。また、ディスク上のわずかなメタデータは含まれていません。"
+          }
+        }
+      }
+    },
+    "raidz3_cons" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gives up three drives per group to parity\nThe slowest of the RAID-Z levels\nNeeds at least four drives per group"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dedica tres unidades por grupo a la paridad\nEl más lento de los niveles RAID-Z\nRequiere al menos cuatro unidades por grupo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Consacre trois disques par groupe à la parité\nLe plus lent des niveaux RAID-Z\nNécessite au moins quatre disques par groupe"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dedica tre dischi per gruppo alla parità\nIl più lento dei livelli RAID-Z\nRichiede almeno quattro dischi per gruppo"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "グループごとに3台分をパリティに使う\nRAID-Zレベルの中で最も遅い\nグループごとに4台以上のドライブが必要"
+          }
+        }
+      }
+    },
+    "raidz3_description" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "RAID-Z3 is ZFS’s triple-parity layout. Any three drives in a group can fail, which suits very wide groups of very large drives."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "RAID-Z3 es la configuración de triple paridad de ZFS. Pueden fallar tres unidades cualesquiera de un grupo, lo que la hace adecuada para grupos muy anchos de unidades muy grandes."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le RAID-Z3 est la disposition à triple parité de ZFS. Trois disques quelconques d’un groupe peuvent tomber en panne, ce qui convient aux groupes très larges de très gros disques."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "RAID-Z3 è la configurazione a tripla parità di ZFS. Possono guastarsi tre dischi qualsiasi di un gruppo, il che la rende adatta a gruppi molto ampi di dischi molto grandi."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "RAID-Z3はZFSのトリプルパリティ構成です。グループ内のどの3台が故障しても耐えられるため、超大容量ドライブで構成した非常に幅の広いグループに適しています。"
+          }
+        }
+      }
+    },
+    "raidz3_pros" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Survives any three failures per group\nThe safest choice for wide groups of large drives\nChecksums detect and repair silent corruption"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sobrevive a tres fallos cualesquiera por grupo\nLa opción más segura para grupos anchos de unidades grandes\nLas sumas de verificación detectan y reparan la corrupción silenciosa"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Survit à trois pannes quelconques par groupe\nLe choix le plus sûr pour les groupes larges de gros disques\nLes sommes de contrôle détectent et réparent la corruption silencieuse"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sopravvive a tre guasti qualsiasi per gruppo\nLa scelta più sicura per gruppi ampi di dischi grandi\nI checksum rilevano e riparano la corruzione silenziosa"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "グループごとにどの3台の故障にも耐えられる\n大容量ドライブによる幅の広いグループに最も安全な選択\nチェックサムがサイレントな破損を検出して修復"
+          }
+        }
+      }
+    },
+    "raidz3_use_cases" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Very wide groups, where rebuilds take days\nLong-term archives\nLarge pools of 18 TB and bigger drives"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grupos muy anchos, donde las reconstrucciones tardan días\nArchivos a largo plazo\nPools grandes con unidades de 18 TB o más"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Groupes très larges, où les reconstructions prennent des jours\nArchives à long terme\nGrands pools de disques de 18 TB et plus"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gruppi molto ampi, dove le ricostruzioni richiedono giorni\nArchivi a lungo termine\nGrandi pool di dischi da 18 TB e oltre"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "再構築に数日かかる、非常に幅の広いグループ\n長期アーカイブ\n18 TB以上のドライブによる大規模プール"
           }
         }
       }

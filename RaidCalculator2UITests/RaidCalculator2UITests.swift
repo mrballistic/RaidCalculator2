@@ -247,6 +247,17 @@ final class RaidCalculator2UITests: XCTestCase {
         let app = launchApp(level: "Z2", drives: 14)
         XCTAssertTrue(app.staticTexts["wideGroupCaution"].waitForExistence(timeout: 5))
     }
+
+    /// RAID-Z's info sheet explains the estimate; RAID 5's has no such section.
+    @MainActor
+    func testRaidZInfoSheetExplainsEstimate() throws {
+        let app = launchApp(level: "Z2", drives: 6)
+        app.buttons["raidInfo"].tap()
+        app.swipeUp()
+        let section = app.staticTexts["howCalculated"]
+        XCTAssertTrue(section.waitForExistence(timeout: 5))
+        XCTAssertTrue(section.label.contains("128 GiB"), section.label)
+    }
 }
 
 @MainActor
