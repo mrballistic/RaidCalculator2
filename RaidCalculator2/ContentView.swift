@@ -324,8 +324,10 @@ struct CapacitySummary: View {
 
 /// One bar per physical drive, showing which hold data and which hold
 /// redundancy. Mirrors are outlined rather than filled, so the distinction
-/// doesn't rest on colour alone. Grouped levels show a wider gap between
-/// groups, so a change of groups visibly regroups the same drives.
+/// doesn't rest on colour alone. Grouped levels open a wider gap before the
+/// first drive of each group. Each bar keeps its identity per drive, so a
+/// change of groups slides the same bars into their new groups and recolors
+/// them in place; under Reduce Motion the strip crossfades instead.
 struct DriveStrip: View {
     let roles: [DriveRole]
     var groupSize: Int? = nil
@@ -334,26 +336,51 @@ struct DriveStrip: View {
 
     private var barSpacing: CGFloat { roles.count > 12 ? 3 : 5 }
 
-    /// Drive indices per group; one group when the level isn't grouped.
-    private var groups: [Range<Int>] {
-        guard let size = groupSize, size > 0, roles.count > size else { return [roles.indices] }
-        return stride(from: 0, to: roles.count, by: size).map { $0..<min($0 + size, roles.count) }
+    /// Number of groups shown; one when the level isn't grouped.
+    private var groupCount: Int {
+        guard let size = groupSize, size > 0, roles.count > size else { return 1 }
+        return (roles.count + size - 1) / size
+    }
+
+    /// Extra space before each group after the first, on top of the spacing.
+    private var groupGap: CGFloat { barSpacing * 2 }
+
+    /// Every bar gets the same width, up to 44 points, so the group gaps take
+    /// their space from the row rather than from the bars beside them.
+    private func barWidth(in available: CGFloat) -> CGFloat {
+        guard !roles.isEmpty else { return 0 }
+        let gaps = CGFloat(roles.count - 1) * barSpacing + CGFloat(groupCount - 1) * groupGap
+        return max(0, min(44, (available - gaps) / CGFloat(roles.count)))
+    }
+
+    /// True for the first drive of every group after the first.
+    private func isGroupStart(_ index: Int) -> Bool {
+        guard let size = groupSize, size > 0, groupCount > 1 else { return false }
+        return index > 0 && index % size == 0
     }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            HStack(spacing: groups.count > 1 ? barSpacing * 3 : barSpacing) {
-                ForEach(groups, id: \.lowerBound) { group in
+            // Under Reduce Motion a new grouping is a new view, so it fades in
+            // whole rather than sliding; the ZStack overlaps old and new.
+            GeometryReader { proxy in
+                let width = barWidth(in: proxy.size.width)
+                ZStack(alignment: .leading) {
                     HStack(spacing: barSpacing) {
-                        ForEach(group, id: \.self) { index in
+                        ForEach(roles.indices, id: \.self) { index in
                             bar(for: roles[index])
-                                .frame(maxWidth: 44)
-                                .frame(height: barHeight)
+                                .frame(width: width, height: barHeight)
+                                .padding(.leading, isGroupStart(index) ? groupGap : 0)
                         }
                     }
+                    .id(reduceMotion ? groupSize ?? 0 : 0)
+                    .transition(.opacity)
                 }
             }
+            .frame(height: barHeight)
             .animation(reduceMotion ? .easeInOut(duration: 0.2) : .snappy, value: roles)
+            // Geometry never interpolates under Reduce Motion: the .id swap
+            // replaces the strip, and this animation only drives its fade.
             .animation(reduceMotion ? .easeInOut(duration: 0.2) : .snappy, value: groupSize)
 
             ViewThatFits(in: .horizontal) {
@@ -382,26 +409,25 @@ struct DriveStrip: View {
         }
     }
 
-    @ViewBuilder
+    /// One view type for every role, so a role change recolors a bar in
+    /// place instead of replacing it.
     private func bar(for role: DriveRole) -> some View {
         let shape = RoundedRectangle(cornerRadius: 4, style: .continuous)
-        switch role {
-        case .data:
-            shape.fill(Color.accentColor)
-        case .parity:
-            shape.fill(Color.indigo)
-        case .mirror:
-            shape.fill(Color.accentColor.opacity(0.22))
-                .overlay(shape.strokeBorder(Color.accentColor, lineWidth: 1.5))
+        let (fill, stroke): (Color, Color) = switch role {
+        case .data: (.accentColor, .clear)
+        case .parity: (.indigo, .clear)
+        case .mirror: (.accentColor.opacity(0.22), .accentColor)
         }
+        return shape.fill(fill)
+            .overlay(shape.strokeBorder(stroke, lineWidth: 1.5))
     }
 
     private var accessibilitySummary: String {
         let parts = presentRoles.map { role in
             String(format: "role_count".localized(), roles.filter { $0 == role }.count, Self.name(of: role))
         }.joined(separator: ", ")
-        if groups.count > 1 {
-            return String(format: "drive_strip_groups_accessibility".localized(), roles.count, groups.count, parts)
+        if groupCount > 1 {
+            return String(format: "drive_strip_groups_accessibility".localized(), roles.count, groupCount, parts)
         }
         return String(format: "drive_strip_accessibility".localized(), roles.count, parts)
     }
