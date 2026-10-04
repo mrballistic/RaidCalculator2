@@ -42,10 +42,10 @@ struct ContentView: View {
                         .accessibilityIdentifier("applySuggestedDriveCount")
                     }
                 }
-            } else if viewModel.showsRebuildCaution {
+            } else if let safer = viewModel.rebuildCautionSuggestion {
                 Section {
                     Label {
-                        Text("rebuild_caution".localized())
+                        Text(String(format: "rebuild_caution_level".localized(), viewModel.selectedLevel.displayName, safer.displayName))
                             .font(.subheadline)
                     } icon: {
                         Image(systemName: "exclamationmark.triangle.fill")

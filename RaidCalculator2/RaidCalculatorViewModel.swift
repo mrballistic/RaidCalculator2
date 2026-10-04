@@ -10,7 +10,7 @@ import SwiftUI
 
 @Observable
 final class RaidCalculatorViewModel {
-    static let driveCountRange = 1...24
+    static let driveCountRange = RaidCalculator.driveCountRange
     /// Upper bound for a single drive, in either unit. Keeps a stray paste from
     /// producing a capacity no layout can hold.
     static let maxDriveSize = 999_999.0
@@ -29,23 +29,27 @@ final class RaidCalculatorViewModel {
     }
     var unit: CapacityUnit = .tb { didSet { saveConfiguration() } }
 
-    /// Recomputed whenever an input changes; Observation tracks the reads.
-    var result: RaidResult {
-        calculator.calculate(config: RaidConfiguration(
-            level: selectedLevel,
-            driveCount: driveCount,
-            driveSize: driveSize,
-            unit: unit
-        ))
+    /// Striped groups for RAID 50/60 and RAID-Z. Kept when switching to a
+    /// standard level, which ignores it, so switching back restores the layout.
+    var groups: Int = 1 {
+        didSet {
+            let clamped = min(max(groups, 1), Self.driveCountRange.upperBound)
+            if clamped != groups { groups = clamped } else { saveConfiguration() }
+        }
     }
 
-    /// RAID 5 on big drives: rebuilds take long enough that a second failure
-    /// during one is a real risk, which is the caution home-lab builders need.
-    var showsRebuildCaution: Bool {
-        guard selectedLevel == .raid5, result.warningMessage == nil else { return false }
-        let terabytes = unit == .tb ? driveSize : driveSize / 1000
-        return terabytes >= 8
+    private var configuration: RaidConfiguration {
+        RaidConfiguration(level: selectedLevel, driveCount: driveCount, driveSize: driveSize, unit: unit, groups: groups)
     }
+
+    /// Recomputed whenever an input changes; Observation tracks the reads.
+    var result: RaidResult { calculator.calculate(config: configuration) }
+
+    /// Single parity on drives of 8 TB or more; the dual-parity level to suggest.
+    var rebuildCautionSuggestion: RaidLevel? { calculator.rebuildCautionSuggestion(for: configuration) }
+
+    /// Width of a RAID-Z group wider than 12 drives; nil otherwise.
+    var wideZFSGroupWidth: Int? { calculator.wideZFSGroupWidth(for: configuration) }
 
     @ObservationIgnored private let calculator = RaidCalculator()
     @ObservationIgnored private let userDefaults = UserDefaults.standard
@@ -56,6 +60,7 @@ final class RaidCalculatorViewModel {
         static let driveCount = "driveCount"
         static let driveSize = "driveSize"
         static let unit = "unit"
+        static let groups = "groups"
     }
 
     init() {
@@ -68,12 +73,19 @@ final class RaidCalculatorViewModel {
         }
     }
 
+    func applySuggestedGroups() {
+        if let suggested = result.suggestedGroups {
+            groups = suggested
+        }
+    }
+
     private func saveConfiguration() {
         guard !isLoading else { return }
         userDefaults.set(selectedLevel.rawValue, forKey: Keys.selectedLevel)
         userDefaults.set(driveCount, forKey: Keys.driveCount)
         userDefaults.set(driveSize, forKey: Keys.driveSize)
         userDefaults.set(unit.rawValue, forKey: Keys.unit)
+        userDefaults.set(groups, forKey: Keys.groups)
     }
 
     private func loadConfiguration() {
@@ -95,5 +107,8 @@ final class RaidCalculatorViewModel {
            let loadedUnit = CapacityUnit.allCases.first(where: { $0.rawValue == unitString }) {
             unit = loadedUnit
         }
+
+        groups = userDefaults.integer(forKey: Keys.groups)
+        if groups == 0 { groups = 1 }
     }
 }

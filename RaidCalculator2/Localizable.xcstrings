@@ -2836,6 +2836,41 @@
         }
       }
     },
+    "rebuild_caution_level" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rebuilding %1$@ on drives this large can take days, and a second failure during the rebuild loses the array. Consider %2$@."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reconstruir un %1$@ con discos tan grandes puede tardar días, y un segundo fallo durante la reconstrucción hace perder el conjunto. Considera %2$@."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reconstruire un %1$@ avec des disques aussi gros peut prendre des jours, et une seconde panne pendant la reconstruction fait perdre la grappe. Envisagez le %2$@."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ricostruire un %1$@ con dischi così grandi può richiedere giorni e un secondo guasto durante la ricostruzione fa perdere l’array. Valuta il %2$@."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "これほど大容量のドライブでは%1$@の再構築に数日かかることがあり、その間に2台目が故障するとアレイ全体を失います。%2$@を検討してください。"
+          }
+        }
+      }
+    },
     "remove_drive" : {
       "extractionState" : "manual",
       "localizations" : {
