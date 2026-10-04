@@ -173,6 +173,8 @@ struct RaidResult {
     var availabilityRating: Int    // 1–5
     var warningMessage: String?    // for invalid configs
     var suggestedDriveCount: Int?  // nearest valid count when the count is the problem
+    /// Groups the drive-count fix assumes, when it also changes them; nil when it keeps the current groups.
+    var suggestedDriveCountGroups: Int? = nil
     var driveRoles: [DriveRole]    // one entry per drive, in display order
     var groupSize: Int? = nil       // drives per group, for gaps in the strip; nil unless grouped and valid
     var suggestedGroups: Int? = nil // a group count that makes the current drive count valid

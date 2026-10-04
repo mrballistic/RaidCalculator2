@@ -67,9 +67,14 @@ final class RaidCalculatorViewModel {
         loadConfiguration()
     }
 
+    /// Applies the drive-count fix, with the groups it assumes when those
+    /// change too, in one change so it animates as one transition.
     func applySuggestedDriveCount() {
-        if let suggested = result.suggestedDriveCount {
-            driveCount = suggested
+        let result = result
+        guard let suggested = result.suggestedDriveCount else { return }
+        driveCount = suggested
+        if let groups = result.suggestedDriveCountGroups {
+            self.groups = groups
         }
     }
 

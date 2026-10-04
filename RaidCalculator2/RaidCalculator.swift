@@ -24,17 +24,12 @@ struct RaidCalculator {
         return nil
     }
 
-    /// Smallest valid drive count at or above the current one, when the count is
-    /// what makes the configuration invalid. Drives the one-tap fix.
+    /// Nearest valid drive count, when the count is what makes the configuration
+    /// invalid: the smallest at or above the current one, or for a grouped level
+    /// at the 24-drive limit, the largest below it. Drives the one-tap fix.
     func suggestedDriveCount(for config: RaidConfiguration) -> Int? {
+        if config.level.usesGroups { return groupedDriveCountFix(config)?.drives }
         let n = config.driveCount
-        if config.level.usesGroups {
-            guard groupedValidationMessage(config) != nil else { return nil }
-            let groups = max(groupCount(config), config.level.minimumGroups)
-            let perGroup = max(config.level.minimumGroupWidth, (n + groups - 1) / groups)
-            let count = groups * perGroup
-            return count <= Self.driveCountRange.upperBound ? count : nil
-        }
         guard invalidDriveCountKey(config) != nil else { return nil }
         switch config.level {
         case .raid0, .jbod: return max(n, 1)
@@ -44,6 +39,31 @@ struct RaidCalculator {
         case .raid10: return max(n + n % 2, 4)
         case .raid50, .raid60, .raidz1, .raidz2, .raidz3: return nil
         }
+    }
+
+    /// The groups the drive-count fix assumes, when they differ from the
+    /// current ones. Applied together with the count, so one tap is enough.
+    func suggestedDriveCountGroups(for config: RaidConfiguration) -> Int? {
+        guard let fix = groupedDriveCountFix(config) else { return nil }
+        return fix.groups == groupCount(config) ? nil : fix.groups
+    }
+
+    /// The drive count and groups for a grouped level's drive-count fix. Groups
+    /// rise to the level's minimum, and fall to as many as fit within 24
+    /// drives. The count is the smallest that fills every group at or above
+    /// the current one; when that's over 24, the largest below it. Nil when
+    /// the count wouldn't change, since then only the groups need to.
+    private func groupedDriveCountFix(_ config: RaidConfiguration) -> (drives: Int, groups: Int)? {
+        let level = config.level
+        guard groupedValidationMessage(config) != nil else { return nil }
+        let n = config.driveCount
+        let limit = Self.driveCountRange.upperBound
+        let groups = min(max(groupCount(config), level.minimumGroups), limit / level.minimumGroupWidth)
+        let upward = groups * max(level.minimumGroupWidth, (n + groups - 1) / groups)
+        // Over the limit only when n doesn't divide evenly and each group is
+        // already past its minimum, so rounding down still leaves wide enough groups.
+        let count = upward <= limit ? upward : (n / groups) * groups
+        return count == n ? nil : (count, groups)
     }
 
     /// The valid group count for the current drive count nearest the current
@@ -66,12 +86,15 @@ struct RaidCalculator {
         guard validate(config) == nil else { return nil }
         let terabytes = config.unit == .tb ? config.driveSize : config.driveSize / 1000
         guard terabytes >= 8 else { return nil }
+        let safer: RaidLevel
         switch config.level {
         case .raid5: return .raid6
-        case .raid50: return .raid60
-        case .raidz1: return .raidz2
+        case .raid50: safer = .raid60
+        case .raidz1: safer = .raidz2
         default: return nil
         }
+        // Only a level the current groups are wide enough to become.
+        return config.driveCount / groupCount(config) >= safer.minimumGroupWidth ? safer : nil
     }
 
     /// Group width when a RAID-Z group is wider than 12 drives, which rebuilds slowly.
@@ -182,6 +205,7 @@ struct RaidCalculator {
             availabilityRating: availabilityRating(for: config.level),
             warningMessage: warning,
             suggestedDriveCount: suggestedDriveCount(for: config),
+            suggestedDriveCountGroups: suggestedDriveCountGroups(for: config),
             driveRoles: Array(roles.prefix(n)),
             groupSize: groupSize,
             suggestedGroups: suggestedGroups(for: config),

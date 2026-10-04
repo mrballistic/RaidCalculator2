@@ -221,6 +221,28 @@ final class RaidCalculator2UITests: XCTestCase {
         XCTAssertEqual(app.staticTexts["groupCount"].label.components(separatedBy: ", ").last, "2")
     }
 
+    /// From the defaults (4 drives, one group), RAID 50 needs more drives and a
+    /// second group; its single fix applies both in one tap.
+    @MainActor
+    func testNestedLevelFixFromDefaults() throws {
+        let app = launchApp()
+        let menu = app.buttons["moreLevels"]
+        XCTAssertTrue(menu.waitForExistence(timeout: 5))
+        menu.tap()
+        app.buttons["RAID 50"].tap()
+
+        let fix = app.buttons["applySuggestedDriveCount"]
+        XCTAssertTrue(fix.waitForExistence(timeout: 5))
+        XCTAssertEqual(fix.label, "Use 6 drives in 2 groups")
+        XCTAssertFalse(app.buttons["applySuggestedGroups"].exists)
+        fix.tap()
+
+        let warning = app.descendants(matching: .any)["configurationWarning"]
+        XCTAssertTrue(warning.waitForNonExistence(timeout: 5))
+        XCTAssertTrue(capacity(app).hasPrefix("Usable Capacity, 16 TB,"), capacity(app))  // 2 groups of 3 × 4 TB, 1 parity each
+        XCTAssertEqual(driveCount(app), "6")
+    }
+
     /// Choosing a standard level again from the segmented control clears the
     /// menu's selection and drops the Groups row.
     @MainActor

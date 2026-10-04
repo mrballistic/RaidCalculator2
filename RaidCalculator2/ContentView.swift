@@ -37,7 +37,9 @@ struct ContentView: View {
                     .accessibilityIdentifier("configurationWarning")
 
                     if let suggested = result.suggestedDriveCount, suggested != viewModel.driveCount {
-                        Button(String(format: "use_drive_count".localized(), suggested)) {
+                        // Names the groups too when the fix changes them, as it does from one group to RAID 50 or 60.
+                        Button(result.suggestedDriveCountGroups.map { String(format: "use_drive_count_groups".localized(), suggested, $0) }
+                               ?? String(format: "use_drive_count".localized(), suggested)) {
                             withAnimation(motion) { viewModel.applySuggestedDriveCount() }
                         }
                         .accessibilityIdentifier("applySuggestedDriveCount")

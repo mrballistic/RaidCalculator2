@@ -49,7 +49,93 @@ struct GroupedLevelTests {
         let r = result(.raid50, drives: 6, groups: 1)
         #expect(r.warningMessage == "RAID 50 needs at least two groups. With one group, it’s RAID 5.")
         #expect(r.suggestedGroups == 2)
-        #expect(r.suggestedDriveCount == 6)     // already enough drives; the UI hides a no-op fix
+        #expect(r.suggestedDriveCount == nil)   // already enough drives; only the groups change
+    }
+
+    // The defaults are 4 drives in one group; picking a nested level from there
+    // needs more drives and a second group, in one tap.
+    @Test func nestedFixFromDefaultsAddsDrivesAndGroups() {
+        let r50 = result(.raid50, drives: 4, groups: 1)
+        #expect(r50.suggestedDriveCount == 6)
+        #expect(r50.suggestedDriveCountGroups == 2)
+        #expect(r50.suggestedGroups == nil)
+
+        for drives in [4, 6] {
+            let r60 = result(.raid60, drives: drives, groups: 1)
+            #expect(r60.suggestedDriveCount == 8)
+            #expect(r60.suggestedDriveCountGroups == 2)
+        }
+    }
+
+    @Test func driveCountFixKeepsGroupsWhenTheyAlreadyFit() {
+        let r = result(.raid60, drives: 12, groups: 5)
+        #expect(r.suggestedDriveCount == 20)
+        #expect(r.suggestedDriveCountGroups == nil)
+    }
+
+    // Review Minor 5: 23 drives in 5 groups would need 25, so the fix goes down.
+    @Test func driveCountFixGoesBelowAtTheCeiling() {
+        let r = result(.raid50, drives: 23, groups: 5)
+        #expect(r.suggestedDriveCount == 20)
+        #expect(r.suggestedDriveCountGroups == nil)
+    }
+
+    private func isValid(_ level: RaidLevel, drives: Int, groups: Int) -> Bool {
+        calculator.validate(RaidConfiguration(level: level, driveCount: drives, driveSize: 8, unit: .tb, groups: groups)) == nil
+    }
+
+    /// Every invalid grouped configuration offers a one-tap fix, and every fix
+    /// it offers is valid. The one exception would be a level with no valid
+    /// configuration at all within 24 drives, which could offer nothing; the
+    /// first expectation shows no grouped level is such a level.
+    @Test(arguments: [RaidLevel.raid50, .raid60, .raidz1, .raidz2, .raidz3])
+    func everyInvalidGroupedConfigurationHasAWorkingFix(level: RaidLevel) {
+        let range = RaidCalculator.driveCountRange
+        let anyValid = range.contains { n in (1...n).contains { isValid(level, drives: n, groups: $0) } }
+        #expect(anyValid, "\(level.displayName) has no valid configuration within 24 drives")
+
+        for drives in range {
+            for groups in 1...6 {
+                let config = RaidConfiguration(level: level, driveCount: drives, driveSize: 8, unit: .tb, groups: groups)
+                let r = calculator.calculate(config: config)
+                guard r.warningMessage != nil else { continue }
+                let label = "\(level.displayName), \(drives) drives, \(groups) groups"
+
+                var fixes: [RaidConfiguration] = []
+                if let count = r.suggestedDriveCount {
+                    #expect(range.contains(count), "\(label): \(count) drives")
+                    #expect(count != drives, "\(label): no-op drive fix")
+                    if let fixGroups = r.suggestedDriveCountGroups {
+                        #expect(fixGroups != groups, "\(label): no-op groups in drive fix")
+                    }
+                    var fixed = config
+                    fixed.driveCount = count
+                    fixed.groups = r.suggestedDriveCountGroups ?? groups
+                    fixes.append(fixed)
+                }
+                if let fixGroups = r.suggestedGroups {
+                    var fixed = config
+                    fixed.groups = fixGroups
+                    fixes.append(fixed)
+                }
+
+                if anyValid { #expect(!fixes.isEmpty, "\(label): no fix offered") }
+                for fix in fixes {
+                    #expect(calculator.validate(fix) == nil, "\(label): fix \(fix.driveCount) drives in \(fix.groups) groups is still invalid")
+                }
+            }
+        }
+    }
+
+    @Test(arguments: [RaidLevel.raid50, .raid60, .raidz1, .raidz2, .raidz3])
+    func validGroupedConfigurationsOfferNoFix(level: RaidLevel) {
+        for drives in RaidCalculator.driveCountRange {
+            for groups in 1...6 where isValid(level, drives: drives, groups: groups) {
+                let r = result(level, drives: drives, groups: groups)
+                #expect(r.suggestedDriveCount == nil, "\(level.displayName), \(drives)×\(groups)")
+                #expect(r.suggestedGroups == nil, "\(level.displayName), \(drives)×\(groups)")
+            }
+        }
     }
 
     @Test func groupTooNarrow() {
@@ -98,6 +184,17 @@ struct GroupedLevelTests {
         #expect(caution(.raid5, size: 4) == nil)
         #expect(caution(.raidz2, size: 20) == nil)
         #expect(caution(.raid50, size: 8, groups: 1) == nil)   // invalid configurations get no caution
+    }
+
+    // Review Minor 6: only suggest a level the current group width can be.
+    @Test func rebuildCautionOnlySuggestsAReachableLevel() {
+        func caution(_ level: RaidLevel, drives: Int, groups: Int) -> RaidLevel? {
+            calculator.rebuildCautionSuggestion(for: RaidConfiguration(level: level, driveCount: drives, driveSize: 8, unit: .tb, groups: groups))
+        }
+        #expect(caution(.raid50, drives: 6, groups: 2) == nil)    // 3-wide groups; RAID 60 needs 4
+        #expect(caution(.raidz1, drives: 4, groups: 2) == nil)    // 2-wide groups; RAID-Z2 needs 3
+        #expect(caution(.raid50, drives: 8, groups: 2) == .raid60)
+        #expect(caution(.raidz1, drives: 6, groups: 2) == .raidz2)
     }
 
     @Test func wideRaidZGroup() {
