@@ -174,6 +174,8 @@ struct RaidResult {
     var warningMessage: String?    // for invalid configs
     var suggestedDriveCount: Int?  // nearest valid count when the count is the problem
     var driveRoles: [DriveRole]    // one entry per drive, in display order
+    var groupSize: Int? = nil       // drives per group, for gaps in the strip; nil unless grouped and valid
+    var suggestedGroups: Int? = nil // a group count that makes the current drive count valid
     /// What ZFS will report, for the RAID-Z levels; nil otherwise or when invalid.
     var zfsEstimate: ZFSEstimate? = nil
 

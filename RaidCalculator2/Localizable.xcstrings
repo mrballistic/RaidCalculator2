@@ -771,6 +771,111 @@
         }
       }
     },
+    "group_too_narrow" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Each %1$@ group needs at least %2$d drives."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cada grupo %1$@ necesita al menos %2$d unidades."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chaque groupe %1$@ nécessite au moins %2$d disques."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ogni gruppo %1$@ richiede almeno %2$d dischi."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@の各グループには少なくとも%2$d台のドライブが必要です。"
+          }
+        }
+      }
+    },
+    "grouped_failures" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$d, up to %2$d (depends on which drives fail)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$d, hasta %2$d (depende de qué unidades fallen)"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$d, jusqu’à %2$d (dépend de quels disques tombent en panne)"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$d, fino a %2$d (dipende da quali dischi si guastano)"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$d台、最大%2$d台（どのドライブが故障するかによる）"
+          }
+        }
+      }
+    },
+    "groups_uneven" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$d drives don’t divide evenly into %2$d groups."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$d unidades no se dividen en partes iguales en %2$d grupos."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$d disques ne se répartissent pas équitablement en %2$d groupes."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$d dischi non si dividono in modo uniforme in %2$d gruppi."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$d台のドライブは%2$d個のグループに均等に分けられません。"
+          }
+        }
+      }
+    },
     "high" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1152,6 +1257,41 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "NAS"
+          }
+        }
+      }
+    },
+    "nested_needs_two_groups" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ needs at least two groups. With one group, it’s %2$@."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ necesita al menos dos grupos. Con un solo grupo, es %2$@."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ nécessite au moins deux groupes. Avec un seul groupe, c’est du %2$@."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ richiede almeno due gruppi. Con un solo gruppo, è %2$@."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@には少なくとも2つのグループが必要です。グループが1つの場合は%2$@になります。"
           }
         }
       }
