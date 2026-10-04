@@ -12,6 +12,7 @@ struct ContentView: View {
     @State private var showingInfoSheet = false
     @State private var contentWidth: CGFloat = 0
     @FocusState private var sizeFieldFocused: Bool
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     /// Widest the form grows on iPad before it centers instead of stretching.
     private let readableWidth: CGFloat = 720
@@ -37,42 +38,89 @@ struct ContentView: View {
 
                     if let suggested = result.suggestedDriveCount, suggested != viewModel.driveCount {
                         Button(String(format: "use_drive_count".localized(), suggested)) {
-                            withAnimation { viewModel.applySuggestedDriveCount() }
+                            withAnimation(motion) { viewModel.applySuggestedDriveCount() }
                         }
                         .accessibilityIdentifier("applySuggestedDriveCount")
                     }
-                }
-            } else if let safer = viewModel.rebuildCautionSuggestion {
-                Section {
-                    Label {
-                        Text(String(format: "rebuild_caution_level".localized(), viewModel.selectedLevel.displayName, safer.displayName))
-                            .font(.subheadline)
-                    } icon: {
-                        Image(systemName: "exclamationmark.triangle.fill")
-                            .symbolRenderingMode(.multicolor)
+
+                    if let suggested = result.suggestedGroups, suggested != viewModel.groups {
+                        Button(suggested == 1 ? "use_one_group".localized() : String(format: "use_group_count".localized(), suggested)) {
+                            withAnimation(motion) { viewModel.applySuggestedGroups() }
+                        }
+                        .accessibilityIdentifier("applySuggestedGroups")
                     }
                 }
+            } else if viewModel.rebuildCautionSuggestion != nil || viewModel.wideZFSGroupWidth != nil {
+                Section {
+                    if let safer = viewModel.rebuildCautionSuggestion {
+                        caution(String(format: "rebuild_caution_level".localized(), viewModel.selectedLevel.displayName, safer.displayName))
+                    }
+                    if let width = viewModel.wideZFSGroupWidth {
+                        caution(String(format: "wide_zfs_group_caution".localized(), width))
+                            .accessibilityIdentifier("wideGroupCaution")
+                    }
+                }
+                .transition(.opacity)
             }
 
             Section("raid_level".localized()) {
-                Picker("raid_level".localized(), selection: $viewModel.selectedLevel) {
-                    ForEach(RaidLevel.allCases) { level in
+                Picker("raid_level".localized(), selection: standardLevelSelection) {
+                    ForEach(RaidLevel.levels(in: .standard)) { level in
                         Text(level.shortLabel)
                             .accessibilityLabel(level.displayName)
-                            .tag(level)
+                            .tag(Optional(level))
                     }
                 }
                 .pickerStyle(.segmented)
                 .labelsHidden()
+
+                Menu {
+                    Section("nested_levels".localized()) {
+                        ForEach(RaidLevel.levels(in: .nested)) { levelButton($0) }
+                    }
+                    Section("zfs_levels".localized()) {
+                        ForEach(RaidLevel.levels(in: .zfs)) { levelButton($0) }
+                    }
+                } label: {
+                    LabeledContent("more_levels".localized()) {
+                        HStack(spacing: 6) {
+                            if viewModel.selectedLevel.family != .standard {
+                                Text(viewModel.selectedLevel.displayName)
+                                    .foregroundStyle(.tint)
+                            }
+                            Image(systemName: "chevron.up.chevron.down")
+                                .font(.caption)
+                                .foregroundStyle(.tertiary)
+                        }
+                    }
+                }
+                .tint(.primary)
+                .accessibilityIdentifier("moreLevels")
             }
 
-            Section("drive_configuration".localized()) {
+            Section {
                 Stepper(value: $viewModel.driveCount, in: RaidCalculatorViewModel.driveCountRange) {
                     LabeledContent("number_of_drives".localized()) {
                         Text(viewModel.driveCount, format: .number)
                             .monospacedDigit()
                             .accessibilityIdentifier("driveCount")
                     }
+                }
+
+                if viewModel.selectedLevel.usesGroups {
+                    Stepper(value: Binding(
+                        get: { viewModel.groups },
+                        set: { value in withAnimation(motion) { viewModel.groups = value } }
+                    ), in: 1...max(1, viewModel.driveCount)) {
+                        LabeledContent("groups".localized()) {
+                            Text(viewModel.groups, format: .number)
+                                .monospacedDigit()
+                                .contentTransition(.numericText())
+                                .accessibilityIdentifier("groupCount")
+                        }
+                    }
+                    .sensoryFeedback(.selection, trigger: viewModel.groups)
+                    .transition(reduceMotion ? .opacity : .opacity.combined(with: .move(edge: .top)))
                 }
 
                 LabeledContent("drive_size".localized()) {
@@ -92,6 +140,16 @@ struct ContentView: View {
                         .fixedSize()
                     }
                 }
+            } header: {
+                Text("drive_configuration".localized())
+            } footer: {
+                if viewModel.selectedLevel.usesGroups, viewModel.result.warningMessage == nil {
+                    let groups = max(viewModel.groups, 1)
+                    let width = viewModel.driveCount / groups
+                    Text(groups == 1
+                         ? String(format: "group_layout_single".localized(), width)
+                         : String(format: "group_layout".localized(), groups, width))
+                }
             }
 
             Section {
@@ -103,6 +161,7 @@ struct ContentView: View {
                 Text("ratings_footnote".localized())
             }
         }
+        .sensoryFeedback(.success, trigger: result.warningMessage == nil) { wasValid, isValid in !wasValid && isValid }
         .navigationTitle("app_title".localized())
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
@@ -129,6 +188,40 @@ struct ContentView: View {
         .sensoryFeedback(.selection, trigger: viewModel.selectedLevel)
         .sheet(isPresented: $showingInfoSheet) {
             RaidInfoSheet(level: viewModel.selectedLevel)
+        }
+    }
+
+    /// The segmented control shows only the standard levels; with a nested or
+    /// ZFS level chosen, nothing in it is highlighted.
+    private var standardLevelSelection: Binding<RaidLevel?> {
+        Binding(
+            get: { viewModel.selectedLevel.family == .standard ? viewModel.selectedLevel : nil },
+            set: { if let level = $0 { withAnimation(motion) { viewModel.selectedLevel = level } } }
+        )
+    }
+
+    private func levelButton(_ level: RaidLevel) -> some View {
+        Button {
+            withAnimation(motion) { viewModel.selectedLevel = level }
+        } label: {
+            if viewModel.selectedLevel == level {
+                Label(level.displayName, systemImage: "checkmark")
+            } else {
+                Text(level.displayName)
+            }
+        }
+    }
+
+    /// Movement for layout changes; a plain fade when Reduce Motion is on.
+    private var motion: Animation { reduceMotion ? .easeInOut(duration: 0.2) : .snappy }
+
+    private func caution(_ text: String) -> some View {
+        Label {
+            Text(text)
+                .font(.subheadline)
+        } icon: {
+            Image(systemName: "exclamationmark.triangle.fill")
+                .symbolRenderingMode(.multicolor)
         }
     }
 }
@@ -166,7 +259,7 @@ struct CapacitySummary: View {
             .accessibilityElement(children: .combine)
 
             if !result.driveRoles.isEmpty {
-                DriveStrip(roles: result.driveRoles)
+                DriveStrip(roles: result.driveRoles, groupSize: result.groupSize)
             }
 
             Label {
@@ -184,9 +277,22 @@ struct CapacitySummary: View {
             .accessibilityElement(children: .combine)
 
             if isValid, result.usableCapacity > 0 {
-                Text(String(format: "binary_capacity_note".localized(), Self.binaryCapacity(result.usableCapacity, unit: unit)))
+                if let estimate = result.zfsEstimate {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(String(format: "zfs_reported_note".localized(), Self.binaryBytes(estimate.reportedBytes, unit: unit)))
+                            .accessibilityIdentifier("zfsReportedNote")
+                        if estimate.paddingLoss > 0.01 {
+                            Text(String(format: "zfs_padding_note".localized(), estimate.paddingLoss.formatted(.percent.precision(.fractionLength(0)))))
+                        }
+                    }
                     .font(.footnote)
                     .foregroundStyle(.secondary)
+                    .contentTransition(.numericText())
+                } else {
+                    Text(String(format: "binary_capacity_note".localized(), Self.binaryCapacity(result.usableCapacity, unit: unit)))
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                }
             }
         }
         .padding(.vertical, 6)
@@ -206,25 +312,49 @@ struct CapacitySummary: View {
         case .gb: capacity(value * 1e9 / 1_073_741_824, unit: "GiB", maxFractionDigits: 1)
         }
     }
+
+    /// A byte count in the binary unit matching the chosen decimal one.
+    static func binaryBytes(_ bytes: Double, unit: CapacityUnit) -> String {
+        switch unit {
+        case .tb: capacity(bytes / 1_099_511_627_776, unit: "TiB", maxFractionDigits: 1)
+        case .gb: capacity(bytes / 1_073_741_824, unit: "GiB", maxFractionDigits: 1)
+        }
+    }
 }
 
 /// One bar per physical drive, showing which hold data and which hold
 /// redundancy. Mirrors are outlined rather than filled, so the distinction
-/// doesn't rest on colour alone.
+/// doesn't rest on colour alone. Grouped levels show a wider gap between
+/// groups, so a change of groups visibly regroups the same drives.
 struct DriveStrip: View {
     let roles: [DriveRole]
+    var groupSize: Int? = nil
     @ScaledMetric(relativeTo: .body) private var barHeight: CGFloat = 26
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    private var barSpacing: CGFloat { roles.count > 12 ? 3 : 5 }
+
+    /// Drive indices per group; one group when the level isn't grouped.
+    private var groups: [Range<Int>] {
+        guard let size = groupSize, size > 0, roles.count > size else { return [roles.indices] }
+        return stride(from: 0, to: roles.count, by: size).map { $0..<min($0 + size, roles.count) }
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            HStack(spacing: roles.count > 12 ? 3 : 5) {
-                ForEach(Array(roles.enumerated()), id: \.offset) { _, role in
-                    bar(for: role)
-                        .frame(maxWidth: 44)
-                        .frame(height: barHeight)
+            HStack(spacing: groups.count > 1 ? barSpacing * 3 : barSpacing) {
+                ForEach(groups, id: \.lowerBound) { group in
+                    HStack(spacing: barSpacing) {
+                        ForEach(group, id: \.self) { index in
+                            bar(for: roles[index])
+                                .frame(maxWidth: 44)
+                                .frame(height: barHeight)
+                        }
+                    }
                 }
             }
-            .animation(.snappy, value: roles)
+            .animation(reduceMotion ? .easeInOut(duration: 0.2) : .snappy, value: roles)
+            .animation(reduceMotion ? .easeInOut(duration: 0.2) : .snappy, value: groupSize)
 
             ViewThatFits(in: .horizontal) {
                 HStack(spacing: 14) { legend }
@@ -269,8 +399,11 @@ struct DriveStrip: View {
     private var accessibilitySummary: String {
         let parts = presentRoles.map { role in
             String(format: "role_count".localized(), roles.filter { $0 == role }.count, Self.name(of: role))
+        }.joined(separator: ", ")
+        if groups.count > 1 {
+            return String(format: "drive_strip_groups_accessibility".localized(), roles.count, groups.count, parts)
         }
-        return String(format: "drive_strip_accessibility".localized(), roles.count, parts.joined(separator: ", "))
+        return String(format: "drive_strip_accessibility".localized(), roles.count, parts)
     }
 
     static func name(of role: DriveRole) -> String {

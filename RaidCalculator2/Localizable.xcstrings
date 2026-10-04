@@ -701,6 +701,41 @@
         }
       }
     },
+    "drive_strip_groups_accessibility" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$d drives in %2$d groups: %3$@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$d discos en %2$d grupos: %3$@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$d disques en %2$d groupes : %3$@"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$d dischi in %2$d gruppi: %3$@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$dドライブ、%2$dグループ：%3$@"
+          }
+        }
+      }
+    },
     "drives_section" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -771,6 +806,76 @@
         }
       }
     },
+    "group_layout" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$d groups of %2$d drives"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$d grupos de %2$d unidades"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$d groupes de %2$d disques"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$d gruppi da %2$d dischi"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$dグループ、各%2$dドライブ"
+          }
+        }
+      }
+    },
+    "group_layout_single" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "One group of %d drives"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un grupo de %d unidades"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un groupe de %d disques"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un gruppo da %d dischi"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1グループ、%dドライブ"
+          }
+        }
+      }
+    },
     "group_too_narrow" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -837,6 +942,41 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$d台、最大%2$d台（どのドライブが故障するかによる）"
+          }
+        }
+      }
+    },
+    "groups" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Groups"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grupos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Groupes"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gruppi"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "グループ"
           }
         }
       }
@@ -1226,6 +1366,41 @@
         }
       }
     },
+    "more_levels" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "More Levels"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Más niveles"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autres niveaux"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Altri livelli"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "その他のレベル"
+          }
+        }
+      }
+    },
     "nas_setup" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1257,6 +1432,41 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "NAS"
+          }
+        }
+      }
+    },
+    "nested_levels" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nested"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anidados"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Imbriqués"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Annidati"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ネスト"
           }
         }
       }
@@ -2801,41 +3011,6 @@
         }
       }
     },
-    "rebuild_caution" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Rebuilding RAID 5 on drives this large can take days, and a second failure during the rebuild loses the array. Consider RAID 6."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Reconstruir un RAID 5 con discos tan grandes puede tardar días, y un segundo fallo durante la reconstrucción hace perder el conjunto. Considera RAID 6."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Reconstruire un RAID 5 avec des disques aussi gros peut prendre des jours, et une seconde panne pendant la reconstruction fait perdre la grappe. Envisagez le RAID 6."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ricostruire un RAID 5 con dischi così grandi può richiedere giorni e un secondo guasto durante la ricostruzione fa perdere l’array. Valuta il RAID 6."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "これほど大容量のドライブではRAID 5の再構築に数日かかることがあり、その間に2台目が故障するとアレイ全体を失います。RAID 6を検討してください。"
-          }
-        }
-      }
-    },
     "rebuild_caution_level" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3641,6 +3816,76 @@
         }
       }
     },
+    "use_group_count" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Use %d groups"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usar %d grupos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Utiliser %d groupes"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usa %d gruppi"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%dグループに変更"
+          }
+        }
+      }
+    },
+    "use_one_group" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Use one group"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usar un grupo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Utiliser un groupe"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usa un gruppo"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1グループに変更"
+          }
+        }
+      }
+    },
     "very_high" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3707,6 +3952,146 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "非常に低い"
+          }
+        }
+      }
+    },
+    "wide_zfs_group_caution" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Each RAID-Z group is %d drives wide. Very wide groups take a long time to rebuild after a failure; more, narrower groups rebuild faster."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cada grupo RAID-Z tiene %d unidades de ancho. Los grupos muy anchos tardan mucho en reconstruirse tras un fallo; más grupos, y más estrechos, se reconstruyen antes."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chaque groupe RAID-Z compte %d disques de large. Les groupes très larges mettent longtemps à se reconstruire après une panne ; des groupes plus nombreux et plus étroits se reconstruisent plus vite."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ogni gruppo RAID-Z è largo %d dischi. I gruppi molto larghi richiedono molto tempo per la ricostruzione dopo un guasto; più gruppi, più stretti, si ricostruiscono prima."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "各RAID-Zグループの幅は%dドライブです。幅が非常に広いグループは故障後の再構築に長い時間がかかります。より狭いグループを増やすと、再構築が速くなります。"
+          }
+        }
+      }
+    },
+    "zfs_levels" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ZFS"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ZFS"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ZFS"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ZFS"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ZFS"
+          }
+        }
+      }
+    },
+    "zfs_padding_note" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This group width loses about %@ more to RAID-Z padding."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Con este ancho de grupo se pierde aproximadamente un %@ más por el relleno de RAID-Z."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cette largeur de groupe perd environ %@ de plus à cause du remplissage RAID-Z."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Con questa larghezza del gruppo si perde circa un altro %@ per il padding di RAID-Z."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このグループ幅では、RAID-Zのパディングによりさらに約%@が失われます。"
+          }
+        }
+      }
+    },
+    "zfs_reported_note" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "≈ %@ as ZFS reports it (estimate)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "≈ %@ según lo muestra ZFS (estimación)"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "≈ %@ tel qu’affiché par ZFS (estimation)"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "≈ %@ come lo mostra ZFS (stima)"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ZFSでの表示は約 %@（推定）"
           }
         }
       }
