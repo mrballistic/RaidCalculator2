@@ -46,6 +46,9 @@ jobs:
           echo "SIM_UDID=$udid" >> "$GITHUB_ENV"
           xcrun simctl list devices available | grep "$udid"
 
+      - name: Check localized strings
+        run: python3 scripts/strings.py check
+
       - name: Build and test on the iOS simulator
         run: |
           set -o pipefail
