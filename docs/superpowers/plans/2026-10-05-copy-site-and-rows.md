@@ -625,6 +625,8 @@ git commit -m "Update the website for the NAS tab, every system, and their trade
 | `09-ipad-nas-compare.png` | iPad Pro 13-inch (M5), portrait | light, en | as 01 |
 | `11-ipad-nas-dark.png` | iPad Pro 13-inch (M5), portrait | dark, en | `-nas.system zfs -nas.bayCount 12 -synology.bays <[16,16,16,16,12,12,12,12,8,8,8,8]>` |
 
+  **Capture every row in both light and dark** (the user wants both kept for the website rebuild): save as `<name>.png` and `<name>-dark.png`, or `<name>-light.png` for the rows marked dark. Start from plan 3’s sweep in `marketing/screenshots/1.6.0/sweep/` where a capture already matches a row.
+
   Check each against these expectations, and recapture if a shot is wrong:
   - 01 shows the 16 TB drive’s top hatched.
   - 02 shows five systems.

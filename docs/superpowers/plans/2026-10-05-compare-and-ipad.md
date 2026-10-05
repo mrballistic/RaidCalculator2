@@ -1375,6 +1375,6 @@ git commit -m "Stack the rating and drive-size rows at accessibility text sizes"
   - a column narrower than an iPhone
   - the results column leading
 
-  Report the paths.
+  Save every capture, in both light and dark, to `marketing/screenshots/1.6.0/sweep/` (not `/tmp`) as `<device>-<orientation>-<tab>-<light|dark>.png`; plan 4 rebuilds the website from them. Commit them with the report. Report the paths.
 - [ ] **Step 5: Performance (§1.6).** Use Unraid with 30 bays and open the comparison. Scroll it, change bay 1’s size from its menu, and switch systems five times. Report any visible lag. Comparing five systems at 30 bays is 5 small calculations and should be instant.
 - [ ] **Step 6: Report.** Don’t tag, merge or release.
