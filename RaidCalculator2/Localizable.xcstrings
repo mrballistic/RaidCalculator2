@@ -334,7 +334,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Le RAID1 de Btrfs conserve deux copies de chaque bloc de données, sur deux disques différents. Les disques peuvent être de tailles différentes ; Btrfs place les copies de façon équilibrée."
+            "value" : "Le Btrfs RAID1 conserve deux copies de chaque bloc de données, sur deux disques différents. Les disques peuvent être de tailles différentes ; Btrfs place les copies de façon équilibrée."
           }
         },
         "it" : {
@@ -1868,7 +1868,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Unidades de paridad"
+            "value" : "Discos de paridad"
           }
         },
         "fr" : {
@@ -1938,7 +1938,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Las unidades más grandes se usan como paridad, así que la paridad siempre es al menos tan grande como cada unidad de datos."
+            "value" : "Los discos más grandes se usan como paridad, así que la paridad siempre es al menos tan grande como cada disco de datos."
           }
         },
         "fr" : {
@@ -4668,7 +4668,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "SnapRAID recomienda %1$d unidades de paridad para %2$@ unidades de datos."
+            "value" : "SnapRAID recomienda %1$d discos de paridad para %2$@ discos de datos."
           }
         },
         "fr" : {
@@ -4686,7 +4686,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "SnapRAIDでは、データドライブ数が%2$@の場合、パリティドライブを%1$dつにすることを推奨しています。"
+            "value" : "SnapRAIDでは、データドライブ数が%2$@の場合、パリティドライブを%1$d台にすることを推奨しています。"
           }
         }
       }
@@ -5187,31 +5187,31 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "The largest drives become parity, so parity is always at least as large as every data drive. Usable space is the total of the data drives, and the array survives as many drive failures as it has parity drives. Unraid’s separate cache and ZFS pools aren’t included."
+            "value" : "The largest drives become parity, so parity is always at least as large as every data drive. Parity updates as you write, so protection is always current. Usable space is the total of the data drives, and the array survives as many drive failures as it has parity drives. Unraid’s separate cache and ZFS pools aren’t included."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Las unidades más grandes se usan para paridad, así que la paridad siempre es al menos tan grande como cada unidad de datos. El espacio utilizable es la suma de las unidades de datos, y el conjunto sobrevive a tantos fallos de unidad como unidades de paridad tenga. No se incluyen los pools de caché y ZFS independientes de Unraid."
+            "value" : "Las unidades más grandes se usan para paridad, así que la paridad siempre es al menos tan grande como cada unidad de datos. La paridad se actualiza con cada escritura, por lo que la protección siempre está al día. El espacio utilizable es la suma de las unidades de datos, y el conjunto sobrevive a tantos fallos de unidad como unidades de paridad tenga. No se incluyen los pools de caché y ZFS independientes de Unraid."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Les plus grands disques servent à la parité, qui est donc toujours au moins aussi grande que chaque disque de données. L’espace utilisable correspond au total des disques de données, et la grappe survit à autant de pannes de disque qu’elle compte de disques de parité. Les pools de cache et ZFS distincts d’Unraid ne sont pas inclus."
+            "value" : "Les plus grands disques servent à la parité, qui est donc toujours au moins aussi grande que chaque disque de données. La parité se met à jour à chaque écriture, la protection est donc toujours actuelle. L’espace utilisable correspond au total des disques de données, et la grappe survit à autant de pannes de disque qu’elle compte de disques de parité. Les pools de cache et ZFS distincts d’Unraid ne sont pas inclus."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "I dischi più grandi diventano dischi di parità, quindi la parità è sempre grande almeno quanto ogni disco dati. Lo spazio utilizzabile è il totale dei dischi dati, e l’array sopravvive a tanti guasti quanti sono i suoi dischi di parità. I pool cache e ZFS separati di Unraid non sono inclusi."
+            "value" : "I dischi più grandi diventano dischi di parità, quindi la parità è sempre grande almeno quanto ogni disco dati. La parità si aggiorna a ogni scrittura, quindi la protezione è sempre aggiornata. Lo spazio utilizzabile è il totale dei dischi dati, e l’array sopravvive a tanti guasti quanti sono i suoi dischi di parità. I pool cache e ZFS separati di Unraid non sono inclusi."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "最も大きいドライブがパリティになるため、パリティは常にすべてのデータドライブと同じかそれ以上の容量になります。使用可能容量はデータドライブの合計で、アレイはパリティドライブと同じ数のドライブ故障に耐えられます。Unraidの別個のキャッシュプールとZFSプールは含まれません。"
+            "value" : "最も大きいドライブがパリティになるため、パリティは常にすべてのデータドライブと同じかそれ以上の容量になります。パリティは書き込みのたびに更新されるため、保護は常に最新の状態です。使用可能容量はデータドライブの合計で、アレイはパリティドライブと同じ数のドライブ故障に耐えられます。Unraidの別個のキャッシュプールとZFSプールは含まれません。"
           }
         }
       }
@@ -5817,31 +5817,31 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Every drive counts only up to the size of the smallest drive\nGrowing a group needs matching drives, or OpenZFS 2.3 or later to add one drive at a time\nUses more memory than other systems"
+            "value" : "Every drive counts only up to the size of the smallest drive\nGrowing a group means replacing every drive, or OpenZFS 2.3 or later to add one drive at a time\nUses more memory than other systems"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cada unidad solo cuenta hasta el tamaño de la unidad más pequeña\nAmpliar un grupo requiere unidades iguales, u OpenZFS 2.3 o posterior para añadir unidades de una en una\nUsa más memoria que otros sistemas"
+            "value" : "Cada unidad solo cuenta hasta el tamaño de la unidad más pequeña\nAmpliar un grupo implica reemplazar todas las unidades, o usar OpenZFS 2.3 o posterior para añadirlas de una en una\nUsa más memoria que otros sistemas"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Chaque disque ne compte que jusqu’à la taille du plus petit disque\nAgrandir un groupe exige des disques identiques, ou OpenZFS 2.3 ou ultérieur pour ajouter un disque à la fois\nUtilise plus de mémoire que les autres systèmes"
+            "value" : "Chaque disque ne compte que jusqu’à la taille du plus petit disque\nAgrandir un groupe implique de remplacer tous les disques, ou d’utiliser OpenZFS 2.3 ou ultérieur pour ajouter un disque à la fois\nUtilise plus de mémoire que les autres systèmes"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ogni disco conta solo fino alla dimensione del disco più piccolo\nPer espandere un gruppo servono dischi uguali, oppure OpenZFS 2.3 o successivo per aggiungere un disco alla volta\nUsa più memoria di altri sistemi"
+            "value" : "Ogni disco conta solo fino alla dimensione del disco più piccolo\nPer espandere un gruppo bisogna sostituire tutti i dischi, oppure usare OpenZFS 2.3 o successivo per aggiungere un disco alla volta\nUsa più memoria di altri sistemi"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "各ドライブは最も小さいドライブの容量までしか使われない\nグループの拡張には同じ容量のドライブが必要（OpenZFS 2.3以降ならドライブを1つずつ追加可能）\n他のシステムより多くのメモリを使う"
+            "value" : "各ドライブは最も小さいドライブの容量までしか使われない\nグループの拡張にはすべてのドライブの交換が必要（OpenZFS 2.3以降ならドライブを1つずつ追加可能）\n他のシステムより多くのメモリを使う"
           }
         }
       }
