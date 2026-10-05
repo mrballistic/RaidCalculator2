@@ -370,8 +370,9 @@ struct BayDiagram: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             // Under full motion the same bays animate their segments in place
-            // when the system changes. Under Reduce Motion a new system is a new
-            // diagram that fades in over the old one; the ZStack overlaps them.
+            // with .snappy, whatever changed. Under Reduce Motion nothing moves:
+            // every change (system, a bay's size, bay or parity count) is a new
+            // diagram that crossfades over the old one; the ZStack overlaps them.
             Group {
                 if bays.count > 12 {
                     ScrollView(.horizontal, showsIndicators: false) { columns }
@@ -379,7 +380,7 @@ struct BayDiagram: View {
                     columns
                 }
             }
-            .animation(reduceMotion ? .easeInOut(duration: 0.2) : .snappy, value: bays)
+            .animation(reduceMotion ? nil : .snappy, value: bays)
 
             ViewThatFits(in: .horizontal) {
                 HStack(spacing: 14) { legend }
@@ -412,7 +413,10 @@ struct BayDiagram: View {
                     .accessibilityLabel(accessibilityLabel(bay: index, segments: segments))
                 }
             }
-            .id(reduceMotion ? AnyHashable(system) : AnyHashable(0))
+            // Keyed on the whole diagram under Reduce Motion, so any change swaps
+            // the view instead of resizing its bars. The transition carries its
+            // own animation because the change itself arrives unanimated.
+            .id(reduceMotion ? AnyHashable([AnyHashable(system), AnyHashable(bays)]) : AnyHashable(0))
             .transition(.opacity.animation(.easeInOut(duration: 0.2)))
         }
     }
