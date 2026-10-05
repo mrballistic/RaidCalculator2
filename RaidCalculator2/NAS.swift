@@ -109,7 +109,7 @@ struct NASSetup: Codable, Equatable {
 }
 
 /// Advice shown under the results; never a block.
-enum NASHint: Equatable {
+enum NASHint: Equatable, Hashable {
     /// SnapRAID recommends more parity for this many data drives.
     case snapraidParity(recommended: Int, dataDrives: ClosedRange<Int>)
     /// A RAID-Z group wider than 12 drives rebuilds slowly.

@@ -1547,31 +1547,101 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "NAS"
+            "value" : "Setup"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "NAS"
+            "value" : "Configuración"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "NAS"
+            "value" : "Configuration"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "NAS"
+            "value" : "Configurazione"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "NAS"
+            "value" : "構成"
+          }
+        }
+      }
+    },
+    "nas_system" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "System"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sistema"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Système"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sistema"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "システム"
+          }
+        }
+      }
+    },
+    "nas_zfs_level" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "RAID-Z Level"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nivel RAID-Z"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Niveau RAID-Z"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Livello RAID-Z"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "RAID-Zレベル"
           }
         }
       }
@@ -1786,6 +1856,41 @@
         }
       }
     },
+    "parity_drives" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Parity Drives"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unidades de paridad"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disques de parité"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dischi di parità"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "パリティドライブ"
+          }
+        }
+      }
+    },
     "parity_needs_data" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1817,6 +1922,41 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@には、パリティドライブのほかに1台以上のデータドライブが必要です。"
+          }
+        }
+      }
+    },
+    "parity_promotion_note" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The largest drives are used as parity, so parity is always at least as large as every data drive."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Las unidades más grandes se usan como paridad, así que la paridad siempre es al menos tan grande como cada unidad de datos."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les plus grands disques servent de parité : la parité est donc toujours au moins aussi grande que chaque disque de données."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I dischi più grandi vengono usati come parità, quindi la parità è sempre grande almeno quanto ogni disco dati."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最も大きいドライブがパリティとして使われるため、パリティは常にすべてのデータドライブ以上の容量になります。"
           }
         }
       }
@@ -4411,41 +4551,6 @@
         }
       }
     },
-    "shr_footnote" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "SHR builds RAID in layers of matching capacity, so mixed drive sizes waste less space than classic RAID."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "SHR crea el RAID en capas de igual capacidad, así que los discos de distintos tamaños desperdician menos espacio que con RAID clásico."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Le SHR construit le RAID par couches de capacité identique : des disques de tailles différentes gaspillent ainsi moins d’espace qu’en RAID classique."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "SHR crea il RAID a strati di pari capacità, quindi dischi di dimensioni diverse sprecano meno spazio rispetto al RAID classico."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "SHRは同じ容量の層ごとにRAIDを構成するため、容量の異なるドライブでも従来のRAIDより無駄が少なくなります。"
-          }
-        }
-      }
-    },
     "snapraid_calculation" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4547,6 +4652,41 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "SnapRAIDは、一連のデータドライブを最大6つのパリティドライブで保護します。パリティは書き込みのたびではなく、同期を実行したときに計算されます。ドライブの容量は自由で、各データドライブの全容量を使用できます。"
+          }
+        }
+      }
+    },
+    "snapraid_parity_hint" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SnapRAID recommends %1$d parity drives for %2$@ data drives."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SnapRAID recomienda %1$d unidades de paridad para %2$@ unidades de datos."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SnapRAID recommande %1$d disques de parité pour %2$@ disques de données."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SnapRAID consiglia %1$d dischi di parità per %2$@ dischi dati."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SnapRAIDでは、データドライブ数が%2$@の場合、パリティドライブを%1$dつにすることを推奨しています。"
           }
         }
       }

@@ -31,6 +31,26 @@ final class RaidCalculator2UITests: XCTestCase {
         return app
     }
 
+    /// Opens the NAS tab with known drives. An empty current setup means
+    /// “nothing saved yet”, so no comparison row appears.
+    @MainActor
+    private func launchNAS(system: String = "synology", bays: String = "[4,4,8,8]", bayCount: Int = 4) -> XCUIApplication {
+        let hex = bays.data(using: .utf8)!.map { String(format: "%02x", $0) }.joined()
+        let app = XCUIApplication()
+        app.launchArguments += [
+            "-selectedTab", "nas",
+            "-nas.system", system,
+            "-nas.bayCount", "\(bayCount)",
+            "-synology.bays", "<\(hex)>",
+            "-nas.settings", "",
+            "-nas.currentSetup", "",
+            "-AppleLanguages", "(en)",
+            "-AppleLocale", "en_US",
+        ]
+        app.launch()
+        return app
+    }
+
     /// The combined VoiceOver element for the answer, which reads
     /// “Usable Capacity, 12 TB, of 16 TB raw · 75% efficient”.
     @MainActor
@@ -297,6 +317,92 @@ final class RaidCalculator2UITests: XCTestCase {
         // The ratings are the sheet's last section, so the whole sheet has been seen.
         XCTAssertTrue(app.staticTexts["Performance Ratings"].exists || app.otherElements["Performance Ratings"].exists)
         XCTAssertFalse(app.staticTexts["howCalculated"].exists)
+    }
+
+    /// The form loads its rows lazily, so a row below the fold isn't in the
+    /// hierarchy until it's scrolled to.
+    @MainActor
+    private func reveal(_ element: XCUIElement, in app: XCUIApplication, scrollingDown: Bool = true) {
+        for _ in 0..<6 where !(element.exists && element.isHittable) {
+            scrollingDown ? app.swipeUp() : app.swipeDown()
+        }
+    }
+
+    /// The summary's combined VoiceOver element, which reads
+    /// “Usable Capacity, 16 TB, of 24 TB raw · 67% efficient”. The large
+    /// figure inside it carries the same identifier.
+    @MainActor
+    private func nasCapacity(_ app: XCUIApplication) -> String {
+        let summary = app.staticTexts.matching(identifier: "nasUsableCapacity").firstMatch
+        return summary.label.components(separatedBy: ", ").dropFirst().first ?? summary.label
+    }
+
+    /// The same drives under every system. [4, 4, 8, 8] is SHR 16 TB,
+    /// Unraid 16 TB (parity 8), RAID-Z1 12 TB and Btrfs RAID1 12 TB.
+    @MainActor
+    func testNASSwitchSystem() throws {
+        let app = launchNAS()
+        let usable = app.staticTexts.matching(identifier: "nasUsableCapacity").firstMatch
+        XCTAssertTrue(usable.waitForExistence(timeout: 5))
+        XCTAssertEqual(nasCapacity(app), "16 TB")
+
+        for (name, expected) in [("Unraid", "16 TB"), ("ZFS", "12 TB"), ("Btrfs RAID1", "12 TB"), ("Synology", "16 TB")] {
+            reveal(app.buttons["nasSystem"], in: app)
+            app.buttons["nasSystem"].tap()
+            app.buttons[name].tap()
+            reveal(usable, in: app, scrollingDown: false)
+            XCTAssertTrue(usable.waitForExistence(timeout: 2))
+            XCTAssertEqual(nasCapacity(app), expected, name)
+        }
+    }
+
+    /// Only the setting that system has is shown.
+    @MainActor
+    func testNASSettingsPerSystem() throws {
+        let app = launchNAS(system: "unraid")
+        XCTAssertTrue(app.buttons["nasInfo"].waitForExistence(timeout: 5))
+        reveal(app.staticTexts["parityCount"], in: app)
+        XCTAssertTrue(app.staticTexts["parityCount"].exists)
+        XCTAssertFalse(app.buttons["zfsLevel"].exists)
+        reveal(app.staticTexts["parityPromotionNote"], in: app)
+        XCTAssertTrue(app.staticTexts["parityPromotionNote"].exists)
+
+        reveal(app.buttons["nasSystem"], in: app, scrollingDown: false)
+        app.buttons["nasSystem"].tap()
+        app.buttons["ZFS"].tap()
+        XCTAssertTrue(app.buttons["zfsLevel"].waitForExistence(timeout: 2))
+        XCTAssertTrue(app.staticTexts["parityCount"].waitForNonExistence(timeout: 2))
+        reveal(app.staticTexts["zfsReportedNote"], in: app, scrollingDown: false)
+        XCTAssertTrue(app.staticTexts["zfsReportedNote"].exists)
+    }
+
+    /// Seven drives in SnapRAID with one parity drive: 6 data drives, and
+    /// SnapRAID recommends 2 parity.
+    @MainActor
+    func testSnapRAIDParityHint() throws {
+        let app = launchNAS(system: "snapraid", bays: "[8,8,8,8,8,8,8]", bayCount: 7)
+        let hint = app.staticTexts["nasHint"]
+        XCTAssertTrue(hint.waitForExistence(timeout: 5))
+        XCTAssertTrue(hint.label.contains("recommends 2 parity drives"), hint.label)
+    }
+
+    /// Unraid's info sheet carries its trademark line.
+    @MainActor
+    func testNASInfoSheetHasTrademarkLine() throws {
+        let app = launchNAS(system: "unraid")
+        app.buttons["nasInfo"].tap()
+        let footnote = app.staticTexts["infoFootnote"]
+        for _ in 0..<5 where !footnote.exists { app.swipeUp() }
+        XCTAssertTrue(footnote.label.contains("Lime Technology"), footnote.label)
+    }
+
+    /// A stored value from 1.5 ("synology") opens the RAID tab. (Review Focus 5)
+    @MainActor
+    func testUnknownStoredTabOpensRaidTab() throws {
+        let app = XCUIApplication()
+        app.launchArguments += ["-selectedTab", "synology", "-AppleLanguages", "(en)"]
+        app.launch()
+        XCTAssertTrue(app.segmentedControls.firstMatch.waitForExistence(timeout: 5))
     }
 }
 

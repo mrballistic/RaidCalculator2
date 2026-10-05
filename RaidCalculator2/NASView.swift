@@ -10,6 +10,10 @@ struct NASView: View {
     @State private var contentWidth: CGFloat = 0
     @State private var customSizeBay: Int?
     @State private var customSize: Double = 8
+    @State private var showingInfo = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    private var motion: Animation? { reduceMotion ? nil : .snappy }
 
     private let readableWidth: CGFloat = 720
 
@@ -18,7 +22,7 @@ struct NASView: View {
 
         Form {
             Section {
-                NASSummary(result: result)
+                NASSummary(result: result, system: viewModel.system)
             }
 
             if let warning = result.warningMessage {
@@ -33,7 +37,7 @@ struct NASView: View {
             } else if let suggestion = viewModel.suggestion {
                 Section("suggestion_header".localized()) {
                     Button {
-                        withAnimation(.snappy) { viewModel.applySuggestion() }
+                        withAnimation(motion) { viewModel.applySuggestion() }
                     } label: {
                         LabeledContent {
                             Text(Self.signed(suggestion.gain))
@@ -45,6 +49,22 @@ struct NASView: View {
                     }
                     .accessibilityIdentifier("applySuggestion")
                 }
+            }
+
+            if !viewModel.hints.isEmpty {
+                Section {
+                    ForEach(viewModel.hints, id: \.self) { hint in
+                        Label {
+                            Text(Self.text(for: hint))
+                                .font(.subheadline)
+                                .accessibilityIdentifier("nasHint")
+                        } icon: {
+                            Image(systemName: "exclamationmark.triangle.fill")
+                                .symbolRenderingMode(.multicolor)
+                        }
+                    }
+                }
+                .transition(.opacity)
             }
 
             if let delta = viewModel.usableDelta {
@@ -59,22 +79,63 @@ struct NASView: View {
                         withAnimation { viewModel.saveAsCurrent() }
                     }
                     Button("revert".localized(), role: .destructive) {
-                        withAnimation(.snappy) { viewModel.revertToCurrent() }
+                        withAnimation(motion) { viewModel.revertToCurrent() }
                     }
                 }
             }
 
             Section("nas_setup".localized()) {
+                Picker("nas_system".localized(), selection: Binding(
+                    get: { viewModel.system },
+                    set: { value in withAnimation(motion) { viewModel.system = value } }
+                )) {
+                    ForEach(NASSystem.allCases) { system in
+                        Text(system.displayName).tag(system)
+                    }
+                }
+                .pickerStyle(.menu)
+                .accessibilityIdentifier("nasSystem")
+                .sensoryFeedback(.selection, trigger: viewModel.system)
+
                 CountStepper(
                     title: "bay_count".localized(),
-                    value: Binding(get: { viewModel.bayCount }, set: { viewModel.setBayCount($0) }),
+                    value: Binding(get: { viewModel.bayCount }, set: { value in withAnimation(motion) { viewModel.setBayCount(value) } }),
                     range: viewModel.system.bayRange,
                     identifier: "bayCount"
                 )
-                Picker("raid_type".localized(), selection: $viewModel.settings.synologyType) {
-                    ForEach(SynologyRaidType.allCases) { type in
-                        Text(type.rawValue).tag(type)
+
+                switch viewModel.system {
+                case .synology:
+                    Picker("raid_type".localized(), selection: Binding(
+                        get: { viewModel.settings.synologyType },
+                        set: { value in withAnimation(motion) { viewModel.settings.synologyType = value } }
+                    )) {
+                        ForEach(SynologyRaidType.allCases) { type in
+                            Text(type.rawValue).tag(type)
+                        }
                     }
+                case .unraid, .snapraid:
+                    CountStepper(
+                        title: "parity_drives".localized(),
+                        value: Binding(
+                            get: { viewModel.settings.parity(for: viewModel.system) ?? 1 },
+                            set: { value in withAnimation(motion) { viewModel.settings.setParity(value, for: viewModel.system) } }
+                        ),
+                        range: viewModel.system.parityRange ?? 1...1,
+                        identifier: "parityCount"
+                    )
+                case .zfs:
+                    Picker("nas_zfs_level".localized(), selection: Binding(
+                        get: { viewModel.settings.zfsParity },
+                        set: { value in withAnimation(motion) { viewModel.settings.setParity(value, for: .zfs) } }
+                    )) {
+                        ForEach(1...3, id: \.self) { parity in
+                            Text(ZFSMixedCalculator.level(parity: parity).displayName).tag(parity)
+                        }
+                    }
+                    .accessibilityIdentifier("zfsLevel")
+                case .btrfs:
+                    EmptyView()
                 }
             }
 
@@ -85,13 +146,27 @@ struct NASView: View {
             } header: {
                 Text("drives_section".localized())
             } footer: {
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("shr_footnote".localized())
-                    Text("not_affiliated".localized())
+                if viewModel.system == .unraid || viewModel.system == .snapraid {
+                    Text("parity_promotion_note".localized())
+                        .accessibilityIdentifier("parityPromotionNote")
                 }
             }
         }
         .navigationTitle("tab_nas".localized())
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    showingInfo = true
+                } label: {
+                    Image(systemName: "info")
+                }
+                .accessibilityLabel(String(format: "about_level".localized(), viewModel.system.displayName))
+                .accessibilityIdentifier("nasInfo")
+            }
+        }
+        .sheet(isPresented: $showingInfo) {
+            InfoSheet(topic: .system(viewModel.system))
+        }
         .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { contentWidth = $0 }
         .contentMargins(
             .horizontal,
@@ -107,7 +182,7 @@ struct NASView: View {
             Button("cancel".localized(), role: .cancel) {}
             Button("done".localized()) {
                 if let bay = customSizeBay, customSize > 0 {
-                    withAnimation(.snappy) { viewModel.setSize(customSize, forBay: bay) }
+                    withAnimation(motion) { viewModel.setSize(customSize, forBay: bay) }
                 }
             }
         }
@@ -118,7 +193,7 @@ struct NASView: View {
         return Menu {
             ForEach(NASViewModel.commonSizes, id: \.self) { option in
                 Button {
-                    withAnimation(.snappy) { viewModel.setSize(option, forBay: index) }
+                    withAnimation(motion) { viewModel.setSize(option, forBay: index) }
                 } label: {
                     if size == option {
                         Label(Self.tb(option), systemImage: "checkmark")
@@ -134,7 +209,7 @@ struct NASView: View {
             }
             if size != nil {
                 Button("remove_drive".localized(), role: .destructive) {
-                    withAnimation(.snappy) { viewModel.setSize(nil, forBay: index) }
+                    withAnimation(motion) { viewModel.setSize(nil, forBay: index) }
                 }
             }
         } label: {
@@ -156,6 +231,16 @@ struct NASView: View {
         .accessibilityIdentifier("bay\(index + 1)")
     }
 
+    static func text(for hint: NASHint) -> String {
+        switch hint {
+        case .snapraidParity(let recommended, let range):
+            // Word joiners keep “5–14” on one line.
+            String(format: "snapraid_parity_hint".localized(), recommended, "\(range.lowerBound)\u{2060}–\u{2060}\(range.upperBound)")
+        case .wideZFSGroup(let width):
+            String(format: "wide_zfs_group_caution_single".localized(), width)
+        }
+    }
+
     static func tb(_ value: Double) -> String {
         CapacitySummary.capacity(value, unit: CapacityUnit.tb.rawValue)
     }
@@ -175,10 +260,11 @@ struct NASView: View {
     }
 }
 
-/// The answer for a Synology: usable space, what it costs, the bay diagram,
-/// and the space this mix of drives leaves unused.
+/// The answer for any NAS system: usable space, what it costs, the bay
+/// diagram, and the space this mix of drives leaves unused.
 struct NASSummary: View {
     let result: BayResult
+    let system: NASSystem
 
     private var isValid: Bool { result.warningMessage == nil }
 
@@ -194,7 +280,7 @@ struct NASSummary: View {
                     .lineLimit(1)
                     .minimumScaleFactor(0.4)
                     .contentTransition(.numericText())
-                    .accessibilityIdentifier("synologyUsableCapacity")
+                    .accessibilityIdentifier("nasUsableCapacity")
                 if result.rawCapacity > 0 {
                     Text(String(
                         format: "raw_and_efficiency".localized(),
@@ -207,7 +293,7 @@ struct NASSummary: View {
             }
             .accessibilityElement(children: .combine)
 
-            BayDiagram(bays: result.bays)
+            BayDiagram(bays: result.bays, system: system)
 
             if isValid {
                 Label {
@@ -237,9 +323,22 @@ struct NASSummary: View {
             }
 
             if isValid, result.usableCapacity > 0 {
-                Text(String(format: "binary_capacity_note".localized(), CapacitySummary.binaryCapacity(result.usableCapacity, unit: .tb)))
+                if let estimate = result.zfsEstimate {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(String(format: "zfs_reported_note".localized(), CapacitySummary.binaryBytes(estimate.reportedBytes, unit: .tb)))
+                            .accessibilityIdentifier("zfsReportedNote")
+                            .accessibilityHint("zfs_estimate_hint".localized())
+                        if estimate.paddingLoss > 0.01 {
+                            Text(String(format: "zfs_padding_note".localized(), estimate.paddingLoss.formatted(.percent.precision(.fractionLength(0)))))
+                        }
+                    }
                     .font(.footnote)
                     .foregroundStyle(.secondary)
+                } else {
+                    Text(String(format: "binary_capacity_note".localized(), CapacitySummary.binaryCapacity(result.usableCapacity, unit: .tb)))
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                }
             }
         }
         .padding(.vertical, 6)
@@ -253,6 +352,8 @@ struct NASSummary: View {
 /// capacity is hatched so it reads as unavailable, not as another colour.
 struct BayDiagram: View {
     let bays: [[BaySegment]?]
+    var system: NASSystem
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @ScaledMetric(relativeTo: .body) private var scaledHeight: CGFloat = 132
     /// Grows with Dynamic Type, but not so far that it pushes the controls off screen.
     private var maxHeight: CGFloat { min(scaledHeight, 190) }
@@ -268,25 +369,17 @@ struct BayDiagram: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            HStack(alignment: .bottom, spacing: bays.count > 8 ? 4 : 8) {
-                ForEach(Array(bays.enumerated()), id: \.offset) { index, segments in
-                    VStack(spacing: 4) {
-                        column(segments)
-                            .frame(maxWidth: 72)
-                            .frame(height: maxHeight, alignment: .bottom)
-                        Text(segments.map { NASView.tb(total($0)) } ?? "empty_bay".localized())
-                            .font(bays.count > 6 ? .caption2 : .caption)
-                            .monospacedDigit()
-                            .foregroundStyle(.secondary)
-                            .lineLimit(1)
-                            .minimumScaleFactor(0.8)
-                            .fixedSize(horizontal: bays.count <= 6, vertical: false)
-                    }
-                    .accessibilityElement(children: .ignore)
-                    .accessibilityLabel(accessibilityLabel(bay: index, segments: segments))
+            // Under full motion the same bays animate their segments in place
+            // when the system changes. Under Reduce Motion a new system is a new
+            // diagram that fades in over the old one; the ZStack overlaps them.
+            Group {
+                if bays.count > 12 {
+                    ScrollView(.horizontal, showsIndicators: false) { columns }
+                } else {
+                    columns
                 }
             }
-            .animation(.snappy, value: bays)
+            .animation(reduceMotion ? .easeInOut(duration: 0.2) : .snappy, value: bays)
 
             ViewThatFits(in: .horizontal) {
                 HStack(spacing: 14) { legend }
@@ -295,6 +388,32 @@ struct BayDiagram: View {
             .font(.caption)
             .foregroundStyle(.secondary)
             .accessibilityHidden(true)
+        }
+    }
+
+    private var columns: some View {
+        ZStack(alignment: .bottomLeading) {
+            HStack(alignment: .bottom, spacing: bays.count > 8 ? 4 : 8) {
+                ForEach(Array(bays.enumerated()), id: \.offset) { index, segments in
+                    VStack(spacing: 4) {
+                        column(segments)
+                            .frame(minWidth: bays.count > 12 ? 24 : nil, maxWidth: 72)
+                            .frame(height: maxHeight, alignment: .bottom)
+                        Text(segments.map { NASView.tb(total($0)) } ?? "empty_bay".localized())
+                            .font(bays.count > 6 ? .caption2 : .caption)
+                            .monospacedDigit()
+                            .foregroundStyle(.secondary)
+                            .lineLimit(1)
+                            // Scrolling columns are 24 points wide; “20 TB” needs to shrink further to fit.
+                            .minimumScaleFactor(bays.count > 12 ? 0.6 : 0.8)
+                            .fixedSize(horizontal: bays.count <= 6, vertical: false)
+                    }
+                    .accessibilityElement(children: .ignore)
+                    .accessibilityLabel(accessibilityLabel(bay: index, segments: segments))
+                }
+            }
+            .id(reduceMotion ? AnyHashable(system) : AnyHashable(0))
+            .transition(.opacity.animation(.easeInOut(duration: 0.2)))
         }
     }
 
@@ -351,20 +470,24 @@ struct SegmentSwatch: View {
     let role: SegmentRole
 
     var body: some View {
+        Rectangle()
+            .fill(fill)
+            .overlay(Rectangle().strokeBorder(stroke, lineWidth: 1.5))
+            .overlay(Hatch().stroke(Color.secondary.opacity(role == .unused ? 0.55 : 0), lineWidth: 1))
+            .clipped()
+    }
+
+    private var fill: Color {
         switch role {
-        case .data:
-            Rectangle().fill(Color.accentColor)
-        case .parity:
-            Rectangle().fill(Color.indigo)
-        case .mirror:
-            Rectangle().fill(Color.accentColor.opacity(0.22))
-                .overlay(Rectangle().strokeBorder(Color.accentColor, lineWidth: 1.5))
-        case .unused:
-            Rectangle().fill(Color.secondary.opacity(0.12))
-                .overlay(Hatch().stroke(Color.secondary.opacity(0.55), lineWidth: 1))
-                .clipped()
+        case .data: .accentColor
+        case .parity: .indigo
+        case .mirror: .accentColor.opacity(0.22)
+        case .unused: .secondary.opacity(0.12)
         }
     }
+
+    /// Mirrors are outlined so the distinction doesn't rest on colour alone.
+    private var stroke: Color { role == .mirror ? .accentColor : .clear }
 
     static func name(of role: SegmentRole) -> String {
         switch role {
