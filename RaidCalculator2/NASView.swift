@@ -417,14 +417,34 @@ struct BayDiagram: View {
         return [.data, .parity, .mirror, .unused].filter(all.contains)
     }
 
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    /// Narrowest a column gets before the diagram wraps (regular width) or
+    /// scrolls (compact). Grows with Dynamic Type, so labels stay readable.
+    @ScaledMetric(relativeTo: .caption2) private var minColumn: CGFloat = 24
+    @State private var width: CGFloat = 0
+
+    private var spacing: CGFloat { bays.count > 8 ? 4 : 8 }
+
+    private var rows: [Range<Int>] {
+        AdaptiveLayout.bayRows(count: bays.count, width: width, minColumn: minColumn, spacing: spacing, wrap: horizontalSizeClass == .regular)
+    }
+
+    /// A single row that doesn't fit scrolls rather than squeezing its columns.
+    private var scrolls: Bool {
+        rows.count == 1 && width > 0 && CGFloat(bays.count) * (minColumn + spacing) - spacing > width
+    }
+
+    /// At accessibility sizes the labels drop the unit, which the legend states once.
+    private var numberOnlyLabels: Bool { dynamicTypeSize.isAccessibilitySize }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             // Under full motion the same bays animate their segments in place
             // with .snappy, whatever changed. Under Reduce Motion nothing moves:
-            // every change (system, a bay's size, bay or parity count) is a new
-            // diagram that crossfades over the old one; the ZStack overlaps them.
+            // every change is a new diagram that crossfades over the old one.
             Group {
-                if bays.count > 12 {
+                if scrolls {
                     ScrollView(.horizontal, showsIndicators: false) { columns }
                 } else {
                     columns
@@ -440,35 +460,49 @@ struct BayDiagram: View {
             .foregroundStyle(.secondary)
             .accessibilityHidden(true)
         }
+        .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { width = $0 }
     }
 
     private var columns: some View {
         ZStack(alignment: .bottomLeading) {
-            HStack(alignment: .bottom, spacing: bays.count > 8 ? 4 : 8) {
-                ForEach(Array(bays.enumerated()), id: \.offset) { index, segments in
-                    VStack(spacing: 4) {
-                        column(segments)
-                            .frame(minWidth: bays.count > 12 ? 24 : nil, maxWidth: 72)
-                            .frame(height: maxHeight, alignment: .bottom)
-                        Text(segments.map { NASView.tb(total($0)) } ?? "empty_bay".localized())
-                            .font(bays.count > 6 ? .caption2 : .caption)
-                            .monospacedDigit()
-                            .foregroundStyle(.secondary)
-                            .lineLimit(1)
-                            // Scrolling columns are 24 points wide; “20 TB” needs to shrink further to fit.
-                            .minimumScaleFactor(bays.count > 12 ? 0.6 : 0.8)
-                            .fixedSize(horizontal: bays.count <= 6, vertical: false)
+            VStack(alignment: .leading, spacing: 12) {
+                ForEach(rows, id: \.lowerBound) { row in
+                    HStack(alignment: .bottom, spacing: spacing) {
+                        ForEach(row, id: \.self) { index in bayColumn(index) }
                     }
-                    .accessibilityElement(children: .ignore)
-                    .accessibilityLabel(accessibilityLabel(bay: index, segments: segments))
                 }
             }
             // Keyed on the whole diagram under Reduce Motion, so any change swaps
             // the view instead of resizing its bars. The transition carries its
             // own animation because the change itself arrives unanimated.
-            .id(reduceMotion ? AnyHashable([AnyHashable(system), AnyHashable(bays)]) : AnyHashable(0))
+            .id(reduceMotion ? AnyHashable([AnyHashable(system), AnyHashable(bays), AnyHashable(rows.count)]) : AnyHashable(0))
             .transition(.opacity.animation(.easeInOut(duration: 0.2)))
         }
+    }
+
+    private func bayColumn(_ index: Int) -> some View {
+        let segments = bays[index]
+        return VStack(spacing: 4) {
+            column(segments)
+                .frame(minWidth: scrolls ? minColumn : nil, maxWidth: 72)
+                .frame(height: maxHeight, alignment: .bottom)
+            Text(label(for: segments))
+                .font(bays.count > 6 ? .caption2 : .caption)
+                .monospacedDigit()
+                .foregroundStyle(.secondary)
+                .lineLimit(1)
+                .minimumScaleFactor(scrolls ? 0.6 : 0.8)
+                .fixedSize(horizontal: bays.count <= 6, vertical: false)
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(accessibilityLabel(bay: index, segments: segments))
+    }
+
+    private func label(for segments: [BaySegment]?) -> String {
+        guard let segments else { return "empty_bay".localized() }
+        return numberOnlyLabels
+            ? total(segments).formatted(.number.precision(.fractionLength(0...2)))
+            : NASView.tb(total(segments))
     }
 
     @ViewBuilder
@@ -499,6 +533,9 @@ struct BayDiagram: View {
                     .clipShape(RoundedRectangle(cornerRadius: 2))
                 Text(SegmentSwatch.name(of: role))
             }
+        }
+        if numberOnlyLabels {
+            Text("bay_sizes_in_tb".localized())
         }
     }
 

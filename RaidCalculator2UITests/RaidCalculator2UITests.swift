@@ -441,6 +441,21 @@ final class RaidCalculator2UITests: XCTestCase {
         XCTAssertLessThan(usable.frame.maxX, picker.frame.minX)
         XCTAssertTrue(app.buttons["bay4"].isHittable, "every bay of a 4-bay setup fits beside the results")
     }
+
+    /// FR-14: 30 bays stay legible on iPad, in rows, with no scrolling.
+    @MainActor
+    func testIPadShowsThirtyBaysWithoutScrolling() throws {
+        try XCTSkipUnless(UIDevice.current.userInterfaceIdiom == .pad, "iPad layout")
+        XCUIDevice.shared.orientation = .landscapeLeft
+        let bays = "[" + Array(repeating: "8", count: 30).joined(separator: ",") + "]"
+        let app = launchNAS(system: "unraid", bays: bays, bayCount: 30)
+        XCTAssertTrue(app.staticTexts.matching(identifier: "nasUsableCapacity").firstMatch.waitForExistence(timeout: 5))
+        for bay in [1, 15, 16, 30] {
+            let column = app.descendants(matching: .any).matching(NSPredicate(format: "label BEGINSWITH %@", "Bay \(bay), ")).firstMatch
+            XCTAssertTrue(column.exists, "bay \(bay)")
+            XCTAssertTrue(column.isHittable, "bay \(bay) should be on screen without scrolling")
+        }
+    }
 }
 
 @MainActor
