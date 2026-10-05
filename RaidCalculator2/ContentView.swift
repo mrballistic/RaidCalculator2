@@ -197,7 +197,7 @@ struct ContentView: View {
         )
         .sensoryFeedback(.selection, trigger: viewModel.selectedLevel)
         .sheet(isPresented: $showingInfoSheet) {
-            RaidInfoSheet(level: viewModel.selectedLevel)
+            InfoSheet(topic: .level(viewModel.selectedLevel))
         }
     }
 
