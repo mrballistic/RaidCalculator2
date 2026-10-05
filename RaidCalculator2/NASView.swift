@@ -475,7 +475,7 @@ struct BayDiagram: View {
             // Keyed on the whole diagram under Reduce Motion, so any change swaps
             // the view instead of resizing its bars. The transition carries its
             // own animation because the change itself arrives unanimated.
-            .id(reduceMotion ? AnyHashable([AnyHashable(system), AnyHashable(bays), AnyHashable(rows.count)]) : AnyHashable(0))
+            .id(reduceMotion ? AnyHashable([AnyHashable(system), AnyHashable(bays)]) : AnyHashable(0))
             .transition(.opacity.animation(.easeInOut(duration: 0.2)))
         }
     }
@@ -484,7 +484,7 @@ struct BayDiagram: View {
         let segments = bays[index]
         return VStack(spacing: 4) {
             column(segments)
-                .frame(minWidth: scrolls ? minColumn : nil, maxWidth: 72)
+                .frame(minWidth: scrolls ? minColumn : nil, maxWidth: max(72, minColumn))
                 .frame(height: maxHeight, alignment: .bottom)
             Text(label(for: segments))
                 .font(bays.count > 6 ? .caption2 : .caption)

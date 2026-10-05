@@ -448,13 +448,16 @@ final class RaidCalculator2UITests: XCTestCase {
         try XCTSkipUnless(UIDevice.current.userInterfaceIdiom == .pad, "iPad layout")
         XCUIDevice.shared.orientation = .landscapeLeft
         let bays = "[" + Array(repeating: "8", count: 30).joined(separator: ",") + "]"
-        let app = launchNAS(system: "unraid", bays: bays, bayCount: 30)
+        let app = launchNAS(system: "snapraid", bays: bays, bayCount: 30)
         XCTAssertTrue(app.staticTexts.matching(identifier: "nasUsableCapacity").firstMatch.waitForExistence(timeout: 5))
-        for bay in [1, 15, 16, 30] {
-            let column = app.descendants(matching: .any).matching(NSPredicate(format: "label BEGINSWITH %@", "Bay \(bay), ")).firstMatch
-            XCTAssertTrue(column.exists, "bay \(bay)")
-            XCTAssertTrue(column.isHittable, "bay \(bay) should be on screen without scrolling")
+        func column(_ bay: Int) -> XCUIElement {
+            app.descendants(matching: .any).matching(NSPredicate(format: "label BEGINSWITH %@", "Bay \(bay), ")).firstMatch
         }
+        for bay in [1, 15, 16, 30] {
+            XCTAssertTrue(column(bay).exists, "bay \(bay)")
+            XCTAssertTrue(column(bay).isHittable, "bay \(bay) should be on screen without scrolling")
+        }
+        XCTAssertGreaterThan(column(16).frame.minY, column(15).frame.maxY, "bay 16 should start a second row")
     }
 }
 
