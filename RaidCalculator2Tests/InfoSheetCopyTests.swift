@@ -21,4 +21,19 @@ struct InfoSheetCopyTests {
         let key = "\(level.stringKeyPrefix)_calculation"
         #expect(key.localized().contains("128 GiB"), "missing or wrong \(key)")
     }
+
+    @Test(arguments: [NASSystem.synology, .unraid, .zfs, .snapraid, .btrfs])
+    func everySystemHasItsSheetCopy(system: NASSystem) {
+        for field in ["description", "pros", "cons", "use_cases", "calculation"] {
+            let key = "\(system.stringKeyPrefix)_\(field)"
+            #expect(key.localized() != key, "missing \(key)")
+        }
+        if let footnote = system.notAffiliatedKey {
+            #expect(footnote.localized() != footnote, "missing \(footnote)")
+        }
+    }
+
+    @Test func snapraidSheetSaysProtectionIsOnlyAsCurrentAsTheLastSync() {
+        #expect("snapraid_cons".localized().contains("last sync"))
+    }
 }
