@@ -11,6 +11,8 @@ struct NASView: View {
     @State private var customSizeBay: Int?
     @State private var customSize: Double = 8
     @State private var showingInfo = false
+    @State private var showingComparison = false
+    @State private var pendingSystem: NASSystem?
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
@@ -25,6 +27,14 @@ struct NASView: View {
     @ViewBuilder private var summarySection: some View {
         Section {
             NASSummary(result: viewModel.result, system: viewModel.system)
+            if !twoColumns {
+                Button {
+                    showingComparison = true
+                } label: {
+                    Label("compare_systems".localized(), systemImage: "rectangle.split.3x1")
+                }
+                .accessibilityIdentifier("compareSystems")
+            }
         }
     }
 
@@ -176,6 +186,11 @@ struct NASView: View {
                 HStack(alignment: .top, spacing: 0) {
                     Form {
                         summarySection
+                        Section("compare_header".localized()) {
+                            NASComparisonColumns(comparison: viewModel.comparison, current: viewModel.system) { system in
+                                withAnimation(motion) { viewModel.system = system }
+                            }
+                        }
                         adviceSections
                     }
                     Divider()
@@ -215,6 +230,15 @@ struct NASView: View {
         }
         .sheet(isPresented: $showingInfo) {
             InfoSheet(topic: .system(viewModel.system))
+        }
+        .sheet(isPresented: $showingComparison, onDismiss: {
+            // Applied once the sheet is gone, so the bays visibly re-split.
+            if let system = pendingSystem {
+                pendingSystem = nil
+                withAnimation(motion) { viewModel.system = system }
+            }
+        }) {
+            NASComparisonSheet(comparison: viewModel.comparison, current: viewModel.system) { pendingSystem = $0 }
         }
         .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { contentWidth = $0 }
         .alert(

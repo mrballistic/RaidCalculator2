@@ -424,6 +424,29 @@ final class RaidCalculator2UITests: XCTestCase {
         XCTAssertTrue(footnote.label.contains("Lime Technology"), footnote.label)
     }
 
+    /// FR-13 on iPhone: a sheet from the results card; tapping a system
+    /// switches to it and keeps the drives (Review Focus 5).
+    @MainActor
+    func testCompareSystemsSwitchesSystem() throws {
+        let app = launchNAS()
+        let compare = app.buttons["compareSystems"]
+        XCTAssertTrue(compare.waitForExistence(timeout: 5))
+        compare.tap()
+        let zfs = app.buttons["compare_zfs"]
+        XCTAssertTrue(zfs.waitForExistence(timeout: 3))
+        // The sheet opens at the medium detent, where the list hasn't loaded
+        // its last row yet; pull it up to large to see every system.
+        app.buttons["compare_synology"].swipeUp()
+        XCTAssertEqual(app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'compare_'")).count, 5)
+        zfs.tap()
+        let gone = expectation(for: NSPredicate(format: "exists == false"), evaluatedWith: zfs)
+        wait(for: [gone], timeout: 3)
+        XCTAssertEqual(nasCapacity(app), tb(12))
+        let bay4 = app.buttons["bay4"]
+        reveal(bay4, in: app)
+        XCTAssertTrue(bay4.label.contains(tb(8)), bay4.label)
+    }
+
     /// A stored value from 1.5 ("synology") opens the RAID tab. (Review Focus 5)
     @MainActor
     func testUnknownStoredTabOpensRaidTab() throws {
@@ -478,6 +501,19 @@ final class RaidCalculator2UITests: XCTestCase {
             XCTAssertTrue(column(bay).isHittable, "bay \(bay) should be on screen without scrolling")
         }
         XCTAssertGreaterThan(column(16).frame.minY, column(15).frame.maxY, "bay 16 should start a second row")
+    }
+
+    /// FR-13 on iPad: columns beside the results, no sheet.
+    @MainActor
+    func testIPadComparesSystemsInColumns() throws {
+        try XCTSkipUnless(UIDevice.current.userInterfaceIdiom == .pad, "iPad layout")
+        XCUIDevice.shared.orientation = .landscapeLeft
+        let app = launchNAS()
+        let unraid = app.buttons["compare_unraid"]
+        XCTAssertTrue(unraid.waitForExistence(timeout: 5))
+        XCTAssertFalse(app.buttons["compareSystems"].exists)
+        app.buttons["compare_zfs"].tap()
+        XCTAssertEqual(nasCapacity(app), tb(12))
     }
 }
 
