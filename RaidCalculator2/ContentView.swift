@@ -139,22 +139,13 @@ struct ContentView: View {
                 .transition(reduceMotion ? .opacity : .opacity.combined(with: .move(edge: .top)))
             }
 
-            LabeledContent("drive_size".localized()) {
-                HStack(spacing: 12) {
-                    DriveSizeField(value: $viewModel.driveSize, focus: $sizeFieldFocused)
-                        .frame(minWidth: 56, maxWidth: 140)
-
-                    Picker(selection: $viewModel.unit) {
-                        ForEach(CapacityUnit.allCases) { unit in
-                            Text(unit.rawValue).tag(unit)
-                        }
-                    } label: {
-                        Text("drive_size".localized())
-                    }
-                    .pickerStyle(.segmented)
-                    .labelsHidden()
-                    .fixedSize()
+            if dynamicTypeSize.isAccessibilitySize {
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("drive_size".localized())
+                    driveSizeControls
                 }
+            } else {
+                LabeledContent("drive_size".localized()) { driveSizeControls }
             }
         } header: {
             Text("drive_configuration".localized())
@@ -166,6 +157,24 @@ struct ContentView: View {
                      ? String(format: "group_layout_single".localized(), width)
                      : String(format: "group_layout".localized(), groups, width))
             }
+        }
+    }
+
+    private var driveSizeControls: some View {
+        HStack(spacing: 12) {
+            DriveSizeField(value: $viewModel.driveSize, focus: $sizeFieldFocused)
+                .frame(minWidth: 56, maxWidth: dynamicTypeSize.isAccessibilitySize ? .infinity : 140)
+
+            Picker(selection: $viewModel.unit) {
+                ForEach(CapacityUnit.allCases) { unit in
+                    Text(unit.rawValue).tag(unit)
+                }
+            } label: {
+                Text("drive_size".localized())
+            }
+            .pickerStyle(.segmented)
+            .labelsHidden()
+            .fixedSize()
         }
     }
 
@@ -613,27 +622,44 @@ private struct ClippedHeight: ViewModifier, Animatable {
 struct RatingRow: View {
     let title: String
     let rating: Int
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     private var label: String { RaidCalculator.ratingLabel(rating) }
 
     var body: some View {
-        LabeledContent {
-            HStack(spacing: 8) {
-                HStack(spacing: 2) {
-                    ForEach(1...5, id: \.self) { star in
-                        Image(systemName: star <= rating ? "star.fill" : "star")
-                            .foregroundStyle(star <= rating ? AnyShapeStyle(.tint) : AnyShapeStyle(.tertiary))
-                    }
+        Group {
+            if dynamicTypeSize.isAccessibilitySize {
+                // Title, stars and word each get their own line, so none breaks mid-word.
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(title)
+                    stars
+                    Text(label)
+                        .foregroundStyle(.secondary)
                 }
-                .font(.footnote)
-                Text(label)
-                    .foregroundStyle(.secondary)
+            } else {
+                LabeledContent {
+                    HStack(spacing: 8) {
+                        stars
+                        Text(label)
+                            .foregroundStyle(.secondary)
+                    }
+                } label: {
+                    Text(title)
+                }
             }
-        } label: {
-            Text(title)
         }
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(String(format: "rating_accessibility".localized(), title, rating, label))
+    }
+
+    private var stars: some View {
+        HStack(spacing: 2) {
+            ForEach(1...5, id: \.self) { star in
+                Image(systemName: star <= rating ? "star.fill" : "star")
+                    .foregroundStyle(star <= rating ? AnyShapeStyle(.tint) : AnyShapeStyle(.tertiary))
+            }
+        }
+        .font(.footnote)
     }
 }
 

@@ -16,7 +16,7 @@ final class RaidCalculator2UITests: XCTestCase {
     /// Launches with a known configuration. Launch arguments override the
     /// persisted UserDefaults, so each test starts from RAID 5, 4 × 4 TB.
     @MainActor
-    private func launchApp(level: String = "R 5", drives: Int = 4, groups: Int = 1, language: String = "en", locale: String = "en_US") -> XCUIApplication {
+    private func launchApp(level: String = "R 5", drives: Int = 4, groups: Int = 1, language: String = "en", locale: String = "en_US", contentSize: String? = nil) -> XCUIApplication {
         let app = XCUIApplication()
         app.launchArguments += [
             "-selectedLevel", level,
@@ -27,6 +27,7 @@ final class RaidCalculator2UITests: XCTestCase {
             "-AppleLanguages", "(\(language))",
             "-AppleLocale", locale,
         ]
+        if let contentSize { app.launchArguments += ["-UIPreferredContentSizeCategoryName", contentSize] }
         app.launch()
         return app
     }
@@ -514,6 +515,22 @@ final class RaidCalculator2UITests: XCTestCase {
         XCTAssertFalse(app.buttons["compareSystems"].exists)
         app.buttons["compare_zfs"].tap()
         XCTAssertEqual(nasCapacity(app), tb(12))
+    }
+
+    /// At the largest text size the drive size is still on screen and editable.
+    @MainActor
+    func testDriveSizeAtAccessibilitySize() throws {
+        let app = launchApp(contentSize: "UICTContentSizeCategoryAccessibilityXXXL")
+        let field = app.textFields["driveSizeField"]
+        reveal(field, in: app)
+        let label = app.staticTexts["Drive Size"]
+        XCTAssertTrue(label.exists)
+        XCTAssertLessThan(label.frame.maxY, field.frame.minY + 1, "label sits above the field")
+        field.tap()
+        field.typeText(XCUIKeyboardKey.delete.rawValue + "8")
+        app.toolbars.buttons["Done"].tap()
+        reveal(app.staticTexts.matching(identifier: "usableCapacity").firstMatch, in: app, scrollingDown: false)
+        XCTAssertTrue(capacity(app).hasPrefix("Usable Capacity, 24 TB,"), capacity(app))
     }
 }
 
