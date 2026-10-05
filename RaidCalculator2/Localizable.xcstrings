@@ -281,6 +281,41 @@
         }
       }
     },
+    "btrfs_raid1_validation" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Btrfs RAID1 needs at least 2 drives."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Btrfs RAID1 necesita al menos 2 discos."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le Btrfs RAID1 nécessite au moins 2 disques."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Btrfs RAID1 richiede almeno 2 dischi."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Btrfs RAID1には2台以上のドライブが必要です。"
+          }
+        }
+      }
+    },
     "cancel" : {
       "extractionState" : "manual",
       "localizations" : {
