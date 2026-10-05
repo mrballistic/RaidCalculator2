@@ -446,8 +446,11 @@ struct BayDiagram: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     /// Narrowest a column gets before the diagram wraps (regular width) or
-    /// scrolls (compact). Grows with Dynamic Type, so labels stay readable.
-    @ScaledMetric(relativeTo: .caption2) private var minColumn: CGFloat = 24
+    /// scrolls (compact). Grows with Dynamic Type, so labels stay readable,
+    /// but stops at 64 pt: at the largest sizes the scaled value (about 87 pt)
+    /// pushed even four bays past a phone's card edge.
+    @ScaledMetric(relativeTo: .caption2) private var scaledMinColumn: CGFloat = 24
+    private var minColumn: CGFloat { min(scaledMinColumn, 64) }
     @State private var width: CGFloat = 0
 
     private var spacing: CGFloat { bays.count > 8 ? 4 : 8 }
