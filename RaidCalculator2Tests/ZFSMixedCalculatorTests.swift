@@ -47,4 +47,26 @@ struct ZFSMixedCalculatorTests {
         #expect(ZFSMixedCalculator.level(parity: 2) == .raidz2)
         #expect(ZFSMixedCalculator.level(parity: 3) == .raidz3)
     }
+
+    // Final review I2: more parity than drives draws no negative data slice.
+    @Test func tooFewDrivesDrawNoNegativeSlices() {
+        let r = calculator.calculate(bays: [8, 8], parity: 3)
+        #expect(r.warningMessage == "Each RAID-Z3 group needs at least 4 drives.")
+        for segments in r.bays.compactMap({ $0 }) {
+            #expect(segments.allSatisfy { $0.size > 0 }, "\(segments)")
+        }
+        #expect(r.bays[0] == [BaySegment(role: .parity, size: 8)])
+    }
+
+    @Test func oneDriveDrawsNoEmptyDataSlice() {
+        let r = calculator.calculate(bays: [8], parity: 1)
+        #expect(r.warningMessage != nil)
+        #expect(r.bays[0] == [BaySegment(role: .parity, size: 8)])
+    }
+
+    // Final review M2: equal drives leave exactly nothing unused.
+    @Test func equalFractionalDrivesLeaveExactlyNothingUnused() {
+        let r = calculator.calculate(bays: Array(repeating: 1.2, count: 6), parity: 1)
+        #expect(r.unusedCapacity == 0)
+    }
 }

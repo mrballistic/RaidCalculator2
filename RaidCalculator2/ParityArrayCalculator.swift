@@ -11,6 +11,8 @@ import Foundation
 struct ParityArrayCalculator {
     /// “Unraid” or “SnapRAID”, for messages.
     let systemName: String
+    /// Unraid's array holds at most 28 data drives; SnapRAID has no limit.
+    var maxDataDrives: Int? = nil
 
     /// The largest drives are parity (ties go to the lower bay), so parity is
     /// always at least as large as every data drive, which both systems require.
@@ -37,6 +39,8 @@ struct ParityArrayCalculator {
             warning = "no_drives".localized()
         } else if installedCount <= parity {
             warning = String(format: "parity_needs_data".localized(), systemName)
+        } else if let maxDataDrives, installedCount - parityIndices.count > maxDataDrives {
+            warning = "unraid_data_limit".localized()
         }
 
         return BayResult(
@@ -45,7 +49,7 @@ struct ParityArrayCalculator {
             unusedCapacity: 0,
             failuresTolerated: warning == nil ? parity : 0,
             warningMessage: warning,
-            bays: segments
+            bays: segments.withoutEmptySlices
         )
     }
 

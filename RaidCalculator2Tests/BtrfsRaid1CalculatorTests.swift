@@ -43,4 +43,17 @@ struct BtrfsRaid1CalculatorTests {
     @Test func noDrivesWarns() {
         #expect(calculator.calculate(bays: [nil, nil]).warningMessage == "Add a drive to a bay to get started.")
     }
+
+    // Final review I2: a lone drive draws no 0 TB data or mirror slice.
+    @Test func oneDriveDrawsNoEmptySlices() {
+        let r = calculator.calculate(bays: [8, nil])
+        #expect(r.bays[0] == [BaySegment(role: .unused, size: 8)])
+    }
+
+    // Final review M7
+    @Test func twoEqualLargestDrives() {
+        let r = calculator.calculate(bays: [8, 8, 4])
+        #expect(r.usableCapacity == 10)
+        #expect(r.unusedCapacity == 0)
+    }
 }

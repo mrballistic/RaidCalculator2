@@ -36,4 +36,9 @@ struct InfoSheetCopyTests {
     @Test func snapraidSheetSaysProtectionIsOnlyAsCurrentAsTheLastSync() {
         #expect("snapraid_cons".localized().contains("last sync"))
     }
+
+    // Final review M7
+    @Test func zfsSheetExplainsTheReservation() {
+        #expect("zfs_calculation".localized().contains("128 GiB"))
+    }
 }

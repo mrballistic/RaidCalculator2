@@ -42,7 +42,7 @@ struct BtrfsRaid1Calculator {
             unusedCapacity: valid ? largest - largestUsed : 0,
             failuresTolerated: valid ? 1 : 0,
             warningMessage: warning,
-            bays: segments
+            bays: segments.withoutEmptySlices
         )
     }
 }

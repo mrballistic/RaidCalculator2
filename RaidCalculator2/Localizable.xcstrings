@@ -5251,6 +5251,41 @@
         }
       }
     },
+    "unraid_data_limit" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unraid arrays hold up to 28 data drives plus 2 parity drives."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un conjunto de Unraid admite hasta 28 discos de datos más 2 discos de paridad."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Une grappe Unraid accepte jusqu’à 28 disques de données plus 2 disques de parité."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un array Unraid contiene fino a 28 dischi dati più 2 dischi di parità."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unraidのアレイには、データドライブを最大28台、パリティドライブを2台まで搭載できます。"
+          }
+        }
+      }
+    },
     "unraid_description" : {
       "extractionState" : "manual",
       "localizations" : {

@@ -76,7 +76,7 @@ struct SynologyCalculator {
             unusedCapacity: warning == nil ? unused : 0,
             failuresTolerated: warning == nil ? failuresTolerated(installedCount: installed.count, type: type) : 0,
             warningMessage: warning,
-            bays: segments
+            bays: segments.withoutEmptySlices
         )
     }
 

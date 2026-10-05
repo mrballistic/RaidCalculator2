@@ -22,6 +22,14 @@ struct BaySegment: Hashable {
     let size: Double
 }
 
+extension Array where Element == [BaySegment]? {
+    /// Drops slices with nothing in them, so an invalid layout never draws or
+    /// reads aloud a 0 TB (or negative) layer.
+    var withoutEmptySlices: [[BaySegment]?] {
+        map { $0?.filter { $0.size > 0 } }
+    }
+}
+
 struct BaySuggestion: Equatable {
     enum Kind: Equatable {
         case add(bay: Int)

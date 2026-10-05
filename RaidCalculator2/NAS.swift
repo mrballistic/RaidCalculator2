@@ -125,7 +125,8 @@ struct NASCalculator {
         let parity = setup.settings.parity(for: setup.system) ?? 0
         switch setup.system {
         case .synology: return synology.calculate(bays: setup.bays, type: setup.settings.synologyType)
-        case .unraid, .snapraid: return ParityArrayCalculator(systemName: setup.system.displayName).calculate(bays: setup.bays, parity: parity)
+        case .unraid: return ParityArrayCalculator(systemName: setup.system.displayName, maxDataDrives: 28).calculate(bays: setup.bays, parity: parity)
+        case .snapraid: return ParityArrayCalculator(systemName: setup.system.displayName).calculate(bays: setup.bays, parity: parity)
         case .zfs: return zfs.calculate(bays: setup.bays, parity: parity)
         case .btrfs: return btrfs.calculate(bays: setup.bays)
         }

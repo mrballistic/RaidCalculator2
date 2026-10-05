@@ -99,4 +99,24 @@ struct NASCalculatorTests {
         #expect(calculator.hints(setup(.zfs, fourteen, parity: 2)) == [.wideZFSGroup(width: 14)])
         #expect(calculator.hints(setup(.zfs, Array(fourteen.prefix(12)), parity: 2)).isEmpty)
     }
+
+    // Final review I1: Unraid's array is at most 28 data drives plus 2 parity.
+    @Test func unraidHoldsAtMost28DataDrives() {
+        let bays: [Double?] = Array(repeating: 8, count: 30)
+        let over = calculator.calculate(setup(.unraid, bays, parity: 1))
+        #expect(over.warningMessage == "Unraid arrays hold up to 28 data drives plus 2 parity drives.")
+        #expect(over.usableCapacity == 0)
+        #expect(over.failuresTolerated == 0)
+
+        let full = calculator.calculate(setup(.unraid, bays, parity: 2))
+        #expect(full.warningMessage == nil)
+        #expect(full.usableCapacity == 224)   // 28 data drives × 8 TB
+        #expect(full.failuresTolerated == 2)
+    }
+
+    @Test func snapraidHasNoDataDriveLimit() {
+        let r = calculator.calculate(setup(.snapraid, Array(repeating: 8, count: 30), parity: 1))
+        #expect(r.warningMessage == nil)
+        #expect(r.usableCapacity == 232)      // 29 data drives × 8 TB
+    }
 }
