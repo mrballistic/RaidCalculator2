@@ -167,8 +167,11 @@ struct NASView: View {
 
     @ViewBuilder private var drivesSection: some View {
         Section {
-            ForEach(viewModel.bays.indices, id: \.self) { index in
-                bayRow(index)
+            // Each row gets its size handed in rather than reading the array:
+            // switching to a system with fewer bays shrinks `bays`, and a row
+            // still being torn down must never index past the new end.
+            ForEach(Array(viewModel.bays.enumerated()), id: \.offset) { index, size in
+                bayRow(index, size: size)
             }
         } header: {
             Text("drives_section".localized())
@@ -256,9 +259,8 @@ struct NASView: View {
         }
     }
 
-    private func bayRow(_ index: Int) -> some View {
-        let size = viewModel.bays[index]
-        return Menu {
+    private func bayRow(_ index: Int, size: Double?) -> some View {
+        Menu {
             ForEach(NASViewModel.commonSizes, id: \.self) { option in
                 Button {
                     withAnimation(motion) { viewModel.setSize(option, forBay: index) }

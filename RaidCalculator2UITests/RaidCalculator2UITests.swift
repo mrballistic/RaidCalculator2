@@ -536,6 +536,35 @@ final class RaidCalculator2UITests: XCTestCase {
         XCTAssertEqual(nasCapacity(app), tb(12))
     }
 
+    /// Switching from 30 Unraid bays to Synology shrinks the drive list to 12
+    /// rows. It used to crash: the list still drew the old rows' indices into
+    /// the shorter array. Covers both the comparison columns and the picker.
+    @MainActor
+    func testIPadSwitchToSynologyFromThirtyBays() throws {
+        try XCTSkipUnless(UIDevice.current.userInterfaceIdiom == .pad, "iPad layout")
+        XCUIDevice.shared.orientation = .landscapeLeft
+        let bays = "[" + Array(repeating: "8", count: 30).joined(separator: ",") + "]"
+        let app = launchNAS(system: "unraid", bays: bays, bayCount: 30)
+        let usable = app.staticTexts.matching(identifier: "nasUsableCapacity").firstMatch
+        XCTAssertTrue(usable.waitForExistence(timeout: 5))
+
+        func assertTwelveBays(_ route: String) {
+            XCTAssertTrue(usable.waitForExistence(timeout: 2), "still running after switching via \(route)")
+            XCTAssertEqual(app.state, .runningForeground, route)
+            XCTAssertTrue(app.buttons["bay12"].waitForExistence(timeout: 2), route)
+            XCTAssertFalse(app.buttons["bay13"].exists, route)
+        }
+
+        app.buttons["compare_synology"].tap()
+        assertTwelveBays("comparison columns")
+
+        app.buttons["compare_unraid"].tap()
+        XCTAssertTrue(app.buttons["bay13"].waitForExistence(timeout: 2), "Unraid keeps all 30 bays")
+        app.buttons["nasSystem"].tap()
+        app.buttons["Synology"].tap()
+        assertTwelveBays("system picker")
+    }
+
     /// At the largest text size the drive size is still on screen and editable.
     @MainActor
     func testDriveSizeAtAccessibilitySize() throws {
