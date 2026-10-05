@@ -26,12 +26,27 @@ final class NASViewModel {
     private(set) var current = NASSetup(system: .synology, bays: [4, 4, 8, 8], settings: NASSettings())
 
     var bayCount: Int { min(max(requestedBayCount, system.bayRange.lowerBound), system.bayRange.upperBound) }
-    var bays: [Double?] { Array(allBays.prefix(bayCount)) + Array(repeating: nil, count: max(0, bayCount - allBays.count)) }
+    var bays: [Double?] { bays(for: system) }
+
+    /// What `system` reads of the drives: the first bays up to its limit, the
+    /// same rule as switching to it.
+    func bays(for system: NASSystem) -> [Double?] {
+        let count = min(max(requestedBayCount, system.bayRange.lowerBound), system.bayRange.upperBound)
+        return Array(allBays.prefix(count)) + Array(repeating: nil, count: max(0, count - allBays.count))
+    }
     var setup: NASSetup { NASSetup(system: system, bays: bays, settings: settings) }
 
     var result: BayResult { calculator.calculate(setup) }
     var suggestion: BaySuggestion? { calculator.suggestion(setup) }
     var hints: [NASHint] { calculator.hints(setup) }
+
+    /// The same drives under every system, each with its own setting (FR-13).
+    var comparison: [NASComparison] {
+        calculator.compare(
+            NASSystem.allCases.map { NASSetup(system: $0, bays: bays(for: $0), settings: settings) },
+            requestedBayCount: requestedBayCount
+        )
+    }
 
     var differsFromCurrent: Bool { !setup.isEquivalent(to: current) }
 

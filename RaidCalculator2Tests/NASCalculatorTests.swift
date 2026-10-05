@@ -119,4 +119,32 @@ struct NASCalculatorTests {
         #expect(r.warningMessage == nil)
         #expect(r.usableCapacity == 232)      // 29 data drives × 8 TB
     }
+
+    // Same drives, every system (FR-13). Synology, Unraid and SnapRAID tie
+    // at 20 TB, so the picker's order decides between them.
+    @Test func compareSortsByUsableThenPickerOrder() {
+        let bays: [Double?] = [16, 8, 8, 4]
+        let rows = NASCalculator().compare(
+            NASSystem.allCases.map { NASSetup(system: $0, bays: bays, settings: NASSettings()) },
+            requestedBayCount: 4
+        )
+        #expect(rows.map(\.system) == [.synology, .unraid, .snapraid, .btrfs, .zfs])
+        #expect(rows.map(\.usableCapacity) == [20, 20, 20, 18, 12])
+        #expect(rows.allSatisfy { $0.isValid && $0.failuresTolerated == 1 && $0.bayLimit == nil })
+        #expect(rows.last?.unusedCapacity == 20)
+    }
+
+    // Review Focus 2: a system that can't use the drives sorts below every one that can.
+    @Test func invalidSetupsSortLast() throws {
+        var settings = NASSettings()
+        settings.snapraidParity = 2
+        let rows = NASCalculator().compare(
+            NASSystem.allCases.map { NASSetup(system: $0, bays: [8, 8], settings: settings) },
+            requestedBayCount: 2
+        )
+        let firstInvalid = try #require(rows.firstIndex { !$0.isValid })
+        #expect(rows[firstInvalid...].allSatisfy { !$0.isValid })
+        #expect(rows[..<firstInvalid].allSatisfy { $0.isValid })
+        #expect(rows.first { $0.system == .snapraid }?.isValid == false)
+    }
 }

@@ -122,4 +122,20 @@ struct NASViewModelTests {
         model.applySuggestion()
         #expect(model.bays == [16, 8, 8, 8])
     }
+
+    // Review Focus 1: Synology reads the first 12 of 14 bays; the rest read all 14.
+    @Test func comparisonNotesSynologysBayLimit() {
+        let model = NASViewModel(userDefaults: freshDefaults())
+        model.system = .unraid
+        model.setBayCount(14)
+        for bay in 0..<14 { model.setSize(8, forBay: bay) }
+        let rows = model.comparison
+        #expect(rows.count == 5)
+        #expect(rows.first { $0.system == .synology }?.bayLimit == 12)
+        #expect(rows.filter { $0.system != .synology }.allSatisfy { $0.bayLimit == nil })
+        let unraid = rows.first { $0.system == .unraid }
+        #expect(unraid?.usableCapacity == 104)    // 14 bays × 8 TB, one parity
+        #expect(model.bays(for: .synology).count == 12)
+        #expect(model.bays.count == 14)
+    }
 }
