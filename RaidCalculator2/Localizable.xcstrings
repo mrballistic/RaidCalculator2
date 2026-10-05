@@ -1681,6 +1681,41 @@
         }
       }
     },
+    "parity_needs_data" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ needs at least one data drive besides its parity drives."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ necesita al menos un disco de datos además de sus discos de paridad."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ nécessite au moins un disque de données en plus de ses disques de parité."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ richiede almeno un disco dati oltre ai dischi di parità."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@には、パリティドライブのほかに1台以上のデータドライブが必要です。"
+          }
+        }
+      }
+    },
     "performance_ratings" : {
       "extractionState" : "manual",
       "localizations" : {
