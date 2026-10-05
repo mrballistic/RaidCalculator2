@@ -107,3 +107,103 @@ struct NASSetup: Codable, Equatable {
         }
     }
 }
+
+/// Advice shown under the results; never a block.
+enum NASHint: Equatable {
+    /// SnapRAID recommends more parity for this many data drives.
+    case snapraidParity(recommended: Int, dataDrives: ClosedRange<Int>)
+    /// A RAID-Z group wider than 12 drives rebuilds slowly.
+    case wideZFSGroup(width: Int)
+}
+
+struct NASCalculator {
+    private let synology = SynologyCalculator()
+    private let zfs = ZFSMixedCalculator()
+    private let btrfs = BtrfsRaid1Calculator()
+
+    func calculate(_ setup: NASSetup) -> BayResult {
+        let parity = setup.settings.parity(for: setup.system) ?? 0
+        switch setup.system {
+        case .synology: return synology.calculate(bays: setup.bays, type: setup.settings.synologyType)
+        case .unraid, .snapraid: return ParityArrayCalculator(systemName: setup.system.displayName).calculate(bays: setup.bays, parity: parity)
+        case .zfs: return zfs.calculate(bays: setup.bays, parity: parity)
+        case .btrfs: return btrfs.calculate(bays: setup.bays)
+        }
+    }
+
+    /// The single purchase that unlocks the most space, per system:
+    /// - Synology: unchanged (a drive the size of the largest, into an empty bay
+    ///   or in place of the smallest, only when space is unused).
+    /// - Unraid, SnapRAID: a data drive the size of the smallest parity drive,
+    ///   into an empty bay or in place of the smallest data drive. A bigger new
+    ///   parity drive never adds more right away: data drives are capped at
+    ///   parity size, so its gain equals this one's.
+    /// - ZFS: replace the uniquely smallest drive with the next size up already
+    ///   in the group, the cheapest drive that lifts the floor. Adding a drive
+    ///   needs RAID-Z expansion (OpenZFS 2.3+), so it isn't suggested.
+    /// - Btrfs RAID1: a drive the size of the largest, into an empty bay or in
+    ///   place of the smallest.
+    func suggestion(_ setup: NASSetup) -> BaySuggestion? {
+        if setup.system == .synology {
+            return synology.suggestion(bays: setup.bays, type: setup.settings.synologyType)
+        }
+        let current = calculate(setup)
+        guard current.warningMessage == nil else { return nil }
+
+        let sizes = setup.bays.compactMap { $0 }
+        let emptyBay = setup.bays.firstIndex { $0 == nil }
+        var candidate: (kind: BaySuggestion.Kind, size: Double)?
+
+        switch setup.system {
+        case .synology:
+            return nil
+        case .unraid, .snapraid:
+            let parityBays = ParityArrayCalculator.parityBays(bays: setup.bays, parity: setup.settings.parity(for: setup.system) ?? 1)
+            guard let paritySize = parityBays.compactMap({ setup.bays[$0] }).min() else { return nil }
+            if let empty = emptyBay {
+                candidate = (.add(bay: empty), paritySize)
+            } else if let smallest = setup.bays.indices.filter({ !parityBays.contains($0) }).min(by: { (setup.bays[$0] ?? 0, $0) < (setup.bays[$1] ?? 0, $1) }),
+                      let size = setup.bays[smallest], size < paritySize {
+                candidate = (.replace(bay: smallest, currentSize: size), paritySize)
+            }
+        case .zfs:
+            guard let smallest = sizes.min(), sizes.filter({ $0 == smallest }).count == 1,
+                  let next = Set(sizes).filter({ $0 > smallest }).min(),
+                  let index = setup.bays.firstIndex(where: { $0 == smallest }) else { return nil }
+            candidate = (.replace(bay: index, currentSize: smallest), next)
+        case .btrfs:
+            guard let largest = sizes.max() else { return nil }
+            if let empty = emptyBay {
+                candidate = (.add(bay: empty), largest)
+            } else if let smallest = sizes.min(), smallest < largest, let index = setup.bays.firstIndex(where: { $0 == smallest }) {
+                candidate = (.replace(bay: index, currentSize: smallest), largest)
+            }
+        }
+
+        guard let candidate else { return nil }
+        var upgraded = setup
+        switch candidate.kind {
+        case .add(let bay), .replace(let bay, _): upgraded.bays[bay] = candidate.size
+        }
+        let gain = calculate(upgraded).usableCapacity - current.usableCapacity
+        return gain > 0 ? BaySuggestion(kind: candidate.kind, size: candidate.size, gain: gain) : nil
+    }
+
+    func hints(_ setup: NASSetup) -> [NASHint] {
+        guard calculate(setup).warningMessage == nil else { return [] }
+        let installed = setup.bays.compactMap { $0 }.count
+        switch setup.system {
+        case .snapraid:
+            let parity = setup.settings.snapraidParity
+            if let recommendation = ParityArrayCalculator.snapraidRecommendation(dataDrives: installed - parity),
+               recommendation.parity > parity {
+                return [.snapraidParity(recommended: recommendation.parity, dataDrives: recommendation.range)]
+            }
+            return []
+        case .zfs:
+            return installed > 12 ? [.wideZFSGroup(width: installed)] : []
+        case .synology, .unraid, .btrfs:
+            return []
+        }
+    }
+}
