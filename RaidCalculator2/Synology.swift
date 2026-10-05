@@ -8,30 +8,6 @@
 
 import Foundation
 
-/// A DiskStation model, reduced to what the calculator needs: its bay count.
-/// Checked against synology.com's DiskStation lineup in October 2026.
-struct SynologyModel: Identifiable, Hashable {
-    let id: String
-    let bays: Int
-
-    static let custom = "custom"
-
-    static let presets: [SynologyModel] = [
-        SynologyModel(id: "DS225+", bays: 2),
-        SynologyModel(id: "DS725+", bays: 2),
-        SynologyModel(id: "DS223j", bays: 2),
-        SynologyModel(id: "DS425+", bays: 4),
-        SynologyModel(id: "DS925+", bays: 4),
-        SynologyModel(id: "DS423", bays: 4),
-        SynologyModel(id: "DS1525+", bays: 5),
-        SynologyModel(id: "DS625slim", bays: 6),
-        SynologyModel(id: "DS1825+", bays: 8),
-        SynologyModel(id: "DS2422+", bays: 12),
-    ]
-
-    static let customBayRange = 2...12
-}
-
 /// The storage types Synology offers that matter for planning. SHR is the
 /// reason this mode exists; the classic levels are here so owners can see
 /// what SHR saves them.

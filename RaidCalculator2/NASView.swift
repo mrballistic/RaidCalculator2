@@ -1,12 +1,12 @@
 //
-//  SynologyView.swift
+//  NASView.swift
 //  RaidCalculator2
 //
 
 import SwiftUI
 
-struct SynologyView: View {
-    @State private var viewModel = SynologyViewModel()
+struct NASView: View {
+    @State private var viewModel = NASViewModel()
     @State private var contentWidth: CGFloat = 0
     @State private var customSizeBay: Int?
     @State private var customSize: Double = 8
@@ -18,7 +18,7 @@ struct SynologyView: View {
 
         Form {
             Section {
-                SynologySummary(result: result)
+                NASSummary(result: result)
             }
 
             if let warning = result.warningMessage {
@@ -65,21 +65,13 @@ struct SynologyView: View {
             }
 
             Section("nas_setup".localized()) {
-                Picker("model".localized(), selection: $viewModel.modelID) {
-                    ForEach(SynologyModel.presets) { model in
-                        Text("\(model.id) · \(String(format: "bay_count_value".localized(), model.bays))")
-                            .tag(model.id)
-                    }
-                    Text("custom_model".localized()).tag(SynologyModel.custom)
-                }
-                if viewModel.modelID == SynologyModel.custom {
-                    Stepper(value: $viewModel.customBayCount, in: SynologyModel.customBayRange) {
-                        LabeledContent("bay_count".localized()) {
-                            Text(viewModel.customBayCount, format: .number).monospacedDigit()
-                        }
-                    }
-                }
-                Picker("raid_type".localized(), selection: $viewModel.raidType) {
+                CountStepper(
+                    title: "bay_count".localized(),
+                    value: Binding(get: { viewModel.bayCount }, set: { viewModel.setBayCount($0) }),
+                    range: viewModel.system.bayRange,
+                    identifier: "bayCount"
+                )
+                Picker("raid_type".localized(), selection: $viewModel.settings.synologyType) {
                     ForEach(SynologyRaidType.allCases) { type in
                         Text(type.rawValue).tag(type)
                     }
@@ -99,7 +91,7 @@ struct SynologyView: View {
                 }
             }
         }
-        .navigationTitle("tab_synology".localized())
+        .navigationTitle("tab_nas".localized())
         .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { contentWidth = $0 }
         .contentMargins(
             .horizontal,
@@ -124,7 +116,7 @@ struct SynologyView: View {
     private func bayRow(_ index: Int) -> some View {
         let size = viewModel.bays[index]
         return Menu {
-            ForEach(SynologyViewModel.commonSizes, id: \.self) { option in
+            ForEach(NASViewModel.commonSizes, id: \.self) { option in
                 Button {
                     withAnimation(.snappy) { viewModel.setSize(option, forBay: index) }
                 } label: {
@@ -185,7 +177,7 @@ struct SynologyView: View {
 
 /// The answer for a Synology: usable space, what it costs, the bay diagram,
 /// and the space this mix of drives leaves unused.
-struct SynologySummary: View {
+struct NASSummary: View {
     let result: BayResult
 
     private var isValid: Bool { result.warningMessage == nil }
@@ -196,7 +188,7 @@ struct SynologySummary: View {
                 Text("usable_capacity".localized())
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
-                Text(SynologyView.tb(result.usableCapacity))
+                Text(NASView.tb(result.usableCapacity))
                     .font(.largeTitle.bold())
                     .monospacedDigit()
                     .lineLimit(1)
@@ -206,7 +198,7 @@ struct SynologySummary: View {
                 if result.rawCapacity > 0 {
                     Text(String(
                         format: "raw_and_efficiency".localized(),
-                        SynologyView.tb(result.rawCapacity),
+                        NASView.tb(result.rawCapacity),
                         result.efficiency.formatted(.percent.precision(.fractionLength(0)))
                     ))
                     .font(.subheadline)
@@ -235,7 +227,7 @@ struct SynologySummary: View {
 
             if isValid, result.unusedCapacity > 0 {
                 Label {
-                    Text(String(format: "unused_summary".localized(), SynologyView.tb(result.unusedCapacity)))
+                    Text(String(format: "unused_summary".localized(), NASView.tb(result.unusedCapacity)))
                         .font(.subheadline.weight(.medium))
                 } icon: {
                     SegmentSwatch(role: .unused)
@@ -282,7 +274,7 @@ struct BayDiagram: View {
                         column(segments)
                             .frame(maxWidth: 72)
                             .frame(height: maxHeight, alignment: .bottom)
-                        Text(segments.map { SynologyView.tb(total($0)) } ?? "empty_bay".localized())
+                        Text(segments.map { NASView.tb(total($0)) } ?? "empty_bay".localized())
                             .font(bays.count > 6 ? .caption2 : .caption)
                             .monospacedDigit()
                             .foregroundStyle(.secondary)
@@ -347,9 +339,9 @@ struct BayDiagram: View {
         var amounts: [SegmentRole: Double] = [:]
         for segment in segments { amounts[segment.role, default: 0] += segment.size }
         let parts = [SegmentRole.data, .parity, .mirror, .unused].compactMap { role in
-            amounts[role].map { String(format: "role_amount".localized(), SynologyView.tb($0), SegmentSwatch.name(of: role)) }
+            amounts[role].map { String(format: "role_amount".localized(), NASView.tb($0), SegmentSwatch.name(of: role)) }
         }
-        return String(format: "bay_accessibility".localized(), index + 1, SynologyView.tb(total(segments)), parts.joined(separator: ", "))
+        return String(format: "bay_accessibility".localized(), index + 1, NASView.tb(total(segments)), parts.joined(separator: ", "))
     }
 }
 
@@ -402,6 +394,6 @@ nonisolated struct Hatch: Shape {
 
 #Preview {
     NavigationStack {
-        SynologyView()
+        NASView()
     }
 }
