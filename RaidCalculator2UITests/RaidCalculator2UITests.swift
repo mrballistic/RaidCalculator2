@@ -285,6 +285,14 @@ final class RaidCalculator2UITests: XCTestCase {
             XCTAssertTrue(element.exists, "group \(group)")
             XCTAssertTrue(element.label.contains("4 Data") && element.label.contains("2 Parity"), element.label)
         }
+        // The summary is still read, ahead of the groups.
+        XCTAssertTrue(app.staticTexts["12 drives in 2 groups: 8 Data, 4 Parity"].exists)
+
+        // An ungrouped level reads the summary alone.
+        let ungrouped = launchApp()
+        XCTAssertTrue(ungrouped.staticTexts.matching(identifier: "usableCapacity").firstMatch.waitForExistence(timeout: 5))
+        XCTAssertTrue(ungrouped.staticTexts["4 drives: 3 Data, 1 Parity"].exists)
+        XCTAssertFalse(ungrouped.staticTexts.matching(NSPredicate(format: "label BEGINSWITH %@", "Group ")).firstMatch.exists)
     }
 
     /// RAID-Z shows what ZFS will report, labeled as an estimate.

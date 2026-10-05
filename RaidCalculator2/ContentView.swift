@@ -407,17 +407,19 @@ struct CapacitySummary: View {
 /// One bar per physical drive, showing which hold data and which hold
 /// redundancy. Mirrors are outlined rather than filled, so the distinction
 /// doesn't rest on colour alone. Grouped levels open a wider gap before the
-/// first drive of each group. Each bar keeps its identity per drive, so a
+/// first drive of each group; at regular width each group gets its own row
+/// instead. In the single row each bar keeps its identity per drive, so a
 /// change of groups slides the same bars into their new groups and recolors
-/// them in place. Under Reduce Motion nothing moves: any change of grouping,
-/// drive count or level replaces the strip, which crossfades instead.
+/// them in place. The rows crossfade whenever the grouping or drive count
+/// changes, as does a switch between one row and several. Under Reduce Motion
+/// nothing moves: any change of grouping, drive count or level replaces the
+/// strip, which crossfades instead, and its height jumps.
 struct DriveStrip: View {
     let roles: [DriveRole]
     var groupSize: Int? = nil
     @ScaledMetric(relativeTo: .body) private var barHeight: CGFloat = 26
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
-    @Namespace private var bars
 
     private var barSpacing: CGFloat { roles.count > 12 ? 3 : 5 }
 
@@ -432,18 +434,6 @@ struct DriveStrip: View {
     private func groupRange(_ group: Int) -> Range<Int> {
         let size = groupSize ?? roles.count
         return (group * size)..<min((group + 1) * size, roles.count)
-    }
-
-    /// Ties a bar to its drive across the inline and row layouts, so
-    /// regrouping slides it rather than replacing it. Off under Reduce Motion,
-    /// where the strip crossfades instead.
-    @ViewBuilder
-    private func tracked(_ bar: some View, index: Int) -> some View {
-        if reduceMotion {
-            bar
-        } else {
-            bar.matchedGeometryEffect(id: index, in: bars)
-        }
     }
 
     /// Number of groups shown; one when the level isn't grouped.
@@ -471,9 +461,10 @@ struct DriveStrip: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            // Under Reduce Motion a new grouping or drive count is a new view, so
-            // it fades in whole rather than sliding or resizing its bars; the
-            // ZStack overlaps old and new.
+            // A new set of rows, a switch between one row and rows, and under
+            // Reduce Motion any new grouping or drive count, is a new view: it
+            // fades in whole rather than sliding or resizing its bars, with the
+            // old one fading out on top of it.
             GeometryReader { proxy in
                 if groupsAsRows {
                     let size = groupSize ?? roles.count
@@ -482,21 +473,22 @@ struct DriveStrip: View {
                         ForEach(0..<groupCount, id: \.self) { group in
                             HStack(spacing: barSpacing) {
                                 ForEach(groupRange(group), id: \.self) { index in
-                                    tracked(bar(for: roles[index]).frame(width: width, height: barHeight), index: index)
+                                    bar(for: roles[index])
+                                        .frame(width: width, height: barHeight)
                                 }
                             }
                         }
                     }
-                    .id(reduceMotion ? "rows-\(groupSize ?? 0)-\(roles.count)" : "rows")
+                    .id("rows-\(groupSize ?? 0)-\(roles.count)")
                     .transition(.opacity)
                 } else {
                     let width = barWidth(in: proxy.size.width)
                     ZStack(alignment: .leading) {
                         HStack(spacing: barSpacing) {
                             ForEach(roles.indices, id: \.self) { index in
-                                tracked(bar(for: roles[index])
+                                bar(for: roles[index])
                                     .frame(width: width, height: barHeight)
-                                    .padding(.leading, isGroupStart(index) ? groupGap : 0), index: index)
+                                    .padding(.leading, isGroupStart(index) ? groupGap : 0)
                             }
                         }
                         .id(reduceMotion ? "\(groupSize ?? 0)-\(roles.count)" : "")
@@ -504,12 +496,16 @@ struct DriveStrip: View {
                     }
                 }
             }
-            .frame(height: groupsAsRows ? rowsHeight : barHeight)
-            .animation(reduceMotion ? .easeInOut(duration: 0.2) : .snappy, value: roles)
             // Geometry never interpolates under Reduce Motion: the .id swap
             // replaces the strip whenever its bars would move or resize, and
             // these animations only drive the fade and in-place recoloring.
+            // They sit inside ClippedHeight, so they never reach the strip’s
+            // height: that follows the caller's transaction, which is no
+            // animation under Reduce Motion (the height and the legend jump)
+            // and .snappy otherwise (the legend glides with it).
+            .animation(reduceMotion ? .easeInOut(duration: 0.2) : .snappy, value: roles)
             .animation(reduceMotion ? .easeInOut(duration: 0.2) : .snappy, value: groupSize)
+            .modifier(ClippedHeight(height: groupsAsRows ? rowsHeight : barHeight, overhang: barHeight))
 
             ViewThatFits(in: .horizontal) {
                 HStack(spacing: 14) { legend }
@@ -584,6 +580,31 @@ struct DriveStrip: View {
         case .parity: "role_parity".localized()
         case .mirror: "role_mirror".localized()
         }
+    }
+}
+
+/// A top-aligned height that animates as layout, frame by frame, and hides
+/// whatever hangs below it: rows on their way out stay inside the strip
+/// rather than fading over the legend, and new rows are uncovered as the
+/// legend moves down. Only the bottom edge clips. At the start of a change the
+/// card shifts for a frame or two, and an incoming row can sit a few points
+/// above the strip; a clip on the top edge would shave it.
+private struct ClippedHeight: ViewModifier, Animatable {
+    var height: CGFloat
+    /// How far above the strip content may draw.
+    var overhang: CGFloat
+
+    nonisolated var animatableData: CGFloat {
+        get { height }
+        set { height = newValue }
+    }
+
+    func body(content: Content) -> some View {
+        content
+            .frame(height: height, alignment: .top)
+            .mask(alignment: .bottom) {
+                Rectangle().padding(.top, -overhang)
+            }
     }
 }
 
