@@ -32,7 +32,8 @@ final class RaidCalculator2UITests: XCTestCase {
     }
 
     /// Opens the NAS tab with known drives. An empty current setup means
-    /// “nothing saved yet”, so no comparison row appears.
+    /// “nothing saved yet”: the app takes the launch setup (whatever the
+    /// system) as current, so no comparison row appears until something changes.
     @MainActor
     private func launchNAS(system: String = "synology", bays: String = "[4,4,8,8]", bayCount: Int = 4) -> XCUIApplication {
         let hex = bays.data(using: .utf8)!.map { String(format: "%02x", $0) }.joined()
@@ -326,7 +327,15 @@ final class RaidCalculator2UITests: XCTestCase {
         for _ in 0..<6 where !(element.exists && element.isHittable) {
             scrollingDown ? app.swipeUp() : app.swipeDown()
         }
+        // The floating tab bar covers the last rows, which still report hittable.
+        if element.exists, element.frame.intersects(app.tabBars.firstMatch.frame) {
+            app.swipeUp()
+        }
+        XCTAssertTrue(element.isHittable, "not revealed: \(element)")
     }
+
+    /// Capacities join number and unit with a no-break space.
+    private func tb(_ value: Int) -> String { "\(value)\u{00A0}TB" }
 
     /// The summary's combined VoiceOver element, which reads
     /// “Usable Capacity, 16 TB, of 24 TB raw · 67% efficient”. The large
@@ -344,13 +353,13 @@ final class RaidCalculator2UITests: XCTestCase {
         let app = launchNAS()
         let usable = app.staticTexts.matching(identifier: "nasUsableCapacity").firstMatch
         XCTAssertTrue(usable.waitForExistence(timeout: 5))
-        XCTAssertEqual(nasCapacity(app), "16 TB")
+        XCTAssertEqual(nasCapacity(app), tb(16))
 
-        for (name, expected) in [("Unraid", "16 TB"), ("ZFS", "12 TB"), ("Btrfs RAID1", "12 TB"), ("Synology", "16 TB")] {
-            reveal(app.buttons["nasSystem"], in: app)
+        // The picker sits above every section that comes and goes, so it
+        // stays put (and on screen) as the system changes.
+        for (name, expected) in [("Unraid", tb(16)), ("ZFS", tb(12)), ("Btrfs RAID1", tb(12)), ("Synology", tb(16))] {
             app.buttons["nasSystem"].tap()
             app.buttons[name].tap()
-            reveal(usable, in: app, scrollingDown: false)
             XCTAssertTrue(usable.waitForExistence(timeout: 2))
             XCTAssertEqual(nasCapacity(app), expected, name)
         }
@@ -361,7 +370,6 @@ final class RaidCalculator2UITests: XCTestCase {
     func testNASSettingsPerSystem() throws {
         let app = launchNAS(system: "unraid")
         XCTAssertTrue(app.buttons["nasInfo"].waitForExistence(timeout: 5))
-        reveal(app.staticTexts["parityCount"], in: app)
         XCTAssertTrue(app.staticTexts["parityCount"].exists)
         XCTAssertFalse(app.buttons["zfsLevel"].exists)
         reveal(app.staticTexts["parityPromotionNote"], in: app)
@@ -403,6 +411,7 @@ final class RaidCalculator2UITests: XCTestCase {
         app.launchArguments += ["-selectedTab", "synology", "-AppleLanguages", "(en)"]
         app.launch()
         XCTAssertTrue(app.segmentedControls.firstMatch.waitForExistence(timeout: 5))
+        XCTAssertTrue(app.tabBars.buttons["RAID"].isSelected)
     }
 }
 
