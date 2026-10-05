@@ -25,6 +25,67 @@ struct NASView: View {
                 NASSummary(result: result, system: viewModel.system)
             }
 
+            Section("nas_setup".localized()) {
+                Picker("nas_system".localized(), selection: Binding(
+                    get: { viewModel.system },
+                    set: { value in withAnimation(motion) { viewModel.system = value } }
+                )) {
+                    ForEach(NASSystem.allCases) { system in
+                        Text(system.displayName).tag(system)
+                    }
+                }
+                .pickerStyle(.menu)
+                .accessibilityIdentifier("nasSystem")
+                .sensoryFeedback(.selection, trigger: viewModel.system)
+
+                CountStepper(
+                    title: "bay_count".localized(),
+                    value: Binding(get: { viewModel.bayCount }, set: { value in withAnimation(motion) { viewModel.setBayCount(value) } }),
+                    range: viewModel.system.bayRange,
+                    identifier: "bayCount"
+                )
+                .sensoryFeedback(.selection, trigger: viewModel.bayCount)
+
+                switch viewModel.system {
+                case .synology:
+                    Picker("raid_type".localized(), selection: Binding(
+                        get: { viewModel.settings.synologyType },
+                        set: { value in withAnimation(motion) { viewModel.settings.synologyType = value } }
+                    )) {
+                        ForEach(SynologyRaidType.allCases) { type in
+                            Text(type.rawValue).tag(type)
+                        }
+                    }
+                    .sensoryFeedback(.selection, trigger: viewModel.settings.synologyType)
+                case .unraid, .snapraid:
+                    CountStepper(
+                        title: "parity_drives".localized(),
+                        value: Binding(
+                            get: { viewModel.settings.parity(for: viewModel.system) ?? 1 },
+                            set: { value in withAnimation(motion) { viewModel.settings.setParity(value, for: viewModel.system) } }
+                        ),
+                        range: viewModel.system.parityRange ?? 1...1,
+                        identifier: "parityCount"
+                    )
+                    // Keyed on both systems' values, so switching between
+                    // Unraid and SnapRAID isn't felt as a parity change.
+                    .sensoryFeedback(.selection, trigger: [viewModel.settings.unraidParity, viewModel.settings.snapraidParity])
+                case .zfs:
+                    Picker("nas_zfs_level".localized(), selection: Binding(
+                        get: { viewModel.settings.zfsParity },
+                        set: { value in withAnimation(motion) { viewModel.settings.setParity(value, for: .zfs) } }
+                    )) {
+                        ForEach(1...3, id: \.self) { parity in
+                            Text(ZFSMixedCalculator.level(parity: parity).displayName).tag(parity)
+                        }
+                    }
+                    .accessibilityIdentifier("zfsLevel")
+                    .sensoryFeedback(.selection, trigger: viewModel.settings.zfsParity)
+                case .btrfs:
+                    EmptyView()
+                }
+            }
+
             if let warning = result.warningMessage {
                 Section {
                     Label {
@@ -42,6 +103,7 @@ struct NASView: View {
                         LabeledContent {
                             Text(Self.signed(suggestion.gain))
                                 .monospacedDigit()
+                                .contentTransition(.numericText())
                                 .foregroundStyle(.tint)
                         } label: {
                             Label(Self.describe(suggestion), systemImage: "plus.circle.fill")
@@ -72,70 +134,16 @@ struct NASView: View {
                     LabeledContent("usable_capacity".localized()) {
                         Text(Self.signed(delta))
                             .monospacedDigit()
+                            .contentTransition(.numericText())
                             .foregroundStyle(delta > 0 ? AnyShapeStyle(.tint) : AnyShapeStyle(.secondary))
                     }
                     .accessibilityIdentifier("usableDelta")
                     Button("save_as_current".localized()) {
-                        withAnimation { viewModel.saveAsCurrent() }
+                        withAnimation(motion) { viewModel.saveAsCurrent() }
                     }
                     Button("revert".localized(), role: .destructive) {
                         withAnimation(motion) { viewModel.revertToCurrent() }
                     }
-                }
-            }
-
-            Section("nas_setup".localized()) {
-                Picker("nas_system".localized(), selection: Binding(
-                    get: { viewModel.system },
-                    set: { value in withAnimation(motion) { viewModel.system = value } }
-                )) {
-                    ForEach(NASSystem.allCases) { system in
-                        Text(system.displayName).tag(system)
-                    }
-                }
-                .pickerStyle(.menu)
-                .accessibilityIdentifier("nasSystem")
-                .sensoryFeedback(.selection, trigger: viewModel.system)
-
-                CountStepper(
-                    title: "bay_count".localized(),
-                    value: Binding(get: { viewModel.bayCount }, set: { value in withAnimation(motion) { viewModel.setBayCount(value) } }),
-                    range: viewModel.system.bayRange,
-                    identifier: "bayCount"
-                )
-
-                switch viewModel.system {
-                case .synology:
-                    Picker("raid_type".localized(), selection: Binding(
-                        get: { viewModel.settings.synologyType },
-                        set: { value in withAnimation(motion) { viewModel.settings.synologyType = value } }
-                    )) {
-                        ForEach(SynologyRaidType.allCases) { type in
-                            Text(type.rawValue).tag(type)
-                        }
-                    }
-                case .unraid, .snapraid:
-                    CountStepper(
-                        title: "parity_drives".localized(),
-                        value: Binding(
-                            get: { viewModel.settings.parity(for: viewModel.system) ?? 1 },
-                            set: { value in withAnimation(motion) { viewModel.settings.setParity(value, for: viewModel.system) } }
-                        ),
-                        range: viewModel.system.parityRange ?? 1...1,
-                        identifier: "parityCount"
-                    )
-                case .zfs:
-                    Picker("nas_zfs_level".localized(), selection: Binding(
-                        get: { viewModel.settings.zfsParity },
-                        set: { value in withAnimation(motion) { viewModel.settings.setParity(value, for: .zfs) } }
-                    )) {
-                        ForEach(1...3, id: \.self) { parity in
-                            Text(ZFSMixedCalculator.level(parity: parity).displayName).tag(parity)
-                        }
-                    }
-                    .accessibilityIdentifier("zfsLevel")
-                case .btrfs:
-                    EmptyView()
                 }
             }
 
@@ -152,6 +160,7 @@ struct NASView: View {
                 }
             }
         }
+        .sensoryFeedback(.success, trigger: result.warningMessage == nil) { wasValid, isValid in !wasValid && isValid }
         .navigationTitle("tab_nas".localized())
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
@@ -241,13 +250,15 @@ struct NASView: View {
         }
     }
 
+    /// A no-break space keeps “4 TB” from wrapping between number and unit.
     static func tb(_ value: Double) -> String {
-        CapacitySummary.capacity(value, unit: CapacityUnit.tb.rawValue)
+        CapacitySummary.capacity(value, unit: CapacityUnit.tb.rawValue).replacingOccurrences(of: " ", with: "\u{00A0}")
     }
 
+    /// The sign goes on the amount, inside the phrase, so Japanese reads
+    /// “使用可能容量 +12 TB” rather than “+使用可能容量 12 TB”.
     static func signed(_ value: Double) -> String {
-        let magnitude = String(format: "delta_usable".localized(), tb(abs(value)))
-        return (value < 0 ? "−" : "+") + magnitude
+        String(format: "delta_usable".localized(), (value < 0 ? "−" : "+") + tb(abs(value)))
     }
 
     static func describe(_ suggestion: BaySuggestion) -> String {
@@ -303,6 +314,7 @@ struct NASSummary: View {
                             .foregroundStyle(.secondary)
                         Text(result.failuresTolerated, format: .number)
                             .font(.body.weight(.semibold))
+                            .contentTransition(.numericText())
                     }
                 } icon: {
                     Image(systemName: "shield.lefthalf.filled")
@@ -312,13 +324,16 @@ struct NASSummary: View {
             }
 
             if isValid, result.unusedCapacity > 0 {
-                Label {
-                    Text(String(format: "unused_summary".localized(), NASView.tb(result.unusedCapacity)))
-                        .font(.subheadline.weight(.medium))
-                } icon: {
+                // An HStack, not a Label: at accessibility sizes a Label here
+                // left the card's other text one line tall, so it truncated.
+                HStack(alignment: .firstTextBaseline, spacing: 8) {
                     SegmentSwatch(role: .unused)
                         .frame(width: 14, height: 14)
+                        .accessibilityHidden(true)
+                    Text(String(format: "unused_summary".localized(), NASView.tb(result.unusedCapacity)))
+                        .font(.subheadline.weight(.medium))
                 }
+                .accessibilityElement(children: .combine)
                 .accessibilityIdentifier("unusedSummary")
             }
 
@@ -462,7 +477,7 @@ struct BayDiagram: View {
         var amounts: [SegmentRole: Double] = [:]
         for segment in segments { amounts[segment.role, default: 0] += segment.size }
         let parts = [SegmentRole.data, .parity, .mirror, .unused].compactMap { role in
-            amounts[role].map { String(format: "role_amount".localized(), NASView.tb($0), SegmentSwatch.name(of: role)) }
+            amounts[role].flatMap { $0 > 0 ? String(format: "role_amount".localized(), NASView.tb($0), SegmentSwatch.name(of: role)) : nil }
         }
         return String(format: "bay_accessibility".localized(), index + 1, NASView.tb(total(segments)), parts.joined(separator: ", "))
     }

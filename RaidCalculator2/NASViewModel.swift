@@ -130,7 +130,7 @@ final class NASViewModel {
            let saved = try? JSONDecoder().decode(NASSetup.self, from: data) {
             current = saved
         } else {
-            var legacy = NASSetup(system: .synology, bays: bays, settings: settings)
+            var legacy = NASSetup(system: system, bays: bays, settings: settings)
             if let data = userDefaults.data(forKey: Keys.legacyCurrentBays),
                let saved = try? JSONDecoder().decode([Double?].self, from: data) { legacy.bays = saved }
             if let type = userDefaults.string(forKey: Keys.legacyCurrentRaidType).flatMap(SynologyRaidType.init) {
