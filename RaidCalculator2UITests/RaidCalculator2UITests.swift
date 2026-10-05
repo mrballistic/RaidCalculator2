@@ -275,6 +275,18 @@ final class RaidCalculator2UITests: XCTestCase {
         XCTAssertTrue(capacity(app).hasPrefix("Usable Capacity, 44 TB,"), capacity(app))
     }
 
+    /// §1.6: VoiceOver reads group structure, one element per group.
+    @MainActor
+    func testDriveStripReadsEachGroup() throws {
+        let app = launchApp(level: "R 60", drives: 12, groups: 2)
+        XCTAssertTrue(app.staticTexts.matching(identifier: "usableCapacity").firstMatch.waitForExistence(timeout: 5))
+        for group in 1...2 {
+            let element = app.staticTexts.matching(NSPredicate(format: "label BEGINSWITH %@", "Group \(group) of 2: ")).firstMatch
+            XCTAssertTrue(element.exists, "group \(group)")
+            XCTAssertTrue(element.label.contains("4 Data") && element.label.contains("2 Parity"), element.label)
+        }
+    }
+
     /// RAID-Z shows what ZFS will report, labeled as an estimate.
     @MainActor
     func testZFSEstimateShown() throws {

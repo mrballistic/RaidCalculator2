@@ -876,6 +876,41 @@
         }
       }
     },
+    "drive_strip_group_accessibility" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Group %1$d of %2$d: %3$@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grupo %1$d de %2$d: %3$@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Groupe %1$d sur %2$d : %3$@"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gruppo %1$d di %2$d: %3$@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "グループ%1$d/%2$d：%3$@"
+          }
+        }
+      }
+    },
     "drive_strip_groups_accessibility" : {
       "extractionState" : "manual",
       "localizations" : {

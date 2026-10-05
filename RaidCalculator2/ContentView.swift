@@ -416,8 +416,35 @@ struct DriveStrip: View {
     var groupSize: Int? = nil
     @ScaledMetric(relativeTo: .body) private var barHeight: CGFloat = 26
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Namespace private var bars
 
     private var barSpacing: CGFloat { roles.count > 12 ? 3 : 5 }
+
+    /// On a regular-width layout each group gets its own row, using the extra width.
+    private var groupsAsRows: Bool { horizontalSizeClass == .regular && groupCount > 1 }
+    private var rowSpacing: CGFloat { barSpacing * 2 }
+
+    private var rowsHeight: CGFloat {
+        CGFloat(groupCount) * barHeight + CGFloat(groupCount - 1) * rowSpacing
+    }
+
+    private func groupRange(_ group: Int) -> Range<Int> {
+        let size = groupSize ?? roles.count
+        return (group * size)..<min((group + 1) * size, roles.count)
+    }
+
+    /// Ties a bar to its drive across the inline and row layouts, so
+    /// regrouping slides it rather than replacing it. Off under Reduce Motion,
+    /// where the strip crossfades instead.
+    @ViewBuilder
+    private func tracked(_ bar: some View, index: Int) -> some View {
+        if reduceMotion {
+            bar
+        } else {
+            bar.matchedGeometryEffect(id: index, in: bars)
+        }
+    }
 
     /// Number of groups shown; one when the level isn't grouped.
     private var groupCount: Int {
@@ -448,20 +475,36 @@ struct DriveStrip: View {
             // it fades in whole rather than sliding or resizing its bars; the
             // ZStack overlaps old and new.
             GeometryReader { proxy in
-                let width = barWidth(in: proxy.size.width)
-                ZStack(alignment: .leading) {
-                    HStack(spacing: barSpacing) {
-                        ForEach(roles.indices, id: \.self) { index in
-                            bar(for: roles[index])
-                                .frame(width: width, height: barHeight)
-                                .padding(.leading, isGroupStart(index) ? groupGap : 0)
+                if groupsAsRows {
+                    let size = groupSize ?? roles.count
+                    let width = max(0, min(44, (proxy.size.width - CGFloat(size - 1) * barSpacing) / CGFloat(size)))
+                    VStack(alignment: .leading, spacing: rowSpacing) {
+                        ForEach(0..<groupCount, id: \.self) { group in
+                            HStack(spacing: barSpacing) {
+                                ForEach(groupRange(group), id: \.self) { index in
+                                    tracked(bar(for: roles[index]).frame(width: width, height: barHeight), index: index)
+                                }
+                            }
                         }
                     }
-                    .id(reduceMotion ? "\(groupSize ?? 0)-\(roles.count)" : "")
+                    .id(reduceMotion ? "rows-\(groupSize ?? 0)-\(roles.count)" : "rows")
                     .transition(.opacity)
+                } else {
+                    let width = barWidth(in: proxy.size.width)
+                    ZStack(alignment: .leading) {
+                        HStack(spacing: barSpacing) {
+                            ForEach(roles.indices, id: \.self) { index in
+                                tracked(bar(for: roles[index])
+                                    .frame(width: width, height: barHeight)
+                                    .padding(.leading, isGroupStart(index) ? groupGap : 0), index: index)
+                            }
+                        }
+                        .id(reduceMotion ? "\(groupSize ?? 0)-\(roles.count)" : "")
+                        .transition(.opacity)
+                    }
                 }
             }
-            .frame(height: barHeight)
+            .frame(height: groupsAsRows ? rowsHeight : barHeight)
             .animation(reduceMotion ? .easeInOut(duration: 0.2) : .snappy, value: roles)
             // Geometry never interpolates under Reduce Motion: the .id swap
             // replaces the strip whenever its bars would move or resize, and
@@ -475,8 +518,26 @@ struct DriveStrip: View {
             .font(.caption)
             .foregroundStyle(.secondary)
         }
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel(accessibilitySummary)
+        // The summary, then one element per group, so VoiceOver reads the structure.
+        .accessibilityRepresentation {
+            VStack {
+                Text(accessibilitySummary)
+                if groupCount > 1 {
+                    ForEach(0..<groupCount, id: \.self) { group in
+                        Text(groupAccessibility(group))
+                    }
+                }
+            }
+        }
+    }
+
+    private func groupAccessibility(_ group: Int) -> String {
+        let members = roles[groupRange(group)]
+        let parts = presentRoles.compactMap { role -> String? in
+            let count = members.filter { $0 == role }.count
+            return count > 0 ? String(format: "role_count".localized(), count, Self.name(of: role)) : nil
+        }.joined(separator: ", ")
+        return String(format: "drive_strip_group_accessibility".localized(), group + 1, groupCount, parts)
     }
 
     private var presentRoles: [DriveRole] {
