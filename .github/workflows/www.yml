@@ -13,8 +13,14 @@
 # Release:  git tag -a www-v1.0.0 -m "…" && git push origin www-v1.0.0
 #
 # Manual runs: dispatch with dry_run (on by default) to list every change,
-# including deletions, without writing. A real (non-dry) dispatch is only
-# accepted from a www-v* tag ref, so the tag checks still apply.
+# including deletions, without writing. Run it from a www-v* tag ref: the
+# `website` environment that holds the SSH key only admits www-v* tags, so a
+# run from main (or any branch, or a fork) can't reach the secrets at all. That
+# matters more here than elsewhere because this repo is public.
+#
+# Server access: deploys as raid-deploy, an unprivileged user (no sudo) that
+# owns only /var/www/html/raid. SSH_PRIVATE_KEY and SSH_KNOWN_HOSTS live in the
+# `website` environment (separate from `app-store`, which deploy.yml uses).
 name: Deploy website
 
 on:
@@ -37,15 +43,19 @@ concurrency:
 
 env:
   DEPLOY_HOST: 132.148.79.144
-  DEPLOY_USER: toddgreco
+  DEPLOY_USER: raid-deploy
   DEPLOY_PATH: /var/www/html/raid
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    environment:
+      name: website
+      url: https://mrballistic.com/raid/
     steps:
-      - uses: actions/checkout@v7
+      # Keeps its credentials: the on-main check below runs git fetch.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
 
