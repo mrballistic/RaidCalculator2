@@ -413,6 +413,34 @@ final class RaidCalculator2UITests: XCTestCase {
         XCTAssertTrue(app.segmentedControls.firstMatch.waitForExistence(timeout: 5))
         XCTAssertTrue(app.tabBars.buttons["RAID"].isSelected)
     }
+
+    /// FR-14: on a wide iPad the answer sits beside the inputs, so both are
+    /// on screen without scrolling. Skips on iPhone.
+    @MainActor
+    func testIPadPutsResultsBesideInputs() throws {
+        try XCTSkipUnless(UIDevice.current.userInterfaceIdiom == .pad, "iPad layout")
+        XCUIDevice.shared.orientation = .landscapeLeft
+        let app = launchApp()
+        let usable = app.staticTexts.matching(identifier: "usableCapacity").firstMatch
+        XCTAssertTrue(usable.waitForExistence(timeout: 5))
+        let count = app.staticTexts.matching(identifier: "driveCount").firstMatch
+        // A Stepper's label text reports not-hittable (the stepper owns the touch), so check on-screen by frame.
+        XCTAssertTrue(app.windows.firstMatch.frame.contains(count.frame), "inputs should be on screen without scrolling")
+        XCTAssertLessThan(usable.frame.maxX, count.frame.minX, "results should lead, inputs follow")
+    }
+
+    @MainActor
+    func testIPadNASPutsResultsBesideInputs() throws {
+        try XCTSkipUnless(UIDevice.current.userInterfaceIdiom == .pad, "iPad layout")
+        XCUIDevice.shared.orientation = .landscapeLeft
+        let app = launchNAS()
+        let usable = app.staticTexts.matching(identifier: "nasUsableCapacity").firstMatch
+        XCTAssertTrue(usable.waitForExistence(timeout: 5))
+        let picker = app.buttons["nasSystem"]
+        XCTAssertTrue(picker.isHittable)
+        XCTAssertLessThan(usable.frame.maxX, picker.frame.minX)
+        XCTAssertTrue(app.buttons["bay4"].isHittable, "every bay of a 4-bay setup fits beside the results")
+    }
 }
 
 @MainActor

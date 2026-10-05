@@ -14,164 +14,199 @@ struct ContentView: View {
     @FocusState private var sizeFieldFocused: Bool
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     /// Widest the form grows on iPad before it centers instead of stretching.
     private let readableWidth: CGFloat = 720
 
-    var body: some View {
-        let result = viewModel.result
+    private var twoColumns: Bool {
+        AdaptiveLayout.usesTwoColumns(isRegularWidth: horizontalSizeClass == .regular, width: contentWidth)
+    }
 
-        Form {
-            // The answer comes first, so it stays on screen at every text size.
+    /// The answer and anything wrong with it.
+    @ViewBuilder private var answerSections: some View {
+        // The answer comes first, so it stays on screen at every text size.
+        Section {
+            CapacitySummary(result: viewModel.result, unit: viewModel.unit)
+        }
+
+        if let warning = viewModel.result.warningMessage {
             Section {
-                CapacitySummary(result: result, unit: viewModel.unit)
+                Label {
+                    Text(warning)
+                } icon: {
+                    Image(systemName: "exclamationmark.triangle.fill")
+                        .symbolRenderingMode(.multicolor)
+                }
+                .accessibilityIdentifier("configurationWarning")
+
+                if let suggested = viewModel.result.suggestedDriveCount, suggested != viewModel.driveCount {
+                    // Names the groups too when the fix changes them, as it does from one group to RAID 50 or 60.
+                    Button(viewModel.result.suggestedDriveCountGroups.map { String(format: "use_drive_count_groups".localized(), suggested, $0) }
+                           ?? String(format: "use_drive_count".localized(), suggested)) {
+                        withAnimation(motion) { viewModel.applySuggestedDriveCount() }
+                    }
+                    .accessibilityIdentifier("applySuggestedDriveCount")
+                }
+
+                if let suggested = viewModel.result.suggestedGroups, suggested != viewModel.groups {
+                    Button(suggested == 1 ? "use_one_group".localized() : String(format: "use_group_count".localized(), suggested)) {
+                        withAnimation(motion) { viewModel.applySuggestedGroups() }
+                    }
+                    .accessibilityIdentifier("applySuggestedGroups")
+                }
             }
-
-            if let warning = result.warningMessage {
-                Section {
-                    Label {
-                        Text(warning)
-                    } icon: {
-                        Image(systemName: "exclamationmark.triangle.fill")
-                            .symbolRenderingMode(.multicolor)
-                    }
-                    .accessibilityIdentifier("configurationWarning")
-
-                    if let suggested = result.suggestedDriveCount, suggested != viewModel.driveCount {
-                        // Names the groups too when the fix changes them, as it does from one group to RAID 50 or 60.
-                        Button(result.suggestedDriveCountGroups.map { String(format: "use_drive_count_groups".localized(), suggested, $0) }
-                               ?? String(format: "use_drive_count".localized(), suggested)) {
-                            withAnimation(motion) { viewModel.applySuggestedDriveCount() }
-                        }
-                        .accessibilityIdentifier("applySuggestedDriveCount")
-                    }
-
-                    if let suggested = result.suggestedGroups, suggested != viewModel.groups {
-                        Button(suggested == 1 ? "use_one_group".localized() : String(format: "use_group_count".localized(), suggested)) {
-                            withAnimation(motion) { viewModel.applySuggestedGroups() }
-                        }
-                        .accessibilityIdentifier("applySuggestedGroups")
-                    }
-                }
-            } else if viewModel.rebuildCautionSuggestion != nil || viewModel.wideZFSGroupWidth != nil {
-                Section {
-                    if let safer = viewModel.rebuildCautionSuggestion {
-                        caution(String(format: "rebuild_caution_level".localized(), viewModel.selectedLevel.displayName, safer.displayName))
-                    }
-                    if let width = viewModel.wideZFSGroupWidth {
-                        caution(String(format: (viewModel.groups > 1 ? "wide_zfs_group_caution" : "wide_zfs_group_caution_single").localized(), width))
-                            .accessibilityIdentifier("wideGroupCaution")
-                    }
-                }
-                .transition(.opacity)
-            }
-
-            Section("raid_level".localized()) {
-                Picker("raid_level".localized(), selection: standardLevelSelection) {
-                    ForEach(RaidLevel.levels(in: .standard)) { level in
-                        Text(level.shortLabel)
-                            .accessibilityLabel(level.displayName)
-                            .tag(Optional(level))
-                    }
-                }
-                .pickerStyle(.segmented)
-                .labelsHidden()
-
-                Menu {
-                    Section("nested_levels".localized()) {
-                        ForEach(RaidLevel.levels(in: .nested)) { levelButton($0) }
-                    }
-                    Section("zfs_levels".localized()) {
-                        ForEach(RaidLevel.levels(in: .zfs)) { levelButton($0) }
-                    }
-                } label: {
-                    // At accessibility sizes the label sits above the selection,
-                    // so neither has to share the row and break mid-word.
-                    let layout = dynamicTypeSize.isAccessibilitySize
-                        ? AnyLayout(VStackLayout(alignment: .leading, spacing: 4))
-                        : AnyLayout(HStackLayout())
-                    layout {
-                        Text("more_levels".localized())
-                        if !dynamicTypeSize.isAccessibilitySize { Spacer(minLength: 8) }
-                        HStack(spacing: 6) {
-                            if viewModel.selectedLevel.family != .standard {
-                                Text(viewModel.selectedLevel.displayName)
-                                    .foregroundStyle(.tint)
-                            }
-                            Image(systemName: "chevron.up.chevron.down")
-                                .font(.caption)
-                                .foregroundStyle(.tertiary)
-                                .accessibilityHidden(true)
-                        }
-                    }
-                }
-                .tint(.primary)
-                .accessibilityIdentifier("moreLevels")
-            }
-
+        } else if viewModel.rebuildCautionSuggestion != nil || viewModel.wideZFSGroupWidth != nil {
             Section {
+                if let safer = viewModel.rebuildCautionSuggestion {
+                    caution(String(format: "rebuild_caution_level".localized(), viewModel.selectedLevel.displayName, safer.displayName))
+                }
+                if let width = viewModel.wideZFSGroupWidth {
+                    caution(String(format: (viewModel.groups > 1 ? "wide_zfs_group_caution" : "wide_zfs_group_caution_single").localized(), width))
+                        .accessibilityIdentifier("wideGroupCaution")
+                }
+            }
+            .transition(.opacity)
+        }
+    }
+
+    /// What the user sets: the level, then the drives.
+    @ViewBuilder private var inputSections: some View {
+        Section("raid_level".localized()) {
+            Picker("raid_level".localized(), selection: standardLevelSelection) {
+                ForEach(RaidLevel.levels(in: .standard)) { level in
+                    Text(level.shortLabel)
+                        .accessibilityLabel(level.displayName)
+                        .tag(Optional(level))
+                }
+            }
+            .pickerStyle(.segmented)
+            .labelsHidden()
+
+            Menu {
+                Section("nested_levels".localized()) {
+                    ForEach(RaidLevel.levels(in: .nested)) { levelButton($0) }
+                }
+                Section("zfs_levels".localized()) {
+                    ForEach(RaidLevel.levels(in: .zfs)) { levelButton($0) }
+                }
+            } label: {
+                // At accessibility sizes the label sits above the selection,
+                // so neither has to share the row and break mid-word.
+                let layout = dynamicTypeSize.isAccessibilitySize
+                    ? AnyLayout(VStackLayout(alignment: .leading, spacing: 4))
+                    : AnyLayout(HStackLayout())
+                layout {
+                    Text("more_levels".localized())
+                    if !dynamicTypeSize.isAccessibilitySize { Spacer(minLength: 8) }
+                    HStack(spacing: 6) {
+                        if viewModel.selectedLevel.family != .standard {
+                            Text(viewModel.selectedLevel.displayName)
+                                .foregroundStyle(.tint)
+                        }
+                        Image(systemName: "chevron.up.chevron.down")
+                            .font(.caption)
+                            .foregroundStyle(.tertiary)
+                            .accessibilityHidden(true)
+                    }
+                }
+            }
+            .tint(.primary)
+            .accessibilityIdentifier("moreLevels")
+        }
+
+        Section {
+            CountStepper(
+                title: "number_of_drives".localized(),
+                value: $viewModel.driveCount,
+                range: RaidCalculatorViewModel.driveCountRange,
+                identifier: "driveCount"
+            )
+
+            if viewModel.selectedLevel.usesGroups {
                 CountStepper(
-                    title: "number_of_drives".localized(),
-                    value: $viewModel.driveCount,
-                    range: RaidCalculatorViewModel.driveCountRange,
-                    identifier: "driveCount"
+                    title: "groups".localized(),
+                    value: Binding(
+                        get: { viewModel.groups },
+                        set: { value in withAnimation(motion) { viewModel.groups = value } }
+                    ),
+                    range: 1...max(1, viewModel.driveCount),
+                    identifier: "groupCount"
                 )
-
-                if viewModel.selectedLevel.usesGroups {
-                    CountStepper(
-                        title: "groups".localized(),
-                        value: Binding(
-                            get: { viewModel.groups },
-                            set: { value in withAnimation(motion) { viewModel.groups = value } }
-                        ),
-                        range: 1...max(1, viewModel.driveCount),
-                        identifier: "groupCount"
-                    )
-                    .sensoryFeedback(.selection, trigger: viewModel.groups)
-                    // Under Reduce Motion the row change runs without animation
-                    // (see `motion`), so the row appears in place rather than sliding.
-                    .transition(reduceMotion ? .opacity : .opacity.combined(with: .move(edge: .top)))
-                }
-
-                LabeledContent("drive_size".localized()) {
-                    HStack(spacing: 12) {
-                        DriveSizeField(value: $viewModel.driveSize, focus: $sizeFieldFocused)
-                            .frame(minWidth: 56, maxWidth: 140)
-
-                        Picker(selection: $viewModel.unit) {
-                            ForEach(CapacityUnit.allCases) { unit in
-                                Text(unit.rawValue).tag(unit)
-                            }
-                        } label: {
-                            Text("drive_size".localized())
-                        }
-                        .pickerStyle(.segmented)
-                        .labelsHidden()
-                        .fixedSize()
-                    }
-                }
-            } header: {
-                Text("drive_configuration".localized())
-            } footer: {
-                if viewModel.selectedLevel.usesGroups, viewModel.result.warningMessage == nil {
-                    let groups = max(viewModel.groups, 1)
-                    let width = viewModel.driveCount / groups
-                    Text(groups == 1
-                         ? String(format: "group_layout_single".localized(), width)
-                         : String(format: "group_layout".localized(), groups, width))
-                }
+                .sensoryFeedback(.selection, trigger: viewModel.groups)
+                // Under Reduce Motion the row change runs without animation
+                // (see `motion`), so the row appears in place rather than sliding.
+                .transition(reduceMotion ? .opacity : .opacity.combined(with: .move(edge: .top)))
             }
 
-            Section {
-                RatingRow(title: "speed".localized(), rating: result.speedRating)
-                RatingRow(title: "availability".localized(), rating: result.availabilityRating)
-            } header: {
-                Text("ratings".localized())
-            } footer: {
-                Text("ratings_footnote".localized())
+            LabeledContent("drive_size".localized()) {
+                HStack(spacing: 12) {
+                    DriveSizeField(value: $viewModel.driveSize, focus: $sizeFieldFocused)
+                        .frame(minWidth: 56, maxWidth: 140)
+
+                    Picker(selection: $viewModel.unit) {
+                        ForEach(CapacityUnit.allCases) { unit in
+                            Text(unit.rawValue).tag(unit)
+                        }
+                    } label: {
+                        Text("drive_size".localized())
+                    }
+                    .pickerStyle(.segmented)
+                    .labelsHidden()
+                    .fixedSize()
+                }
+            }
+        } header: {
+            Text("drive_configuration".localized())
+        } footer: {
+            if viewModel.selectedLevel.usesGroups, viewModel.result.warningMessage == nil {
+                let groups = max(viewModel.groups, 1)
+                let width = viewModel.driveCount / groups
+                Text(groups == 1
+                     ? String(format: "group_layout_single".localized(), width)
+                     : String(format: "group_layout".localized(), groups, width))
             }
         }
-        .sensoryFeedback(.success, trigger: result.warningMessage == nil) { wasValid, isValid in !wasValid && isValid }
+    }
+
+    @ViewBuilder private var ratingsSection: some View {
+        Section {
+            RatingRow(title: "speed".localized(), rating: viewModel.result.speedRating)
+            RatingRow(title: "availability".localized(), rating: viewModel.result.availabilityRating)
+        } header: {
+            Text("ratings".localized())
+        } footer: {
+            Text("ratings_footnote".localized())
+        }
+    }
+
+    var body: some View {
+        Group {
+            if twoColumns {
+                // Results lead so reading and VoiceOver order match the
+                // stacked layout, where the answer comes first.
+                HStack(alignment: .top, spacing: 0) {
+                    Form {
+                        answerSections
+                        ratingsSection
+                    }
+                    Divider()
+                    Form { inputSections }
+                }
+            } else {
+                Form {
+                    answerSections
+                    inputSections
+                    ratingsSection
+                }
+                .contentMargins(
+                    .horizontal,
+                    contentWidth > readableWidth + 40 ? (contentWidth - readableWidth) / 2 : nil,
+                    for: .scrollContent
+                )
+            }
+        }
+        .sensoryFeedback(.success, trigger: viewModel.result.warningMessage == nil) { wasValid, isValid in !wasValid && isValid }
         .navigationTitle("app_title".localized())
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
@@ -190,11 +225,6 @@ struct ContentView: View {
         }
         .scrollDismissesKeyboard(.interactively)
         .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { contentWidth = $0 }
-        .contentMargins(
-            .horizontal,
-            contentWidth > readableWidth + 40 ? (contentWidth - readableWidth) / 2 : nil,
-            for: .scrollContent
-        )
         .sensoryFeedback(.selection, trigger: viewModel.selectedLevel)
         .sheet(isPresented: $showingInfoSheet) {
             InfoSheet(topic: .level(viewModel.selectedLevel))

@@ -12,155 +12,195 @@ struct NASView: View {
     @State private var customSize: Double = 8
     @State private var showingInfo = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     private var motion: Animation? { reduceMotion ? nil : .snappy }
 
     private let readableWidth: CGFloat = 720
 
-    var body: some View {
-        let result = viewModel.result
+    private var twoColumns: Bool {
+        AdaptiveLayout.usesTwoColumns(isRegularWidth: horizontalSizeClass == .regular, width: contentWidth)
+    }
 
-        Form {
-            Section {
-                NASSummary(result: result, system: viewModel.system)
+    @ViewBuilder private var summarySection: some View {
+        Section {
+            NASSummary(result: viewModel.result, system: viewModel.system)
+        }
+    }
+
+    @ViewBuilder private var setupSection: some View {
+        Section("nas_setup".localized()) {
+            Picker("nas_system".localized(), selection: Binding(
+                get: { viewModel.system },
+                set: { value in withAnimation(motion) { viewModel.system = value } }
+            )) {
+                ForEach(NASSystem.allCases) { system in
+                    Text(system.displayName).tag(system)
+                }
             }
+            .pickerStyle(.menu)
+            .accessibilityIdentifier("nasSystem")
+            .sensoryFeedback(.selection, trigger: viewModel.system)
 
-            Section("nas_setup".localized()) {
-                Picker("nas_system".localized(), selection: Binding(
-                    get: { viewModel.system },
-                    set: { value in withAnimation(motion) { viewModel.system = value } }
+            CountStepper(
+                title: "bay_count".localized(),
+                value: Binding(get: { viewModel.bayCount }, set: { value in withAnimation(motion) { viewModel.setBayCount(value) } }),
+                range: viewModel.system.bayRange,
+                identifier: "bayCount"
+            )
+            .sensoryFeedback(.selection, trigger: viewModel.bayCount)
+
+            switch viewModel.system {
+            case .synology:
+                Picker("raid_type".localized(), selection: Binding(
+                    get: { viewModel.settings.synologyType },
+                    set: { value in withAnimation(motion) { viewModel.settings.synologyType = value } }
                 )) {
-                    ForEach(NASSystem.allCases) { system in
-                        Text(system.displayName).tag(system)
+                    ForEach(SynologyRaidType.allCases) { type in
+                        Text(type.rawValue).tag(type)
                     }
                 }
-                .pickerStyle(.menu)
-                .accessibilityIdentifier("nasSystem")
-                .sensoryFeedback(.selection, trigger: viewModel.system)
-
+                .sensoryFeedback(.selection, trigger: viewModel.settings.synologyType)
+            case .unraid, .snapraid:
                 CountStepper(
-                    title: "bay_count".localized(),
-                    value: Binding(get: { viewModel.bayCount }, set: { value in withAnimation(motion) { viewModel.setBayCount(value) } }),
-                    range: viewModel.system.bayRange,
-                    identifier: "bayCount"
+                    title: "parity_drives".localized(),
+                    value: Binding(
+                        get: { viewModel.settings.parity(for: viewModel.system) ?? 1 },
+                        set: { value in withAnimation(motion) { viewModel.settings.setParity(value, for: viewModel.system) } }
+                    ),
+                    range: viewModel.system.parityRange ?? 1...1,
+                    identifier: "parityCount"
                 )
-                .sensoryFeedback(.selection, trigger: viewModel.bayCount)
+                // Keyed on both systems' values, so switching between
+                // Unraid and SnapRAID isn't felt as a parity change.
+                .sensoryFeedback(.selection, trigger: [viewModel.settings.unraidParity, viewModel.settings.snapraidParity])
+            case .zfs:
+                Picker("nas_zfs_level".localized(), selection: Binding(
+                    get: { viewModel.settings.zfsParity },
+                    set: { value in withAnimation(motion) { viewModel.settings.setParity(value, for: .zfs) } }
+                )) {
+                    ForEach(1...3, id: \.self) { parity in
+                        Text(ZFSMixedCalculator.level(parity: parity).displayName).tag(parity)
+                    }
+                }
+                .accessibilityIdentifier("zfsLevel")
+                .sensoryFeedback(.selection, trigger: viewModel.settings.zfsParity)
+            case .btrfs:
+                EmptyView()
+            }
+        }
+    }
 
-                switch viewModel.system {
-                case .synology:
-                    Picker("raid_type".localized(), selection: Binding(
-                        get: { viewModel.settings.synologyType },
-                        set: { value in withAnimation(motion) { viewModel.settings.synologyType = value } }
-                    )) {
-                        ForEach(SynologyRaidType.allCases) { type in
-                            Text(type.rawValue).tag(type)
-                        }
-                    }
-                    .sensoryFeedback(.selection, trigger: viewModel.settings.synologyType)
-                case .unraid, .snapraid:
-                    CountStepper(
-                        title: "parity_drives".localized(),
-                        value: Binding(
-                            get: { viewModel.settings.parity(for: viewModel.system) ?? 1 },
-                            set: { value in withAnimation(motion) { viewModel.settings.setParity(value, for: viewModel.system) } }
-                        ),
-                        range: viewModel.system.parityRange ?? 1...1,
-                        identifier: "parityCount"
-                    )
-                    // Keyed on both systems' values, so switching between
-                    // Unraid and SnapRAID isn't felt as a parity change.
-                    .sensoryFeedback(.selection, trigger: [viewModel.settings.unraidParity, viewModel.settings.snapraidParity])
-                case .zfs:
-                    Picker("nas_zfs_level".localized(), selection: Binding(
-                        get: { viewModel.settings.zfsParity },
-                        set: { value in withAnimation(motion) { viewModel.settings.setParity(value, for: .zfs) } }
-                    )) {
-                        ForEach(1...3, id: \.self) { parity in
-                            Text(ZFSMixedCalculator.level(parity: parity).displayName).tag(parity)
-                        }
-                    }
-                    .accessibilityIdentifier("zfsLevel")
-                    .sensoryFeedback(.selection, trigger: viewModel.settings.zfsParity)
-                case .btrfs:
-                    EmptyView()
+    /// The warning or suggestion, the hints, and the comparison with the current setup.
+    @ViewBuilder private var adviceSections: some View {
+        if let warning = viewModel.result.warningMessage {
+            Section {
+                Label {
+                    Text(warning)
+                } icon: {
+                    Image(systemName: "exclamationmark.triangle.fill")
+                        .symbolRenderingMode(.multicolor)
                 }
             }
+        } else if let suggestion = viewModel.suggestion {
+            Section("suggestion_header".localized()) {
+                Button {
+                    withAnimation(motion) { viewModel.applySuggestion() }
+                } label: {
+                    LabeledContent {
+                        Text(Self.signed(suggestion.gain))
+                            .monospacedDigit()
+                            .contentTransition(.numericText())
+                            .foregroundStyle(.tint)
+                    } label: {
+                        Label(Self.describe(suggestion), systemImage: "plus.circle.fill")
+                    }
+                }
+                .accessibilityIdentifier("applySuggestion")
+            }
+        }
 
-            if let warning = result.warningMessage {
-                Section {
+        if !viewModel.hints.isEmpty {
+            Section {
+                ForEach(viewModel.hints, id: \.self) { hint in
                     Label {
-                        Text(warning)
+                        Text(Self.text(for: hint))
+                            .font(.subheadline)
+                            .accessibilityIdentifier("nasHint")
                     } icon: {
                         Image(systemName: "exclamationmark.triangle.fill")
                             .symbolRenderingMode(.multicolor)
                     }
                 }
-            } else if let suggestion = viewModel.suggestion {
-                Section("suggestion_header".localized()) {
-                    Button {
-                        withAnimation(motion) { viewModel.applySuggestion() }
-                    } label: {
-                        LabeledContent {
-                            Text(Self.signed(suggestion.gain))
-                                .monospacedDigit()
-                                .contentTransition(.numericText())
-                                .foregroundStyle(.tint)
-                        } label: {
-                            Label(Self.describe(suggestion), systemImage: "plus.circle.fill")
-                        }
-                    }
-                    .accessibilityIdentifier("applySuggestion")
-                }
             }
+            .transition(.opacity)
+        }
 
-            if !viewModel.hints.isEmpty {
-                Section {
-                    ForEach(viewModel.hints, id: \.self) { hint in
-                        Label {
-                            Text(Self.text(for: hint))
-                                .font(.subheadline)
-                                .accessibilityIdentifier("nasHint")
-                        } icon: {
-                            Image(systemName: "exclamationmark.triangle.fill")
-                                .symbolRenderingMode(.multicolor)
-                        }
-                    }
+        if let delta = viewModel.usableDelta {
+            Section("compared_header".localized()) {
+                LabeledContent("usable_capacity".localized()) {
+                    Text(Self.signed(delta))
+                        .monospacedDigit()
+                        .contentTransition(.numericText())
+                        .foregroundStyle(delta > 0 ? AnyShapeStyle(.tint) : AnyShapeStyle(.secondary))
                 }
-                .transition(.opacity)
-            }
-
-            if let delta = viewModel.usableDelta {
-                Section("compared_header".localized()) {
-                    LabeledContent("usable_capacity".localized()) {
-                        Text(Self.signed(delta))
-                            .monospacedDigit()
-                            .contentTransition(.numericText())
-                            .foregroundStyle(delta > 0 ? AnyShapeStyle(.tint) : AnyShapeStyle(.secondary))
-                    }
-                    .accessibilityIdentifier("usableDelta")
-                    Button("save_as_current".localized()) {
-                        withAnimation(motion) { viewModel.saveAsCurrent() }
-                    }
-                    Button("revert".localized(), role: .destructive) {
-                        withAnimation(motion) { viewModel.revertToCurrent() }
-                    }
+                .accessibilityIdentifier("usableDelta")
+                Button("save_as_current".localized()) {
+                    withAnimation(motion) { viewModel.saveAsCurrent() }
                 }
-            }
-
-            Section {
-                ForEach(viewModel.bays.indices, id: \.self) { index in
-                    bayRow(index)
-                }
-            } header: {
-                Text("drives_section".localized())
-            } footer: {
-                if viewModel.system == .unraid || viewModel.system == .snapraid {
-                    Text("parity_promotion_note".localized())
-                        .accessibilityIdentifier("parityPromotionNote")
+                Button("revert".localized(), role: .destructive) {
+                    withAnimation(motion) { viewModel.revertToCurrent() }
                 }
             }
         }
-        .sensoryFeedback(.success, trigger: result.warningMessage == nil) { wasValid, isValid in !wasValid && isValid }
+    }
+
+    @ViewBuilder private var drivesSection: some View {
+        Section {
+            ForEach(viewModel.bays.indices, id: \.self) { index in
+                bayRow(index)
+            }
+        } header: {
+            Text("drives_section".localized())
+        } footer: {
+            if viewModel.system == .unraid || viewModel.system == .snapraid {
+                Text("parity_promotion_note".localized())
+                    .accessibilityIdentifier("parityPromotionNote")
+            }
+        }
+    }
+
+    var body: some View {
+        Group {
+            if twoColumns {
+                HStack(alignment: .top, spacing: 0) {
+                    Form {
+                        summarySection
+                        adviceSections
+                    }
+                    Divider()
+                    Form {
+                        setupSection
+                        drivesSection
+                    }
+                }
+            } else {
+                // Setup sits above every section that comes and goes, so the
+                // system picker stays put under the user's finger.
+                Form {
+                    summarySection
+                    setupSection
+                    adviceSections
+                    drivesSection
+                }
+                .contentMargins(
+                    .horizontal,
+                    contentWidth > readableWidth + 40 ? (contentWidth - readableWidth) / 2 : nil,
+                    for: .scrollContent
+                )
+            }
+        }
+        .sensoryFeedback(.success, trigger: viewModel.result.warningMessage == nil) { wasValid, isValid in !wasValid && isValid }
         .navigationTitle("tab_nas".localized())
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
@@ -177,11 +217,6 @@ struct NASView: View {
             InfoSheet(topic: .system(viewModel.system))
         }
         .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { contentWidth = $0 }
-        .contentMargins(
-            .horizontal,
-            contentWidth > readableWidth + 40 ? (contentWidth - readableWidth) / 2 : nil,
-            for: .scrollContent
-        )
         .alert(
             "custom_size".localized(),
             isPresented: Binding(get: { customSizeBay != nil }, set: { if !$0 { customSizeBay = nil } })
