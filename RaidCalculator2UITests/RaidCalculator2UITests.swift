@@ -53,6 +53,25 @@ final class RaidCalculator2UITests: XCTestCase {
         return app
     }
 
+    /// At the largest text size a rating row still reads as one phrase and
+    /// stacks title, stars and word, one line each. Squeezed beside the title,
+    /// the old row wrapped its word and measured about 410 pt; stacked is about 220.
+    @MainActor
+    func testRatingRowStacksAtAccessibilitySize() throws {
+        func speedRow(_ app: XCUIApplication) -> XCUIElement {
+            let row = app.descendants(matching: .any).matching(NSPredicate(format: "label BEGINSWITH 'Speed, '")).firstMatch
+            reveal(row, in: app)
+            return row
+        }
+        let normal = speedRow(launchApp())
+        let normalHeight = normal.frame.height
+        let app = launchApp(contentSize: "UICTContentSizeCategoryAccessibilityXXXL")
+        let row = speedRow(app)
+        XCTAssertTrue(row.label.hasPrefix("Speed, 3 of 5, "), row.label)
+        XCTAssertGreaterThan(row.frame.height, normalHeight * 3, "title, stars and word are all at the large size")
+        XCTAssertLessThan(row.frame.height, 300, "stacked rows don't wrap inside a squeezed column")
+    }
+
     /// The combined VoiceOver element for the answer, which reads
     /// “Usable Capacity, 12 TB, of 16 TB raw · 75% efficient”.
     @MainActor
