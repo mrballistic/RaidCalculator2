@@ -242,14 +242,14 @@ struct ContentView: View {
                         ratingsSection
                     }
                 } inputs: {
-                    Form { inputSections }
+                    presentsInfo(Form { inputSections })
                 }
             } else {
-                Form {
+                presentsInfo(Form {
                     answerSections
                     inputSections
                     ratingsSection
-                }
+                })
                 .contentMargins(
                     .horizontal,
                     contentWidth > readableWidth + 40 ? (contentWidth - readableWidth) / 2 : nil,
@@ -278,7 +278,13 @@ struct ContentView: View {
         .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { contentWidth = $0 }
         .readsHorizontalFold($horizontalFold)
         .sensoryFeedback(.selection, trigger: viewModel.selectedLevel)
-        .sheet(isPresented: $showingInfoSheet) {
+    }
+
+    /// The info sheet presents from the inputs, the split's secondary pane,
+    /// so on iPhone Duo it can cover the controls and leave the results
+    /// beside it in view.
+    private func presentsInfo(_ content: some View) -> some View {
+        content.sheet(isPresented: $showingInfoSheet) {
             InfoSheet(topic: .level(viewModel.selectedLevel))
         }
     }
