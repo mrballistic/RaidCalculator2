@@ -225,7 +225,7 @@ struct NASView: View {
             }
         }
         .sensoryFeedback(.success, trigger: viewModel.result.warningMessage == nil) { wasValid, isValid in !wasValid && isValid }
-        .navigationTitle("tab_nas".localized())
+        .navigationTitle("nas_title".localized())
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button {

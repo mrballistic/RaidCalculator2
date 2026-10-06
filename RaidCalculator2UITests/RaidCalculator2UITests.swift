@@ -496,6 +496,7 @@ final class RaidCalculator2UITests: XCTestCase {
         let usable = app.staticTexts.matching(identifier: "nasUsableCapacity").firstMatch
         XCTAssertTrue(usable.waitForExistence(timeout: 5))
         XCTAssertEqual(nasCapacity(app), tb(16))
+        XCTAssertTrue(app.navigationBars["NAS Calculator"].exists)
 
         // The picker sits above every section that comes and goes, so it
         // stays put (and on screen) as the system changes.
