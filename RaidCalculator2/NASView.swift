@@ -34,15 +34,6 @@ struct NASView: View {
         AdaptiveLayout.usesSplit(isRegularWidth: horizontalSizeClass == .regular, width: contentWidth, hasActiveHorizontalFold: horizontalFold)
     }
 
-    /// The info sheet presents from the inputs, the split's secondary pane,
-    /// so on iPhone Duo it can cover the controls and leave the results
-    /// beside it in view.
-    private func presentsInfo(_ content: some View) -> some View {
-        content.sheet(isPresented: $showingInfo) {
-            InfoSheet(topic: .system(viewModel.system))
-        }
-    }
-
     @ViewBuilder private var summarySection: some View {
         let result = viewModel.result
         Section {
@@ -218,20 +209,20 @@ struct NASView: View {
                         adviceSections
                     }
                 } inputs: {
-                    presentsInfo(Form {
+                    Form {
                         setupSection
                         drivesSection
-                    })
+                    }
                 }
             } else {
                 // Setup sits above every section that comes and goes, so the
                 // system picker stays put under the user's finger.
-                presentsInfo(Form {
+                Form {
                     summarySection
                     setupSection
                     adviceSections
                     drivesSection
-                })
+                }
                 .contentMargins(
                     .horizontal,
                     contentWidth > readableWidth + 40 ? (contentWidth - readableWidth) / 2 : nil,
@@ -251,6 +242,9 @@ struct NASView: View {
                 .accessibilityLabel(String(format: "about_level".localized(), viewModel.system.displayName))
                 .accessibilityIdentifier("nasInfo")
             }
+        }
+        .sheet(isPresented: $showingInfo) {
+            InfoSheet(topic: .system(viewModel.system))
         }
         .sheet(isPresented: $showingComparison, onDismiss: {
             // Applied once the sheet is gone, so the bays visibly re-split.
