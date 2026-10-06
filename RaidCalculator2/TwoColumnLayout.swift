@@ -40,6 +40,10 @@ struct TwoColumnLayout<Results: View, Inputs: View>: View {
                 inputs
             }
             .arrangementViewStyle(.split)
+            // The split leaves a strip at the fold and a gap between the
+            // panes; without this they show the white window background
+            // instead of the grouped gray behind both Forms.
+            .background(Color(.systemGroupedBackground).ignoresSafeArea())
         } else {
             HStack(alignment: .top, spacing: 0) {
                 results
