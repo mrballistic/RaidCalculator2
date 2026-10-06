@@ -1,7 +1,7 @@
 
 ## 1. Product Requirements Document (PRD)
 
-**Status:** current as of **1.6.0** (2026-10-05). This merges the original v1 spec with the 1.5.0 and 1.6.0 delta that lived in `prd-update.md`. FR-1 to FR-7 are the v1 requirements, updated where later releases changed them; FR-8 to FR-20 keep the numbers they had in the delta, so references in code, plans and commits still resolve.
+**Status:** current as of **1.7.0 (in progress)** (2026-10-05). This merges the original v1 spec with the 1.5.0 and 1.6.0 delta that lived in `prd-update.md`. FR-1 to FR-7 are the v1 requirements, updated where later releases changed them; FR-8 to FR-20 keep the numbers they had in the delta, so references in code, plans and commits still resolve.
 
 **Release history**
 
@@ -381,7 +381,7 @@ The 1.4.0 engine tried a largest-size drive in an empty bay, or in place of the 
 * **Keywords** in the App Store listing contain no third-party trademarks (guideline 2.3.7).
 * **Copy rules,** app and website: smart punctuation (curly “ ” ’) and American spelling; em dashes only where they earn it, at most one per sentence, closed up; en dashes in ranges stay. System names stay untranslated: Synology, SHR, SHR-2, Unraid, ZFS, RAID-Z1/Z2/Z3, SnapRAID, Btrfs RAID1.
 * **Localization:** every string in English, Spanish, French, Italian, Japanese, German, Traditional Chinese, Simplified Chinese, Korean and Brazilian Portuguese, through `scripts/strings.py`. On the NAS screen, Spanish says “disco” and Japanese counts drives with 台; the RAID tab and the info sheets keep Spanish “unidad” (ruled acceptable in plan 2).
-* **Website (`www/`),** updated for 1.6.0:
+* **Website (`www/`),** updated for 1.7.0:
   * The FAQ “What doesn’t it cover?” no longer lists RAID 50/60, ZFS or Unraid; expansion units, SSD cache, Unraid’s separate pools and cost/power/IOPS stay on it.
   * The model-presets paragraph is replaced by bay counts.
   * Screenshots refresh for the NAS tab and the iPad layout, including a Compare Systems shot (plan 4, Task 6), in light and dark.

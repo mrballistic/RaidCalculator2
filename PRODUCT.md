@@ -26,7 +26,7 @@ It is a focused, native, offline utility that does one calculation well and teac
 
 ## Capabilities and Constraints
 
-- Live on the App Store, published by mrBallistic. **1.4.0** (the iOS 26 rebuild, adding the Synology tab) went to App Review on 2026-10-02. **1.4.1** fixed the drive-size field’s cursor (`prd.md` FR-19). **1.5.0** added RAID 50/60 and RAID-Z to the RAID tab, with the ZFS estimate. **1.6.0** is the release now being finished (not yet tagged): the NAS tab, compare systems, iPad layouts, and the copy, trademark and website pass (`prd.md` FR-10 to FR-20). The upload workflow sets each version from its `v*` tag.
+- Live on the App Store, published by mrBallistic. **1.4.0** (the iOS 26 rebuild, adding the Synology tab) went to App Review on 2026-10-02. **1.4.1** fixed the drive-size field’s cursor (`prd.md` FR-19). **1.5.0** added RAID 50/60 and RAID-Z to the RAID tab, with the ZFS estimate. **1.6.0** shipped (tag v1.6.0): the NAS tab, compare systems, iPad layouts, and the copy, trademark and website pass (`prd.md` FR-10 to FR-20). **1.7.0** is the release in progress: iPhone Duo, plus the ten languages and polish. The upload workflow sets each version from its `v*` tag.
 - Native SwiftUI, MVVM-lite, no third-party dependencies. Deployment target iOS 26.0, with Liquid Glass styling on buttons and steppers.
 - Runs on iPhone and iPad. **iPad is a binding design target** (`prd.md` FR-14): two columns at regular width (results beside inputs), wrapped bay diagrams up to 30 bays, side-by-side system comparison and grouped drive strips. Layouts are size-class adaptive, never iPad-only.
 - Localized into English, Spanish, French, Italian, Japanese, German, Traditional Chinese, Simplified Chinese, Korean and Brazilian Portuguese. Layouts must survive longer translated strings, German compounds and CJK text.
@@ -47,7 +47,7 @@ It is a focused, native, offline utility that does one calculation well and teac
 
 ## Evidence on Hand
 
-- `prd.md`: requirements, personas, formulas, ratings and decisions, current as of 1.6.0 (the 1.5.0/1.6.0 delta from `prd-update.md` was merged in on 2026-10-05).
+- `prd.md`: requirements, personas, formulas, ratings and decisions, current as of 1.7.0 (in progress) (the 1.5.0/1.6.0 delta from `prd-update.md` was merged in on 2026-10-05).
 - `privacy.md`: published privacy policy, live at <https://mrballistic.com/raid/privacy/>.
 - `www/`: the product page, live at <https://mrballistic.com/raid/>.
 - `marketing/screenshots/`: App Store screenshots, iPhone and iPad.
