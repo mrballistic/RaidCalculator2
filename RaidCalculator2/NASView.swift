@@ -9,7 +9,13 @@ struct NASView: View {
     @State private var viewModel = NASViewModel()
     @State private var contentWidth: CGFloat = 0
     @State private var customSizeBay: Int?
-    @State private var customSize: Double = 8
+    @State private var customSizeText = ""
+
+    /// The custom size, if what's typed is a size; locale-aware, so “2,5” works.
+    private var parsedCustomSize: Double? {
+        guard let value = try? FloatingPointFormatStyle<Double>.number.parseStrategy.parse(customSizeText), value > 0 else { return nil }
+        return value
+    }
     @State private var showingInfo = false
     @State private var showingComparison = false
     @State private var pendingSystem: NASSystem?
@@ -248,14 +254,15 @@ struct NASView: View {
             "custom_size".localized(),
             isPresented: Binding(get: { customSizeBay != nil }, set: { if !$0 { customSizeBay = nil } })
         ) {
-            TextField("TB", value: $customSize, format: .number.precision(.fractionLength(0...1)))
+            TextField("TB", text: $customSizeText)
                 .keyboardType(.decimalPad)
             Button("cancel".localized(), role: .cancel) {}
             Button("done".localized()) {
-                if let bay = customSizeBay, customSize > 0 {
-                    withAnimation(motion) { viewModel.setSize(customSize, forBay: bay) }
+                if let bay = customSizeBay, let size = parsedCustomSize {
+                    withAnimation(motion) { viewModel.setSize(size, forBay: bay) }
                 }
             }
+            .disabled(parsedCustomSize == nil)
         }
     }
 
@@ -274,7 +281,7 @@ struct NASView: View {
             }
             Divider()
             Button("custom_size".localized()) {
-                customSize = size ?? 8
+                customSizeText = (size ?? 8).formatted(.number.precision(.fractionLength(0...1)))
                 customSizeBay = index
             }
             if size != nil {

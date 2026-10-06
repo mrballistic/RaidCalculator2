@@ -12,6 +12,7 @@ struct ContentView: View {
     @State private var showingInfoSheet = false
     @State private var contentWidth: CGFloat = 0
     @FocusState private var sizeFieldFocused: Bool
+    @State private var awaitingDriveSize = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
@@ -27,7 +28,7 @@ struct ContentView: View {
     @ViewBuilder private var answerSections: some View {
         // The answer comes first, so it stays on screen at every text size.
         Section {
-            CapacitySummary(result: viewModel.result, unit: viewModel.unit)
+            CapacitySummary(result: viewModel.result, unit: viewModel.unit, awaitingSize: awaitingDriveSize)
         }
 
         if let warning = viewModel.result.warningMessage {
@@ -162,7 +163,7 @@ struct ContentView: View {
 
     private var driveSizeControls: some View {
         HStack(spacing: 12) {
-            DriveSizeField(value: $viewModel.driveSize, focus: $sizeFieldFocused)
+            DriveSizeField(value: $viewModel.driveSize, focus: $sizeFieldFocused, isAwaitingValue: $awaitingDriveSize)
                 .frame(minWidth: 56, maxWidth: dynamicTypeSize.isAccessibilitySize ? .infinity : 140)
 
             Picker(selection: $viewModel.unit) {
@@ -321,10 +322,25 @@ struct CountStepper: View {
 struct CapacitySummary: View {
     let result: RaidResult
     let unit: CapacityUnit
+    var awaitingSize = false
 
-    private var isValid: Bool { result.warningMessage == nil }
+    private var isValid: Bool { result.warningMessage == nil && !awaitingSize }
 
     var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            if awaitingSize {
+                Label("enter_drive_size".localized(), systemImage: "pencil")
+                    .font(.subheadline.weight(.medium))
+                    .accessibilityIdentifier("enterDriveSize")
+            }
+            content
+                .opacity(isValid ? 1 : 0.4)
+                .animation(.default, value: isValid)
+        }
+        .padding(.vertical, 6)
+    }
+
+    private var content: some View {
         VStack(alignment: .leading, spacing: 14) {
             VStack(alignment: .leading, spacing: 2) {
                 Text("usable_capacity".localized())
@@ -374,9 +390,6 @@ struct CapacitySummary: View {
                 }
             }
         }
-        .padding(.vertical, 6)
-        .opacity(isValid ? 1 : 0.4)
-        .animation(.default, value: isValid)
     }
 
     static func capacity(_ value: Double, unit: String, maxFractionDigits: Int = 2) -> String {
@@ -700,12 +713,13 @@ struct RatingRow: View {
 /// moves to the end, wherever the tap landed.
 ///
 /// That needs `selection:`, which SwiftUI only offers on text-bound fields, so
-/// the field edits its own text and pushes each value that parses. An empty or
-/// unparseable field leaves the last value in place and shows it again when
-/// editing ends, as the value-bound field did.
+/// the field edits its own text and pushes each value that parses. An empty,
+/// zero or unparseable field leaves the last value in place but tells the card
+/// it is waiting for a size, and the last value shows again when editing ends.
 struct DriveSizeField: View {
     @Binding var value: Double
     var focus: FocusState<Bool>.Binding
+    @Binding var isAwaitingValue: Bool
 
     @State private var text = ""
     @State private var selection: TextSelection?
@@ -722,7 +736,12 @@ struct DriveSizeField: View {
             .onAppear { text = value.formatted(Self.format) }
             .onChange(of: text) {
                 // Parsing follows the current locale, so “12,5” works in Spanish, French and Italian.
-                if let parsed = try? Self.format.parseStrategy.parse(text) { value = parsed }
+                if let parsed = try? Self.format.parseStrategy.parse(text), parsed > 0 {
+                    value = parsed
+                    isAwaitingValue = false
+                } else {
+                    isAwaitingValue = true
+                }
             }
             .onChange(of: value) {
                 // Changes from elsewhere (loading, clamping) show once editing is done.
@@ -734,6 +753,7 @@ struct DriveSizeField: View {
                     Task { @MainActor in selection = TextSelection(insertionPoint: text.endIndex) }
                 } else {
                     text = value.formatted(Self.format)
+                    isAwaitingValue = false
                 }
             }
     }

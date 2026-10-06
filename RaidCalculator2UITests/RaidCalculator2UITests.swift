@@ -187,6 +187,45 @@ final class RaidCalculator2UITests: XCTestCase {
         XCTAssertTrue(value.isEmpty || value == sizeField.placeholderValue, "field still shows “\(value)”")
     }
 
+    /// FR-19: while the size field is empty (or 0) the card asks for a size
+    /// instead of showing the last result as current; Done restores the size.
+    @MainActor
+    func testEmptyDriveSizeShowsPrompt() throws {
+        let app = launchApp()
+        let field = app.textFields["driveSizeField"]
+        XCTAssertTrue(field.waitForExistence(timeout: 5))
+        field.tap()
+        field.typeText(XCUIKeyboardKey.delete.rawValue)
+        let prompt = app.descendants(matching: .any).matching(identifier: "enterDriveSize").firstMatch
+        XCTAssertTrue(prompt.waitForExistence(timeout: 2))
+        field.typeText("0")
+        XCTAssertTrue(prompt.exists, "0 isn't a drive size")
+        app.toolbars.buttons["Done"].tap()
+        let gone = expectation(for: NSPredicate(format: "exists == false"), evaluatedWith: prompt)
+        wait(for: [gone], timeout: 2)
+        XCTAssertTrue(capacity(app).hasPrefix("Usable Capacity, 12 TB,"), capacity(app))
+    }
+
+    /// FR-19: the custom-size alert can't be confirmed empty.
+    @MainActor
+    func testCustomSizeNeedsANumber() throws {
+        let app = launchNAS()
+        let bay1 = app.buttons["bay1"]
+        reveal(bay1, in: app)
+        bay1.tap()
+        app.buttons["Custom Size…"].tap()
+        let field = app.alerts.textFields.firstMatch
+        XCTAssertTrue(field.waitForExistence(timeout: 2))
+        field.tap()
+        field.typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: 6))
+        let done = app.alerts.buttons["Done"]
+        XCTAssertFalse(done.isEnabled, "empty")
+        field.typeText("5")
+        XCTAssertTrue(done.isEnabled)
+        done.tap()
+        XCTAssertTrue(bay1.label.contains(tb(5)), bay1.label)
+    }
+
     /// Leaving the field empty and tapping Done brings the last size back
     /// rather than leaving a blank field beside a stale result.
     @MainActor
