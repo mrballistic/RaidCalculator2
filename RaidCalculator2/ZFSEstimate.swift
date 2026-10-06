@@ -38,6 +38,7 @@ struct ZFSEstimate: Equatable {
     }
 
     init(groups: Int, width: Int, parity: Int, driveBytes: Double) {
+        precondition(width > parity, "A RAID-Z group needs more drives than parity; validate before estimating.")
         let allocated = Self.allocatedSectors(width: width, parity: parity)
         dataFraction = Double(Self.sectorsPerRecord) / Double(allocated)
 

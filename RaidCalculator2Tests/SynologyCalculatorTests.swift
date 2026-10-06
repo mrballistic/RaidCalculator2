@@ -71,7 +71,7 @@ struct SynologyCalculatorTests {
 
     @Test func suggestionReplacesSmallestWhenFull() {
         let suggestion = calculator.suggestion(bays: [16, 8, 8, 4], type: .shr1)
-        #expect(suggestion == SynologySuggestion(kind: .replace(bay: 3, currentSize: 4), size: 16, gain: 12))
+        #expect(suggestion == BaySuggestion(kind: .replace(bay: 3, currentSize: 4), size: 16, gain: 12))
     }
 
     @Test func suggestionPrefersEmptyBay() {

@@ -57,6 +57,7 @@ jobs:
             -scheme "RAID Calc" \
             -destination "id=$SIM_UDID" \
             -resultBundlePath "$RUNNER_TEMP/TestResults.xcresult" \
+            -parallel-testing-enabled NO \
             build test | xcbeautify
 
       - name: Upload test results

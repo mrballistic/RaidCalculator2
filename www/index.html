@@ -4,14 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>RAID Calculator for iPhone and iPad</title>
-<meta name="description" content="RAID Calculator for iPhone and iPad shows your usable capacity, how many drives can fail, and, if you own a Synology, which drive to buy next.">
+<meta name="description" content="RAID Calculator for iPhone and iPad shows your usable capacity, how many drives can fail, and which drive to buy next, whether your NAS runs Synology, Unraid, ZFS, SnapRAID or Btrfs.">
 <link rel="canonical" href="https://mrballistic.com/raid/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="RAID Calculator">
 <meta property="og:locale" content="en_US">
 <meta property="og:url" content="https://mrballistic.com/raid/">
 <meta property="og:title" content="RAID Calculator for iPhone and iPad">
-<meta property="og:description" content="Usable capacity, fault tolerance and the one drive worth buying next. RAID 0, 1, 5, 6, 10, JBOD and Synology SHR, for iPhone and iPad.">
+<meta property="og:description" content="Usable capacity, fault tolerance and the one drive worth buying next. RAID 0 to 60, ZFS RAID-Z, Synology SHR, Unraid, SnapRAID and Btrfs RAID1, for iPhone and iPad.">
 <meta property="og:image" content="https://mrballistic.com/raid/assets/og-image.jpg">
 <meta property="og:image:type" content="image/jpeg">
 <meta property="og:image:width" content="1200">
@@ -19,7 +19,7 @@
 <meta property="og:image:alt" content="RAID Calculator: “How much space will you actually get?” beside the app showing 64 TB usable on RAID 6.">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="RAID Calculator for iPhone and iPad">
-<meta name="twitter:description" content="Usable capacity, fault tolerance and the one drive worth buying next. RAID 0, 1, 5, 6, 10, JBOD and Synology SHR, for iPhone and iPad.">
+<meta name="twitter:description" content="Usable capacity, fault tolerance and the one drive worth buying next. RAID 0 to 60, ZFS RAID-Z, Synology SHR, Unraid, SnapRAID and Btrfs RAID1, for iPhone and iPad.">
 <meta name="twitter:image" content="https://mrballistic.com/raid/assets/og-image.jpg">
 <meta name="twitter:image:alt" content="RAID Calculator: “How much space will you actually get?” beside the app showing 64 TB usable on RAID 6.">
 <meta name="apple-mobile-web-app-title" content="RAID Calculator">
@@ -29,7 +29,7 @@
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
   "name": "RAID Calculator",
-  "description": "Shows usable capacity, how many drives can fail, and, for Synology owners, which drive to buy next. RAID 0, 1, 5, 6, 10, JBOD, SHR and SHR-2.",
+  "description": "Shows usable capacity, how many drives can fail, and which drive to buy next. RAID 0, 1, 5, 6, 10, 50, 60, JBOD and RAID-Z on identical drives; Synology SHR and SHR-2, Unraid, ZFS, SnapRAID and Btrfs RAID1 with mixed drives.",
   "url": "https://mrballistic.com/raid/",
   "downloadUrl": "https://apps.apple.com/app/id395601653",
   "installUrl": "https://apps.apple.com/app/id395601653",
@@ -45,7 +45,7 @@
   "image": "https://mrballistic.com/raid/assets/og-image.jpg",
   "screenshot": [
     "https://mrballistic.com/raid/assets/03-iphone-raid-raid6.webp",
-    "https://mrballistic.com/raid/assets/09-ipad-synology-upgrade-top.webp"
+    "https://mrballistic.com/raid/assets/09-ipad-nas-compare.webp"
   ],
   "author": {
     "@type": "Organization",
@@ -294,7 +294,7 @@
   <section class="wrap hero">
     <div>
       <h1>How much space will you actually get?</h1>
-      <p class="hero-sub">RAID Calculator for iPhone and iPad shows your usable capacity, how many drives can fail, and, if you own a Synology, which drive to buy next.</p>
+      <p class="hero-sub">RAID Calculator for iPhone and iPad shows your usable capacity, how many drives can fail, and which drive to buy next, whether your NAS runs Synology, Unraid, ZFS, SnapRAID or Btrfs.</p>
       <div class="hero-cta">
         <a class="badge" href="https://apps.apple.com/app/id395601653"><img src="assets/app-store-badge.svg" alt="Download on the App Store" height="54" width="162" style="height:54px"></a>
       </div>
@@ -304,7 +304,7 @@
         <img src="assets/03-iphone-raid-raid6.webp" width="640" height="1391" fetchpriority="high" alt="The RAID tab: RAID 6 with six 16 TB drives, 64 TB usable of 96 TB raw, two drives of parity">
       </div>
       <div class="phone">
-        <img src="assets/02-iphone-synology-8bay.webp" width="640" height="1391" alt="An eight-bay DiskStation with five drives and three empty bays, suggesting a 24 TB drive for bay 6 for 24 TB more usable space">
+        <img src="assets/02-iphone-nas-compare.webp" width="640" height="1391" alt="The Compare Systems sheet on iPhone, with 16, 8, 8 and 4 TB drives: Synology 20 TB, Unraid 20 TB, SnapRAID 20 TB, Btrfs RAID1 18 TB and ZFS 12 TB">
       </div>
     </div>
   </section>
@@ -315,7 +315,8 @@
       <img class="mixed-drives" src="assets/photo-mixed-drives-1100.webp" srcset="assets/photo-mixed-drives-1100.webp 1100w, assets/photo-mixed-drives-2200.webp 2200w" sizes="(min-width: 1140px) 1092px, calc(100vw - 48px)" width="2200" height="886" loading="lazy" alt="Six opened hard drives of different makes and ages, fanned out side by side">
       <div class="synology-grid">
         <div class="features">
-          <div><strong>Every bay, modeled separately</strong><span class="muted">Set each bay’s drive size or leave it empty. Every drive is drawn to scale and split into the layers SHR actually builds.</span></div>
+          <div><strong>Every bay, modeled separately</strong><span class="muted">Set each bay’s drive size or leave it empty. Every drive is drawn to scale and split into what it actually holds: data, parity, a mirror copy, or nothing at all.</span></div>
+          <div><strong>Five systems, the same drives</strong><span class="muted">Switch between Synology, Unraid, ZFS, SnapRAID and Btrfs RAID1 and watch the same bays re-split. Compare Systems lines them all up, most usable space first.</span></div>
           <div><strong>Wasted space, made visible</strong><span class="muted">Unused capacity is hatched, with the number spelled out: “8&nbsp;TB unused with this mix of drives.”</span></div>
           <div><strong>The one drive worth buying</strong><span class="muted">Biggest Upgrade names the single purchase that unlocks the most space: “Replace bay 4 (4&nbsp;TB) with 16&nbsp;TB, +12&nbsp;TB usable.” One tap tries it.</span></div>
           <div><strong>Compared with what you own</strong><span class="muted">Every change is measured against your saved setup (“+4&nbsp;TB usable”), with Save as Current Setup and Revert.</span></div>
@@ -331,18 +332,18 @@
         </div>
         <figure class="synology-shot" style="margin:0">
           <div class="ipad">
-            <img src="assets/09-ipad-synology-upgrade-top.webp" width="1400" height="1234" loading="lazy" alt="RAID Calculator on iPad: a DS925+ with 16, 8, 8 and 4 TB drives in SHR. 20 TB usable of 36 TB raw, the 16 TB drive’s top 8 TB hatched as unused, “Replace bay 4 (4 TB) with 16 TB, +12 TB usable,” and +4 TB against the current setup">
+            <img src="assets/09-ipad-nas-compare.webp" width="1400" height="1234" loading="lazy" alt="The NAS tab on iPad: 16, 8, 8 and 4 TB drives in SHR, 20 TB usable of 36 TB raw with the 16 TB drive’s top 8 TB hatched as unused, and Synology, Unraid, SnapRAID, Btrfs RAID1 and ZFS compared beside the drive list">
           </div>
-          <figcaption class="quiet">A DS925+ with 16, 8, 8 and 4&nbsp;TB drives in SHR, on iPad.</figcaption>
+          <figcaption class="quiet">16, 8, 8 and 4&nbsp;TB drives in SHR on iPad, with every system compared beside them.</figcaption>
         </figure>
       </div>
-      <p class="models muted">Model presets cover current DiskStations from 2 to 12 bays: DS225+, DS725+, DS223j, DS425+, DS925+, DS423, DS1525+, DS625slim, DS1825+ and DS2422+. There’s a custom bay count too, and SHR and SHR-2 sit alongside Synology’s RAID 1, 5 and 6.</p>
+      <p class="models muted">Pick a bay count from 2 to 12 for Synology, or up to 30 for Unraid, ZFS, SnapRAID and Btrfs RAID1. SHR and SHR-2 sit alongside Synology’s RAID 1, 5 and 6. Unraid and SnapRAID put parity on your largest drives automatically, and for ZFS the app also shows the figure ZFS will report, labeled as an estimate.</p>
     </div>
   </section>
 
   <section class="wrap raid">
-    <h2 class="h2">RAID 0, 1, 5, 6, 10 and JBOD. The answer first, the reasoning right under it.</h2>
-    <p class="lede">Set the number of drives (1–24) and a size in GB or TB. Usable capacity is the biggest thing on screen, with raw capacity and efficiency beneath it. Your last setup is remembered.</p>
+    <h2 class="h2">RAID 0 to 60, RAID-Z and JBOD. The answer first, the reasoning right under it.</h2>
+    <p class="lede">Set the number of drives (1–24) and a size in GB or TB. Usable capacity is the biggest thing on screen, with raw capacity and efficiency beneath it. Your last setup is remembered. Nested levels and RAID-Z show their groups, and RAID-Z adds what ZFS itself will report.</p>
     <div class="raid-grid">
       <div>
         <div class="phone"><img src="assets/08-iphone-raid-raid10-dark.webp" width="640" height="1391" loading="lazy" alt="RAID 10 with eight 12 TB drives in dark mode: mirrored pairs, and up to 4 drive failures depending on which drives fail"></div>
@@ -362,7 +363,7 @@
         <div class="phone"><img src="assets/05-iphone-raid-invalid-fix.webp" width="640" height="1391" loading="lazy" alt="RAID 10 with five drives: results dimmed, with a one-tap Use 6 drives fix"></div>
         <div class="card-text">
           <h3>Invalid setups fix themselves</h3>
-          <p>“RAID 10 requires an even number of drives (4 or more).” Tap “Use 6 drives” and the numbers come back. Each level also has an info sheet: overview, pros, cons, typical uses and ratings.</p>
+          <p>“RAID 10 requires an even number of drives (4 or more).” Tap “Use 6 drives” and the numbers come back. Every level and every NAS system has an info sheet: overview, pros, cons and typical uses, plus ratings for RAID levels and how the app calculates RAID-Z and each NAS system.</p>
         </div>
       </div>
     </div>
@@ -375,17 +376,17 @@
       <p class="lede">Liquid Glass, Dynamic Type at every size including the largest accessibility sizes, and VoiceOver that reads diagrams as full sentences: “Bay 1, 16&nbsp;TB: 8&nbsp;TB parity, 8&nbsp;TB unused.” English, Spanish, French, Italian and Japanese.</p>
       <div class="ios-grid">
         <div>
-          <div class="ipad ipad-dark"><img src="assets/11-ipad-synology-dark-top.webp" width="1400" height="1234" loading="lazy" alt="RAID Calculator on iPad in dark mode: the Synology upgrade scene with the bay diagram, biggest upgrade and current-setup comparison"></div>
+          <div class="ipad ipad-dark"><img src="assets/11-ipad-nas-dark.webp" width="1400" height="1234" loading="lazy" alt="The NAS tab on iPad in dark mode: twelve drives from 8 to 16 TB in ZFS RAID-Z1, 88 TB usable of 144 TB raw, ≈ 77.5 TiB as ZFS reports it (an estimate), with the other four systems compared beside the drive list"></div>
           <h3>On iPad</h3>
-          <p>The same calculations in a wider layout: diagram, biggest upgrade and every bay on one screen.</p>
+          <p>Results beside inputs, every system compared at a glance, and up to 30 bays on screen at once. It adapts to split view too.</p>
         </div>
         <div class="ios-phones">
           <figure>
-            <div class="phone-dark"><img src="assets/07-iphone-synology-dark.webp" width="640" height="1391" loading="lazy" alt="The Synology upgrade scene on iPhone in dark mode"></div>
+            <div class="phone-dark"><img src="assets/07-iphone-nas-dark.webp" width="640" height="1391" loading="lazy" alt="The NAS tab on iPhone in dark mode: eight bays in Unraid, 48 TB usable of 68 TB raw, with the 20 TB drive as parity"></div>
             <figcaption>Dark mode</figcaption>
           </figure>
           <figure>
-            <div class="phone-dark"><img src="assets/06-iphone-synology-ja.webp" width="640" height="1391" loading="lazy" alt="The Synology upgrade scene on iPhone in Japanese"></div>
+            <div class="phone-dark"><img src="assets/06-iphone-nas-ja.webp" width="640" height="1391" loading="lazy" alt="The NAS tab on iPhone in Japanese: 16, 8, 8 and 4 TB drives in SHR, 20 TB usable of 36 TB raw"></div>
             <figcaption lang="ja">日本語</figcaption>
           </figure>
         </div>
@@ -420,16 +421,20 @@
           <p>Synology Hybrid RAID builds RAID in layers of matching capacity, so mixed drive sizes waste less space than classic RAID. The app supports SHR and SHR-2, and lets you compare them with classic RAID on the same drives.</p>
         </div>
         <div>
+          <h3>Which systems does it cover?</h3>
+          <p>On identical drives: RAID 0, 1, 5, 6, 10, 50 and 60, JBOD, and ZFS RAID&#8209;Z1, Z2 and Z3. With mixed drives, bay by bay: Synology SHR and SHR&#8209;2, Unraid, ZFS, SnapRAID and Btrfs RAID1.</p>
+        </div>
+        <div>
           <h3>Why does my NAS show less than I expected?</h3>
-          <p>Drives are sold in TB and most NAS systems report TiB. RAID Calculator shows both, so the number on the page matches the number you see after setup.</p>
+          <p>Drives are sold in TB and most NAS systems report TiB. RAID Calculator shows both, so the number on the page matches the number you see after setup. For ZFS it also estimates what ZFS itself will report after padding and reserved space, and labels it an estimate.</p>
         </div>
         <div>
           <h3>What doesn’t it cover?</h3>
-          <p>RAID 50 and 60, ZFS RAID-Z, Unraid, Synology expansion units and SSD cache aren’t supported. It doesn’t estimate cost, power or IOPS, and it never touches your actual disks.</p>
+          <p>Synology expansion units, SSD cache, and Unraid’s separate pools outside its main array aren’t covered. It doesn’t estimate cost, power or IOPS, and it never touches your actual disks.</p>
         </div>
         <div>
           <h3>Are the speed ratings benchmarks?</h3>
-          <p>No. Speed and availability are 1–5 star comparisons between RAID levels, labeled as such in the app. Capacity figures use standard simplified formulas and don’t account for a specific filesystem’s overhead.</p>
+          <p>No. Speed and availability are 1–5 star comparisons between RAID levels, labeled as such in the app. Capacity figures use standard simplified formulas and don’t account for a specific filesystem’s overhead, apart from the labeled ZFS estimate. NAS systems get no stars at all, since their speed depends on how each one is set up.</p>
         </div>
       </div>
     </div>
@@ -456,6 +461,8 @@
       <strong>RAID Calculator</strong>
       <span class="quiet">By mrBallistic. English, Spanish, French, Italian and Japanese. Privacy: Data Not Collected.</span>
       <span class="quiet">Not affiliated with or endorsed by Synology Inc. Synology and SHR are trademarks of Synology Inc.</span>
+      <span class="quiet">Not affiliated with or endorsed by Lime Technology, Inc. Unraid is a trademark of Lime Technology, Inc.</span>
+      <span class="quiet">ZFS is a trademark of Oracle and/or its affiliates. Not affiliated with or endorsed by Oracle.</span>
     </div>
     <nav class="footer-links" aria-label="Footer">
       <a href="https://apps.apple.com/app/id395601653">App Store</a>

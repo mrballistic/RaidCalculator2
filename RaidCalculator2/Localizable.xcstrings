@@ -124,7 +124,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Baie %1$d, %2$@ : %3$@"
+            "value" : "Baie %1$d, %2$@ : %3$@"
           }
         },
         "it" : {
@@ -176,41 +176,6 @@
         }
       }
     },
-    "bay_count_value" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%d bays"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%d bahías"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%d baies"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%d alloggiamenti"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%dベイ"
-          }
-        }
-      }
-    },
     "bay_n" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -242,6 +207,41 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ベイ %d"
+          }
+        }
+      }
+    },
+    "bay_sizes_in_tb" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sizes in TB"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tamaños en TB"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tailles en TB"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dimensioni in TB"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "容量はTB単位"
           }
         }
       }
@@ -281,6 +281,216 @@
         }
       }
     },
+    "btrfs_calculation" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usable space is half the total, unless one drive is larger than all the others combined; then it’s the total of the smaller drives, and the rest of the largest drive is shown as unused. Each drive is drawn half data, half copy."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El espacio utilizable es la mitad del total, salvo que una unidad sea más grande que todas las demás juntas; en ese caso es la suma de las unidades más pequeñas, y el resto de la unidad más grande se muestra sin usar. Cada unidad se dibuja mitad datos, mitad copia."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L’espace utilisable correspond à la moitié du total, sauf si un disque est plus grand que tous les autres réunis ; il correspond alors au total des plus petits disques, et le reste du plus grand disque est indiqué comme inutilisé. Chaque disque est représenté à moitié données, à moitié copie."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lo spazio utilizzabile è metà del totale, a meno che un disco non sia più grande di tutti gli altri messi insieme; in quel caso è il totale dei dischi più piccoli, e il resto del disco più grande è indicato come inutilizzato. Ogni disco è disegnato per metà dati e per metà copia."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用可能容量は総容量の半分です。ただし、1台のドライブが他のすべてのドライブの合計より大きい場合は、小さいドライブの合計となり、最大のドライブの残りは未使用として表示されます。各ドライブは半分をデータ、半分をコピーとして描いています。"
+          }
+        }
+      }
+    },
+    "btrfs_cons" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Half the total space holds the second copy\nSurvives only one drive failure, however many drives there are\nOne drive larger than all the others combined can’t be fully mirrored"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La mitad del espacio total guarda la segunda copia\nSolo sobrevive a un fallo de unidad, sin importar cuántas unidades haya\nUna unidad más grande que todas las demás juntas no se puede duplicar por completo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La moitié de l’espace total contient la seconde copie\nNe survit qu’à une seule panne de disque, quel que soit le nombre de disques\nUn disque plus grand que tous les autres réunis ne peut pas être entièrement mis en miroir"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Metà dello spazio totale contiene la seconda copia\nSopravvive al guasto di un solo disco, qualunque sia il numero di dischi\nUn disco più grande di tutti gli altri messi insieme non può essere interamente in mirror"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "総容量の半分が2つ目のコピーに使われる\nドライブ数に関係なく、1台の故障にしか耐えられない\n他のすべてのドライブの合計より大きいドライブは、全体をミラーできない"
+          }
+        }
+      }
+    },
+    "btrfs_description" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Btrfs RAID1 keeps two copies of every block of data, on two different drives. Drives can be different sizes; Btrfs places the copies so they balance."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Btrfs RAID1 guarda dos copias de cada bloque de datos, en dos unidades distintas. Las unidades pueden ser de distintos tamaños; Btrfs coloca las copias de forma equilibrada."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le Btrfs RAID1 conserve deux copies de chaque bloc de données, sur deux disques différents. Les disques peuvent être de tailles différentes ; Btrfs place les copies de façon équilibrée."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Btrfs RAID1 conserva due copie di ogni blocco di dati, su due dischi diversi. I dischi possono avere dimensioni diverse; Btrfs distribuisce le copie in modo bilanciato."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Btrfs RAID1は、すべてのデータブロックのコピーを2つ、別々のドライブに保持します。ドライブの容量は異なっていてもよく、Btrfsは偏りが出ないようにコピーを配置します。"
+          }
+        }
+      }
+    },
+    "btrfs_pros" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mix drive sizes with little wasted space\nAdd or remove drives and rebalance while the volume stays online\nChecksums detect corruption and repair it from the other copy"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permite combinar unidades de distintos tamaños con poco espacio desperdiciado\nPermite añadir o quitar unidades y reequilibrar sin desconectar el volumen\nLas sumas de verificación detectan la corrupción y la reparan con la otra copia"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disques de tailles différentes combinables avec peu d’espace perdu\nAjout ou retrait de disques et rééquilibrage pendant que le volume reste en ligne\nLes sommes de contrôle détectent la corruption et la réparent à partir de l’autre copie"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dischi di dimensioni diverse combinabili con poco spazio sprecato\nSi possono aggiungere o rimuovere dischi e ribilanciare mentre il volume resta online\nI checksum rilevano la corruzione e la riparano dall’altra copia"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "容量の異なるドライブを組み合わせても無駄が少ない\nボリュームをオンラインのままドライブの追加・削除やリバランスが可能\nチェックサムが破損を検出し、もう一方のコピーから修復"
+          }
+        }
+      }
+    },
+    "btrfs_raid1_validation" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Btrfs RAID1 needs at least 2 drives."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Btrfs RAID1 necesita al menos 2 discos."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le Btrfs RAID1 nécessite au moins 2 disques."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Btrfs RAID1 richiede almeno 2 dischi."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Btrfs RAID1には2台以上のドライブが必要です。"
+          }
+        }
+      }
+    },
+    "btrfs_use_cases" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Small home servers with a few mixed drives\nLinux servers and NAS systems built on Btrfs\nSetups that grow a drive at a time"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pequeños servidores domésticos con pocas unidades de distintos tamaños\nServidores Linux y sistemas NAS basados en Btrfs\nConfiguraciones que crecen unidad a unidad"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Petits serveurs domestiques avec quelques disques de tailles différentes\nServeurs Linux et NAS reposant sur Btrfs\nConfigurations qui s’agrandissent disque par disque"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piccoli server domestici con pochi dischi di dimensioni diverse\nServer Linux e sistemi NAS basati su Btrfs\nConfigurazioni che crescono un disco alla volta"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "容量の異なる少数のドライブを搭載した小規模ホームサーバー\nBtrfsベースのLinuxサーバーやNASシステム\nドライブを1台ずつ増やしていく構成"
+          }
+        }
+      }
+    },
     "cancel" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -312,6 +522,216 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "キャンセル"
+          }
+        }
+      }
+    },
+    "compare_failures" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Failures tolerated: %d"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fallos tolerados: %d"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pannes tolérées : %d"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Guasti tollerati: %d"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "許容故障数：%d"
+          }
+        }
+      }
+    },
+    "compare_first_bays" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uses the first %d bays"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usa las primeras %d bahías"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Utilise les %d premières baies"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usa i primi %d alloggiamenti"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最初の%dベイを使用"
+          }
+        }
+      }
+    },
+    "compare_header" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Every System, Same Drives"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Todos los sistemas, mismos discos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tous les systèmes, mêmes disques"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tutti i sistemi, stessi dischi"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "同じドライブ、すべてのシステム"
+          }
+        }
+      }
+    },
+    "compare_hint" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Switches the NAS tab to this system."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cambia la pestaña NAS a este sistema."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fait passer l’onglet NAS à ce système."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Passa la scheda NAS a questo sistema."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "NASタブをこのシステムに切り替えます。"
+          }
+        }
+      }
+    },
+    "compare_systems" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Compare Systems"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comparar sistemas"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comparer les systèmes"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Confronta i sistemi"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "システムを比較"
+          }
+        }
+      }
+    },
+    "compare_unused" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ unused"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ sin usar"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ inutilisés"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ inutilizzati"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@未使用"
           }
         }
       }
@@ -382,41 +802,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "短所"
-          }
-        }
-      }
-    },
-    "custom_model" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Custom"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Personalizado"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Personnalisé"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Personalizzato"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "カスタム"
           }
         }
       }
@@ -684,7 +1069,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$d disques : %2$@"
+            "value" : "%1$d disques : %2$@"
           }
         },
         "it" : {
@@ -697,6 +1082,41 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ドライブ%1$d台：%2$@"
+          }
+        }
+      }
+    },
+    "drive_strip_group_accessibility" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Group %1$d of %2$d: %3$@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grupo %1$d de %2$d: %3$@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Groupe %1$d sur %2$d : %3$@"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gruppo %1$d di %2$d: %3$@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "グループ%1$d/%2$d：%3$@"
           }
         }
       }
@@ -719,7 +1139,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$d disques en %2$d groupes : %3$@"
+            "value" : "%1$d disques en %2$d groupes : %3$@"
           }
         },
         "it" : {
@@ -731,7 +1151,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$dドライブ、%2$dグループ：%3$@"
+            "value" : "ドライブ%1$d台、%2$dグループ：%3$@"
           }
         }
       }
@@ -806,6 +1226,41 @@
         }
       }
     },
+    "enter_drive_size" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enter a drive size."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Introduce un tamaño de unidad."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saisissez une taille de disque."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inserisci la dimensione del disco."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ドライブサイズを入力してください。"
+          }
+        }
+      }
+    },
     "group_layout" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -836,7 +1291,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$dグループ、各%2$dドライブ"
+            "value" : "%1$dグループ、各%2$d台"
           }
         }
       }
@@ -871,7 +1326,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "1グループ、%dドライブ"
+            "value" : "1グループ、%d台"
           }
         }
       }
@@ -987,25 +1442,25 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$d drives don’t divide evenly into %2$d groups."
+            "value" : "The number of drives (%1$d) doesn’t divide evenly into %2$d groups."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$d unidades no se dividen en partes iguales en %2$d grupos."
+            "value" : "El número de unidades (%1$d) no se puede repartir en partes iguales entre %2$d grupos."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$d disques ne se répartissent pas équitablement en %2$d groupes."
+            "value" : "Le nombre de disques (%1$d) ne permet pas de former %2$d groupes égaux."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$d dischi non si dividono in modo uniforme in %2$d gruppi."
+            "value" : "Il numero di dischi (%1$d) non è divisibile in %2$d gruppi uguali."
           }
         },
         "ja" : {
@@ -1104,7 +1559,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aucune redondance ou protection de données\nLa panne de disque n'affecte que les données sur ce disque\nAucun bénéfice de performance du striping"
+            "value" : "Aucune redondance ou protection de données\nLa panne de disque n’affecte que les données sur ce disque\nAucun bénéfice de performance du striping"
           }
         },
         "it" : {
@@ -1366,41 +1821,6 @@
         }
       }
     },
-    "model" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Model"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Modelo"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Modèle"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Modello"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "モデル"
-          }
-        }
-      }
-    },
     "more_levels" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1442,31 +1862,136 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "NAS"
+            "value" : "Setup"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "NAS"
+            "value" : "Configuración"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "NAS"
+            "value" : "Configuration"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "NAS"
+            "value" : "Configurazione"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "NAS"
+            "value" : "構成"
+          }
+        }
+      }
+    },
+    "nas_system" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "System"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sistema"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Système"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sistema"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "システム"
+          }
+        }
+      }
+    },
+    "nas_title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "NAS Calculator"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calculadora NAS"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calculateur NAS"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calcolatore NAS"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "NAS計算機"
+          }
+        }
+      }
+    },
+    "nas_zfs_level" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "RAID-Z Level"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nivel RAID-Z"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Niveau RAID-Z"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Livello RAID-Z"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "RAID-Zレベル"
           }
         }
       }
@@ -1677,6 +2202,111 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "概要"
+          }
+        }
+      }
+    },
+    "parity_drives" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Parity Drives"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Discos de paridad"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disques de parité"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dischi di parità"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "パリティドライブ"
+          }
+        }
+      }
+    },
+    "parity_needs_data" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ needs at least one data drive besides its parity drives."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ necesita al menos un disco de datos además de sus discos de paridad."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ nécessite au moins un disque de données en plus de ses disques de parité."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ richiede almeno un disco dati oltre ai dischi di parità."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@には、パリティドライブのほかに1台以上のデータドライブが必要です。"
+          }
+        }
+      }
+    },
+    "parity_promotion_note" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The largest drives are used as parity, so parity is always at least as large as every data drive."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Los discos más grandes se usan como paridad, así que la paridad siempre es al menos tan grande como cada disco de datos."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les plus grands disques servent de parité : la parité est donc toujours au moins aussi grande que chaque disque de données."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I dischi più grandi vengono usati come parità, quindi la parità è sempre grande almeno quanto ogni disco dati."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最も大きいドライブがパリティとして使われるため、パリティは常にすべてのデータドライブ以上の容量になります。"
           }
         }
       }
@@ -2049,7 +2679,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "RAID 10 (Stripe de Mirrors) combine mirroring et striping. Fournit d'excellentes performances et redondance mais nécessite un nombre pair de disques."
+            "value" : "RAID 10 (Stripe de Mirrors) combine mirroring et striping. Fournit d’excellentes performances et redondance mais nécessite un nombre pair de disques."
           }
         },
         "it" : {
@@ -2084,7 +2714,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Jusqu'à %d (dépend de quels disques tombent en panne)"
+            "value" : "Jusqu’à %d (dépend de quels disques tombent en panne)"
           }
         },
         "it" : {
@@ -2364,7 +2994,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Disques de démarrage et systèmes d'exploitation\nBases de données critiques et applications\nServeurs de petites entreprises"
+            "value" : "Disques de démarrage et systèmes d’exploitation\nBases de données critiques et applications\nServeurs de petites entreprises"
           }
         },
         "it" : {
@@ -2469,7 +3099,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Le RAID 50 répartit les données en bandes sur deux groupes RAID 5 ou plus, chacun consacrant l’équivalent d’un disque à la parité. Les écritures sont réparties entre les groupes : il est donc plus rapide qu’une seule grappe RAID 5. Une reconstruction ne concerne qu’un seul groupe."
+            "value" : "Le RAID 50 répartit les données en bandes sur deux groupes RAID 5 ou plus, chacun consacrant l’équivalent d’un disque à la parité. Les écritures sont réparties entre les groupes : il est donc plus rapide qu’une seule grappe RAID 5. Une reconstruction ne concerne qu’un seul groupe."
           }
         },
         "it" : {
@@ -2551,7 +3181,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "RAID 5以上の速度が必要な大規模アレイ\n多数のドライブ上のデータベースと仮想マシン\nネストレベルに対応したハードウェアRAIDコントローラー"
+            "value" : "RAID 5より高い速度が必要な大規模アレイ\n多数のドライブ上のデータベースと仮想マシン\nネスト構成のRAIDレベルに対応したハードウェアRAIDコントローラー"
           }
         }
       }
@@ -2714,7 +3344,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Serveurs de fichiers et stockage réseau attaché\nStockage de serveur à usage général\nSystèmes de sauvegarde et d'archivage"
+            "value" : "Serveurs de fichiers et stockage réseau attaché\nStockage de serveur à usage général\nSystèmes de sauvegarde et d’archivage"
           }
         },
         "it" : {
@@ -2819,7 +3449,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Le RAID 60 répartit les données en bandes sur deux groupes RAID 6 ou plus. Chaque groupe consacre l’équivalent de deux disques à la parité : deux disques quelconques peuvent donc tomber en panne, et souvent davantage."
+            "value" : "Le RAID 60 répartit les données en bandes sur deux groupes RAID 6 ou plus. Chaque groupe consacre l’équivalent de deux disques à la parité : deux disques quelconques peuvent donc tomber en panne, et souvent davantage."
           }
         },
         "it" : {
@@ -2901,7 +3531,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "データ損失が許されない大規模アレイ\n大容量ドライブを多数搭載したバックアップ・アーカイブサーバー\nネストレベルに対応したハードウェアRAIDコントローラー"
+            "value" : "データ損失が許されない大規模アレイ\n大容量ドライブを多数搭載したバックアップ・アーカイブサーバー\nネスト構成のRAIDレベルに対応したハードウェアRAIDコントローラー"
           }
         }
       }
@@ -3064,7 +3694,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Grands systèmes de stockage d'entreprise\nArchives de données critiques\nSystèmes avec de longs temps de reconstruction"
+            "value" : "Grands systèmes de stockage d’entreprise\nArchives de données critiques\nSystèmes avec de longs temps de reconstruction"
           }
         },
         "it" : {
@@ -3204,7 +3834,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "L’espace utilisable est indiqué de deux façons. Le premier chiffre suit la formule simple : disques moins parité, dans chaque groupe. Le second estime ce que ZFS affichera avec les réglages par défaut (secteurs de 4K et enregistrements de 128K). Il déduit le remplissage d’allocation de RAID-Z, qui rend certaines largeurs de groupe moins efficaces que d’autres, ainsi que l’espace que ZFS réserve : 1/32 du pool, 128 GiB au maximum. La compression, la taille d’enregistrement et la taille de secteur modifient le chiffre réel, et une petite quantité de métadonnées sur disque n’est pas comptée."
+            "value" : "L’espace utilisable est indiqué de deux façons. Le premier chiffre suit la formule simple : disques moins parité, dans chaque groupe. Le second estime ce que ZFS affichera avec les réglages par défaut (secteurs de 4K et enregistrements de 128K). Il déduit le remplissage d’allocation de RAID-Z, qui rend certaines largeurs de groupe moins efficaces que d’autres, ainsi que l’espace que ZFS réserve : 1/32 du pool, 128 GiB au maximum. La compression, la taille d’enregistrement et la taille de secteur modifient le chiffre réel, et une petite quantité de métadonnées sur disque n’est pas comptée."
           }
         },
         "it" : {
@@ -3303,7 +3933,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Las sumas de verificación detectan y reparan la corrupción silenciosa\nSin el “write hole” de RAID 5, porque ZFS nunca sobrescribe datos en su lugar\nEl mayor espacio utilizable de los niveles RAID-Z"
+            "value" : "Las sumas de verificación detectan y reparan la corrupción silenciosa\nSin el “write hole” de RAID 5, porque ZFS nunca sobrescribe los datos existentes\nEl mayor espacio utilizable de los niveles RAID-Z"
           }
         },
         "fr" : {
@@ -3315,13 +3945,13 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "I checksum rilevano e riparano la corruzione silenziosa\nNessun “write hole” di RAID 5, perché ZFS non sovrascrive mai i dati sul posto\nIl maggiore spazio utilizzabile tra i livelli RAID-Z"
+            "value" : "I checksum rilevano e riparano la corruzione silenziosa\nNessun “write hole” di RAID 5, perché ZFS non sovrascrive mai i dati sul posto\nLo spazio utilizzabile più ampio tra i livelli RAID-Z"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "チェックサムがサイレントな破損を検出して修復\nZFSはデータを上書きしないため、RAID 5の「書き込みホール」がない\nRAID-Zレベルの中で使用可能容量が最大"
+            "value" : "チェックサムがサイレントな破損を検出して修復\nZFSはデータをその場で上書きすることがないため、RAID 5の「ライトホール」問題が起きない\nRAID-Zレベルの中で使用可能容量が最大"
           }
         }
       }
@@ -3379,7 +4009,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "L’espace utilisable est indiqué de deux façons. Le premier chiffre suit la formule simple : disques moins parité, dans chaque groupe. Le second estime ce que ZFS affichera avec les réglages par défaut (secteurs de 4K et enregistrements de 128K). Il déduit le remplissage d’allocation de RAID-Z, qui rend certaines largeurs de groupe moins efficaces que d’autres, ainsi que l’espace que ZFS réserve : 1/32 du pool, 128 GiB au maximum. La compression, la taille d’enregistrement et la taille de secteur modifient le chiffre réel, et une petite quantité de métadonnées sur disque n’est pas comptée."
+            "value" : "L’espace utilisable est indiqué de deux façons. Le premier chiffre suit la formule simple : disques moins parité, dans chaque groupe. Le second estime ce que ZFS affichera avec les réglages par défaut (secteurs de 4K et enregistrements de 128K). Il déduit le remplissage d’allocation de RAID-Z, qui rend certaines largeurs de groupe moins efficaces que d’autres, ainsi que l’espace que ZFS réserve : 1/32 du pool, 128 GiB au maximum. La compression, la taille d’enregistrement et la taille de secteur modifient le chiffre réel, et une petite quantité de métadonnées sur disque n’est pas comptée."
           }
         },
         "it" : {
@@ -3554,7 +4184,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "L’espace utilisable est indiqué de deux façons. Le premier chiffre suit la formule simple : disques moins parité, dans chaque groupe. Le second estime ce que ZFS affichera avec les réglages par défaut (secteurs de 4K et enregistrements de 128K). Il déduit le remplissage d’allocation de RAID-Z, qui rend certaines largeurs de groupe moins efficaces que d’autres, ainsi que l’espace que ZFS réserve : 1/32 du pool, 128 GiB au maximum. La compression, la taille d’enregistrement et la taille de secteur modifient le chiffre réel, et une petite quantité de métadonnées sur disque n’est pas comptée."
+            "value" : "L’espace utilisable est indiqué de deux façons. Le premier chiffre suit la formule simple : disques moins parité, dans chaque groupe. Le second estime ce que ZFS affichera avec les réglages par défaut (secteurs de 4K et enregistrements de 128K). Il déduit le remplissage d’allocation de RAID-Z, qui rend certaines largeurs de groupe moins efficaces que d’autres, ainsi que l’espace que ZFS réserve : 1/32 du pool, 128 GiB au maximum. La compression, la taille d’enregistrement et la taille de secteur modifient le chiffre réel, et une petite quantité de métadonnées sur disque n’est pas comptée."
           }
         },
         "it" : {
@@ -4271,37 +4901,212 @@
         }
       }
     },
-    "shr_footnote" : {
+    "snapraid_calculation" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "SHR builds RAID in layers of matching capacity, so mixed drive sizes waste less space than classic RAID."
+            "value" : "The largest drives become parity, so parity is always at least as large as every data drive. Usable space is the total of the data drives, and the set survives as many drive failures as it has parity drives, as of the last sync. SnapRAID recommends more parity as the number of data drives grows."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "SHR crea el RAID en capas de igual capacidad, así que los discos de distintos tamaños desperdician menos espacio que con RAID clásico."
+            "value" : "Las unidades más grandes se usan para paridad, así que la paridad siempre es al menos tan grande como cada unidad de datos. El espacio utilizable es la suma de las unidades de datos, y el conjunto sobrevive a tantos fallos de unidad como unidades de paridad tenga, según el estado de la última sincronización. SnapRAID recomienda más paridad a medida que aumenta el número de unidades de datos."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Le SHR construit le RAID par couches de capacité identique : des disques de tailles différentes gaspillent ainsi moins d’espace qu’en RAID classique."
+            "value" : "Les plus grands disques servent à la parité, qui est donc toujours au moins aussi grande que chaque disque de données. L’espace utilisable correspond au total des disques de données, et l’ensemble survit à autant de pannes de disque qu’il compte de disques de parité, dans l’état de la dernière synchronisation. SnapRAID recommande davantage de parité à mesure que le nombre de disques de données augmente."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "SHR crea il RAID a strati di pari capacità, quindi dischi di dimensioni diverse sprecano meno spazio rispetto al RAID classico."
+            "value" : "I dischi più grandi diventano dischi di parità, quindi la parità è sempre grande almeno quanto ogni disco dati. Lo spazio utilizzabile è il totale dei dischi dati, e l’insieme sopravvive a tanti guasti quanti sono i suoi dischi di parità, allo stato dell’ultima sincronizzazione. SnapRAID consiglia più parità man mano che aumenta il numero di dischi dati."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "SHRは同じ容量の層ごとにRAIDを構成するため、容量の異なるドライブでも従来のRAIDより無駄が少なくなります。"
+            "value" : "最も大きいドライブがパリティになるため、パリティは常にすべてのデータドライブと同じかそれ以上の容量になります。使用可能容量はデータドライブの合計で、最後の同期の時点のデータについて、パリティドライブと同じ数のドライブ故障に耐えられます。SnapRAIDは、データドライブの数が増えるほどパリティを増やすことを推奨しています。"
+          }
+        }
+      }
+    },
+    "snapraid_cons" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Protection is only as current as the last sync, so files changed since then aren’t protected\nEach parity drive must be at least as large as your largest data drive\nNot suited to data that changes constantly"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La protección solo está al día hasta la última sincronización, así que los archivos modificados desde entonces no están protegidos\nCada unidad de paridad debe ser al menos tan grande como la unidad de datos más grande\nNo es adecuado para datos que cambian constantemente"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La protection ne vaut qu’à la date de la dernière synchronisation : les fichiers modifiés depuis ne sont pas protégés\nChaque disque de parité doit être au moins aussi grand que le plus grand disque de données\nInadapté aux données qui changent en permanence"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La protezione è aggiornata solo all’ultima sincronizzazione, quindi i file modificati da allora non sono protetti\nOgni disco di parità deve essere grande almeno quanto il disco dati più grande\nNon adatto a dati che cambiano di continuo"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "保護は最後の同期の時点までのため、それ以降に変更したファイルは保護されない\n各パリティドライブには最大のデータドライブ以上の容量が必要\n頻繁に変更されるデータには不向き"
+          }
+        }
+      }
+    },
+    "snapraid_description" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SnapRAID protects a set of data drives with up to six parity drives, computed when you run a sync rather than as you write. Drives can be any size, and every data drive’s full capacity is usable."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SnapRAID protege un conjunto de unidades de datos con hasta seis unidades de paridad, calculada al ejecutar una sincronización y no a medida que se escribe. Las unidades pueden ser de cualquier tamaño, y se puede usar toda la capacidad de cada unidad de datos."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SnapRAID protège un ensemble de disques de données avec jusqu’à six disques de parité, calculée lors d’une synchronisation plutôt qu’au fil des écritures. Les disques peuvent être de n’importe quelle taille, et toute la capacité de chaque disque de données est utilisable."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SnapRAID protegge un insieme di dischi dati con un massimo di sei dischi di parità, calcolata quando si esegue una sincronizzazione anziché durante la scrittura. I dischi possono essere di qualsiasi dimensione, e l’intera capacità di ogni disco dati è utilizzabile."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SnapRAIDは、一連のデータドライブを最大6台のパリティドライブで保護します。パリティは書き込みのたびではなく、同期を実行したときに計算されます。ドライブの容量は自由で、各データドライブの全容量を使用できます。"
+          }
+        }
+      }
+    },
+    "snapraid_parity_hint" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SnapRAID recommends %1$d parity drives for %2$@ data drives."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SnapRAID recomienda %1$d discos de paridad para %2$@ discos de datos."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SnapRAID recommande %1$d disques de parité pour %2$@ disques de données."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SnapRAID consiglia %1$d dischi di parità per %2$@ dischi dati."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SnapRAIDでは、データドライブ数が%2$@の場合、パリティドライブを%1$d台にすることを推奨しています。"
+          }
+        }
+      }
+    },
+    "snapraid_pros" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mix drive sizes freely, with no space lost\nUp to six parity drives for large collections\nChecksums detect silent corruption, and files on surviving drives stay readable"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permite combinar libremente unidades de distintos tamaños, sin perder espacio\nHasta seis unidades de paridad para colecciones grandes\nLas sumas de verificación detectan la corrupción silenciosa, y los archivos de las unidades restantes siguen siendo legibles"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disques de tailles différentes combinables librement, sans perte d’espace\nJusqu’à six disques de parité pour les grandes collections\nLes sommes de contrôle détectent la corruption silencieuse, et les fichiers des disques restants restent lisibles"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dischi di dimensioni diverse combinabili liberamente, senza perdita di spazio\nFino a sei dischi di parità per raccolte di grandi dimensioni\nI checksum rilevano la corruzione silenziosa, e i file sui dischi superstiti restano leggibili"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "容量の異なるドライブを自由に組み合わせても容量を失わない\n大規模なコレクション向けに最大6台のパリティドライブ\nチェックサムがサイレントな破損を検出し、残ったドライブのファイルは引き続き読み取れる"
+          }
+        }
+      }
+    },
+    "snapraid_use_cases" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Media libraries that rarely change\nArchives on mixed old and new drives\nHome servers alongside a drive-pooling tool"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bibliotecas multimedia que cambian poco\nArchivos en unidades antiguas y nuevas\nServidores domésticos junto con una herramienta de agrupación de unidades"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Médiathèques qui changent rarement\nArchives sur des disques anciens et récents\nServeurs domestiques associés à un outil de regroupement de disques"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Librerie multimediali che cambiano raramente\nArchivi su dischi vecchi e nuovi\nServer domestici insieme a uno strumento di pooling dei dischi"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ほとんど変更されないメディアライブラリ\n新旧のドライブが混在するアーカイブ\nドライブプーリングツールと組み合わせた家庭用サーバー"
           }
         }
       }
@@ -4446,6 +5251,216 @@
         }
       }
     },
+    "synology_calculation" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SHR splits drives into layers at each distinct drive size and builds RAID across the drives that reach each layer. A layer with too few drives to protect is shown as unused until a larger drive joins it. Classic RAID treats every drive as the size of the smallest. Synology spreads parity across each layer; it’s drawn on the largest drives to keep the picture readable."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SHR divide las unidades en capas en cada tamaño de unidad distinto y crea el RAID entre las unidades que alcanzan cada capa. Una capa con demasiado pocas unidades para protegerla se muestra sin usar hasta que se le une una unidad más grande. El RAID clásico trata cada unidad como si tuviera el tamaño de la más pequeña. Synology distribuye la paridad en cada capa; aquí se dibuja en las unidades más grandes para que el gráfico sea fácil de leer."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le SHR découpe les disques en couches à chaque taille de disque distincte et construit le RAID sur les disques qui atteignent chaque couche. Une couche qui compte trop peu de disques pour être protégée est indiquée comme inutilisée jusqu’à ce qu’un disque plus grand la rejoigne. Le RAID classique traite chaque disque comme s’il avait la taille du plus petit. Synology répartit la parité sur chaque couche ; elle est représentée sur les plus grands disques pour que le schéma reste lisible."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SHR divide i dischi in strati a ogni diversa dimensione di disco e crea il RAID sui dischi che raggiungono ciascuno strato. Uno strato con troppo pochi dischi per essere protetto viene mostrato come inutilizzato finché non vi si aggiunge un disco più grande. Il RAID classico tratta ogni disco come se avesse la dimensione del più piccolo. Synology distribuisce la parità su ogni strato; qui è disegnata sui dischi più grandi per mantenere leggibile lo schema."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SHRは、異なるドライブ容量ごとにドライブを層に分け、各層に達するドライブ間でRAIDを構成します。保護するにはドライブが足りない層は、より大きなドライブが加わるまで未使用として表示されます。従来のRAIDでは、すべてのドライブが最も小さいドライブの容量として扱われます。Synologyは各層にパリティを分散しますが、図を見やすくするため、最も大きいドライブ上に描いています。"
+          }
+        }
+      }
+    },
+    "synology_cons" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A single large drive can’t be fully used until a second one joins it\nOnly available on Synology NAS\nClassic RAID wastes space with mixed drives"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Una sola unidad grande no se aprovecha por completo hasta que se le une una segunda\nSolo disponible en NAS Synology\nEl RAID clásico desperdicia espacio con unidades de distintos tamaños"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un seul gros disque ne peut être pleinement utilisé qu’une fois rejoint par un second\nDisponible uniquement sur les NAS Synology\nLe RAID classique gaspille de l’espace avec des disques de tailles différentes"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un singolo disco grande non può essere usato del tutto finché non se ne aggiunge un secondo\nDisponibile solo sui NAS Synology\nIl RAID classico spreca spazio con dischi di dimensioni diverse"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "大容量ドライブが1台だけの場合、2台目が加わるまで容量を使い切れない\nSynology NASでのみ利用可能\n従来のRAIDでは容量の異なるドライブで無駄が出る"
+          }
+        }
+      }
+    },
+    "synology_description" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Synology Hybrid RAID (SHR) builds RAID in layers of matching capacity, so mixed drive sizes waste less space than classic RAID. SHR-2 keeps two drives’ worth of parity. Synology’s classic RAID 1, 5 and 6 treat every drive as the size of the smallest."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Synology Hybrid RAID (SHR) crea el RAID en capas de igual capacidad, así que las unidades de distintos tamaños desperdician menos espacio que con el RAID clásico. SHR-2 reserva el equivalente a dos unidades para paridad. Los RAID 1, 5 y 6 clásicos de Synology tratan cada unidad como si tuviera el tamaño de la más pequeña."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le Synology Hybrid RAID (SHR) construit le RAID par couches de capacité identique : des disques de tailles différentes gaspillent ainsi moins d’espace qu’en RAID classique. Le SHR-2 consacre l’équivalent de deux disques à la parité. Les RAID 1, 5 et 6 classiques de Synology traitent chaque disque comme s’il avait la taille du plus petit."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Synology Hybrid RAID (SHR) crea il RAID a strati di pari capacità, quindi dischi di dimensioni diverse sprecano meno spazio rispetto al RAID classico. SHR-2 riserva l’equivalente di due dischi alla parità. I RAID 1, 5 e 6 classici di Synology trattano ogni disco come se avesse la dimensione del più piccolo."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Synology Hybrid RAID（SHR）は同じ容量の層ごとにRAIDを構成するため、容量の異なるドライブでも従来のRAIDより無駄が少なくなります。SHR-2はドライブ2台分のパリティを持ちます。Synologyの従来のRAID 1、5、6では、すべてのドライブが最も小さいドライブの容量として扱われます。"
+          }
+        }
+      }
+    },
+    "synology_pros" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mixed drive sizes waste little or no space\nAdd larger drives over time, one at a time\nSHR-2 survives any two drive failures"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Las unidades de distintos tamaños desperdician poco o ningún espacio\nPermite añadir unidades más grandes con el tiempo, de una en una\nSHR-2 sobrevive a dos fallos de unidad cualesquiera"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les disques de tailles différentes ne gaspillent que peu ou pas d’espace\nAjout progressif de disques plus grands, un à la fois\nLe SHR-2 survit à deux pannes de disque quelconques"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dischi di dimensioni diverse sprecano poco o nessuno spazio\nSi possono aggiungere dischi più grandi nel tempo, uno alla volta\nSHR-2 sopravvive a due guasti qualsiasi dei dischi"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "容量の異なるドライブでも無駄がほとんどない\n大容量ドライブを1台ずつ、徐々に追加できる\nSHR-2はどの2台のドライブ故障にも耐えられる"
+          }
+        }
+      }
+    },
+    "synology_use_cases" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Home NAS built up over years with mixed drives\nPlex and media libraries\nFamily photo and backup storage"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "NAS domésticos ampliados a lo largo de los años con unidades de distintos tamaños\nPlex y bibliotecas multimedia\nAlmacenamiento de fotos familiares y backups"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "NAS domestiques étoffés au fil des ans avec des disques variés\nPlex et médiathèques\nStockage de photos de famille et de sauvegardes"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "NAS domestici ampliati negli anni con dischi diversi\nPlex e librerie multimediali\nArchiviazione di foto di famiglia e backup"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "容量の異なるドライブで長年かけて拡張してきた家庭用NAS\nPlexとメディアライブラリ\n家族の写真やバックアップの保存"
+          }
+        }
+      }
+    },
+    "tab_nas" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "NAS"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "NAS"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "NAS"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "NAS"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "NAS"
+          }
+        }
+      }
+    },
     "tab_raid" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4481,41 +5496,6 @@
         }
       }
     },
-    "tab_synology" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Synology"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Synology"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Synology"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Synology"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Synology"
-          }
-        }
-      }
-    },
     "typical_use_cases" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4534,19 +5514,264 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cas d'Usage Typiques"
+            "value" : "Cas d’Usage Typiques"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Casi d'Uso Tipici"
+            "value" : "Casi d’Uso Tipici"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "典型的な使用例"
+          }
+        }
+      }
+    },
+    "unraid_calculation" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The largest drives become parity, so parity is always at least as large as every data drive. Parity updates as you write, so protection is always current. Usable space is the total of the data drives, and the array survives as many drive failures as it has parity drives. Unraid’s separate cache and ZFS pools aren’t included."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Las unidades más grandes se usan para paridad, así que la paridad siempre es al menos tan grande como cada unidad de datos. La paridad se actualiza con cada escritura, por lo que la protección siempre está al día. El espacio utilizable es la suma de las unidades de datos, y el conjunto sobrevive a tantos fallos de unidad como unidades de paridad tenga. No se incluyen los pools de caché y ZFS independientes de Unraid."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les plus grands disques servent à la parité, qui est donc toujours au moins aussi grande que chaque disque de données. La parité se met à jour à chaque écriture, la protection est donc toujours actuelle. L’espace utilisable correspond au total des disques de données, et la grappe survit à autant de pannes de disque qu’elle compte de disques de parité. Les pools de cache et ZFS distincts d’Unraid ne sont pas inclus."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I dischi più grandi diventano dischi di parità, quindi la parità è sempre grande almeno quanto ogni disco dati. La parità si aggiorna a ogni scrittura, quindi la protezione è sempre aggiornata. Lo spazio utilizzabile è il totale dei dischi dati, e l’array sopravvive a tanti guasti quanti sono i suoi dischi di parità. I pool cache e ZFS separati di Unraid non sono inclusi."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最も大きいドライブがパリティになるため、パリティは常にすべてのデータドライブと同じかそれ以上の容量になります。パリティは書き込みのたびに更新されるため、保護は常に最新の状態です。使用可能容量はデータドライブの合計で、アレイはパリティドライブと同じ数のドライブ故障に耐えられます。Unraidの別個のキャッシュプールとZFSプールは含まれません。"
+          }
+        }
+      }
+    },
+    "unraid_cons" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Each parity drive must be at least as large as your largest data drive\nWrites are slower than striped RAID\nReads are only as fast as a single drive"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cada unidad de paridad debe ser al menos tan grande como la unidad de datos más grande\nEscrituras más lentas que en un RAID con striping\nLas lecturas no son más rápidas que con una sola unidad"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chaque disque de parité doit être au moins aussi grand que le plus grand disque de données\nÉcritures plus lentes qu’en RAID avec striping\nLectures pas plus rapides qu’avec un seul disque"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ogni disco di parità deve essere grande almeno quanto il disco dati più grande\nScritture più lente del RAID in striping\nLetture non più veloci di un singolo disco"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "各パリティドライブには最大のデータドライブ以上の容量が必要\nストライピングRAIDより書き込みが遅い\n読み取り速度は単一ドライブと同じ"
+          }
+        }
+      }
+    },
+    "unraid_data_limit" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unraid arrays hold up to 28 data drives plus 2 parity drives."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un conjunto de Unraid admite hasta 28 discos de datos más 2 discos de paridad."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Une grappe Unraid accepte jusqu’à 28 disques de données plus 2 disques de parité."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un array Unraid contiene fino a 28 dischi dati più 2 dischi di parità."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unraidのアレイには、データドライブを最大28台、パリティドライブを2台まで搭載できます。"
+          }
+        }
+      }
+    },
+    "unraid_description" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unraid keeps each data drive as its own file system and protects them with one or two parity drives. Drives can be any size, and every data drive’s full capacity is usable."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unraid mantiene cada unidad de datos con su propio sistema de archivos y las protege con una o dos unidades de paridad. Las unidades pueden ser de cualquier tamaño, y se puede usar toda la capacidad de cada unidad de datos."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unraid conserve chaque disque de données sous la forme d’un système de fichiers indépendant et les protège avec un ou deux disques de parité. Les disques peuvent être de n’importe quelle taille, et toute la capacité de chaque disque de données est utilisable."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unraid mantiene ogni disco dati come un file system a sé e li protegge con uno o due dischi di parità. I dischi possono essere di qualsiasi dimensione, e l’intera capacità di ogni disco dati è utilizzabile."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unraidは各データドライブをそれぞれ独立したファイルシステムとして保持し、1台または2台のパリティドライブで保護します。ドライブの容量は自由で、各データドライブの全容量を使用できます。"
+          }
+        }
+      }
+    },
+    "unraid_not_affiliated" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Not affiliated with or endorsed by Lime Technology, Inc. Unraid is a trademark of Lime Technology, Inc."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sin afiliación ni respaldo de Lime Technology, Inc. Unraid es una marca comercial de Lime Technology, Inc."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Non affilié à Lime Technology, Inc. ni approuvé par elle. Unraid est une marque de Lime Technology, Inc."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Non affiliato né approvato da Lime Technology, Inc. Unraid è un marchio di Lime Technology, Inc."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lime Technology, Inc.とは提携しておらず、同社の承認も受けていません。UnraidはLime Technology, Inc.の商標です。"
+          }
+        }
+      }
+    },
+    "unraid_pros" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mix drive sizes freely, with no space lost\nAdd one drive at a time\nIf more drives fail than parity covers, the surviving data drives still hold their files"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permite combinar libremente unidades de distintos tamaños, sin perder espacio\nPermite añadir unidades de una en una\nSi fallan más unidades de las que cubre la paridad, las unidades de datos restantes conservan sus archivos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disques de tailles différentes combinables librement, sans perte d’espace\nAjout de disques un par un\nSi plus de disques tombent en panne que la parité n’en couvre, les disques de données restants conservent leurs fichiers"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dischi di dimensioni diverse combinabili liberamente, senza perdita di spazio\nSi può aggiungere un disco alla volta\nSe si guastano più dischi di quanti ne copra la parità, i dischi dati superstiti conservano i loro file"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "容量の異なるドライブを自由に組み合わせても容量を失わない\nドライブを1台ずつ追加できる\nパリティでカバーできる以上のドライブが故障しても、残ったデータドライブのファイルは失われない"
+          }
+        }
+      }
+    },
+    "unraid_use_cases" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Home media servers that grow a drive at a time\nMixed collections of old and new drives\nServers that also run apps and virtual machines"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Servidores multimedia domésticos que crecen unidad a unidad\nColecciones mixtas de unidades antiguas y nuevas\nServidores que también ejecutan aplicaciones y máquinas virtuales"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Serveurs multimédias domestiques qui s’agrandissent disque par disque\nAssortiments de disques anciens et récents\nServeurs qui font aussi tourner des applications et des machines virtuelles"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Media server domestici che crescono un disco alla volta\nRaccolte miste di dischi vecchi e nuovi\nServer che eseguono anche app e macchine virtuali"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ドライブを1台ずつ増やしていく家庭用メディアサーバー\n新旧のドライブが混在する構成\nアプリや仮想マシンも動かすサーバー"
           }
         }
       }
@@ -4849,7 +6074,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Chaque groupe RAID‑Z fait %d disques de large. Les groupes très larges mettent longtemps à se reconstruire après une panne ; des groupes plus nombreux et plus étroits se reconstruisent plus vite."
+            "value" : "Chaque groupe RAID‑Z fait %d disques de large. Les groupes très larges mettent longtemps à se reconstruire après une panne ; des groupes plus nombreux et plus étroits se reconstruisent plus vite."
           }
         },
         "it" : {
@@ -4861,7 +6086,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "各RAID‑Zグループの幅は%dドライブです。幅が非常に広いグループは故障後の再構築に長い時間がかかります。より狭いグループを増やすと、再構築が速くなります。"
+            "value" : "各RAID‑Zグループの幅はドライブ%d台です。幅が非常に広いグループは故障後の再構築に長い時間がかかります。より狭いグループを増やすと、再構築が速くなります。"
           }
         }
       }
@@ -4884,7 +6109,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ce groupe RAID‑Z fait %d disques de large. Les groupes très larges mettent longtemps à se reconstruire après une panne ; des groupes plus nombreux et plus étroits se reconstruisent plus vite."
+            "value" : "Ce groupe RAID‑Z fait %d disques de large. Les groupes très larges mettent longtemps à se reconstruire après une panne ; des groupes plus nombreux et plus étroits se reconstruisent plus vite."
           }
         },
         "it" : {
@@ -4896,7 +6121,112 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "このRAID‑Zグループの幅は%dドライブです。幅が非常に広いグループは故障後の再構築に長い時間がかかります。より狭いグループを増やすと、再構築が速くなります。"
+            "value" : "このRAID‑Zグループの幅はドライブ%d台です。幅が非常に広いグループは故障後の再構築に長い時間がかかります。より狭いグループを増やすと、再構築が速くなります。"
+          }
+        }
+      }
+    },
+    "zfs_calculation" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Each drive counts only up to the size of the smallest; the rest is shown as unused. Usable space is shown two ways. The first is drives minus parity, times the smallest drive. The second estimates what ZFS will report for default settings (4K sectors and 128K records): it subtracts RAID-Z allocation padding and the space ZFS holds back, 1/32 of the pool, at most 128 GiB. Compression, record size and sector size change the real number."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cada unidad solo cuenta hasta el tamaño de la más pequeña; el resto se muestra sin usar. El espacio utilizable se muestra de dos formas. La primera es el número de unidades menos la paridad, multiplicado por el tamaño de la unidad más pequeña. La segunda estima lo que ZFS mostrará con la configuración predeterminada (sectores de 4K y registros de 128K): resta el relleno de asignación de RAID-Z y el espacio que ZFS reserva, 1/32 del pool, como máximo 128 GiB. La compresión, el tamaño de registro y el tamaño de sector cambian la cifra real."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chaque disque ne compte que jusqu’à la taille du plus petit ; le reste est indiqué comme inutilisé. L’espace utilisable est indiqué de deux façons. Le premier chiffre correspond aux disques moins la parité, multipliés par la taille du plus petit disque. Le second estime ce que ZFS affichera avec les réglages par défaut (secteurs de 4K et enregistrements de 128K) : il déduit le remplissage d’allocation de RAID-Z et l’espace que ZFS réserve, soit 1/32 du pool, 128 GiB au maximum. La compression, la taille d’enregistrement et la taille de secteur modifient le chiffre réel."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ogni disco conta solo fino alla dimensione del più piccolo; il resto è indicato come inutilizzato. Lo spazio utilizzabile è indicato in due modi. Il primo valore è il numero di dischi meno la parità, moltiplicato per la dimensione del disco più piccolo. Il secondo stima ciò che ZFS mostrerà con le impostazioni predefinite (settori da 4K e record da 128K): sottrae il padding di allocazione di RAID-Z e lo spazio che ZFS tiene da parte, 1/32 del pool, al massimo 128 GiB. Compressione, dimensione dei record e dimensione dei settori cambiano il valore reale."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "各ドライブは最も小さいドライブの容量までしか使われず、残りは未使用として表示されます。使用可能容量は2通りで表示されます。1つ目は、ドライブ数からパリティを引き、最も小さいドライブの容量を掛けた値です。2つ目は、デフォルト設定（4Kセクター、128Kレコード）でZFSが表示する容量の見積もりで、RAID-Zの割り当てパディングと、ZFSが確保する予約領域（プールの1/32、最大128 GiB）を差し引いています。圧縮、レコードサイズ、セクターサイズによって実際の値は変わります。"
+          }
+        }
+      }
+    },
+    "zfs_cons" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Every drive counts only up to the size of the smallest drive\nGrowing a group means replacing every drive, or OpenZFS 2.3 or later to add one drive at a time\nUses more memory than other systems"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cada unidad solo cuenta hasta el tamaño de la unidad más pequeña\nAmpliar un grupo implica reemplazar todas las unidades, o usar OpenZFS 2.3 o posterior para añadirlas de una en una\nUsa más memoria que otros sistemas"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chaque disque ne compte que jusqu’à la taille du plus petit disque\nAgrandir un groupe implique de remplacer tous les disques, ou d’utiliser OpenZFS 2.3 ou ultérieur pour ajouter un disque à la fois\nUtilise plus de mémoire que les autres systèmes"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ogni disco conta solo fino alla dimensione del disco più piccolo\nPer espandere un gruppo bisogna sostituire tutti i dischi, oppure usare OpenZFS 2.3 o successivo per aggiungere un disco alla volta\nUsa più memoria di altri sistemi"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "各ドライブは最も小さいドライブの容量までしか使われない\nグループの拡張にはすべてのドライブの交換が必要（OpenZFS 2.3以降ならドライブを1台ずつ追加可能）\n他のシステムより多くのメモリを使う"
+          }
+        }
+      }
+    },
+    "zfs_description" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This models one ZFS RAID-Z group (vdev) built from the drives in these bays. RAID-Z1, Z2 and Z3 keep one, two or three drives’ worth of parity, and that many drives can fail without losing data."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aquí se modela un grupo RAID-Z de ZFS (vdev) formado por las unidades de estas bahías. RAID-Z1, Z2 y Z3 reservan el equivalente a una, dos o tres unidades para paridad, y pueden fallar ese mismo número de unidades sin perder datos."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ceci modélise un groupe RAID-Z de ZFS (vdev) constitué des disques de ces baies. Les RAID-Z1, Z2 et Z3 consacrent l’équivalent d’un, deux ou trois disques à la parité, et autant de disques peuvent tomber en panne sans perte de données."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Qui viene modellato un gruppo RAID-Z di ZFS (vdev) composto dai dischi di questi alloggiamenti. RAID-Z1, Z2 e Z3 riservano l’equivalente di uno, due o tre dischi alla parità, e altrettanti dischi possono guastarsi senza perdita di dati."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ここでは、これらのベイのドライブで構成したZFSのRAID-Zグループ（vdev）を1つモデル化しています。RAID-Z1、Z2、Z3はそれぞれドライブ1台分、2台分、3台分のパリティを持ち、その台数までのドライブが故障してもデータを失いません。"
           }
         }
       }
@@ -4971,6 +6301,41 @@
         }
       }
     },
+    "zfs_not_affiliated" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ZFS is a trademark of Oracle and/or its affiliates. Not affiliated with or endorsed by Oracle."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ZFS es una marca comercial de Oracle y/o sus filiales. Sin afiliación ni respaldo de Oracle."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ZFS est une marque d’Oracle et/ou de ses filiales. Non affilié à Oracle ni approuvé par elle."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ZFS è un marchio di Oracle e/o delle sue affiliate. Non affiliato né approvato da Oracle."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ZFSはOracleおよびその関連会社の商標です。Oracleとは提携しておらず、同社の承認も受けていません。"
+          }
+        }
+      }
+    },
     "zfs_padding_note" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5006,6 +6371,41 @@
         }
       }
     },
+    "zfs_pros" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Checksums detect and repair silent corruption\nSnapshots and replication are built in\nRAID-Z2 and Z3 protect large pools well"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Las sumas de verificación detectan y reparan la corrupción silenciosa\nInstantáneas y replicación integradas\nRAID-Z2 y Z3 protegen bien los pools grandes"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les sommes de contrôle détectent et réparent la corruption silencieuse\nInstantanés et réplication intégrés\nLes RAID-Z2 et Z3 protègent bien les grands pools"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I checksum rilevano e riparano la corruzione silenziosa\nSnapshot e replica integrati\nRAID-Z2 e Z3 proteggono bene i pool di grandi dimensioni"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "チェックサムがサイレントな破損を検出して修復\nスナップショットとレプリケーションを標準搭載\nRAID-Z2とZ3は大規模プールをしっかり保護"
+          }
+        }
+      }
+    },
     "zfs_reported_note" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -5037,6 +6437,41 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ZFSでの表示は約 %@（推定）"
+          }
+        }
+      }
+    },
+    "zfs_use_cases" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "TrueNAS, Proxmox and other ZFS servers\nPhoto, document and backup archives\nPools where data integrity matters most"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "TrueNAS, Proxmox y otros servidores ZFS\nArchivos de fotos, documentos y backups\nPools en los que la integridad de los datos es lo más importante"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "TrueNAS, Proxmox et autres serveurs ZFS\nArchives de photos, de documents et de sauvegardes\nPools où l’intégrité des données prime"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "TrueNAS, Proxmox e altri server ZFS\nArchivi di foto, documenti e backup\nPool in cui l’integrità dei dati conta più di tutto"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "TrueNAS、ProxmoxなどのZFSサーバー\n写真、文書、バックアップのアーカイブ\nデータの整合性を最も重視するプール"
           }
         }
       }

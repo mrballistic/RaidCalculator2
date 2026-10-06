@@ -19,11 +19,15 @@ struct RaidCalculator2App: App {
                         ContentView()
                     }
                 }
-                Tab("tab_synology".localized(), systemImage: "externaldrive.connected.to.line.below", value: "synology") {
+                Tab("tab_nas".localized(), systemImage: "externaldrive.connected.to.line.below", value: "nas") {
                     NavigationStack {
-                        SynologyView()
+                        NASView()
                     }
                 }
+            }
+            // A value from an older build (such as "synology") matches no tab.
+            .onAppear {
+                if !["raid", "nas"].contains(selectedTab) { selectedTab = "raid" }
             }
         }
     }

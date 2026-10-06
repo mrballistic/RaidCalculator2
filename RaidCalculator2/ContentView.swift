@@ -12,166 +12,246 @@ struct ContentView: View {
     @State private var showingInfoSheet = false
     @State private var contentWidth: CGFloat = 0
     @FocusState private var sizeFieldFocused: Bool
+    @State private var awaitingDriveSize = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     /// Widest the form grows on iPad before it centers instead of stretching.
     private let readableWidth: CGFloat = 720
 
-    var body: some View {
-        let result = viewModel.result
+    private var twoColumns: Bool {
+        AdaptiveLayout.usesTwoColumns(isRegularWidth: horizontalSizeClass == .regular, width: contentWidth)
+    }
 
-        Form {
-            // The answer comes first, so it stays on screen at every text size.
+    /// The answer and anything wrong with it.
+    @ViewBuilder private var answerSections: some View {
+        // The answer comes first, so it stays on screen at every text size.
+        Section {
+            CapacitySummary(result: viewModel.result, unit: viewModel.unit, awaitingSize: awaitingDriveSize)
+        }
+
+        if let warning = viewModel.result.warningMessage {
             Section {
-                CapacitySummary(result: result, unit: viewModel.unit)
+                Label {
+                    Text(warning)
+                } icon: {
+                    Image(systemName: "exclamationmark.triangle.fill")
+                        .symbolRenderingMode(.multicolor)
+                }
+                .accessibilityIdentifier("configurationWarning")
+
+                if let suggested = viewModel.result.suggestedDriveCount, suggested != viewModel.driveCount {
+                    // Names the groups too when the fix changes them, as it does from one group to RAID 50 or 60.
+                    Button(viewModel.result.suggestedDriveCountGroups.map { String(format: "use_drive_count_groups".localized(), suggested, $0) }
+                           ?? String(format: "use_drive_count".localized(), suggested)) {
+                        withAnimation(motion) { viewModel.applySuggestedDriveCount() }
+                    }
+                    .accessibilityIdentifier("applySuggestedDriveCount")
+                }
+
+                if let suggested = viewModel.result.suggestedGroups, suggested != viewModel.groups {
+                    Button(suggested == 1 ? "use_one_group".localized() : String(format: "use_group_count".localized(), suggested)) {
+                        withAnimation(motion) { viewModel.applySuggestedGroups() }
+                    }
+                    .accessibilityIdentifier("applySuggestedGroups")
+                }
             }
-
-            if let warning = result.warningMessage {
-                Section {
-                    Label {
-                        Text(warning)
-                    } icon: {
-                        Image(systemName: "exclamationmark.triangle.fill")
-                            .symbolRenderingMode(.multicolor)
-                    }
-                    .accessibilityIdentifier("configurationWarning")
-
-                    if let suggested = result.suggestedDriveCount, suggested != viewModel.driveCount {
-                        // Names the groups too when the fix changes them, as it does from one group to RAID 50 or 60.
-                        Button(result.suggestedDriveCountGroups.map { String(format: "use_drive_count_groups".localized(), suggested, $0) }
-                               ?? String(format: "use_drive_count".localized(), suggested)) {
-                            withAnimation(motion) { viewModel.applySuggestedDriveCount() }
-                        }
-                        .accessibilityIdentifier("applySuggestedDriveCount")
-                    }
-
-                    if let suggested = result.suggestedGroups, suggested != viewModel.groups {
-                        Button(suggested == 1 ? "use_one_group".localized() : String(format: "use_group_count".localized(), suggested)) {
-                            withAnimation(motion) { viewModel.applySuggestedGroups() }
-                        }
-                        .accessibilityIdentifier("applySuggestedGroups")
-                    }
-                }
-            } else if viewModel.rebuildCautionSuggestion != nil || viewModel.wideZFSGroupWidth != nil {
-                Section {
-                    if let safer = viewModel.rebuildCautionSuggestion {
-                        caution(String(format: "rebuild_caution_level".localized(), viewModel.selectedLevel.displayName, safer.displayName))
-                    }
-                    if let width = viewModel.wideZFSGroupWidth {
-                        caution(String(format: (viewModel.groups > 1 ? "wide_zfs_group_caution" : "wide_zfs_group_caution_single").localized(), width))
-                            .accessibilityIdentifier("wideGroupCaution")
-                    }
-                }
-                .transition(.opacity)
-            }
-
-            Section("raid_level".localized()) {
-                Picker("raid_level".localized(), selection: standardLevelSelection) {
-                    ForEach(RaidLevel.levels(in: .standard)) { level in
-                        Text(level.shortLabel)
-                            .accessibilityLabel(level.displayName)
-                            .tag(Optional(level))
-                    }
-                }
-                .pickerStyle(.segmented)
-                .labelsHidden()
-
-                Menu {
-                    Section("nested_levels".localized()) {
-                        ForEach(RaidLevel.levels(in: .nested)) { levelButton($0) }
-                    }
-                    Section("zfs_levels".localized()) {
-                        ForEach(RaidLevel.levels(in: .zfs)) { levelButton($0) }
-                    }
-                } label: {
-                    // At accessibility sizes the label sits above the selection,
-                    // so neither has to share the row and break mid-word.
-                    let layout = dynamicTypeSize.isAccessibilitySize
-                        ? AnyLayout(VStackLayout(alignment: .leading, spacing: 4))
-                        : AnyLayout(HStackLayout())
-                    layout {
-                        Text("more_levels".localized())
-                        if !dynamicTypeSize.isAccessibilitySize { Spacer(minLength: 8) }
-                        HStack(spacing: 6) {
-                            if viewModel.selectedLevel.family != .standard {
-                                Text(viewModel.selectedLevel.displayName)
-                                    .foregroundStyle(.tint)
-                            }
-                            Image(systemName: "chevron.up.chevron.down")
-                                .font(.caption)
-                                .foregroundStyle(.tertiary)
-                                .accessibilityHidden(true)
-                        }
-                    }
-                }
-                .tint(.primary)
-                .accessibilityIdentifier("moreLevels")
-            }
-
+        } else if viewModel.rebuildCautionSuggestion != nil || viewModel.wideZFSGroupWidth != nil {
             Section {
+                if let safer = viewModel.rebuildCautionSuggestion {
+                    caution(String(format: "rebuild_caution_level".localized(), viewModel.selectedLevel.displayName, safer.displayName))
+                }
+                if let width = viewModel.wideZFSGroupWidth {
+                    caution(String(format: (viewModel.groups > 1 ? "wide_zfs_group_caution" : "wide_zfs_group_caution_single").localized(), width))
+                        .accessibilityIdentifier("wideGroupCaution")
+                }
+            }
+            .transition(.opacity)
+        }
+    }
+
+    /// What the user sets: the level, then the drives.
+    @ViewBuilder private var inputSections: some View {
+        Section("raid_level".localized()) {
+            Picker("raid_level".localized(), selection: standardLevelSelection) {
+                ForEach(RaidLevel.levels(in: .standard)) { level in
+                    Text(level.shortLabel)
+                        .accessibilityLabel(level.displayName)
+                        .tag(Optional(level))
+                }
+            }
+            .pickerStyle(.segmented)
+            .labelsHidden()
+
+            Menu {
+                Section("nested_levels".localized()) {
+                    ForEach(RaidLevel.levels(in: .nested)) { levelButton($0) }
+                }
+                Section("zfs_levels".localized()) {
+                    ForEach(RaidLevel.levels(in: .zfs)) { levelButton($0) }
+                }
+            } label: {
+                // At accessibility sizes the label sits above the selection,
+                // so neither has to share the row and break mid-word.
+                let layout = dynamicTypeSize.isAccessibilitySize
+                    ? AnyLayout(VStackLayout(alignment: .leading, spacing: 4))
+                    : AnyLayout(HStackLayout())
+                layout {
+                    Text("more_levels".localized())
+                    if !dynamicTypeSize.isAccessibilitySize { Spacer(minLength: 8) }
+                    HStack(spacing: 6) {
+                        if viewModel.selectedLevel.family != .standard {
+                            Text(viewModel.selectedLevel.displayName)
+                                .foregroundStyle(.tint)
+                        }
+                        Image(systemName: "chevron.up.chevron.down")
+                            .font(.caption)
+                            .foregroundStyle(.tertiary)
+                            .accessibilityHidden(true)
+                    }
+                }
+            }
+            .tint(.primary)
+            .accessibilityIdentifier("moreLevels")
+        }
+
+        Section {
+            CountStepper(
+                title: "number_of_drives".localized(),
+                value: $viewModel.driveCount,
+                range: RaidCalculatorViewModel.driveCountRange,
+                identifier: "driveCount"
+            )
+
+            if viewModel.selectedLevel.usesGroups {
                 CountStepper(
-                    title: "number_of_drives".localized(),
-                    value: $viewModel.driveCount,
-                    range: RaidCalculatorViewModel.driveCountRange,
-                    identifier: "driveCount"
+                    title: "groups".localized(),
+                    value: Binding(
+                        get: { viewModel.groups },
+                        set: { value in withAnimation(motion) { viewModel.groups = value } }
+                    ),
+                    range: 1...max(1, viewModel.driveCount),
+                    identifier: "groupCount"
                 )
-
-                if viewModel.selectedLevel.usesGroups {
-                    CountStepper(
-                        title: "groups".localized(),
-                        value: Binding(
-                            get: { viewModel.groups },
-                            set: { value in withAnimation(motion) { viewModel.groups = value } }
-                        ),
-                        range: 1...max(1, viewModel.driveCount),
-                        identifier: "groupCount"
-                    )
-                    .sensoryFeedback(.selection, trigger: viewModel.groups)
-                    // Under Reduce Motion the row change runs without animation
-                    // (see `motion`), so the row appears in place rather than sliding.
-                    .transition(reduceMotion ? .opacity : .opacity.combined(with: .move(edge: .top)))
-                }
-
-                LabeledContent("drive_size".localized()) {
-                    HStack(spacing: 12) {
-                        DriveSizeField(value: $viewModel.driveSize, focus: $sizeFieldFocused)
-                            .frame(minWidth: 56, maxWidth: 140)
-
-                        Picker(selection: $viewModel.unit) {
-                            ForEach(CapacityUnit.allCases) { unit in
-                                Text(unit.rawValue).tag(unit)
-                            }
-                        } label: {
-                            Text("drive_size".localized())
-                        }
-                        .pickerStyle(.segmented)
-                        .labelsHidden()
-                        .fixedSize()
-                    }
-                }
-            } header: {
-                Text("drive_configuration".localized())
-            } footer: {
-                if viewModel.selectedLevel.usesGroups, viewModel.result.warningMessage == nil {
-                    let groups = max(viewModel.groups, 1)
-                    let width = viewModel.driveCount / groups
-                    Text(groups == 1
-                         ? String(format: "group_layout_single".localized(), width)
-                         : String(format: "group_layout".localized(), groups, width))
-                }
+                .sensoryFeedback(.selection, trigger: viewModel.groups)
+                // Under Reduce Motion the row change runs without animation
+                // (see `motion`), so the row appears in place rather than sliding.
+                .transition(reduceMotion ? .opacity : .opacity.combined(with: .move(edge: .top)))
             }
 
-            Section {
-                RatingRow(title: "speed".localized(), rating: result.speedRating)
-                RatingRow(title: "availability".localized(), rating: result.availabilityRating)
-            } header: {
-                Text("ratings".localized())
-            } footer: {
-                Text("ratings_footnote".localized())
+            Group {
+                if dynamicTypeSize.isAccessibilitySize {
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text("drive_size".localized())
+                        driveSizeControls
+                    }
+                } else {
+                    LabeledContent("drive_size".localized()) { driveSizeControls }
+                }
+            }
+            .id(Self.driveSizeRow)
+        } header: {
+            Text("drive_configuration".localized())
+        } footer: {
+            let showsLayout = viewModel.selectedLevel.usesGroups && viewModel.result.warningMessage == nil
+            if awaitingDriveSize || showsLayout {
+                VStack(alignment: .leading, spacing: 4) {
+                    // The card's prompt can be under the keyboard; this one sits by the field.
+                    if awaitingDriveSize {
+                        Text("enter_drive_size".localized())
+                            .accessibilityIdentifier("enterDriveSizeFooter")
+                    }
+                    if showsLayout {
+                        let groups = max(viewModel.groups, 1)
+                        let width = viewModel.driveCount / groups
+                        Text(groups == 1
+                             ? String(format: "group_layout_single".localized(), width)
+                             : String(format: "group_layout".localized(), groups, width))
+                    }
+                }
             }
         }
-        .sensoryFeedback(.success, trigger: result.warningMessage == nil) { wasValid, isValid in !wasValid && isValid }
+        .onChange(of: awaitingDriveSize) { _, awaiting in
+            if awaiting { AccessibilityNotification.Announcement("enter_drive_size".localized()).post() }
+        }
+    }
+
+    private var driveSizeControls: some View {
+        HStack(spacing: 12) {
+            DriveSizeField(value: $viewModel.driveSize, focus: $sizeFieldFocused, isAwaitingValue: $awaitingDriveSize)
+                .frame(minWidth: 56, maxWidth: dynamicTypeSize.isAccessibilitySize ? .infinity : 140)
+
+            Picker(selection: $viewModel.unit) {
+                ForEach(CapacityUnit.allCases) { unit in
+                    Text(unit.rawValue).tag(unit)
+                }
+            } label: {
+                Text("drive_size".localized())
+            }
+            .pickerStyle(.segmented)
+            .labelsHidden()
+            .fixedSize()
+        }
+    }
+
+    @ViewBuilder private var ratingsSection: some View {
+        Section {
+            RatingRow(title: "speed".localized(), rating: viewModel.result.speedRating)
+            RatingRow(title: "availability".localized(), rating: viewModel.result.availabilityRating)
+        } header: {
+            Text("ratings".localized())
+        } footer: {
+            Text("ratings_footnote".localized())
+        }
+    }
+
+    /// Scroll target for the drive-size row.
+    private static let driveSizeRow = "driveSizeRow"
+
+    var body: some View {
+        ScrollViewReader { proxy in
+            layout
+                .onChange(of: sizeFieldFocused) { _, focused in
+                    guard focused else { return }
+                    // The form leaves a row near the bottom under the keyboard.
+                    // Once the keyboard is up, bring the row and its footer
+                    // (where the “Enter a drive size.” prompt shows) above it.
+                    Task { @MainActor in
+                        try? await Task.sleep(for: .milliseconds(400))
+                        withAnimation(motion) { proxy.scrollTo(Self.driveSizeRow, anchor: .center) }
+                    }
+                }
+        }
+    }
+
+    private var layout: some View {
+        Group {
+            if twoColumns {
+                // Results lead so reading and VoiceOver order match the
+                // stacked layout, where the answer comes first.
+                HStack(alignment: .top, spacing: 0) {
+                    Form {
+                        answerSections
+                        ratingsSection
+                    }
+                    Divider()
+                    Form { inputSections }
+                }
+            } else {
+                Form {
+                    answerSections
+                    inputSections
+                    ratingsSection
+                }
+                .contentMargins(
+                    .horizontal,
+                    contentWidth > readableWidth + 40 ? (contentWidth - readableWidth) / 2 : nil,
+                    for: .scrollContent
+                )
+            }
+        }
+        .sensoryFeedback(.success, trigger: viewModel.result.warningMessage == nil) { wasValid, isValid in !wasValid && isValid }
         .navigationTitle("app_title".localized())
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
@@ -190,14 +270,9 @@ struct ContentView: View {
         }
         .scrollDismissesKeyboard(.interactively)
         .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { contentWidth = $0 }
-        .contentMargins(
-            .horizontal,
-            contentWidth > readableWidth + 40 ? (contentWidth - readableWidth) / 2 : nil,
-            for: .scrollContent
-        )
         .sensoryFeedback(.selection, trigger: viewModel.selectedLevel)
         .sheet(isPresented: $showingInfoSheet) {
-            RaidInfoSheet(level: viewModel.selectedLevel)
+            InfoSheet(topic: .level(viewModel.selectedLevel))
         }
     }
 
@@ -282,10 +357,25 @@ struct CountStepper: View {
 struct CapacitySummary: View {
     let result: RaidResult
     let unit: CapacityUnit
+    var awaitingSize = false
 
-    private var isValid: Bool { result.warningMessage == nil }
+    private var isValid: Bool { result.warningMessage == nil && !awaitingSize }
 
     var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            if awaitingSize {
+                Label("enter_drive_size".localized(), systemImage: "pencil")
+                    .font(.subheadline.weight(.medium))
+                    .accessibilityIdentifier("enterDriveSize")
+            }
+            content
+                .opacity(isValid ? 1 : 0.4)
+                .animation(.default, value: isValid)
+        }
+        .padding(.vertical, 6)
+    }
+
+    private var content: some View {
         VStack(alignment: .leading, spacing: 14) {
             VStack(alignment: .leading, spacing: 2) {
                 Text("usable_capacity".localized())
@@ -312,19 +402,7 @@ struct CapacitySummary: View {
                 DriveStrip(roles: result.driveRoles, groupSize: result.groupSize)
             }
 
-            Label {
-                VStack(alignment: .leading, spacing: 2) {
-                    Text("drive_failures_tolerated".localized())
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                    Text(result.failuresTolerated)
-                        .font(.body.weight(.semibold))
-                }
-            } icon: {
-                Image(systemName: "shield.lefthalf.filled")
-                    .foregroundStyle(.tint)
-            }
-            .accessibilityElement(children: .combine)
+            FailuresToleratedRow(value: result.failuresTolerated)
 
             if isValid, result.usableCapacity > 0 {
                 if let estimate = result.zfsEstimate {
@@ -347,9 +425,6 @@ struct CapacitySummary: View {
                 }
             }
         }
-        .padding(.vertical, 6)
-        .opacity(isValid ? 1 : 0.4)
-        .animation(.default, value: isValid)
     }
 
     static func capacity(_ value: Double, unit: String, maxFractionDigits: Int = 2) -> String {
@@ -374,20 +449,80 @@ struct CapacitySummary: View {
     }
 }
 
+/// “Drive Failures Tolerated … 1” on one line when it fits; otherwise the
+/// label above the value, as before. The value is never shortened to make
+/// it fit (FR-18), so conditional wording and large text sizes stack.
+struct FailuresToleratedRow: View {
+    let value: String
+
+    var body: some View {
+        Label {
+            ViewThatFits(in: .horizontal) {
+                HStack(alignment: .firstTextBaseline, spacing: 12) {
+                    title.lineLimit(1)
+                    Spacer(minLength: 0)
+                    valueText.lineLimit(1)
+                }
+                VStack(alignment: .leading, spacing: 2) {
+                    title
+                    valueText
+                }
+            }
+        } icon: {
+            Image(systemName: "shield.lefthalf.filled")
+                .foregroundStyle(.tint)
+        }
+        .accessibilityElement(children: .combine)
+        .accessibilityIdentifier("failuresTolerated")
+    }
+
+    private var title: some View {
+        Text("drive_failures_tolerated".localized())
+            .font(.subheadline)
+            .foregroundStyle(.secondary)
+    }
+
+    private var valueText: some View {
+        Text(value)
+            .font(.body.weight(.semibold))
+            .contentTransition(.numericText())
+    }
+}
+
 /// One bar per physical drive, showing which hold data and which hold
 /// redundancy. Mirrors are outlined rather than filled, so the distinction
 /// doesn't rest on colour alone. Grouped levels open a wider gap before the
-/// first drive of each group. Each bar keeps its identity per drive, so a
+/// first drive of each group; at regular width each group gets its own row
+/// instead. In the single row each bar keeps its identity per drive, so a
 /// change of groups slides the same bars into their new groups and recolors
-/// them in place. Under Reduce Motion nothing moves: any change of grouping,
-/// drive count or level replaces the strip, which crossfades instead.
+/// them in place. The rows crossfade whenever the grouping or drive count
+/// changes, as does a switch between one row and several. Under Reduce Motion
+/// nothing moves: any change of grouping, drive count or level replaces the
+/// strip, which crossfades instead, and its height jumps.
 struct DriveStrip: View {
     let roles: [DriveRole]
     var groupSize: Int? = nil
     @ScaledMetric(relativeTo: .body) private var barHeight: CGFloat = 26
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     private var barSpacing: CGFloat { roles.count > 12 ? 3 : 5 }
+
+    /// On a regular-width layout each group gets its own row, using the extra
+    /// width, unless there are so many groups that the rows would stack too tall.
+    private var groupsAsRows: Bool {
+        AdaptiveLayout.groupsAsRows(isRegularWidth: horizontalSizeClass == .regular, groupCount: groupCount)
+    }
+    private var rowSpacing: CGFloat { barSpacing * 2 }
+
+    private var rowsHeight: CGFloat {
+        CGFloat(groupCount) * barHeight + CGFloat(groupCount - 1) * rowSpacing
+    }
+
+    private func groupRange(_ group: Int) -> Range<Int> {
+        let size = groupSize ?? roles.count
+        return (group * size)..<min((group + 1) * size, roles.count)
+    }
 
     /// Number of groups shown; one when the level isn't grouped.
     private var groupCount: Int {
@@ -414,29 +549,51 @@ struct DriveStrip: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            // Under Reduce Motion a new grouping or drive count is a new view, so
-            // it fades in whole rather than sliding or resizing its bars; the
-            // ZStack overlaps old and new.
+            // A new set of rows, a switch between one row and rows, and under
+            // Reduce Motion any new grouping or drive count, is a new view: it
+            // fades in whole rather than sliding or resizing its bars, with the
+            // old one fading out on top of it.
             GeometryReader { proxy in
-                let width = barWidth(in: proxy.size.width)
-                ZStack(alignment: .leading) {
-                    HStack(spacing: barSpacing) {
-                        ForEach(roles.indices, id: \.self) { index in
-                            bar(for: roles[index])
-                                .frame(width: width, height: barHeight)
-                                .padding(.leading, isGroupStart(index) ? groupGap : 0)
+                if groupsAsRows {
+                    let size = groupSize ?? roles.count
+                    let width = max(0, min(44, (proxy.size.width - CGFloat(size - 1) * barSpacing) / CGFloat(size)))
+                    VStack(alignment: .leading, spacing: rowSpacing) {
+                        ForEach(0..<groupCount, id: \.self) { group in
+                            HStack(spacing: barSpacing) {
+                                ForEach(groupRange(group), id: \.self) { index in
+                                    bar(for: roles[index])
+                                        .frame(width: width, height: barHeight)
+                                }
+                            }
                         }
                     }
-                    .id(reduceMotion ? "\(groupSize ?? 0)-\(roles.count)" : "")
+                    .id("rows-\(groupSize ?? 0)-\(roles.count)")
                     .transition(.opacity)
+                } else {
+                    let width = barWidth(in: proxy.size.width)
+                    ZStack(alignment: .leading) {
+                        HStack(spacing: barSpacing) {
+                            ForEach(roles.indices, id: \.self) { index in
+                                bar(for: roles[index])
+                                    .frame(width: width, height: barHeight)
+                                    .padding(.leading, isGroupStart(index) ? groupGap : 0)
+                            }
+                        }
+                        .id(reduceMotion ? "\(groupSize ?? 0)-\(roles.count)" : "")
+                        .transition(.opacity)
+                    }
                 }
             }
-            .frame(height: barHeight)
-            .animation(reduceMotion ? .easeInOut(duration: 0.2) : .snappy, value: roles)
             // Geometry never interpolates under Reduce Motion: the .id swap
             // replaces the strip whenever its bars would move or resize, and
             // these animations only drive the fade and in-place recoloring.
+            // They sit inside ClippedHeight, so they never reach the strip’s
+            // height: that follows the caller's transaction, which is no
+            // animation under Reduce Motion (the height and the legend jump)
+            // and .snappy otherwise (the legend glides with it).
+            .animation(reduceMotion ? .easeInOut(duration: 0.2) : .snappy, value: roles)
             .animation(reduceMotion ? .easeInOut(duration: 0.2) : .snappy, value: groupSize)
+            .modifier(ClippedHeight(height: groupsAsRows ? rowsHeight : barHeight, overhang: barHeight))
 
             ViewThatFits(in: .horizontal) {
                 HStack(spacing: 14) { legend }
@@ -445,8 +602,26 @@ struct DriveStrip: View {
             .font(.caption)
             .foregroundStyle(.secondary)
         }
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel(accessibilitySummary)
+        // The summary, then one element per group, so VoiceOver reads the structure.
+        .accessibilityRepresentation {
+            VStack {
+                Text(accessibilitySummary)
+                if groupCount > 1 {
+                    ForEach(0..<groupCount, id: \.self) { group in
+                        Text(groupAccessibility(group))
+                    }
+                }
+            }
+        }
+    }
+
+    private func groupAccessibility(_ group: Int) -> String {
+        let members = roles[groupRange(group)]
+        let parts = presentRoles.compactMap { role -> String? in
+            let count = members.filter { $0 == role }.count
+            return count > 0 ? String(format: "role_count".localized(), count, Self.name(of: role)) : nil
+        }.joined(separator: ", ")
+        return String(format: "drive_strip_group_accessibility".localized(), group + 1, groupCount, parts)
     }
 
     private var presentRoles: [DriveRole] {
@@ -496,32 +671,74 @@ struct DriveStrip: View {
     }
 }
 
+/// A top-aligned height that animates as layout, frame by frame, and hides
+/// whatever hangs below it: rows on their way out stay inside the strip
+/// rather than fading over the legend, and new rows are uncovered as the
+/// legend moves down. Only the bottom edge clips. At the start of a change the
+/// card shifts for a frame or two, and an incoming row can sit a few points
+/// above the strip; a clip on the top edge would shave it.
+private struct ClippedHeight: ViewModifier, Animatable {
+    var height: CGFloat
+    /// How far above the strip content may draw.
+    var overhang: CGFloat
+
+    nonisolated var animatableData: CGFloat {
+        get { height }
+        set { height = newValue }
+    }
+
+    func body(content: Content) -> some View {
+        content
+            .frame(height: height, alignment: .top)
+            .mask(alignment: .bottom) {
+                Rectangle().padding(.top, -overhang)
+            }
+    }
+}
+
 /// Five stars plus the word for the rating, read by VoiceOver as one phrase
 /// (“Speed, 3 of 5, Medium”). Shared with the info sheet.
 struct RatingRow: View {
     let title: String
     let rating: Int
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     private var label: String { RaidCalculator.ratingLabel(rating) }
 
     var body: some View {
-        LabeledContent {
-            HStack(spacing: 8) {
-                HStack(spacing: 2) {
-                    ForEach(1...5, id: \.self) { star in
-                        Image(systemName: star <= rating ? "star.fill" : "star")
-                            .foregroundStyle(star <= rating ? AnyShapeStyle(.tint) : AnyShapeStyle(.tertiary))
-                    }
+        Group {
+            if dynamicTypeSize.isAccessibilitySize {
+                // Title, stars and word each get their own line, so none breaks mid-word.
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(title)
+                    stars
+                    Text(label)
+                        .foregroundStyle(.secondary)
                 }
-                .font(.footnote)
-                Text(label)
-                    .foregroundStyle(.secondary)
+            } else {
+                LabeledContent {
+                    HStack(spacing: 8) {
+                        stars
+                        Text(label)
+                            .foregroundStyle(.secondary)
+                    }
+                } label: {
+                    Text(title)
+                }
             }
-        } label: {
-            Text(title)
         }
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(String(format: "rating_accessibility".localized(), title, rating, label))
+    }
+
+    private var stars: some View {
+        HStack(spacing: 2) {
+            ForEach(1...5, id: \.self) { star in
+                Image(systemName: star <= rating ? "star.fill" : "star")
+                    .foregroundStyle(star <= rating ? AnyShapeStyle(.tint) : AnyShapeStyle(.tertiary))
+            }
+        }
+        .font(.footnote)
     }
 }
 
@@ -531,12 +748,13 @@ struct RatingRow: View {
 /// moves to the end, wherever the tap landed.
 ///
 /// That needs `selection:`, which SwiftUI only offers on text-bound fields, so
-/// the field edits its own text and pushes each value that parses. An empty or
-/// unparseable field leaves the last value in place and shows it again when
-/// editing ends, as the value-bound field did.
+/// the field edits its own text and pushes each value that parses. An empty,
+/// zero or unparseable field leaves the last value in place but tells the card
+/// it is waiting for a size, and the last value shows again when editing ends.
 struct DriveSizeField: View {
     @Binding var value: Double
     var focus: FocusState<Bool>.Binding
+    @Binding var isAwaitingValue: Bool
 
     @State private var text = ""
     @State private var selection: TextSelection?
@@ -552,8 +770,17 @@ struct DriveSizeField: View {
             .accessibilityIdentifier("driveSizeField")
             .onAppear { text = value.formatted(Self.format) }
             .onChange(of: text) {
+                // Only typing decides whether a size is missing. Once editing
+                // ends the field shows the kept value, and a tiny one such as
+                // 0.0004 reads “0” at three decimals without being missing.
+                guard focus.wrappedValue else { return }
                 // Parsing follows the current locale, so “12,5” works in Spanish, French and Italian.
-                if let parsed = try? Self.format.parseStrategy.parse(text) { value = parsed }
+                if let parsed = try? Self.format.parseStrategy.parse(text), parsed > 0 {
+                    value = parsed
+                    isAwaitingValue = false
+                } else {
+                    isAwaitingValue = true
+                }
             }
             .onChange(of: value) {
                 // Changes from elsewhere (loading, clamping) show once editing is done.
@@ -565,6 +792,7 @@ struct DriveSizeField: View {
                     Task { @MainActor in selection = TextSelection(insertionPoint: text.endIndex) }
                 } else {
                     text = value.formatted(Self.format)
+                    isAwaitingValue = false
                 }
             }
     }
