@@ -372,6 +372,7 @@ struct NASSummary: View {
                     .foregroundStyle(.secondary)
                 }
             }
+            .fixedSize(horizontal: false, vertical: true)
             .accessibilityElement(children: .combine)
 
             BayDiagram(bays: result.bays, system: system)
@@ -582,7 +583,7 @@ struct BayDiagram: View {
         let parts = [SegmentRole.data, .parity, .mirror, .unused].compactMap { role in
             amounts[role].flatMap { $0 > 0 ? String(format: "role_amount".localized(), NASView.tb($0), SegmentSwatch.name(of: role)) : nil }
         }
-        return String(format: "bay_accessibility".localized(), index + 1, NASView.tb(total(segments)), parts.joined(separator: ", "))
+        return String(format: "bay_accessibility".localized(), index + 1, NASView.tb(total(segments)), parts.formatted(.list(type: .and, width: .narrow)))
     }
 }
 

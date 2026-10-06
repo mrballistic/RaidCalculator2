@@ -398,6 +398,7 @@ struct CapacitySummary: View {
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
             }
+            .fixedSize(horizontal: false, vertical: true)
             .accessibilityElement(children: .combine)
 
             if !result.driveRoles.isEmpty {
@@ -474,6 +475,7 @@ struct FailuresToleratedRow: View {
             Image(systemName: "shield.lefthalf.filled")
                 .foregroundStyle(.tint)
         }
+        .fixedSize(horizontal: false, vertical: true)
         .accessibilityElement(children: .combine)
         .accessibilityIdentifier("failuresTolerated")
     }
@@ -625,7 +627,7 @@ struct DriveStrip: View {
         let parts = presentRoles.compactMap { role -> String? in
             let count = members.filter { $0 == role }.count
             return count > 0 ? String(format: "role_count".localized(), count, Self.name(of: role)) : nil
-        }.joined(separator: ", ")
+        }.formatted(.list(type: .and, width: .narrow))
         return String(format: "drive_strip_group_accessibility".localized(), group + 1, groupCount, parts)
     }
 
@@ -660,7 +662,7 @@ struct DriveStrip: View {
     private var accessibilitySummary: String {
         let parts = presentRoles.map { role in
             String(format: "role_count".localized(), roles.filter { $0 == role }.count, Self.name(of: role))
-        }.joined(separator: ", ")
+        }.formatted(.list(type: .and, width: .narrow))
         if groupCount > 1 {
             return String(format: "drive_strip_groups_accessibility".localized(), roles.count, groupCount, parts)
         }
