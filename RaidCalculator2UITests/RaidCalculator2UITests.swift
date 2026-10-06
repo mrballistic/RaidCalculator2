@@ -525,6 +525,21 @@ final class RaidCalculator2UITests: XCTestCase {
         XCTAssertTrue(footnote.label.contains("Lime Technology"), footnote.label)
     }
 
+    /// The trademark line closes the sheet's last section rather than an
+    /// empty one of its own (plan 2's footer gap).
+    @MainActor
+    func testRaidZInfoSheetKeepsTrademarkLine() throws {
+        let app = launchApp(level: "Z2", drives: 6)
+        app.buttons["raidInfo"].tap()
+        let footnote = app.descendants(matching: .any).matching(identifier: "infoFootnote").firstMatch
+        reveal(footnote, in: app)
+        XCTAssertTrue(footnote.label.contains("Oracle"), footnote.label)
+        let ratingsNote = app.staticTexts.containing(NSPredicate(format: "label BEGINSWITH %@", "Ratings compare")).firstMatch
+        if ratingsNote.exists {
+            XCTAssertLessThan(footnote.frame.minY - ratingsNote.frame.maxY, 24, "no empty section between them")
+        }
+    }
+
     /// FR-13 on iPhone: a sheet from the results card; tapping a system
     /// switches to it and keeps the drives (Review Focus 5).
     @MainActor

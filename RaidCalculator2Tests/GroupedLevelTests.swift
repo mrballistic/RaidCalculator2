@@ -38,7 +38,7 @@ struct GroupedLevelTests {
 
     @Test func unevenGroupsOfferBothFixes() {
         let r = result(.raid60, drives: 12, groups: 5)
-        #expect(r.warningMessage == "12 drives don’t divide evenly into 5 groups.")
+        #expect(r.warningMessage == "The number of drives (12) doesn’t divide evenly into 5 groups.")
         #expect(r.suggestedDriveCount == 20)    // 5 groups × the 4-drive minimum
         #expect(r.suggestedGroups == 3)         // valid: 2 (width 6) or 3 (width 4); 3 is nearer 5
         #expect(r.driveRoles.count == 12)       // one bar per drive even when invalid
@@ -210,7 +210,7 @@ struct GroupedLevelTests {
     // Review Focus 1
     @Test func driveCountChangeLeavesUnevenGroupsWithFixes() {
         let r = result(.raidz2, drives: 10, groups: 3)
-        #expect(r.warningMessage == "10 drives don’t divide evenly into 3 groups.")
+        #expect(r.warningMessage == "The number of drives (10) doesn’t divide evenly into 3 groups.")
         #expect(r.suggestedDriveCount == 12)
         #expect(r.suggestedGroups == 2)
     }

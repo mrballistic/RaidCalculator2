@@ -42,6 +42,7 @@ struct InfoSheet: View {
             List {
                 Section("overview".localized()) {
                     Text(text("description"))
+                        .listRowBackground(Color.clear)
                 }
 
                 Section("pros".localized()) {
@@ -63,9 +64,14 @@ struct InfoSheet: View {
                 }
 
                 if let calculation = optionalText("calculation") {
-                    Section("how_calculated".localized()) {
+                    Section {
                         Text(calculation)
                             .accessibilityIdentifier("howCalculated")
+                            .listRowBackground(Color.clear)
+                    } header: {
+                        Text("how_calculated".localized())
+                    } footer: {
+                        if topic.ratings == nil, let footnote { footnoteText(footnote) }
                     }
                 }
 
@@ -76,15 +82,17 @@ struct InfoSheet: View {
                     } header: {
                         Text("performance_ratings".localized())
                     } footer: {
-                        Text("ratings_footnote".localized())
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("ratings_footnote".localized())
+                            if let footnote { footnoteText(footnote) }
+                        }
                     }
                 }
 
-                if let footnote = topic.footnoteKey.flatMap({ optionalKey($0) }) {
+                if topic.ratings == nil, optionalText("calculation") == nil, let footnote {
                     Section {
                     } footer: {
-                        Text(footnote)
-                            .accessibilityIdentifier("infoFootnote")
+                        footnoteText(footnote)
                     }
                 }
             }
@@ -97,6 +105,13 @@ struct InfoSheet: View {
                 }
             }
         }
+    }
+
+    private var footnote: String? { topic.footnoteKey.flatMap { optionalKey($0) } }
+
+    private func footnoteText(_ text: String) -> some View {
+        Text(text)
+            .accessibilityIdentifier("infoFootnote")
     }
 
     private func text(_ field: String) -> String {

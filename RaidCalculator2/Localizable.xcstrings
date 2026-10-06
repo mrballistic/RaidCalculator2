@@ -124,7 +124,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Baie %1$d, %2$@ : %3$@"
+            "value" : "Baie %1$d, %2$@ : %3$@"
           }
         },
         "it" : {
@@ -299,7 +299,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "L’espace utilisable correspond à la moitié du total, sauf si un disque est plus grand que tous les autres réunis ; il correspond alors au total des plus petits disques, et le reste du plus grand disque est indiqué comme inutilisé. Chaque disque est représenté à moitié données, à moitié copie."
+            "value" : "L’espace utilisable correspond à la moitié du total, sauf si un disque est plus grand que tous les autres réunis ; il correspond alors au total des plus petits disques, et le reste du plus grand disque est indiqué comme inutilisé. Chaque disque est représenté à moitié données, à moitié copie."
           }
         },
         "it" : {
@@ -311,7 +311,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "使用可能容量は総容量の半分です。ただし、1つのドライブが他のすべてのドライブの合計より大きい場合は、小さいドライブの合計となり、最大のドライブの残りは未使用として表示されます。各ドライブは半分をデータ、半分をコピーとして描いています。"
+            "value" : "使用可能容量は総容量の半分です。ただし、1台のドライブが他のすべてのドライブの合計より大きい場合は、小さいドライブの合計となり、最大のドライブの残りは未使用として表示されます。各ドライブは半分をデータ、半分をコピーとして描いています。"
           }
         }
       }
@@ -340,13 +340,13 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Metà dello spazio totale contiene la seconda copia\nSopravvive a un solo guasto del disco, qualunque sia il numero di dischi\nUn disco più grande di tutti gli altri messi insieme non può essere interamente in mirror"
+            "value" : "Metà dello spazio totale contiene la seconda copia\nSopravvive al guasto di un solo disco, qualunque sia il numero di dischi\nUn disco più grande di tutti gli altri messi insieme non può essere interamente in mirror"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "総容量の半分が2つ目のコピーに使われる\nドライブ数に関係なく、1つのドライブ故障にしか耐えられない\n他のすべてのドライブの合計より大きいドライブは、全体をミラーできない"
+            "value" : "総容量の半分が2つ目のコピーに使われる\nドライブ数に関係なく、1台の故障にしか耐えられない\n他のすべてのドライブの合計より大きいドライブは、全体をミラーできない"
           }
         }
       }
@@ -369,7 +369,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Le Btrfs RAID1 conserve deux copies de chaque bloc de données, sur deux disques différents. Les disques peuvent être de tailles différentes ; Btrfs place les copies de façon équilibrée."
+            "value" : "Le Btrfs RAID1 conserve deux copies de chaque bloc de données, sur deux disques différents. Les disques peuvent être de tailles différentes ; Btrfs place les copies de façon équilibrée."
           }
         },
         "it" : {
@@ -486,7 +486,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "容量の異なる少数のドライブを搭載した小規模ホームサーバー\nBtrfsベースのLinuxサーバーやNASシステム\nドライブを1つずつ増やしていく構成"
+            "value" : "容量の異なる少数のドライブを搭載した小規模ホームサーバー\nBtrfsベースのLinuxサーバーやNASシステム\nドライブを1台ずつ増やしていく構成"
           }
         }
       }
@@ -544,7 +544,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pannes tolérées : %d"
+            "value" : "Pannes tolérées : %d"
           }
         },
         "it" : {
@@ -1069,7 +1069,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$d disques : %2$@"
+            "value" : "%1$d disques : %2$@"
           }
         },
         "it" : {
@@ -1104,7 +1104,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Groupe %1$d sur %2$d : %3$@"
+            "value" : "Groupe %1$d sur %2$d : %3$@"
           }
         },
         "it" : {
@@ -1139,7 +1139,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$d disques en %2$d groupes : %3$@"
+            "value" : "%1$d disques en %2$d groupes : %3$@"
           }
         },
         "it" : {
@@ -1151,7 +1151,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$dドライブ、%2$dグループ：%3$@"
+            "value" : "ドライブ%1$d台、%2$dグループ：%3$@"
           }
         }
       }
@@ -1291,7 +1291,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$dグループ、各%2$dドライブ"
+            "value" : "%1$dグループ、各%2$d台"
           }
         }
       }
@@ -1326,7 +1326,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "1グループ、%dドライブ"
+            "value" : "1グループ、%d台"
           }
         }
       }
@@ -1442,25 +1442,25 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$d drives don’t divide evenly into %2$d groups."
+            "value" : "The number of drives (%1$d) doesn’t divide evenly into %2$d groups."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$d unidades no se dividen en partes iguales en %2$d grupos."
+            "value" : "El número de unidades (%1$d) no se puede repartir en partes iguales entre %2$d grupos."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$d disques ne se répartissent pas équitablement en %2$d groupes."
+            "value" : "Le nombre de disques (%1$d) ne permet pas de former %2$d groupes égaux."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$d dischi non si dividono in modo uniforme in %2$d gruppi."
+            "value" : "Il numero di dischi (%1$d) non è divisibile in %2$d gruppi uguali."
           }
         },
         "ja" : {
@@ -1559,7 +1559,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aucune redondance ou protection de données\nLa panne de disque n'affecte que les données sur ce disque\nAucun bénéfice de performance du striping"
+            "value" : "Aucune redondance ou protection de données\nLa panne de disque n’affecte que les données sur ce disque\nAucun bénéfice de performance du striping"
           }
         },
         "it" : {
@@ -2259,7 +2259,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Les plus grands disques servent de parité : la parité est donc toujours au moins aussi grande que chaque disque de données."
+            "value" : "Les plus grands disques servent de parité : la parité est donc toujours au moins aussi grande que chaque disque de données."
           }
         },
         "it" : {
@@ -2644,7 +2644,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "RAID 10 (Stripe de Mirrors) combine mirroring et striping. Fournit d'excellentes performances et redondance mais nécessite un nombre pair de disques."
+            "value" : "RAID 10 (Stripe de Mirrors) combine mirroring et striping. Fournit d’excellentes performances et redondance mais nécessite un nombre pair de disques."
           }
         },
         "it" : {
@@ -2679,7 +2679,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Jusqu'à %d (dépend de quels disques tombent en panne)"
+            "value" : "Jusqu’à %d (dépend de quels disques tombent en panne)"
           }
         },
         "it" : {
@@ -2959,7 +2959,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Disques de démarrage et systèmes d'exploitation\nBases de données critiques et applications\nServeurs de petites entreprises"
+            "value" : "Disques de démarrage et systèmes d’exploitation\nBases de données critiques et applications\nServeurs de petites entreprises"
           }
         },
         "it" : {
@@ -3064,7 +3064,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Le RAID 50 répartit les données en bandes sur deux groupes RAID 5 ou plus, chacun consacrant l’équivalent d’un disque à la parité. Les écritures sont réparties entre les groupes : il est donc plus rapide qu’une seule grappe RAID 5. Une reconstruction ne concerne qu’un seul groupe."
+            "value" : "Le RAID 50 répartit les données en bandes sur deux groupes RAID 5 ou plus, chacun consacrant l’équivalent d’un disque à la parité. Les écritures sont réparties entre les groupes : il est donc plus rapide qu’une seule grappe RAID 5. Une reconstruction ne concerne qu’un seul groupe."
           }
         },
         "it" : {
@@ -3146,7 +3146,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "RAID 5以上の速度が必要な大規模アレイ\n多数のドライブ上のデータベースと仮想マシン\nネストレベルに対応したハードウェアRAIDコントローラー"
+            "value" : "RAID 5より高い速度が必要な大規模アレイ\n多数のドライブ上のデータベースと仮想マシン\nネスト構成のRAIDレベルに対応したハードウェアRAIDコントローラー"
           }
         }
       }
@@ -3309,7 +3309,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Serveurs de fichiers et stockage réseau attaché\nStockage de serveur à usage général\nSystèmes de sauvegarde et d'archivage"
+            "value" : "Serveurs de fichiers et stockage réseau attaché\nStockage de serveur à usage général\nSystèmes de sauvegarde et d’archivage"
           }
         },
         "it" : {
@@ -3414,7 +3414,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Le RAID 60 répartit les données en bandes sur deux groupes RAID 6 ou plus. Chaque groupe consacre l’équivalent de deux disques à la parité : deux disques quelconques peuvent donc tomber en panne, et souvent davantage."
+            "value" : "Le RAID 60 répartit les données en bandes sur deux groupes RAID 6 ou plus. Chaque groupe consacre l’équivalent de deux disques à la parité : deux disques quelconques peuvent donc tomber en panne, et souvent davantage."
           }
         },
         "it" : {
@@ -3496,7 +3496,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "データ損失が許されない大規模アレイ\n大容量ドライブを多数搭載したバックアップ・アーカイブサーバー\nネストレベルに対応したハードウェアRAIDコントローラー"
+            "value" : "データ損失が許されない大規模アレイ\n大容量ドライブを多数搭載したバックアップ・アーカイブサーバー\nネスト構成のRAIDレベルに対応したハードウェアRAIDコントローラー"
           }
         }
       }
@@ -3659,7 +3659,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Grands systèmes de stockage d'entreprise\nArchives de données critiques\nSystèmes avec de longs temps de reconstruction"
+            "value" : "Grands systèmes de stockage d’entreprise\nArchives de données critiques\nSystèmes avec de longs temps de reconstruction"
           }
         },
         "it" : {
@@ -3799,7 +3799,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "L’espace utilisable est indiqué de deux façons. Le premier chiffre suit la formule simple : disques moins parité, dans chaque groupe. Le second estime ce que ZFS affichera avec les réglages par défaut (secteurs de 4K et enregistrements de 128K). Il déduit le remplissage d’allocation de RAID-Z, qui rend certaines largeurs de groupe moins efficaces que d’autres, ainsi que l’espace que ZFS réserve : 1/32 du pool, 128 GiB au maximum. La compression, la taille d’enregistrement et la taille de secteur modifient le chiffre réel, et une petite quantité de métadonnées sur disque n’est pas comptée."
+            "value" : "L’espace utilisable est indiqué de deux façons. Le premier chiffre suit la formule simple : disques moins parité, dans chaque groupe. Le second estime ce que ZFS affichera avec les réglages par défaut (secteurs de 4K et enregistrements de 128K). Il déduit le remplissage d’allocation de RAID-Z, qui rend certaines largeurs de groupe moins efficaces que d’autres, ainsi que l’espace que ZFS réserve : 1/32 du pool, 128 GiB au maximum. La compression, la taille d’enregistrement et la taille de secteur modifient le chiffre réel, et une petite quantité de métadonnées sur disque n’est pas comptée."
           }
         },
         "it" : {
@@ -3898,7 +3898,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Las sumas de verificación detectan y reparan la corrupción silenciosa\nSin el “write hole” de RAID 5, porque ZFS nunca sobrescribe datos en su lugar\nEl mayor espacio utilizable de los niveles RAID-Z"
+            "value" : "Las sumas de verificación detectan y reparan la corrupción silenciosa\nSin el “write hole” de RAID 5, porque ZFS nunca sobrescribe los datos existentes\nEl mayor espacio utilizable de los niveles RAID-Z"
           }
         },
         "fr" : {
@@ -3910,13 +3910,13 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "I checksum rilevano e riparano la corruzione silenziosa\nNessun “write hole” di RAID 5, perché ZFS non sovrascrive mai i dati sul posto\nIl maggiore spazio utilizzabile tra i livelli RAID-Z"
+            "value" : "I checksum rilevano e riparano la corruzione silenziosa\nNessun “write hole” di RAID 5, perché ZFS non sovrascrive mai i dati sul posto\nLo spazio utilizzabile più ampio tra i livelli RAID-Z"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "チェックサムがサイレントな破損を検出して修復\nZFSはデータを上書きしないため、RAID 5の「書き込みホール」がない\nRAID-Zレベルの中で使用可能容量が最大"
+            "value" : "チェックサムがサイレントな破損を検出して修復\nZFSはデータをその場で上書きすることがないため、RAID 5の「ライトホール」問題が起きない\nRAID-Zレベルの中で使用可能容量が最大"
           }
         }
       }
@@ -3974,7 +3974,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "L’espace utilisable est indiqué de deux façons. Le premier chiffre suit la formule simple : disques moins parité, dans chaque groupe. Le second estime ce que ZFS affichera avec les réglages par défaut (secteurs de 4K et enregistrements de 128K). Il déduit le remplissage d’allocation de RAID-Z, qui rend certaines largeurs de groupe moins efficaces que d’autres, ainsi que l’espace que ZFS réserve : 1/32 du pool, 128 GiB au maximum. La compression, la taille d’enregistrement et la taille de secteur modifient le chiffre réel, et une petite quantité de métadonnées sur disque n’est pas comptée."
+            "value" : "L’espace utilisable est indiqué de deux façons. Le premier chiffre suit la formule simple : disques moins parité, dans chaque groupe. Le second estime ce que ZFS affichera avec les réglages par défaut (secteurs de 4K et enregistrements de 128K). Il déduit le remplissage d’allocation de RAID-Z, qui rend certaines largeurs de groupe moins efficaces que d’autres, ainsi que l’espace que ZFS réserve : 1/32 du pool, 128 GiB au maximum. La compression, la taille d’enregistrement et la taille de secteur modifient le chiffre réel, et une petite quantité de métadonnées sur disque n’est pas comptée."
           }
         },
         "it" : {
@@ -4149,7 +4149,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "L’espace utilisable est indiqué de deux façons. Le premier chiffre suit la formule simple : disques moins parité, dans chaque groupe. Le second estime ce que ZFS affichera avec les réglages par défaut (secteurs de 4K et enregistrements de 128K). Il déduit le remplissage d’allocation de RAID-Z, qui rend certaines largeurs de groupe moins efficaces que d’autres, ainsi que l’espace que ZFS réserve : 1/32 du pool, 128 GiB au maximum. La compression, la taille d’enregistrement et la taille de secteur modifient le chiffre réel, et une petite quantité de métadonnées sur disque n’est pas comptée."
+            "value" : "L’espace utilisable est indiqué de deux façons. Le premier chiffre suit la formule simple : disques moins parité, dans chaque groupe. Le second estime ce que ZFS affichera avec les réglages par défaut (secteurs de 4K et enregistrements de 128K). Il déduit le remplissage d’allocation de RAID-Z, qui rend certaines largeurs de groupe moins efficaces que d’autres, ainsi que l’espace que ZFS réserve : 1/32 du pool, 128 GiB au maximum. La compression, la taille d’enregistrement et la taille de secteur modifient le chiffre réel, et une petite quantité de métadonnées sur disque n’est pas comptée."
           }
         },
         "it" : {
@@ -4919,7 +4919,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La protection ne vaut qu’à la date de la dernière synchronisation : les fichiers modifiés depuis ne sont pas protégés\nChaque disque de parité doit être au moins aussi grand que le plus grand disque de données\nInadapté aux données qui changent en permanence"
+            "value" : "La protection ne vaut qu’à la date de la dernière synchronisation : les fichiers modifiés depuis ne sont pas protégés\nChaque disque de parité doit être au moins aussi grand que le plus grand disque de données\nInadapté aux données qui changent en permanence"
           }
         },
         "it" : {
@@ -4966,7 +4966,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "SnapRAIDは、一連のデータドライブを最大6つのパリティドライブで保護します。パリティは書き込みのたびではなく、同期を実行したときに計算されます。ドライブの容量は自由で、各データドライブの全容量を使用できます。"
+            "value" : "SnapRAIDは、一連のデータドライブを最大6台のパリティドライブで保護します。パリティは書き込みのたびではなく、同期を実行したときに計算されます。ドライブの容量は自由で、各データドライブの全容量を使用できます。"
           }
         }
       }
@@ -5036,7 +5036,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "容量の異なるドライブを自由に組み合わせても容量を失わない\n大規模なコレクション向けに最大6つのパリティドライブ\nチェックサムがサイレントな破損を検出し、残ったドライブのファイルは引き続き読み取れる"
+            "value" : "容量の異なるドライブを自由に組み合わせても容量を失わない\n大規模なコレクション向けに最大6台のパリティドライブ\nチェックサムがサイレントな破損を検出し、残ったドライブのファイルは引き続き読み取れる"
           }
         }
       }
@@ -5234,7 +5234,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Le SHR découpe les disques en couches à chaque taille de disque distincte et construit le RAID sur les disques qui atteignent chaque couche. Une couche qui compte trop peu de disques pour être protégée est indiquée comme inutilisée jusqu’à ce qu’un disque plus grand la rejoigne. Le RAID classique traite chaque disque comme s’il avait la taille du plus petit. Synology répartit la parité sur chaque couche ; elle est représentée sur les plus grands disques pour que le schéma reste lisible."
+            "value" : "Le SHR découpe les disques en couches à chaque taille de disque distincte et construit le RAID sur les disques qui atteignent chaque couche. Une couche qui compte trop peu de disques pour être protégée est indiquée comme inutilisée jusqu’à ce qu’un disque plus grand la rejoigne. Le RAID classique traite chaque disque comme s’il avait la taille du plus petit. Synology répartit la parité sur chaque couche ; elle est représentée sur les plus grands disques pour que le schéma reste lisible."
           }
         },
         "it" : {
@@ -5281,7 +5281,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "大容量ドライブが1つだけの場合、2つ目が加わるまで容量を使い切れない\nSynology NASでのみ利用可能\n従来のRAIDでは容量の異なるドライブで無駄が出る"
+            "value" : "大容量ドライブが1台だけの場合、2台目が加わるまで容量を使い切れない\nSynology NASでのみ利用可能\n従来のRAIDでは容量の異なるドライブで無駄が出る"
           }
         }
       }
@@ -5298,13 +5298,13 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Synology Hybrid RAID (SHR) crea el RAID en capas de igual capacidad, así que las unidades de distintos tamaños desperdician menos espacio que con RAID clásico. SHR-2 reserva el equivalente a dos unidades para paridad. Los RAID 1, 5 y 6 clásicos de Synology tratan cada unidad como si tuviera el tamaño de la más pequeña."
+            "value" : "Synology Hybrid RAID (SHR) crea el RAID en capas de igual capacidad, así que las unidades de distintos tamaños desperdician menos espacio que con el RAID clásico. SHR-2 reserva el equivalente a dos unidades para paridad. Los RAID 1, 5 y 6 clásicos de Synology tratan cada unidad como si tuviera el tamaño de la más pequeña."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Le Synology Hybrid RAID (SHR) construit le RAID par couches de capacité identique : des disques de tailles différentes gaspillent ainsi moins d’espace qu’en RAID classique. Le SHR-2 consacre l’équivalent de deux disques à la parité. Les RAID 1, 5 et 6 classiques de Synology traitent chaque disque comme s’il avait la taille du plus petit."
+            "value" : "Le Synology Hybrid RAID (SHR) construit le RAID par couches de capacité identique : des disques de tailles différentes gaspillent ainsi moins d’espace qu’en RAID classique. Le SHR-2 consacre l’équivalent de deux disques à la parité. Les RAID 1, 5 et 6 classiques de Synology traitent chaque disque comme s’il avait la taille du plus petit."
           }
         },
         "it" : {
@@ -5351,7 +5351,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "容量の異なるドライブでも無駄がほとんどない\n大容量ドライブを1つずつ、徐々に追加できる\nSHR-2はどの2台のドライブ故障にも耐えられる"
+            "value" : "容量の異なるドライブでも無駄がほとんどない\n大容量ドライブを1台ずつ、徐々に追加できる\nSHR-2はどの2台のドライブ故障にも耐えられる"
           }
         }
       }
@@ -5368,7 +5368,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "NAS domésticos ampliados con los años con unidades de distintos tamaños\nPlex y bibliotecas multimedia\nAlmacenamiento de fotos familiares y backups"
+            "value" : "NAS domésticos ampliados a lo largo de los años con unidades de distintos tamaños\nPlex y bibliotecas multimedia\nAlmacenamiento de fotos familiares y backups"
           }
         },
         "fr" : {
@@ -5479,13 +5479,13 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cas d'Usage Typiques"
+            "value" : "Cas d’Usage Typiques"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Casi d'Uso Tipici"
+            "value" : "Casi d’Uso Tipici"
           }
         },
         "ja" : {
@@ -5631,7 +5631,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Unraidは各データドライブをそれぞれ独立したファイルシステムとして保持し、1つまたは2つのパリティドライブで保護します。ドライブの容量は自由で、各データドライブの全容量を使用できます。"
+            "value" : "Unraidは各データドライブをそれぞれ独立したファイルシステムとして保持し、1台または2台のパリティドライブで保護します。ドライブの容量は自由で、各データドライブの全容量を使用できます。"
           }
         }
       }
@@ -5701,7 +5701,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "容量の異なるドライブを自由に組み合わせても容量を失わない\nドライブを1つずつ追加できる\nパリティでカバーできる以上のドライブが故障しても、残ったデータドライブのファイルは失われない"
+            "value" : "容量の異なるドライブを自由に組み合わせても容量を失わない\nドライブを1台ずつ追加できる\nパリティでカバーできる以上のドライブが故障しても、残ったデータドライブのファイルは失われない"
           }
         }
       }
@@ -5736,7 +5736,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ドライブを1つずつ増やしていく家庭用メディアサーバー\n新旧のドライブが混在する構成\nアプリや仮想マシンも動かすサーバー"
+            "value" : "ドライブを1台ずつ増やしていく家庭用メディアサーバー\n新旧のドライブが混在する構成\nアプリや仮想マシンも動かすサーバー"
           }
         }
       }
@@ -6039,7 +6039,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Chaque groupe RAID‑Z fait %d disques de large. Les groupes très larges mettent longtemps à se reconstruire après une panne ; des groupes plus nombreux et plus étroits se reconstruisent plus vite."
+            "value" : "Chaque groupe RAID‑Z fait %d disques de large. Les groupes très larges mettent longtemps à se reconstruire après une panne ; des groupes plus nombreux et plus étroits se reconstruisent plus vite."
           }
         },
         "it" : {
@@ -6051,7 +6051,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "各RAID‑Zグループの幅は%dドライブです。幅が非常に広いグループは故障後の再構築に長い時間がかかります。より狭いグループを増やすと、再構築が速くなります。"
+            "value" : "各RAID‑Zグループの幅はドライブ%d台です。幅が非常に広いグループは故障後の再構築に長い時間がかかります。より狭いグループを増やすと、再構築が速くなります。"
           }
         }
       }
@@ -6074,7 +6074,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ce groupe RAID‑Z fait %d disques de large. Les groupes très larges mettent longtemps à se reconstruire après une panne ; des groupes plus nombreux et plus étroits se reconstruisent plus vite."
+            "value" : "Ce groupe RAID‑Z fait %d disques de large. Les groupes très larges mettent longtemps à se reconstruire après une panne ; des groupes plus nombreux et plus étroits se reconstruisent plus vite."
           }
         },
         "it" : {
@@ -6086,7 +6086,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "このRAID‑Zグループの幅は%dドライブです。幅が非常に広いグループは故障後の再構築に長い時間がかかります。より狭いグループを増やすと、再構築が速くなります。"
+            "value" : "このRAID‑Zグループの幅はドライブ%d台です。幅が非常に広いグループは故障後の再構築に長い時間がかかります。より狭いグループを増やすと、再構築が速くなります。"
           }
         }
       }
@@ -6103,19 +6103,19 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cada unidad solo cuenta hasta el tamaño de la más pequeña; el resto se muestra sin usar. El espacio utilizable se muestra de dos formas. La primera es unidades menos paridad, multiplicado por la unidad más pequeña. La segunda estima lo que ZFS mostrará con la configuración predeterminada (sectores de 4K y registros de 128K): resta el relleno de asignación de RAID-Z y el espacio que ZFS reserva, 1/32 del pool, como máximo 128 GiB. La compresión, el tamaño de registro y el tamaño de sector cambian la cifra real."
+            "value" : "Cada unidad solo cuenta hasta el tamaño de la más pequeña; el resto se muestra sin usar. El espacio utilizable se muestra de dos formas. La primera es el número de unidades menos la paridad, multiplicado por el tamaño de la unidad más pequeña. La segunda estima lo que ZFS mostrará con la configuración predeterminada (sectores de 4K y registros de 128K): resta el relleno de asignación de RAID-Z y el espacio que ZFS reserva, 1/32 del pool, como máximo 128 GiB. La compresión, el tamaño de registro y el tamaño de sector cambian la cifra real."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Chaque disque ne compte que jusqu’à la taille du plus petit ; le reste est indiqué comme inutilisé. L’espace utilisable est indiqué de deux façons. Le premier chiffre correspond aux disques moins la parité, multipliés par la taille du plus petit disque. Le second estime ce que ZFS affichera avec les réglages par défaut (secteurs de 4K et enregistrements de 128K) : il déduit le remplissage d’allocation de RAID-Z et l’espace que ZFS réserve, soit 1/32 du pool, 128 GiB au maximum. La compression, la taille d’enregistrement et la taille de secteur modifient le chiffre réel."
+            "value" : "Chaque disque ne compte que jusqu’à la taille du plus petit ; le reste est indiqué comme inutilisé. L’espace utilisable est indiqué de deux façons. Le premier chiffre correspond aux disques moins la parité, multipliés par la taille du plus petit disque. Le second estime ce que ZFS affichera avec les réglages par défaut (secteurs de 4K et enregistrements de 128K) : il déduit le remplissage d’allocation de RAID-Z et l’espace que ZFS réserve, soit 1/32 du pool, 128 GiB au maximum. La compression, la taille d’enregistrement et la taille de secteur modifient le chiffre réel."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ogni disco conta solo fino alla dimensione del più piccolo; il resto è indicato come inutilizzato. Lo spazio utilizzabile è indicato in due modi. Il primo valore è dischi meno parità, moltiplicato per il disco più piccolo. Il secondo stima ciò che ZFS mostrerà con le impostazioni predefinite (settori da 4K e record da 128K): sottrae il padding di allocazione di RAID-Z e lo spazio che ZFS tiene da parte, 1/32 del pool, al massimo 128 GiB. Compressione, dimensione dei record e dimensione dei settori cambiano il valore reale."
+            "value" : "Ogni disco conta solo fino alla dimensione del più piccolo; il resto è indicato come inutilizzato. Lo spazio utilizzabile è indicato in due modi. Il primo valore è il numero di dischi meno la parità, moltiplicato per la dimensione del disco più piccolo. Il secondo stima ciò che ZFS mostrerà con le impostazioni predefinite (settori da 4K e record da 128K): sottrae il padding di allocazione di RAID-Z e lo spazio che ZFS tiene da parte, 1/32 del pool, al massimo 128 GiB. Compressione, dimensione dei record e dimensione dei settori cambiano il valore reale."
           }
         },
         "ja" : {
@@ -6156,7 +6156,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "各ドライブは最も小さいドライブの容量までしか使われない\nグループの拡張にはすべてのドライブの交換が必要（OpenZFS 2.3以降ならドライブを1つずつ追加可能）\n他のシステムより多くのメモリを使う"
+            "value" : "各ドライブは最も小さいドライブの容量までしか使われない\nグループの拡張にはすべてのドライブの交換が必要（OpenZFS 2.3以降ならドライブを1台ずつ追加可能）\n他のシステムより多くのメモリを使う"
           }
         }
       }
@@ -6173,7 +6173,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Esto modela un grupo RAID-Z de ZFS (vdev) formado por las unidades de estas bahías. RAID-Z1, Z2 y Z3 reservan el equivalente a una, dos o tres unidades para paridad, y pueden fallar ese mismo número de unidades sin perder datos."
+            "value" : "Aquí se modela un grupo RAID-Z de ZFS (vdev) formado por las unidades de estas bahías. RAID-Z1, Z2 y Z3 reservan el equivalente a una, dos o tres unidades para paridad, y pueden fallar ese mismo número de unidades sin perder datos."
           }
         },
         "fr" : {
@@ -6185,7 +6185,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Questo modello rappresenta un gruppo RAID-Z di ZFS (vdev) composto dai dischi di questi alloggiamenti. RAID-Z1, Z2 e Z3 riservano l’equivalente di uno, due o tre dischi alla parità, e altrettanti dischi possono guastarsi senza perdita di dati."
+            "value" : "Qui viene modellato un gruppo RAID-Z di ZFS (vdev) composto dai dischi di questi alloggiamenti. RAID-Z1, Z2 e Z3 riservano l’equivalente di uno, due o tre dischi alla parità, e altrettanti dischi possono guastarsi senza perdita di dati."
           }
         },
         "ja" : {
