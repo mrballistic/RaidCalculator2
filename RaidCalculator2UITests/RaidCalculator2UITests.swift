@@ -198,12 +198,33 @@ final class RaidCalculator2UITests: XCTestCase {
         field.typeText(XCUIKeyboardKey.delete.rawValue)
         let prompt = app.descendants(matching: .any).matching(identifier: "enterDriveSize").firstMatch
         XCTAssertTrue(prompt.waitForExistence(timeout: 2))
+        // The card can sit under the keyboard; the section footer is beside the field.
+        let footerPrompt = app.staticTexts["enterDriveSizeFooter"]
+        XCTAssertTrue(footerPrompt.waitForExistence(timeout: 2))
+        XCTAssertTrue(footerPrompt.isHittable, "the footer prompt shows above the keyboard")
         field.typeText("0")
         XCTAssertTrue(prompt.exists, "0 isn't a drive size")
         app.toolbars.buttons["Done"].tap()
         let gone = expectation(for: NSPredicate(format: "exists == false"), evaluatedWith: prompt)
         wait(for: [gone], timeout: 2)
+        XCTAssertFalse(footerPrompt.exists)
         XCTAssertTrue(capacity(app).hasPrefix("Usable Capacity, 12 TB,"), capacity(app))
+    }
+
+    /// A size too small to show at three decimals reads “0” once editing
+    /// ends; that's the shown value, not an empty field, so the prompt goes.
+    @MainActor
+    func testTinyDriveSizeClearsPromptOnDone() throws {
+        let app = launchApp()
+        let field = app.textFields["driveSizeField"]
+        XCTAssertTrue(field.waitForExistence(timeout: 5))
+        field.tap()
+        field.typeText(XCUIKeyboardKey.delete.rawValue + "0.0004")
+        app.toolbars.buttons["Done"].tap()
+        let prompt = app.descendants(matching: .any).matching(identifier: "enterDriveSize").firstMatch
+        let gone = expectation(for: NSPredicate(format: "exists == false"), evaluatedWith: prompt)
+        wait(for: [gone], timeout: 2)
+        XCTAssertFalse(prompt.exists, "no prompt is left after Done")
     }
 
     /// FR-19: the custom-size alert can't be confirmed empty.
@@ -535,9 +556,8 @@ final class RaidCalculator2UITests: XCTestCase {
         reveal(footnote, in: app)
         XCTAssertTrue(footnote.label.contains("Oracle"), footnote.label)
         let ratingsNote = app.staticTexts.containing(NSPredicate(format: "label BEGINSWITH %@", "Ratings compare")).firstMatch
-        if ratingsNote.exists {
-            XCTAssertLessThan(footnote.frame.minY - ratingsNote.frame.maxY, 24, "no empty section between them")
-        }
+        XCTAssertTrue(ratingsNote.exists)
+        XCTAssertLessThan(footnote.frame.minY - ratingsNote.frame.maxY, 24, "no empty section between them")
     }
 
     /// FR-13 on iPhone: a sheet from the results card; tapping a system

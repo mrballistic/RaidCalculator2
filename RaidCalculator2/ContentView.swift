@@ -140,24 +140,40 @@ struct ContentView: View {
                 .transition(reduceMotion ? .opacity : .opacity.combined(with: .move(edge: .top)))
             }
 
-            if dynamicTypeSize.isAccessibilitySize {
-                VStack(alignment: .leading, spacing: 6) {
-                    Text("drive_size".localized())
-                    driveSizeControls
+            Group {
+                if dynamicTypeSize.isAccessibilitySize {
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text("drive_size".localized())
+                        driveSizeControls
+                    }
+                } else {
+                    LabeledContent("drive_size".localized()) { driveSizeControls }
                 }
-            } else {
-                LabeledContent("drive_size".localized()) { driveSizeControls }
             }
+            .id(Self.driveSizeRow)
         } header: {
             Text("drive_configuration".localized())
         } footer: {
-            if viewModel.selectedLevel.usesGroups, viewModel.result.warningMessage == nil {
-                let groups = max(viewModel.groups, 1)
-                let width = viewModel.driveCount / groups
-                Text(groups == 1
-                     ? String(format: "group_layout_single".localized(), width)
-                     : String(format: "group_layout".localized(), groups, width))
+            let showsLayout = viewModel.selectedLevel.usesGroups && viewModel.result.warningMessage == nil
+            if awaitingDriveSize || showsLayout {
+                VStack(alignment: .leading, spacing: 4) {
+                    // The card's prompt can be under the keyboard; this one sits by the field.
+                    if awaitingDriveSize {
+                        Text("enter_drive_size".localized())
+                            .accessibilityIdentifier("enterDriveSizeFooter")
+                    }
+                    if showsLayout {
+                        let groups = max(viewModel.groups, 1)
+                        let width = viewModel.driveCount / groups
+                        Text(groups == 1
+                             ? String(format: "group_layout_single".localized(), width)
+                             : String(format: "group_layout".localized(), groups, width))
+                    }
+                }
             }
+        }
+        .onChange(of: awaitingDriveSize) { _, awaiting in
+            if awaiting { AccessibilityNotification.Announcement("enter_drive_size".localized()).post() }
         }
     }
 
@@ -190,7 +206,26 @@ struct ContentView: View {
         }
     }
 
+    /// Scroll target for the drive-size row.
+    private static let driveSizeRow = "driveSizeRow"
+
     var body: some View {
+        ScrollViewReader { proxy in
+            layout
+                .onChange(of: sizeFieldFocused) { _, focused in
+                    guard focused else { return }
+                    // The form leaves a row near the bottom under the keyboard.
+                    // Once the keyboard is up, bring the row and its footer
+                    // (where the “Enter a drive size.” prompt shows) above it.
+                    Task { @MainActor in
+                        try? await Task.sleep(for: .milliseconds(400))
+                        withAnimation(motion) { proxy.scrollTo(Self.driveSizeRow, anchor: .center) }
+                    }
+                }
+        }
+    }
+
+    private var layout: some View {
         Group {
             if twoColumns {
                 // Results lead so reading and VoiceOver order match the
@@ -735,6 +770,10 @@ struct DriveSizeField: View {
             .accessibilityIdentifier("driveSizeField")
             .onAppear { text = value.formatted(Self.format) }
             .onChange(of: text) {
+                // Only typing decides whether a size is missing. Once editing
+                // ends the field shows the kept value, and a tiny one such as
+                // 0.0004 reads “0” at three decimals without being missing.
+                guard focus.wrappedValue else { return }
                 // Parsing follows the current locale, so “12,5” works in Spanish, French and Italian.
                 if let parsed = try? Self.format.parseStrategy.parse(text), parsed > 0 {
                     value = parsed

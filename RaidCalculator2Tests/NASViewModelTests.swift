@@ -33,6 +33,8 @@ struct NASViewModelTests {
         let model = NASViewModel(userDefaults: freshDefaults())
         #expect(model.system == .synology)
         #expect(model.bays == [4, 4, 8, 8])
+        // Nothing saved yet: the launch setup is current, so there's no comparison.
+        #expect(model.usableDelta == nil)
     }
 
     // Review Focus 1
