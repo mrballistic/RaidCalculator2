@@ -576,8 +576,7 @@ struct BayDiagram: View {
     }
 
     private func accessibilityLabel(bay index: Int, segments: [BaySegment]?) -> String {
-        let name = String(format: "bay_n".localized(), index + 1)
-        guard let segments else { return "\(name), \("empty_bay".localized())" }
+        guard let segments else { return String(format: "bay_empty_accessibility".localized(), index + 1) }
         var amounts: [SegmentRole: Double] = [:]
         for segment in segments { amounts[segment.role, default: 0] += segment.size }
         let parts = [SegmentRole.data, .parity, .mirror, .unused].compactMap { role in
