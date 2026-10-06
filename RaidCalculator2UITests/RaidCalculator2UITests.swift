@@ -438,7 +438,7 @@ final class RaidCalculator2UITests: XCTestCase {
         XCTAssertTrue(app.staticTexts.matching(identifier: "usableCapacity").firstMatch.waitForExistence(timeout: 5))
         let groupTwo = app.staticTexts.matching(NSPredicate(format: "label BEGINSWITH %@", "Group 2 of 2, drive "))
         XCTAssertEqual(groupTwo.count, 6)
-        XCTAssertTrue(app.staticTexts["Group 2 of 2, drive 1: Data"].exists || app.staticTexts["Group 2 of 2, drive 1: Parity"].exists)
+        XCTAssertTrue(app.staticTexts["Group 2 of 2, drive 1: Data"].exists)
         app.terminate()
 
         let raid5 = launchApp()

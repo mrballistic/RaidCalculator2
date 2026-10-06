@@ -151,6 +151,19 @@ struct NASCalculatorTests {
         #expect(rows.last?.unusedCapacity == 20)
     }
 
+    // Rows read fewer or more bays than the view shows (FR-13).
+    @Test func compareFlagsSystemsReadingMoreBaysThanShown() {
+        let eight = [Double?](repeating: 8, count: 8)
+        let rows = NASCalculator().compare(
+            NASSystem.allCases.map { NASSetup(system: $0, bays: eight, settings: NASSettings()) },
+            requestedBayCount: 8,
+            shownBayCount: 4
+        )
+        #expect(rows.allSatisfy { $0.readsAllBays == 8 })
+        let unraid = rows.first { $0.system == .unraid }
+        #expect(unraid?.bayLimit == nil)
+    }
+
     // Review Focus 2: a system that can't use the drives sorts below every one that can.
     @Test func invalidSetupsSortLast() throws {
         var settings = NASSettings()

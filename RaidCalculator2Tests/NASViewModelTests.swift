@@ -29,6 +29,21 @@ struct NASViewModelTests {
         #expect(!model.differsFromCurrent)
     }
 
+    // A saved current setup with an out-of-range parity (ZFS tops out at 3) is
+    // clamped on load, so a later comparison against it can't trap.
+    @Test func savedCurrentSetupClampsOutOfRangeParity() throws {
+        let defaults = freshDefaults()
+        var settings = NASSettings()
+        settings.zfsParity = 7
+        let saved = NASSetup(system: .zfs, bays: [8, 8, 8], settings: settings)
+        defaults.set(try JSONEncoder().encode(saved), forKey: "nas.currentSetup")
+        let model = NASViewModel(userDefaults: defaults)
+        #expect(model.current.settings.zfsParity == 3)
+        model.setSize(4, forBay: 0)
+        #expect(model.differsFromCurrent)
+        _ = model.usableDelta
+    }
+
     @Test func freshInstallDefaults() {
         let model = NASViewModel(userDefaults: freshDefaults())
         #expect(model.system == .synology)
