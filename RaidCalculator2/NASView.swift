@@ -256,7 +256,7 @@ struct NASView: View {
             "custom_size".localized(),
             isPresented: Binding(get: { customSizeBay != nil }, set: { if !$0 { customSizeBay = nil } })
         ) {
-            TextField("TB", text: $customSizeText)
+            TextField(String("TB"), text: $customSizeText)
                 .keyboardType(.decimalPad)
             Button("cancel".localized(), role: .cancel) {}
             Button("done".localized()) {

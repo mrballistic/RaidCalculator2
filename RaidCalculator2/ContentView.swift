@@ -335,7 +335,7 @@ struct CountStepper: View {
                     .accessibilityHidden(true)  // the count below carries it
                 Stepper(value: $value, in: range) {
                     // Reads “Number of Drives, 12”, as the one-row layout does.
-                    count.accessibilityLabel("\(title), \(value.formatted())")
+                    count.accessibilityLabel(Text(verbatim: "\(title), \(value.formatted())"))
                 }
             }
         } else {
@@ -459,7 +459,10 @@ struct FailuresToleratedRow: View {
     let value: String
 
     var body: some View {
-        Label {
+        HStack(alignment: .firstTextBaseline, spacing: 8) {
+            Image(systemName: "shield.lefthalf.filled")
+                .foregroundStyle(.tint)
+                .accessibilityHidden(true)
             ViewThatFits(in: .horizontal) {
                 HStack(alignment: .firstTextBaseline, spacing: 12) {
                     title.lineLimit(1)
@@ -471,9 +474,6 @@ struct FailuresToleratedRow: View {
                     valueText
                 }
             }
-        } icon: {
-            Image(systemName: "shield.lefthalf.filled")
-                .foregroundStyle(.tint)
         }
         .fixedSize(horizontal: false, vertical: true)
         .accessibilityElement(children: .combine)
