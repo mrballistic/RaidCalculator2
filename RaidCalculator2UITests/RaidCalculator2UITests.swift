@@ -60,11 +60,13 @@ final class RaidCalculator2UITests: XCTestCase {
 
     /// The two-column layout appears at regular width and at least 800 points
     /// (AdaptiveLayout.twoColumnMinWidth), on iPad and on iPhone Duo's inner
-    /// display alike, so skip by the window's real width, not the device type.
+    /// display alike, so skip by the window's real size, not the device type.
+    /// An iPhone in landscape is wide enough (874 pt) but only compact in
+    /// size class, which shows as a short window, so require height too.
     @MainActor
     private func skipUnlessTwoColumns(_ app: XCUIApplication) throws {
-        let width = app.windows.firstMatch.frame.width
-        try XCTSkipUnless(width >= 800, "needs a window at least 800 points wide (got \(width))")
+        let frame = app.windows.firstMatch.frame
+        try XCTSkipUnless(frame.width >= 800 && frame.height >= 600, "needs a regular-size window, at least 800 × 600 points (got \(frame.width) × \(frame.height))")
     }
 
     /// At the largest text size a rating row still reads as one phrase and
@@ -524,12 +526,19 @@ final class RaidCalculator2UITests: XCTestCase {
     /// hierarchy until it's scrolled to.
     @MainActor
     private func reveal(_ element: XCUIElement, in app: XCUIApplication, scrollingDown: Bool = true) {
+        // Swiping the app element itself does nothing once the device is in
+        // landscape, so in landscape swipe the scrolling list directly.
+        func scroll(down: Bool) {
+            let window = app.windows.firstMatch.frame
+            let target = window.width > window.height ? app.collectionViews.firstMatch : app
+            down ? target.swipeUp() : target.swipeDown()
+        }
         for _ in 0..<6 where !(element.exists && element.isHittable) {
-            scrollingDown ? app.swipeUp() : app.swipeDown()
+            scroll(down: scrollingDown)
         }
         // The floating tab bar covers the last rows, which still report hittable.
         if element.exists, element.frame.intersects(app.tabBars.firstMatch.frame) {
-            app.swipeUp()
+            scroll(down: true)
         }
         XCTAssertTrue(element.isHittable, "not revealed: \(element)")
     }
@@ -680,6 +689,17 @@ final class RaidCalculator2UITests: XCTestCase {
         // A Stepper's label text reports not-hittable (the stepper owns the touch), so check on-screen by frame.
         XCTAssertTrue(app.windows.firstMatch.frame.contains(count.frame), "inputs should be on screen without scrolling")
         XCTAssertLessThan(usable.frame.maxX, count.frame.minX, "results should lead, inputs follow")
+    }
+
+    /// iPhone rotates (the app no longer locks to portrait): the answer shows
+    /// and the drive-size field can still be reached.
+    @MainActor
+    func testLandscapeShowsTheAnswer() throws {
+        XCUIDevice.shared.orientation = .landscapeLeft
+        let app = launchApp()
+        XCTAssertTrue(app.staticTexts.matching(identifier: "usableCapacity").firstMatch.waitForExistence(timeout: 5))
+        XCTAssertGreaterThan(app.windows.firstMatch.frame.width, app.windows.firstMatch.frame.height, "the app should be in landscape")
+        reveal(app.textFields["driveSizeField"], in: app)
     }
 
     @MainActor
