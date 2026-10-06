@@ -140,4 +140,23 @@ struct NASViewModelTests {
         #expect(model.bays(for: .synology).count == 12)
         #expect(model.bays.count == 14)
     }
+
+    // Synology current with 14 bays set up: it shows 12, Unraid reads all 14.
+    @Test func comparisonNotesSystemsThatReadMoreBays() {
+        let model = NASViewModel(userDefaults: freshDefaults())
+        model.system = .unraid
+        model.setBayCount(14)
+        for bay in 0..<14 { model.setSize(8, forBay: bay) }
+        model.system = .synology
+        let rows = model.comparison
+        #expect(rows.first { $0.system == .unraid }?.readsAllBays == 14)
+        #expect(rows.first { $0.system == .synology }?.readsAllBays == nil)
+    }
+
+    // Review Focus 2: nothing hidden, no note.
+    @Test func noAllBaysNoteWhenNothingIsHidden() {
+        let model = NASViewModel(userDefaults: freshDefaults())
+        model.system = .unraid
+        #expect(model.comparison.allSatisfy { $0.readsAllBays == nil })
+    }
 }

@@ -126,7 +126,8 @@ struct NASCalculatorTests {
         let bays: [Double?] = [16, 8, 8, 4]
         let rows = NASCalculator().compare(
             NASSystem.allCases.map { NASSetup(system: $0, bays: bays, settings: NASSettings()) },
-            requestedBayCount: 4
+            requestedBayCount: 4,
+            shownBayCount: 4
         )
         #expect(rows.map(\.system) == [.synology, .unraid, .snapraid, .btrfs, .zfs])
         #expect(rows.map(\.usableCapacity) == [20, 20, 20, 18, 12])
@@ -140,7 +141,8 @@ struct NASCalculatorTests {
         settings.snapraidParity = 2
         let rows = NASCalculator().compare(
             NASSystem.allCases.map { NASSetup(system: $0, bays: [8, 8], settings: settings) },
-            requestedBayCount: 2
+            requestedBayCount: 2,
+            shownBayCount: 2
         )
         let firstInvalid = try #require(rows.firstIndex { !$0.isValid })
         #expect(firstInvalid > 0)

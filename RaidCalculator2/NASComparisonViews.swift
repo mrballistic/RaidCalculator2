@@ -48,6 +48,11 @@ struct NASComparisonCell: View {
                     .font(.footnote)
                     .foregroundStyle(.secondary)
             }
+            if let all = comparison.readsAllBays {
+                Text(String(format: "compare_all_bays".localized(), all))
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .contentShape(Rectangle())

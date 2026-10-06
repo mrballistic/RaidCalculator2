@@ -219,6 +219,9 @@ struct NASComparison: Identifiable, Equatable {
     /// How many bays this system reads, when that's fewer than the user set
     /// up (Synology stops at 12); nil when it reads them all.
     let bayLimit: Int?
+    /// How many bays this system reads, when that's more than the current
+    /// system shows (Synology hides bays past 12); nil otherwise.
+    let readsAllBays: Int?
 
     var id: NASSystem { system }
     var isValid: Bool { warningMessage == nil }
@@ -227,7 +230,7 @@ struct NASComparison: Identifiable, Equatable {
 extension NASCalculator {
     /// The same drives under every system, most usable first. Setups that
     /// don't work sort last; ties keep the picker's order.
-    func compare(_ setups: [NASSetup], requestedBayCount: Int) -> [NASComparison] {
+    func compare(_ setups: [NASSetup], requestedBayCount: Int, shownBayCount: Int) -> [NASComparison] {
         let order = Dictionary(uniqueKeysWithValues: NASSystem.allCases.enumerated().map { ($1, $0) })
         return setups.map { setup in
             let result = calculate(setup)
@@ -237,7 +240,8 @@ extension NASCalculator {
                 unusedCapacity: result.unusedCapacity,
                 failuresTolerated: result.failuresTolerated,
                 warningMessage: result.warningMessage,
-                bayLimit: setup.bays.count < requestedBayCount ? setup.bays.count : nil
+                bayLimit: setup.bays.count < requestedBayCount ? setup.bays.count : nil,
+                readsAllBays: setup.bays.count > shownBayCount ? setup.bays.count : nil
             )
         }
         .sorted { a, b in

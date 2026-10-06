@@ -44,7 +44,8 @@ final class NASViewModel {
     var comparison: [NASComparison] {
         calculator.compare(
             NASSystem.allCases.map { NASSetup(system: $0, bays: bays(for: $0), settings: settings) },
-            requestedBayCount: requestedBayCount
+            requestedBayCount: requestedBayCount,
+            shownBayCount: bayCount
         )
     }
 
