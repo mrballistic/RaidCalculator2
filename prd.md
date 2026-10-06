@@ -317,7 +317,12 @@ The NAS tab replaced 1.4.0’s Synology tab in 1.6.0. It models drives bay by ba
 
   (SnapRAID’s table continues to 6 parity for 36–42 data drives, beyond the 30-bay limit.)
 * **Wide ZFS group note** (advice, not a block): above 12 drives in one RAID-Z group, note that very wide groups take a long time to rebuild after a failure. This is in the spirit of the RAID 5 rebuild caution. It also applies to FR-8’s RAID-Z levels when a single group is wider than 12.
-* **Validation**, inline, in the existing style.
+* **Validation**, inline, in the existing style, with no figures shown for an invalid setup:
+  * Every system: “Add a drive to a bay to get started.” with no drives.
+  * Unraid and SnapRAID: “%@ needs at least one data drive besides its parity drives.”, and for Unraid “Unraid arrays hold up to 28 data drives plus 2 parity drives.”
+  * ZFS: “Each RAID-Z2 group needs at least 3 drives.” (the minimum widths of FR-8: Z1 2, Z2 3, Z3 4).
+  * Btrfs RAID1: “Btrfs RAID1 needs at least 2 drives.”
+  * Synology: the minimums above, for example “SHR-2 needs at least 4 drives.”
 * **No ratings** for NAS systems (FR-17).
 
 **FR-12: Biggest Upgrade per system** (1.6.0)

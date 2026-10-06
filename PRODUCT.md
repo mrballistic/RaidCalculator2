@@ -16,7 +16,7 @@ RAID Calculator shows the tradeoffs between RAID levels instantly. On the RAID t
 
 ## Positioning
 
-It is a focused, native, offline utility that does one calculation well and teaches as it goes. Each level and NAS system has a short info sheet (description, pros, cons, use cases, and how the app calculates it). There is no account, tracking or network dependency, and it is meant to feel at home next to Apple’s own utilities rather than like a web calculator wrapped in an app.
+It is a focused, native, offline utility that does one calculation well and teaches as it goes. Each level and NAS system has a short info sheet (description, pros, cons, use cases, and ratings for RAID levels); RAID-Z and every NAS system also explain how the app calculates them. There is no account, tracking or network dependency, and it is meant to feel at home next to Apple’s own utilities rather than like a web calculator wrapped in an app.
 
 ## Operating Context
 
