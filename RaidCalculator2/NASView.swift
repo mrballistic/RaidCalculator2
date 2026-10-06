@@ -194,7 +194,7 @@ struct NASView: View {
     var body: some View {
         Group {
             if twoColumns {
-                HStack(alignment: .top, spacing: 0) {
+                TwoColumnLayout {
                     Form {
                         summarySection
                         Section("compare_header".localized()) {
@@ -204,16 +204,12 @@ struct NASView: View {
                         }
                         adviceSections
                     }
-                    Divider()
+                } inputs: {
                     Form {
                         setupSection
                         drivesSection
                     }
                 }
-                // UI tests detect the two-column layout by this identifier.
-                // Keep it on whatever container replaces this HStack.
-                .accessibilityElement(children: .contain)
-                .accessibilityIdentifier("twoColumnLayout")
             } else {
                 // Setup sits above every section that comes and goes, so the
                 // system picker stays put under the user's finger.

@@ -232,18 +232,14 @@ struct ContentView: View {
             if twoColumns {
                 // Results lead so reading and VoiceOver order match the
                 // stacked layout, where the answer comes first.
-                HStack(alignment: .top, spacing: 0) {
+                TwoColumnLayout {
                     Form {
                         answerSections
                         ratingsSection
                     }
-                    Divider()
+                } inputs: {
                     Form { inputSections }
                 }
-                // UI tests detect the two-column layout by this identifier.
-                // Keep it on whatever container replaces this HStack.
-                .accessibilityElement(children: .contain)
-                .accessibilityIdentifier("twoColumnLayout")
             } else {
                 Form {
                     answerSections
