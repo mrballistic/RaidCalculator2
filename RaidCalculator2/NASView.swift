@@ -31,8 +31,9 @@ struct NASView: View {
     }
 
     @ViewBuilder private var summarySection: some View {
+        let result = viewModel.result
         Section {
-            NASSummary(result: viewModel.result, system: viewModel.system)
+            NASSummary(result: result, system: viewModel.system)
             if !twoColumns {
                 Button {
                     showingComparison = true
@@ -109,7 +110,8 @@ struct NASView: View {
 
     /// The warning or suggestion, the hints, and the comparison with the current setup.
     @ViewBuilder private var adviceSections: some View {
-        if let warning = viewModel.result.warningMessage {
+        let result = viewModel.result
+        if let warning = result.warningMessage {
             Section {
                 Label {
                     Text(warning)

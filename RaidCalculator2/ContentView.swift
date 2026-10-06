@@ -26,12 +26,13 @@ struct ContentView: View {
 
     /// The answer and anything wrong with it.
     @ViewBuilder private var answerSections: some View {
+        let result = viewModel.result
         // The answer comes first, so it stays on screen at every text size.
         Section {
-            CapacitySummary(result: viewModel.result, unit: viewModel.unit, awaitingSize: awaitingDriveSize)
+            CapacitySummary(result: result, unit: viewModel.unit, awaitingSize: awaitingDriveSize)
         }
 
-        if let warning = viewModel.result.warningMessage {
+        if let warning = result.warningMessage {
             Section {
                 Label {
                     Text(warning)
@@ -41,16 +42,16 @@ struct ContentView: View {
                 }
                 .accessibilityIdentifier("configurationWarning")
 
-                if let suggested = viewModel.result.suggestedDriveCount, suggested != viewModel.driveCount {
+                if let suggested = result.suggestedDriveCount, suggested != viewModel.driveCount {
                     // Names the groups too when the fix changes them, as it does from one group to RAID 50 or 60.
-                    Button(viewModel.result.suggestedDriveCountGroups.map { String(format: "use_drive_count_groups".localized(), suggested, $0) }
+                    Button(result.suggestedDriveCountGroups.map { String(format: "use_drive_count_groups".localized(), suggested, $0) }
                            ?? String(format: "use_drive_count".localized(), suggested)) {
                         withAnimation(motion) { viewModel.applySuggestedDriveCount() }
                     }
                     .accessibilityIdentifier("applySuggestedDriveCount")
                 }
 
-                if let suggested = viewModel.result.suggestedGroups, suggested != viewModel.groups {
+                if let suggested = result.suggestedGroups, suggested != viewModel.groups {
                     Button(suggested == 1 ? "use_one_group".localized() : String(format: "use_group_count".localized(), suggested)) {
                         withAnimation(motion) { viewModel.applySuggestedGroups() }
                     }
@@ -196,9 +197,10 @@ struct ContentView: View {
     }
 
     @ViewBuilder private var ratingsSection: some View {
+        let result = viewModel.result
         Section {
-            RatingRow(title: "speed".localized(), rating: viewModel.result.speedRating)
-            RatingRow(title: "availability".localized(), rating: viewModel.result.availabilityRating)
+            RatingRow(title: "speed".localized(), rating: result.speedRating)
+            RatingRow(title: "availability".localized(), rating: result.availabilityRating)
         } header: {
             Text("ratings".localized())
         } footer: {
@@ -748,7 +750,9 @@ struct RatingRow: View {
 /// The drive-size entry. It's trailing-aligned in a frame much wider than a
 /// short number like “4”, so a tap left of the digits would otherwise put the
 /// cursor before them, where backspace deletes nothing. On focus the cursor
-/// moves to the end, wherever the tap landed.
+/// moves to the end, wherever the tap landed. At accessibility sizes the field
+/// sits under its label at full width, so it leads instead; the cursor-to-end
+/// behavior still applies.
 ///
 /// That needs `selection:`, which SwiftUI only offers on text-bound fields, so
 /// the field edits its own text and pushes each value that parses. An empty,
@@ -759,6 +763,7 @@ struct DriveSizeField: View {
     var focus: FocusState<Bool>.Binding
     @Binding var isAwaitingValue: Bool
 
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @State private var text = ""
     @State private var selection: TextSelection?
 
@@ -767,7 +772,7 @@ struct DriveSizeField: View {
     var body: some View {
         TextField("drive_size".localized(), text: $text, selection: $selection)
             .keyboardType(.decimalPad)
-            .multilineTextAlignment(.trailing)
+            .multilineTextAlignment(dynamicTypeSize.isAccessibilitySize ? .leading : .trailing)
             .focused(focus)
             .monospacedDigit()
             .accessibilityIdentifier("driveSizeField")
