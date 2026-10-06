@@ -29,7 +29,7 @@ It is a focused, native, offline utility that does one calculation well and teac
 - Live on the App Store, published by mrBallistic. **1.4.0** (the iOS 26 rebuild, adding the Synology tab) went to App Review on 2026-10-02. **1.4.1** fixed the drive-size field’s cursor (`prd.md` FR-19). **1.5.0** added RAID 50/60 and RAID-Z to the RAID tab, with the ZFS estimate. **1.6.0** is the release now being finished (not yet tagged): the NAS tab, compare systems, iPad layouts, and the copy, trademark and website pass (`prd.md` FR-10 to FR-20). The upload workflow sets each version from its `v*` tag.
 - Native SwiftUI, MVVM-lite, no third-party dependencies. Deployment target iOS 26.0, with Liquid Glass styling on buttons and steppers.
 - Runs on iPhone and iPad. **iPad is a binding design target** (`prd.md` FR-14): two columns at regular width (results beside inputs), wrapped bay diagrams up to 30 bays, side-by-side system comparison and grouped drive strips. Layouts are size-class adaptive, never iPad-only.
-- Localized into English, Spanish, French, Italian and Japanese. Layouts must survive longer translated strings and Japanese text.
+- Localized into English, Spanish, French, Italian, Japanese, German, Traditional Chinese, Simplified Chinese, Korean and Brazilian Portuguese. Layouts must survive longer translated strings, German compounds and CJK text.
 - **Time to answer must stay under 10 seconds**: open the app, pick a level, read the result. No onboarding, account or required settings stand in front of the answer.
 - Calculations use simplified standard formulas (see `prd.md` FR-3, FR-8 and FR-11); the ZFS figure is a labeled estimate (FR-9). Speed and availability are fixed 1–5 ratings per level, not measured benchmarks. RAID 10’s fault tolerance is shown as “up to n/2, depending on which drives fail.”
 - Inline validation covers minimum drive counts (RAID 5 ≥ 3, RAID 6 ≥ 4, RAID 10 ≥ 4 and even) and group widths, with one-tap fixes.
@@ -65,4 +65,4 @@ It is a focused, native, offline utility that does one calculation well and teac
 
 ## Accessibility & Inclusion
 
-Supports Dynamic Type and VoiceOver (`prd.md` §1.6). Ratings shown as stars must also have text labels and spoken equivalents. Layouts must hold up at large Dynamic Type sizes and in all five localizations, and work in both light and dark mode.
+Supports Dynamic Type and VoiceOver (`prd.md` §1.6). Ratings shown as stars must also have text labels and spoken equivalents. Layouts must hold up at large Dynamic Type sizes and in all ten localizations, and work in both light and dark mode.

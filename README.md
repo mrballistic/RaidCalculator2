@@ -7,7 +7,7 @@ A native iOS and iPadOS app that shows how much space a set of drives actually g
 **RAID tab: identical drives**
 - RAID 0, 1, 5, 6, 10, 50, 60, JBOD, and ZFS RAID-Z1/Z2/Z3 (with groups), for 1–24 drives in GB or TB.
 - Usable and raw capacity, efficiency, a drive strip showing data, parity and mirrors, and drive failures tolerated, including the conditional cases (“Up to 4 (depends on which drives fail)”).
-- Invalid setups dim and offer a one-tap fix. RAID 5 on large drives warns about rebuild risk.
+- Invalid setups dim and offer a one-tap fix. RAID 5, RAID 50 and RAID-Z1 on drives of 8 TB or more warn about rebuild risk.
 - RAID-Z shows an estimate of what ZFS will report, after padding and reserved space, always labeled as an estimate.
 
 **NAS tab: mixed drives, bay by bay**
@@ -20,8 +20,8 @@ A native iOS and iPadOS app that shows how much space a set of drives actually g
 **Everywhere**
 - An info sheet per RAID level and NAS system: overview, pros, cons, typical uses, ratings for RAID levels, and how the app calculates RAID-Z and each NAS system.
 - iPad layouts with results beside inputs. Bay diagrams stay legible up to 30 bays.
-- Light and dark mode, Dynamic Type up to the largest accessibility sizes, VoiceOver, and Reduce Motion.
-- English, Spanish, French, Italian and Japanese.
+- Light and dark mode, Dynamic Type up to the largest accessibility sizes, VoiceOver (which reads each drive within a group), and Reduce Motion.
+- English, Spanish, French, Italian, Japanese, German, Traditional Chinese, Simplified Chinese, Korean and Brazilian Portuguese.
 - No account, no analytics, no network calls.
 
 ## Building
@@ -43,10 +43,10 @@ The `testIPad*` UI tests skip on iPhone. Run them on an iPad Simulator, for exam
 
 ## Strings
 
-All user-facing text lives in `RaidCalculator2/Localizable.xcstrings`, in all five languages. Never hand-edit the catalog; use the script:
+All user-facing text lives in `RaidCalculator2/Localizable.xcstrings`, in all ten languages. Never hand-edit the catalog; use the script:
 
 ```bash
-python3 scripts/strings.py add new-strings.json   # {"key": {"en": "…", "es": "…", "fr": "…", "it": "…", "ja": "…"}}
+python3 scripts/strings.py add new-strings.json   # {"key": {"en": "…", "es": "…", "fr": "…", "it": "…", "ja": "…", "de": "…", "zh-Hant": "…", "zh-Hans": "…", "ko": "…", "pt-BR": "…"}}
 python3 scripts/strings.py remove key [key …]
 python3 scripts/strings.py check                   # must print 0 problem(s)
 ```

@@ -380,7 +380,7 @@ The 1.4.0 engine tried a largest-size drive in an empty bay, or in place of the 
   * 1.4.0 was left as it was while in review.
 * **Keywords** in the App Store listing contain no third-party trademarks (guideline 2.3.7).
 * **Copy rules,** app and website: smart punctuation (curly “ ” ’) and American spelling; em dashes only where they earn it, at most one per sentence, closed up; en dashes in ranges stay. System names stay untranslated: Synology, SHR, SHR-2, Unraid, ZFS, RAID-Z1/Z2/Z3, SnapRAID, Btrfs RAID1.
-* **Localization:** every string in English, Spanish, French, Italian and Japanese, through `scripts/strings.py`. On the NAS screen, Spanish says “disco” and Japanese counts drives with 台; the RAID tab and the info sheets keep Spanish “unidad” (ruled acceptable in plan 2).
+* **Localization:** every string in English, Spanish, French, Italian, Japanese, German, Traditional Chinese, Simplified Chinese, Korean and Brazilian Portuguese, through `scripts/strings.py`. On the NAS screen, Spanish says “disco” and Japanese counts drives with 台; the RAID tab and the info sheets keep Spanish “unidad” (ruled acceptable in plan 2).
 * **Website (`www/`),** updated for 1.6.0:
   * The FAQ “What doesn’t it cover?” no longer lists RAID 50/60, ZFS or Unraid; expansion units, SSD cache, Unraid’s separate pools and cost/power/IOPS stay on it.
   * The model-presets paragraph is replaced by bay counts.
@@ -463,10 +463,10 @@ Motion shows *what a change did to your drives*. The drive strip and bay diagram
 * **Offline:** Fully functional offline. No account, analytics, tracking, third-party services or network calls; the App Store privacy label reads “Data Not Collected”.
 * **Accessibility:**
   * Dynamic Type at every size, including the largest accessibility sizes, and VoiceOver throughout.
-  * VoiceOver reads group structure (one element per group, “Group 2 of 3: 3 Data, 1 Parity”), parity assignment and the ZFS caveat, and reads bay diagrams as full sentences (“Bay 1, 16 TB: 8 TB parity, 8 TB unused.”).
+  * VoiceOver reads group structure (one element per group, “Group 2 of 3: 3 Data, 1 Parity”), each drive within a group (“Group 2 of 3, drive 1: Data”), parity assignment and the ZFS caveat, and reads bay diagrams as full sentences (“Bay 1, 16 TB: 8 TB parity, 8 TB unused.”).
   * Ratings shown as stars also have text labels and spoken equivalents.
-  * Every layout holds at the largest Dynamic Type sizes, in all five languages, in light and dark mode.
-* **Localization:** English, Spanish, French, Italian and Japanese (FR-16).
+  * Every layout holds at the largest Dynamic Type sizes, in all ten languages, in light and dark mode.
+* **Localization:** English, Spanish, French, Italian, Japanese, German, Traditional Chinese, Simplified Chinese, Korean and Brazilian Portuguese (FR-16).
 * **Design:** System typography and SF Symbols; native controls with Liquid Glass styling on buttons and steppers.
 * **Supported iOS version:** iOS 26.0 and later, iPhone and iPad. Native SwiftUI, MVVM-lite, no third-party dependencies.
 
