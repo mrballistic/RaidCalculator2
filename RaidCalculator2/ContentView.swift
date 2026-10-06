@@ -351,19 +351,7 @@ struct CapacitySummary: View {
                 DriveStrip(roles: result.driveRoles, groupSize: result.groupSize)
             }
 
-            Label {
-                VStack(alignment: .leading, spacing: 2) {
-                    Text("drive_failures_tolerated".localized())
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                    Text(result.failuresTolerated)
-                        .font(.body.weight(.semibold))
-                }
-            } icon: {
-                Image(systemName: "shield.lefthalf.filled")
-                    .foregroundStyle(.tint)
-            }
-            .accessibilityElement(children: .combine)
+            FailuresToleratedRow(value: result.failuresTolerated)
 
             if isValid, result.usableCapacity > 0 {
                 if let estimate = result.zfsEstimate {
@@ -410,6 +398,46 @@ struct CapacitySummary: View {
         case .tb: capacity(bytes / 1_099_511_627_776, unit: "TiB", maxFractionDigits: 1)
         case .gb: capacity(bytes / 1_073_741_824, unit: "GiB", maxFractionDigits: 1)
         }
+    }
+}
+
+/// “Drive Failures Tolerated … 1” on one line when it fits; otherwise the
+/// label above the value, as before. The value is never shortened to make
+/// it fit (FR-18), so conditional wording and large text sizes stack.
+struct FailuresToleratedRow: View {
+    let value: String
+
+    var body: some View {
+        Label {
+            ViewThatFits(in: .horizontal) {
+                HStack(alignment: .firstTextBaseline, spacing: 12) {
+                    title.lineLimit(1)
+                    Spacer(minLength: 0)
+                    valueText.lineLimit(1)
+                }
+                VStack(alignment: .leading, spacing: 2) {
+                    title
+                    valueText
+                }
+            }
+        } icon: {
+            Image(systemName: "shield.lefthalf.filled")
+                .foregroundStyle(.tint)
+        }
+        .accessibilityElement(children: .combine)
+        .accessibilityIdentifier("failuresTolerated")
+    }
+
+    private var title: some View {
+        Text("drive_failures_tolerated".localized())
+            .font(.subheadline)
+            .foregroundStyle(.secondary)
+    }
+
+    private var valueText: some View {
+        Text(value)
+            .font(.body.weight(.semibold))
+            .contentTransition(.numericText())
     }
 }
 

@@ -368,20 +368,7 @@ struct NASSummary: View {
             BayDiagram(bays: result.bays, system: system)
 
             if isValid {
-                Label {
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text("drive_failures_tolerated".localized())
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                        Text(result.failuresTolerated, format: .number)
-                            .font(.body.weight(.semibold))
-                            .contentTransition(.numericText())
-                    }
-                } icon: {
-                    Image(systemName: "shield.lefthalf.filled")
-                        .foregroundStyle(.tint)
-                }
-                .accessibilityElement(children: .combine)
+                FailuresToleratedRow(value: result.failuresTolerated.formatted())
             }
 
             if isValid, result.unusedCapacity > 0 {

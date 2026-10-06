@@ -91,6 +91,25 @@ final class RaidCalculator2UITests: XCTestCase {
         return label.components(separatedBy: ", ").last ?? label
     }
 
+    /// FR-18: label and value share a line when they fit; the conditional
+    /// value falls back to the stacked form, never shortened.
+    @MainActor
+    func testFailuresToleratedFitsOneLine() throws {
+        let app = launchApp()  // RAID 5, 4 × 4 TB
+        let row = app.descendants(matching: .any).matching(identifier: "failuresTolerated").firstMatch
+        XCTAssertTrue(row.waitForExistence(timeout: 5))
+        XCTAssertEqual(row.label, "Drive Failures Tolerated, 1")
+        XCTAssertLessThan(row.frame.height, 34, "one line")
+        app.terminate()
+
+        let raid10 = launchApp(level: "R 10", drives: 8)
+        let conditional = raid10.descendants(matching: .any).matching(identifier: "failuresTolerated").firstMatch
+        XCTAssertTrue(conditional.waitForExistence(timeout: 5))
+        XCTAssertTrue(conditional.label.contains("Up to 4"), conditional.label)
+        XCTAssertTrue(conditional.label.contains("depends on which drives fail"), conditional.label)
+        XCTAssertGreaterThan(conditional.frame.height, 34, "stacked")
+    }
+
     @MainActor
     func testAppLaunchesSuccessfully() throws {
         let app = launchApp()
