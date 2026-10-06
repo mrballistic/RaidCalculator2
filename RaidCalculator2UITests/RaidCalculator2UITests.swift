@@ -60,13 +60,11 @@ final class RaidCalculator2UITests: XCTestCase {
 
     /// The two-column layout appears at regular width and at least 800 points
     /// (AdaptiveLayout.twoColumnMinWidth), on iPad and on iPhone Duo's inner
-    /// display alike, so skip by the window's real size, not the device type.
-    /// An iPhone in landscape is wide enough (874 pt) but only compact in
-    /// size class, which shows as a short window, so require height too.
+    /// display alike. The app marks that layout with an identifier, so skip
+    /// unless it is actually showing.
     @MainActor
     private func skipUnlessTwoColumns(_ app: XCUIApplication) throws {
-        let frame = app.windows.firstMatch.frame
-        try XCTSkipUnless(frame.width >= 800 && frame.height >= 600, "needs a regular-size window, at least 800 × 600 points (got \(frame.width) × \(frame.height))")
+        try XCTSkipUnless(app.otherElements["twoColumnLayout"].waitForExistence(timeout: 3), "two-column layout not showing")
     }
 
     /// At the largest text size a rating row still reads as one phrase and
@@ -529,8 +527,11 @@ final class RaidCalculator2UITests: XCTestCase {
         // Swiping the app element itself does nothing once the device is in
         // landscape, so in landscape swipe the scrolling list directly.
         func scroll(down: Bool) {
+            // iPad landscape shows two lists, so only a single-column
+            // landscape window (iPhone) swipes the list directly.
             let window = app.windows.firstMatch.frame
-            let target = window.width > window.height ? app.collectionViews.firstMatch : app
+            let singleList = window.width > window.height && !app.otherElements["twoColumnLayout"].exists && app.collectionViews.firstMatch.exists
+            let target = singleList ? app.collectionViews.firstMatch : app
             down ? target.swipeUp() : target.swipeDown()
         }
         for _ in 0..<6 where !(element.exists && element.isHittable) {
@@ -677,7 +678,7 @@ final class RaidCalculator2UITests: XCTestCase {
     }
 
     /// FR-14: on a wide iPad the answer sits beside the inputs, so both are
-    /// on screen without scrolling. Skips on iPhone.
+    /// on screen without scrolling. Skips unless the two-column layout is showing.
     @MainActor
     func testIPadPutsResultsBesideInputs() throws {
         XCUIDevice.shared.orientation = .landscapeLeft

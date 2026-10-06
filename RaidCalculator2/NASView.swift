@@ -210,6 +210,10 @@ struct NASView: View {
                         drivesSection
                     }
                 }
+                // UI tests detect the two-column layout by this identifier.
+                // Keep it on whatever container replaces this HStack.
+                .accessibilityElement(children: .contain)
+                .accessibilityIdentifier("twoColumnLayout")
             } else {
                 // Setup sits above every section that comes and goes, so the
                 // system picker stays put under the user's finger.

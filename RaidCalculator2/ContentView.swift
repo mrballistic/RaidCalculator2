@@ -240,6 +240,10 @@ struct ContentView: View {
                     Divider()
                     Form { inputSections }
                 }
+                // UI tests detect the two-column layout by this identifier.
+                // Keep it on whatever container replaces this HStack.
+                .accessibilityElement(children: .contain)
+                .accessibilityIdentifier("twoColumnLayout")
             } else {
                 Form {
                     answerSections
