@@ -1,7 +1,7 @@
 
 ## 1. Product Requirements Document (PRD)
 
-**Status:** current as of **1.7.0 (in progress)** (2026-10-05). This merges the original v1 spec with the 1.5.0 and 1.6.0 delta that lived in `prd-update.md`. FR-1 to FR-7 are the v1 requirements, updated where later releases changed them; FR-8 to FR-20 keep the numbers they had in the delta, so references in code, plans and commits still resolve.
+**Status:** current as of **1.7.0 (in progress)** (2026-10-06). This merges the original v1 spec with the 1.5.0 and 1.6.0 delta that lived in `prd-update.md`. FR-1 to FR-7 are the v1 requirements, updated where later releases changed them; FR-8 to FR-20 keep the numbers they had in the delta, so references in code, plans and commits still resolve.
 
 **Release history**
 
@@ -11,6 +11,7 @@
 | 1.4.1 | The drive-size cursor fix (FR-19). |
 | 1.5.0 | The RAID tab’s nested and ZFS levels (FR-8), the ZFS estimate (FR-9), the RAID-tab half of the shared info sheet (FR-17) and the RAID tab’s motion (FR-20). Tagged `v1.5.0` on 2026-10-04. |
 | 1.6.0 | The NAS tab (FR-10 to FR-12, FR-15), compare systems (FR-13), iPad layouts (FR-14), copy, trademarks and the website (FR-16), the NAS system sheets (FR-17), the one-line failures row (FR-18) and FR-19’s remaining items. |
+| 1.7.0 (in progress) | iPhone Duo support, ten languages, and the 1.6.5 polish. |
 
 ### 1.1 Product overview
 

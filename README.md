@@ -7,7 +7,7 @@ A native iOS and iPadOS app that shows how much space a set of drives actually g
 **RAID tab: identical drives**
 - RAID 0, 1, 5, 6, 10, 50, 60, JBOD, and ZFS RAID-Z1/Z2/Z3 (with groups), for 1–24 drives in GB or TB.
 - Usable and raw capacity, efficiency, a drive strip showing data, parity and mirrors, and drive failures tolerated, including the conditional cases (“Up to 4 (depends on which drives fail)”).
-- Invalid setups dim and offer a one-tap fix. RAID 5, RAID 50 and RAID-Z1 on drives of 8 TB or more warn about rebuild risk.
+- Invalid setups dim and offer a one-tap fix. RAID 5 on drives of 8 TB or more warns that a rebuild can take days and that a second failure during it loses the array, and suggests RAID 6; RAID 50 and RAID-Z1 get the same warning, suggesting RAID 60 or RAID-Z2, when their groups are wide enough to move up.
 - RAID-Z shows an estimate of what ZFS will report, after padding and reserved space, always labeled as an estimate.
 
 **NAS tab: mixed drives, bay by bay**

@@ -47,7 +47,7 @@ It is a focused, native, offline utility that does one calculation well and teac
 
 ## Evidence on Hand
 
-- `prd.md`: requirements, personas, formulas, ratings and decisions, current as of 1.7.0 (in progress) (the 1.5.0/1.6.0 delta from `prd-update.md` was merged in on 2026-10-05).
+- `prd.md`: requirements, personas, formulas, ratings and decisions, current as of 1.7.0, in progress (the 1.5.0/1.6.0 delta from `prd-update.md` was merged in on 2026-10-05).
 - `privacy.md`: published privacy policy, live at <https://mrballistic.com/raid/privacy/>.
 - `www/`: the product page, live at <https://mrballistic.com/raid/>.
 - `marketing/screenshots/`: App Store screenshots, iPhone and iPad.
