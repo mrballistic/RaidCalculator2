@@ -22,8 +22,8 @@ struct TwoColumnLayout<Results: View, Inputs: View>: View {
 
     @ViewBuilder private var columns: some View {
         if #available(iOS 27.1, *) {
-            // A split arrangement keeps iPhone Duo's fold in the gap between
-            // the columns. Results are the primary view, so they lead in
+            // A split arrangement is meant to keep iPhone Duo's fold in the
+            // gap between the columns (not yet seen on a folded device). Results are the primary view, so they lead in
             // reading and VoiceOver order as in the stacked layout.
             //
             // The axes are deliberately left open. On the 27.1 simulator a
@@ -31,8 +31,9 @@ struct TwoColumnLayout<Results: View, Inputs: View>: View {
             // room for side by side shows only the primary view, hiding
             // every input; unconstrained, it stacks results over inputs
             // instead. This view is only chosen at regular width and 800+
-            // points, where the split goes side by side anyway, so leaving
-            // the axes open costs nothing and can't lose the inputs.
+            // points, where the split is expected to go side by side, so
+            // leaving the axes open can't lose the inputs; if it ever
+            // stacks there, the testIPad*Beside* UI tests fail.
             ArrangementView {
                 results
             } secondary: {
