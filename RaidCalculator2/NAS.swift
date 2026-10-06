@@ -109,7 +109,7 @@ struct NASSetup: Codable, Equatable {
 }
 
 /// Advice shown under the results; never a block.
-enum NASHint: Equatable, Hashable {
+enum NASHint: Hashable {
     /// SnapRAID recommends more parity for this many data drives.
     case snapraidParity(recommended: Int, dataDrives: ClosedRange<Int>)
     /// A RAID-Z group wider than 12 drives rebuilds slowly.
@@ -145,19 +145,13 @@ struct NASCalculator {
     /// - Btrfs RAID1: a drive the size of the largest, into an empty bay or in
     ///   place of the smallest.
     func suggestion(_ setup: NASSetup) -> BaySuggestion? {
-        if setup.system == .synology {
-            return synology.suggestion(bays: setup.bays, type: setup.settings.synologyType)
-        }
-        let current = calculate(setup)
-        guard current.warningMessage == nil else { return nil }
-
         let sizes = setup.bays.compactMap { $0 }
         let emptyBay = setup.bays.firstIndex { $0 == nil }
         var candidate: (kind: BaySuggestion.Kind, size: Double)?
 
         switch setup.system {
         case .synology:
-            return nil
+            return synology.suggestion(bays: setup.bays, type: setup.settings.synologyType)
         case .unraid, .snapraid:
             let parityBays = ParityArrayCalculator.parityBays(bays: setup.bays, parity: setup.settings.parity(for: setup.system) ?? 1)
             guard let paritySize = parityBays.compactMap({ setup.bays[$0] }).min() else { return nil }
@@ -181,6 +175,9 @@ struct NASCalculator {
             }
         }
 
+        // A warned setup (e.g. too few drives) has nothing sensible to suggest.
+        let current = calculate(setup)
+        guard current.warningMessage == nil else { return nil }
         guard let candidate else { return nil }
         var upgraded = setup
         switch candidate.kind {

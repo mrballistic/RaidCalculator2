@@ -75,6 +75,20 @@ struct NASCalculatorTests {
                 == BaySuggestion(kind: .add(bay: 3), size: 20, gain: 16))
     }
 
+    @Test func snapraidAddsADataDriveAtParitySize() {
+        // Parity is the 16; the empty bay 4 takes a 16: data 8 + 8 + 16 = 32, from 16.
+        #expect(calculator.suggestion(setup(.snapraid, [16, 8, 8, nil]))
+                == BaySuggestion(kind: .add(bay: 3), size: 16, gain: 16))
+    }
+
+    @Test func btrfsSuggestsTheFirstOfSeveralEmptyBays() {
+        // 8 + 8 mirrors to 8 usable; the first empty bay (index 1) takes an 8: 24 total → 12, so +4.
+        let drives: [Double?] = [8, nil, 8, nil]
+        #expect(calculator.calculate(setup(.btrfs, drives)).usableCapacity == 8)
+        #expect(calculator.suggestion(setup(.btrfs, drives))
+                == BaySuggestion(kind: .add(bay: 1), size: 8, gain: 4))
+    }
+
     @Test func btrfsReplacesTheSmallestWhenFull() {
         // 20, 20, 4: total 44, largest 20 → 22, from 8.
         #expect(calculator.suggestion(setup(.btrfs, [20, 4, 4]))

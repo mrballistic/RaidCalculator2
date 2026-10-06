@@ -26,6 +26,8 @@ struct AdaptiveLayoutTests {
     @Test func tooManyBaysWrapIntoBalancedRows() {
         #expect(AdaptiveLayout.bayRows(count: 30, width: 480, minColumn: 24, spacing: 4, wrap: true) == [0..<15, 15..<30])
         #expect(AdaptiveLayout.bayRows(count: 13, width: 300, minColumn: 24, spacing: 4, wrap: true) == [0..<7, 7..<13])
+        // One more than fits in a row (17) still splits evenly, not 17 and 1.
+        #expect(AdaptiveLayout.bayRows(count: 18, width: 480, minColumn: 24, spacing: 4, wrap: true) == [0..<9, 9..<18])
     }
 
     @Test func withoutWrappingEveryBayIsOneRow() {

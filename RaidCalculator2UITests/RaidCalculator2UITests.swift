@@ -74,7 +74,7 @@ final class RaidCalculator2UITests: XCTestCase {
         let row = speedRow(app)
         XCTAssertTrue(row.label.hasPrefix("Speed, 3 of 5, "), row.label)
         XCTAssertGreaterThan(row.frame.height, normalHeight * 3, "title, stars and word are all at the large size")
-        XCTAssertLessThan(row.frame.height, 300, "stacked rows don't wrap inside a squeezed column")
+        XCTAssertLessThan(row.frame.height, normalHeight * 4.5, "stacked rows don't wrap inside a squeezed column")
     }
 
     /// The combined VoiceOver element for the answer, which reads
