@@ -448,8 +448,7 @@ struct BayDiagram: View {
     /// pushed even four bays past a phone's card edge.
     @ScaledMetric(relativeTo: .caption2) private var scaledMinColumn: CGFloat = 24
     private var minColumn: CGFloat { min(scaledMinColumn, 64) }
-    @State private var geometry = FoldGeometry()
-    private var width: CGFloat { geometry.width }
+    @State private var width: CGFloat = 0
 
     private var spacing: CGFloat { bays.count > 8 ? 4 : 8 }
 
@@ -457,17 +456,9 @@ struct BayDiagram: View {
         AdaptiveLayout.bayRows(count: bays.count, width: width, minColumn: minColumn, spacing: spacing, wrap: horizontalSizeClass == .regular)
     }
 
-    /// With iPhone Duo's fold through the diagram, half the bays each side of
-    /// it; nil (today's rows) otherwise.
-    private var foldBays: AdaptiveLayout.FoldBays? {
-        AdaptiveLayout.foldBays(count: bays.count, width: width, minColumn: minColumn, spacing: spacing,
-                                wrap: horizontalSizeClass == .regular, fold: geometry.fold)
-    }
-
     /// A single row that doesn't fit scrolls rather than squeezing its columns.
-    /// Split at a fold, each half fits its side by construction.
     private var scrolls: Bool {
-        foldBays == nil && rows.count == 1 && width > 0 && CGFloat(bays.count) * (minColumn + spacing) - spacing > width
+        rows.count == 1 && width > 0 && CGFloat(bays.count) * (minColumn + spacing) - spacing > width
     }
 
     /// At accessibility sizes the labels drop the unit, which the legend states once.
@@ -491,8 +482,6 @@ struct BayDiagram: View {
                 HStack(spacing: 14) { legend }
                 VStack(alignment: .leading, spacing: 4) { legend }
             }
-            // Split at a fold, the legend stays on the leading side of it.
-            .frame(maxWidth: foldBays != nil ? geometry.fold.map { max(0, $0.lowerBound) } : nil, alignment: .leading)
             .font(.caption)
             .foregroundStyle(.secondary)
             .accessibilityHidden(true)
@@ -501,27 +490,16 @@ struct BayDiagram: View {
         // the rows hug fewer columns, and a hugging width would never grow
         // back to re-merge them when the window widens.
         .frame(maxWidth: .infinity, alignment: .leading)
-        // The fold's x span is measured from this same leading edge.
-        .onFoldGeometryChange { geometry = $0 }
+        .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { width = $0 }
     }
 
     private var columns: some View {
         ZStack(alignment: .bottomLeading) {
-            Group {
-                if let split = foldBays, let fold = geometry.fold {
-                    // Each half fills its own side; the fold is an empty gap.
-                    // Top-aligned: an odd split can give the halves different row counts.
-                    HStack(alignment: .top, spacing: 0) {
-                        bayRows(split.leading)
-                            .frame(width: max(0, fold.lowerBound), alignment: .leading)
-                        Color.clear
-                            .frame(width: fold.upperBound - max(0, fold.lowerBound), height: 0)
-                            .accessibilityHidden(true)
-                        bayRows(split.trailing)
-                            .frame(width: max(0, width - fold.upperBound), alignment: .leading)
+            VStack(alignment: .leading, spacing: 12) {
+                ForEach(rows, id: \.lowerBound) { row in
+                    HStack(alignment: .bottom, spacing: spacing) {
+                        ForEach(row, id: \.self) { index in bayColumn(index) }
                     }
-                } else {
-                    bayRows(rows)
                 }
             }
             // Keyed on the whole diagram under Reduce Motion, so any change swaps
@@ -529,16 +507,6 @@ struct BayDiagram: View {
             // own animation because the change itself arrives unanimated.
             .id(reduceMotion ? AnyHashable([AnyHashable(system), AnyHashable(bays)]) : AnyHashable(0))
             .transition(.opacity.animation(.easeInOut(duration: 0.2)))
-        }
-    }
-
-    private func bayRows(_ rows: [Range<Int>]) -> some View {
-        VStack(alignment: .leading, spacing: 12) {
-            ForEach(rows, id: \.lowerBound) { row in
-                HStack(alignment: .bottom, spacing: spacing) {
-                    ForEach(row, id: \.self) { index in bayColumn(index) }
-                }
-            }
         }
     }
 

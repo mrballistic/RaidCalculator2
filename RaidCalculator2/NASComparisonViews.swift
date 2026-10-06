@@ -107,23 +107,10 @@ struct NASComparisonColumns: View {
     /// Narrowest a system's column gets. Scales with the text, so a cell's
     /// name and number stay readable and the grid reflows instead.
     @ScaledMetric(relativeTo: .headline) private var column: CGFloat = 96
-    @State private var geometry = FoldGeometry()
-
-    /// Today's adaptive grid, unless iPhone Duo's fold runs through it: then
-    /// an even number of fixed columns, half each side, with the fold in the
-    /// gap between the halves (`AdaptiveLayout.foldGrid`).
-    private var columns: [GridItem] {
-        guard let grid = AdaptiveLayout.foldGrid(width: geometry.width, minColumn: column, spacing: 12, fold: geometry.fold) else {
-            return [GridItem(.adaptive(minimum: column), spacing: 12, alignment: .top)]
-        }
-        return (0..<grid.columns).map { index in
-            GridItem(.fixed(grid.columnWidth), spacing: index == grid.columns / 2 - 1 ? grid.foldGap : 12, alignment: .top)
-        }
-    }
 
     var body: some View {
         LazyVGrid(
-            columns: columns,
+            columns: [GridItem(.adaptive(minimum: column), spacing: 12, alignment: .top)],
             alignment: .leading,
             spacing: 14
         ) {
@@ -137,9 +124,5 @@ struct NASComparisonColumns: View {
                 .accessibilityIdentifier("compare_\(row.system.rawValue)")
             }
         }
-        // Measures the width on offer, and pins fixed columns to the leading
-        // edge, where the fold's x span is measured from.
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .onFoldGeometryChange { geometry = $0 }
     }
 }
