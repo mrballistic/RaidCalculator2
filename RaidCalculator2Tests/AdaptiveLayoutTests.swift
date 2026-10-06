@@ -18,6 +18,18 @@ struct AdaptiveLayoutTests {
         #expect(!AdaptiveLayout.usesTwoColumns(isRegularWidth: false, width: 1200))
     }
 
+    // Each pane's inner edge at the split gets the system's outer margin.
+    // Next to iPhone Duo's vertical bar the guide can be larger on one side,
+    // so the smaller side is the plain margin; nothing usable means 16.
+    @Test func splitInnerMarginIsTheSystemOuterMargin() {
+        #expect(AdaptiveLayout.splitInnerMargin(leading: 20, trailing: 20) == 20)
+        #expect(AdaptiveLayout.splitInnerMargin(leading: 16, trailing: 28) == 16)
+        #expect(AdaptiveLayout.splitInnerMargin(leading: 24, trailing: 20) == 20)
+        #expect(AdaptiveLayout.splitInnerMargin(leading: 0, trailing: 0) == 16)
+        #expect(AdaptiveLayout.splitInnerMargin(leading: .nan, trailing: 20) == 20)   // an unusable side is ignored
+        #expect(AdaptiveLayout.splitInnerMargin(leading: .nan, trailing: .infinity) == 16)
+    }
+
     @Test func baysThatFitStayInOneRow() {
         #expect(AdaptiveLayout.bayRows(count: 12, width: 480, minColumn: 24, spacing: 4, wrap: true) == [0..<12])
     }

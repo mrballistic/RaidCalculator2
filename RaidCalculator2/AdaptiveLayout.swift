@@ -18,6 +18,16 @@ enum AdaptiveLayout {
         isRegularWidth && width >= twoColumnMinWidth
     }
 
+    /// The margin each pane of the split gets at its inner edge, so the
+    /// gap at the split (or each side of a fold) matches the outer margin.
+    /// `leading` and `trailing` are the system container margins around the
+    /// split. Beside iPhone Duo's vertical bar one side can be larger, so
+    /// the smaller side is the plain margin; with nothing usable, 16.
+    static func splitInnerMargin(leading: CGFloat, trailing: CGFloat) -> CGFloat {
+        let usable = [leading, trailing].filter { $0.isFinite && $0 > 0 }
+        return usable.min() ?? 16
+    }
+
     /// The bays in each row of a bay diagram. One row when the bays fit at
     /// `minColumn` each, when wrapping is off, or before the width is known
     /// (zero, or not a finite number); otherwise as few rows as fit, with the
