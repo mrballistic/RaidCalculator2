@@ -45,13 +45,18 @@ struct TwoColumnLayout<Results: View, Inputs: View>: View {
             // edge. No split modifier sets pane margins, so each pane takes
             // the system's container margin (ContentMarginGuide.container)
             // on its inner edge. Outer edges keep the Form's own margin and
-            // safe area, which keeps them clear of a vertical bar.
+            // safe area, which keeps them clear of a vertical bar. Only side
+            // by side: stacked, the Forms' own top and bottom insets
+            // separate them. The axis comes from `stacksForFold`, not
+            // `splitArrangementAxis`, which reads nil inside these panes
+            // on the 27.1 simulator.
+            let paneMargin: CGFloat? = stacksForFold ? nil : innerMargin
             ArrangementView {
                 results
-                    .modifier(SplitPaneMargin(edge: .trailing, margin: innerMargin))
+                    .contentMargins(.trailing, paneMargin, for: .scrollContent)
             } secondary: {
                 inputs
-                    .modifier(SplitPaneMargin(edge: .leading, margin: innerMargin))
+                    .contentMargins(.leading, paneMargin, for: .scrollContent)
             }
             // Across a fold the split stacks, so the fold falls between
             // results and inputs rather than through a Form.
@@ -72,19 +77,6 @@ struct TwoColumnLayout<Results: View, Inputs: View>: View {
                 inputs
             }
         }
-    }
-}
-
-/// A pane's margin at the split's inner edge, applied only while the panes
-/// sit side by side; stacked, the Forms' own top and bottom insets separate them.
-@available(iOS 27.1, *)
-private struct SplitPaneMargin: ViewModifier {
-    let edge: Edge.Set
-    let margin: CGFloat
-    @Environment(\.splitArrangementAxis) private var axis
-
-    func body(content: Content) -> some View {
-        content.contentMargins(edge, axis == .horizontal ? margin : nil, for: .scrollContent)
     }
 }
 
