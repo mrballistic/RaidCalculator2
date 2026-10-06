@@ -58,6 +58,15 @@ final class RaidCalculator2UITests: XCTestCase {
         return app
     }
 
+    /// The two-column layout appears at regular width and at least 800 points
+    /// (AdaptiveLayout.twoColumnMinWidth), on iPad and on iPhone Duo's inner
+    /// display alike, so skip by the window's real width, not the device type.
+    @MainActor
+    private func skipUnlessTwoColumns(_ app: XCUIApplication) throws {
+        let width = app.windows.firstMatch.frame.width
+        try XCTSkipUnless(width >= 800, "needs a window at least 800 points wide (got \(width))")
+    }
+
     /// At the largest text size a rating row still reads as one phrase and
     /// stacks title, stars and word, one line each. Squeezed beside the title,
     /// the old row wrapped its word and measured about 410 pt; stacked is about 220.
@@ -662,9 +671,9 @@ final class RaidCalculator2UITests: XCTestCase {
     /// on screen without scrolling. Skips on iPhone.
     @MainActor
     func testIPadPutsResultsBesideInputs() throws {
-        try XCTSkipUnless(UIDevice.current.userInterfaceIdiom == .pad, "iPad layout")
         XCUIDevice.shared.orientation = .landscapeLeft
         let app = launchApp()
+        try skipUnlessTwoColumns(app)
         let usable = app.staticTexts.matching(identifier: "usableCapacity").firstMatch
         XCTAssertTrue(usable.waitForExistence(timeout: 5))
         let count = app.staticTexts.matching(identifier: "driveCount").firstMatch
@@ -675,9 +684,9 @@ final class RaidCalculator2UITests: XCTestCase {
 
     @MainActor
     func testIPadNASPutsResultsBesideInputs() throws {
-        try XCTSkipUnless(UIDevice.current.userInterfaceIdiom == .pad, "iPad layout")
         XCUIDevice.shared.orientation = .landscapeLeft
         let app = launchNAS()
+        try skipUnlessTwoColumns(app)
         let usable = app.staticTexts.matching(identifier: "nasUsableCapacity").firstMatch
         XCTAssertTrue(usable.waitForExistence(timeout: 5))
         let picker = app.buttons["nasSystem"]
@@ -689,10 +698,10 @@ final class RaidCalculator2UITests: XCTestCase {
     /// FR-14: 30 bays stay legible on iPad, in rows, with no scrolling.
     @MainActor
     func testIPadShowsThirtyBaysWithoutScrolling() throws {
-        try XCTSkipUnless(UIDevice.current.userInterfaceIdiom == .pad, "iPad layout")
         XCUIDevice.shared.orientation = .landscapeLeft
         let bays = "[" + Array(repeating: "8", count: 30).joined(separator: ",") + "]"
         let app = launchNAS(system: "snapraid", bays: bays, bayCount: 30)
+        try skipUnlessTwoColumns(app)
         XCTAssertTrue(app.staticTexts.matching(identifier: "nasUsableCapacity").firstMatch.waitForExistence(timeout: 5))
         func column(_ bay: Int) -> XCUIElement {
             app.descendants(matching: .any).matching(NSPredicate(format: "label BEGINSWITH %@", "Bay \(bay), ")).firstMatch
@@ -707,7 +716,6 @@ final class RaidCalculator2UITests: XCTestCase {
     /// FR-13 on iPad: columns beside the results, no sheet.
     @MainActor
     func testIPadComparesSystemsInColumns() throws {
-        try XCTSkipUnless(UIDevice.current.userInterfaceIdiom == .pad, "iPad layout")
         XCUIDevice.shared.orientation = .landscapeLeft
         try assertComparesSystemsInColumns()
     }
@@ -717,7 +725,6 @@ final class RaidCalculator2UITests: XCTestCase {
     /// than stacking into a list. Skips where portrait is a single column.
     @MainActor
     func testIPadComparesSystemsInColumnsInPortrait() throws {
-        try XCTSkipUnless(UIDevice.current.userInterfaceIdiom == .pad, "iPad layout")
         XCUIDevice.shared.orientation = .portrait
         try assertComparesSystemsInColumns()
     }
@@ -725,8 +732,8 @@ final class RaidCalculator2UITests: XCTestCase {
     @MainActor
     private func assertComparesSystemsInColumns() throws {
         let app = launchNAS()
+        try skipUnlessTwoColumns(app)
         XCTAssertTrue(app.staticTexts.matching(identifier: "nasUsableCapacity").firstMatch.waitForExistence(timeout: 5))
-        try XCTSkipIf(app.windows.firstMatch.frame.width < 800, "a single column at this width")
         let unraid = app.buttons["compare_unraid"]
         XCTAssertTrue(unraid.waitForExistence(timeout: 5))
         XCTAssertFalse(app.buttons["compareSystems"].exists)
@@ -744,10 +751,10 @@ final class RaidCalculator2UITests: XCTestCase {
     /// the shorter array. Covers both the comparison columns and the picker.
     @MainActor
     func testIPadSwitchToSynologyFromThirtyBays() throws {
-        try XCTSkipUnless(UIDevice.current.userInterfaceIdiom == .pad, "iPad layout")
         XCUIDevice.shared.orientation = .landscapeLeft
         let bays = "[" + Array(repeating: "8", count: 30).joined(separator: ",") + "]"
         let app = launchNAS(system: "unraid", bays: bays, bayCount: 30)
+        try skipUnlessTwoColumns(app)
         let usable = app.staticTexts.matching(identifier: "nasUsableCapacity").firstMatch
         XCTAssertTrue(usable.waitForExistence(timeout: 5))
 
