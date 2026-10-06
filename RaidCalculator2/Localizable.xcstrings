@@ -1816,7 +1816,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "JBODには少なくとも1つのドライブが必要です。"
+            "value" : "JBODには1台以上のドライブが必要です。"
           }
         }
       }
@@ -2691,7 +2691,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "RAID 0には少なくとも1つのドライブが必要です。"
+            "value" : "RAID 0には1台以上のドライブが必要です。"
           }
         }
       }
@@ -2901,7 +2901,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "RAID 10には偶数のドライブ（4以上）が必要です。"
+            "value" : "RAID 10には偶数台（4台以上）のドライブが必要です。"
           }
         }
       }
@@ -3111,7 +3111,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "RAID 1には少なくとも2つのドライブが必要です。"
+            "value" : "RAID 1には2台以上のドライブが必要です。"
           }
         }
       }
@@ -3461,7 +3461,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "RAID 5には少なくとも3つのドライブが必要です。"
+            "value" : "RAID 5には3台以上のドライブが必要です。"
           }
         }
       }
@@ -3811,7 +3811,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "RAID 6には少なくとも4つのドライブが必要です。"
+            "value" : "RAID 6には4台以上のドライブが必要です。"
           }
         }
       }
