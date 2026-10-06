@@ -53,7 +53,8 @@ struct NASComparisonCell: View {
         .contentShape(Rectangle())
         .accessibilityElement(children: .combine)
         .accessibilityAddTraits(isCurrent ? .isSelected : [])
-        .accessibilityHint("compare_hint".localized())
+        // Tapping the current system changes nothing, so only the others say what a tap does.
+        .accessibilityHint(isCurrent ? "" : "compare_hint".localized())
     }
 }
 

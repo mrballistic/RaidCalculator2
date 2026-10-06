@@ -568,7 +568,8 @@ struct BayDiagram: View {
                 Text(SegmentSwatch.name(of: role))
             }
         }
-        if numberOnlyLabels {
+        // Only when some bay shows a size; empty bays' labels have no unit to drop.
+        if numberOnlyLabels, bays.contains(where: { $0 != nil }) {
             Text("bay_sizes_in_tb".localized())
         }
     }
@@ -624,7 +625,10 @@ struct SegmentSwatch: View {
     }
 }
 
-/// Diagonal lines across the rect, for unused capacity.
+/// Diagonal lines across the rect, for unused capacity. Each line is cut to
+/// the rect rather than drawn past it and clipped: the unclipped path reached
+/// a full rect-height beyond both sides, and the bay's accessibility frame
+/// took in the overhang, so VoiceOver's focus spilled over the next bays.
 nonisolated struct Hatch: Shape {
     var spacing: CGFloat = 5
 
@@ -632,8 +636,14 @@ nonisolated struct Hatch: Shape {
         var path = Path()
         var offset = -rect.height
         while offset < rect.width {
-            path.move(to: CGPoint(x: rect.minX + offset, y: rect.maxY))
-            path.addLine(to: CGPoint(x: rect.minX + offset + rect.height, y: rect.minY))
+            // A 45° line from (offset, bottom) to (offset + height, top), kept
+            // to the part whose x falls inside the rect.
+            let start = max(0, -offset)
+            let end = min(rect.height, rect.width - offset)
+            if end > start {
+                path.move(to: CGPoint(x: rect.minX + offset + start, y: rect.maxY - start))
+                path.addLine(to: CGPoint(x: rect.minX + offset + end, y: rect.maxY - end))
+            }
             offset += spacing
         }
         return path
