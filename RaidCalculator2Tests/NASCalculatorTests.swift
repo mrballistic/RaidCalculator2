@@ -143,8 +143,10 @@ struct NASCalculatorTests {
             requestedBayCount: 2
         )
         let firstInvalid = try #require(rows.firstIndex { !$0.isValid })
+        #expect(firstInvalid > 0)
         #expect(rows[firstInvalid...].allSatisfy { !$0.isValid })
         #expect(rows[..<firstInvalid].allSatisfy { $0.isValid })
         #expect(rows.first { $0.system == .snapraid }?.isValid == false)
+        #expect(rows.first { $0.system == .snapraid }?.warningMessage != nil)
     }
 }

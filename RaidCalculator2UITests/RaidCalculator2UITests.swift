@@ -13,6 +13,11 @@ final class RaidCalculator2UITests: XCTestCase {
         continueAfterFailure = false
     }
 
+    /// The iPad tests turn the device; put it back so the next test starts upright.
+    override func tearDownWithError() throws {
+        MainActor.assumeIsolated { XCUIDevice.shared.orientation = .portrait }
+    }
+
     /// Launches with a known configuration. Launch arguments override the
     /// persisted UserDefaults, so each test starts from RAID 5, 4 × 4 TB.
     @MainActor
@@ -386,6 +391,24 @@ final class RaidCalculator2UITests: XCTestCase {
         return summary.label.components(separatedBy: ", ").dropFirst().first ?? summary.label
     }
 
+    /// Each bay's VoiceOver frame is its own column, so exploring by touch
+    /// lands on the bay under the finger. Bay 1 of [16, 8, 8, 4] carries
+    /// hatched unused space, whose lines used to reach far past the column
+    /// and stretch its frame across bays 2 and 3.
+    @MainActor
+    func testBayDiagramColumnsKeepTheirOwnFrames() throws {
+        let app = launchNAS(bays: "[16,8,8,4]")
+        XCTAssertTrue(app.staticTexts.matching(identifier: "nasUsableCapacity").firstMatch.waitForExistence(timeout: 5))
+        func column(_ bay: Int) -> XCUIElement {
+            app.descendants(matching: .any).matching(NSPredicate(format: "label BEGINSWITH %@", "Bay \(bay), ")).firstMatch
+        }
+        for bay in 1...3 {
+            let this = column(bay).frame, next = column(bay + 1).frame
+            XCTAssertLessThanOrEqual(this.maxX, next.minX + 1, "bay \(bay) \(this) overlaps bay \(bay + 1) \(next)")
+            XCTAssertLessThan(this.width, 100, "bay \(bay) frame \(this)")
+        }
+    }
+
     /// The same drives under every system. [4, 4, 8, 8] is SHR 16 TB,
     /// Unraid 16 TB (parity 8), RAID-Z1 12 TB and Btrfs RAID1 12 TB.
     @MainActor
@@ -528,10 +551,32 @@ final class RaidCalculator2UITests: XCTestCase {
     func testIPadComparesSystemsInColumns() throws {
         try XCTSkipUnless(UIDevice.current.userInterfaceIdiom == .pad, "iPad layout")
         XCUIDevice.shared.orientation = .landscapeLeft
+        try assertComparesSystemsInColumns()
+    }
+
+    /// FR-13 in portrait on a large iPad, where the results column is
+    /// narrower than five systems: they wrap into rows of columns rather
+    /// than stacking into a list. Skips where portrait is a single column.
+    @MainActor
+    func testIPadComparesSystemsInColumnsInPortrait() throws {
+        try XCTSkipUnless(UIDevice.current.userInterfaceIdiom == .pad, "iPad layout")
+        XCUIDevice.shared.orientation = .portrait
+        try assertComparesSystemsInColumns()
+    }
+
+    @MainActor
+    private func assertComparesSystemsInColumns() throws {
         let app = launchNAS()
+        XCTAssertTrue(app.staticTexts.matching(identifier: "nasUsableCapacity").firstMatch.waitForExistence(timeout: 5))
+        try XCTSkipIf(app.windows.firstMatch.frame.width < 800, "a single column at this width")
         let unraid = app.buttons["compare_unraid"]
         XCTAssertTrue(unraid.waitForExistence(timeout: 5))
         XCTAssertFalse(app.buttons["compareSystems"].exists)
+        // Synology and Unraid tie on 16 TB and lead the sort, so they share
+        // the first row: side by side, not one under the other.
+        let synology = app.buttons["compare_synology"]
+        XCTAssertEqual(unraid.frame.minY, synology.frame.minY, accuracy: 2, "Unraid should sit beside Synology")
+        XCTAssertGreaterThan(unraid.frame.minX, synology.frame.maxX)
         app.buttons["compare_zfs"].tap()
         XCTAssertEqual(nasCapacity(app), tb(12))
     }
@@ -548,9 +593,20 @@ final class RaidCalculator2UITests: XCTestCase {
         let usable = app.staticTexts.matching(identifier: "nasUsableCapacity").firstMatch
         XCTAssertTrue(usable.waitForExistence(timeout: 5))
 
+        // The drive list is lazy: on a shorter iPad (the mini in landscape)
+        // bay 12 isn't built until the inputs column scrolls to it.
+        func dragInputs(up: Bool) {
+            let from = app.coordinate(withNormalizedOffset: CGVector(dx: 0.75, dy: up ? 0.75 : 0.3))
+            from.press(forDuration: 0.05, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.75, dy: up ? 0.3 : 0.75)))
+        }
+        func show(_ element: XCUIElement, up: Bool) {
+            for _ in 0..<6 where !(element.exists && element.isHittable) { dragInputs(up: up) }
+        }
+
         func assertTwelveBays(_ route: String) {
             XCTAssertTrue(usable.waitForExistence(timeout: 2), "still running after switching via \(route)")
             XCTAssertEqual(app.state, .runningForeground, route)
+            show(app.buttons["bay12"], up: true)
             XCTAssertTrue(app.buttons["bay12"].waitForExistence(timeout: 2), route)
             XCTAssertFalse(app.buttons["bay13"].exists, route)
         }
@@ -559,7 +615,9 @@ final class RaidCalculator2UITests: XCTestCase {
         assertTwelveBays("comparison columns")
 
         app.buttons["compare_unraid"].tap()
+        show(app.buttons["bay13"], up: true)
         XCTAssertTrue(app.buttons["bay13"].waitForExistence(timeout: 2), "Unraid keeps all 30 bays")
+        show(app.buttons["nasSystem"], up: false)
         app.buttons["nasSystem"].tap()
         app.buttons["Synology"].tap()
         assertTwelveBays("system picker")

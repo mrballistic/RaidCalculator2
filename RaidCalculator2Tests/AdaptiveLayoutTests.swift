@@ -37,6 +37,22 @@ struct AdaptiveLayoutTests {
         #expect(AdaptiveLayout.bayRows(count: 30, width: 0, minColumn: 24, spacing: 4, wrap: true) == [0..<30])
     }
 
+    // A width that isn't a number (an unbounded proposal) is one row, not a trap.
+    @Test func nonFiniteWidthIsOneRow() {
+        #expect(AdaptiveLayout.bayRows(count: 30, width: .infinity, minColumn: 24, spacing: 4, wrap: true) == [0..<30])
+        #expect(AdaptiveLayout.bayRows(count: 30, width: .nan, minColumn: 24, spacing: 4, wrap: true) == [0..<30])
+    }
+
+    // A row per group only while the rows stay few; more groups keep one strip.
+    @Test func driveGroupsBecomeRowsOnlyWhenFew() {
+        #expect(!AdaptiveLayout.groupsAsRows(isRegularWidth: true, groupCount: 1))
+        #expect(AdaptiveLayout.groupsAsRows(isRegularWidth: true, groupCount: 2))
+        #expect(AdaptiveLayout.groupsAsRows(isRegularWidth: true, groupCount: 6))
+        #expect(!AdaptiveLayout.groupsAsRows(isRegularWidth: true, groupCount: 7))
+        #expect(!AdaptiveLayout.groupsAsRows(isRegularWidth: true, groupCount: 12))
+        #expect(!AdaptiveLayout.groupsAsRows(isRegularWidth: false, groupCount: 3))
+    }
+
     @Test func noBaysNoRows() {
         #expect(AdaptiveLayout.bayRows(count: 0, width: 480, minColumn: 24, spacing: 4, wrap: true).isEmpty)
     }
