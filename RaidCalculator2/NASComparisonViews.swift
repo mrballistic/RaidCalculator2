@@ -90,35 +90,32 @@ struct NASComparisonSheet: View {
     }
 }
 
-/// iPad: the systems side by side, or stacked when the column is too narrow
-/// (accessibility text sizes).
+/// iPad: the systems side by side, wrapping onto further rows when the
+/// column is too narrow for all five (portrait), and one per row at
+/// accessibility text sizes, where the scaled minimum outgrows the column.
 struct NASComparisonColumns: View {
     let comparison: [NASComparison]
     let current: NASSystem
     let select: (NASSystem) -> Void
-    /// ViewThatFits compares ideal widths, and a cell's ideal is its longest
-    /// unwrapped line, so five never fit. A scaled ideal width lets them fit
-    /// (and wrap) at default sizes, and still stack at accessibility sizes.
+    /// Narrowest a system's column gets. Scales with the text, so a cell's
+    /// name and number stay readable and the grid reflows instead.
     @ScaledMetric(relativeTo: .headline) private var column: CGFloat = 96
 
     var body: some View {
-        ViewThatFits(in: .horizontal) {
-            HStack(alignment: .top, spacing: 12) {
-                cells.frame(minWidth: column, idealWidth: column, maxWidth: .infinity, alignment: .topLeading)
+        LazyVGrid(
+            columns: [GridItem(.adaptive(minimum: column), spacing: 12, alignment: .top)],
+            alignment: .leading,
+            spacing: 14
+        ) {
+            ForEach(comparison) { row in
+                Button {
+                    select(row.system)
+                } label: {
+                    NASComparisonCell(comparison: row, isCurrent: row.system == current)
+                }
+                .buttonStyle(.plain)
+                .accessibilityIdentifier("compare_\(row.system.rawValue)")
             }
-            VStack(alignment: .leading, spacing: 14) { cells }
-        }
-    }
-
-    private var cells: some View {
-        ForEach(comparison) { row in
-            Button {
-                select(row.system)
-            } label: {
-                NASComparisonCell(comparison: row, isCurrent: row.system == current)
-            }
-            .buttonStyle(.plain)
-            .accessibilityIdentifier("compare_\(row.system.rawValue)")
         }
     }
 }
