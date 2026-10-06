@@ -1,126 +1,93 @@
-# RAIDGauge 📱💾
+# RAID Calculator
 
-A beautiful, native iOS app that helps users understand RAID storage tradeoffs with instant calculations and modern glassmorphic design.
+A native iOS and iPadOS app that shows how much space a set of drives actually gives you, how many can fail, and which drive is worth buying next. It's on the App Store as [RAID Calculator](https://apps.apple.com/app/id395601653), with a product page at [mrballistic.com/raid](https://mrballistic.com/raid/).
 
-## ✨ Features
+## What it does
 
-- **🎯 Instant Calculations** - See usable capacity, redundancy, and performance in real-time
-- **📊 RAID Levels Supported** - RAID 0, 1, 5, 6, 10, and JBOD
-- **🎨 Modern iOS Design** - Glassmorphic cards, blur effects, and SF Symbols
-- **⚡ Performance Ratings** - Visual star ratings for speed and availability
-- **🛡️ Smart Validation** - Helpful warnings for invalid configurations
-- **📚 Educational Content** - Detailed info sheets for each RAID level
-- **💾 Persistent Settings** - Remembers your last configuration
-- **🌙 Dark Mode Support** - Looks great in light and dark modes
-- **♿ Accessibility** - Supports Dynamic Type and VoiceOver
+**RAID tab: identical drives**
+- RAID 0, 1, 5, 6, 10, 50, 60, JBOD, and ZFS RAID-Z1/Z2/Z3 (with groups), for 1–24 drives in GB or TB.
+- Usable and raw capacity, efficiency, a drive strip showing data, parity and mirrors, and drive failures tolerated, including the conditional cases (“Up to 4 (depends on which drives fail)”).
+- Invalid setups dim and offer a one-tap fix. RAID 5 on large drives warns about rebuild risk.
+- RAID-Z shows an estimate of what ZFS will report, after padding and reserved space, always labeled as an estimate.
 
-## 🚀 Quick Start
+**NAS tab: mixed drives, bay by bay**
+- One set of drives seen through five systems: Synology (SHR, SHR-2, classic RAID), Unraid, ZFS (one RAID-Z group), SnapRAID and Btrfs RAID1.
+- A bay diagram drawn to scale, with unused capacity hatched.
+- Biggest Upgrade: the single purchase that unlocks the most space.
+- Save as Current Setup and Revert, so every change reads as a difference.
+- Compare Systems: the same drives under every system, most usable first. A sheet on iPhone, columns on iPad.
 
-1. **Select RAID Level** - Choose from the segmented control
-2. **Configure Drives** - Set number of drives (1-24) and size per drive
-3. **View Results** - See capacity, redundancy, and performance ratings instantly
-4. **Learn More** - Tap the info button for detailed RAID explanations
+**Everywhere**
+- An info sheet per RAID level and NAS system: overview, pros, cons, typical uses, ratings for RAID levels, and how the app calculates RAID-Z and each NAS system.
+- iPad layouts with results beside inputs. Bay diagrams stay legible up to 30 bays.
+- Light and dark mode, Dynamic Type up to the largest accessibility sizes, VoiceOver, and Reduce Motion.
+- English, Spanish, French, Italian and Japanese.
+- No account, no analytics, no network calls.
 
-## 📱 Screenshots
+## Building
 
-The app features a clean, modern interface with:
-- Gradient background with glassmorphic cards
-- Intuitive segmented controls for RAID selection
-- Real-time results with star ratings
-- Comprehensive error handling with user-friendly messages
+- Xcode 27 or later, iOS 26.0 deployment target, Swift 6 with default MainActor isolation. No third-party dependencies.
+- Open `RAID Calculator.xcodeproj` and run the **RAID Calc** scheme.
+- Folders are synchronized, so new `.swift` files are picked up without editing the project file.
 
-## 🏗️ Architecture
+## Testing
 
-- **Language**: Swift 5.9+
-- **UI Framework**: SwiftUI
-- **Architecture**: MVVM-lite
-- **Minimum iOS**: iOS 17.0
-- **Dependencies**: None (pure SwiftUI)
+Unit tests use Swift Testing (`RaidCalculator2Tests/`), and UI tests use XCTest (`RaidCalculator2UITests/`). Run them serially; parallel Simulator clones time out.
 
-### Project Structure
+```bash
+xcodebuild test -project "RAID Calculator.xcodeproj" -scheme "RAID Calc" \
+  -destination 'platform=iOS Simulator,name=iPhone 17' -parallel-testing-enabled NO
+```
+
+The `testIPad*` UI tests skip on iPhone. Run them on an iPad Simulator, for example `name=iPad Pro 13-inch (M5)`.
+
+## Strings
+
+All user-facing text lives in `RaidCalculator2/Localizable.xcstrings`, in all five languages. Never hand-edit the catalog; use the script:
+
+```bash
+python3 scripts/strings.py add new-strings.json   # {"key": {"en": "…", "es": "…", "fr": "…", "it": "…", "ja": "…"}}
+python3 scripts/strings.py remove key [key …]
+python3 scripts/strings.py check                   # must print 0 problem(s)
+```
+
+Copy uses smart punctuation and American spelling, and keeps system names (Synology, SHR, Unraid, ZFS, SnapRAID, Btrfs RAID1) untranslated.
+
+## Project layout
 
 ```
 RaidCalculator2/
-├── Models.swift              # Data models (RaidLevel, Configuration, Result)
-├── RaidCalculator.swift      # Business logic and calculations
-├── RaidCalculatorViewModel.swift # State management and persistence
-├── ContentView.swift         # Main calculator UI
-├── RaidInfoSheet.swift       # RAID information detail view
-└── RaidCalculator2App.swift  # App entry point
+├── Models.swift, RaidCalculator.swift      # RAID levels, configurations and the RAID tab's math
+├── RaidCalculatorViewModel.swift           # RAID tab state and persistence
+├── ContentView.swift                       # RAID tab UI, shared rows and the drive strip
+├── ZFSEstimate.swift                       # What ZFS reports: padding and slop space
+├── Bays.swift                              # Bay segments, results and suggestions shared by NAS systems
+├── NAS.swift                               # NAS systems, settings, setups, hints, comparison
+├── Synology.swift, ParityArrayCalculator.swift, ZFSMixedCalculator.swift, BtrfsRaid1Calculator.swift
+├── NASViewModel.swift                      # Shared drives, per-system lens, current setup, persistence
+├── NASView.swift, NASComparisonViews.swift # NAS tab UI, bay diagram, Compare Systems
+├── AdaptiveLayout.swift                    # Two-column and bay-row rules
+├── InfoSheet.swift                         # The shared info sheet
+└── RaidCalculator2App.swift                # Tabs
 ```
 
-## 🧮 RAID Calculations
+## Docs
 
-The app implements standard RAID formulas:
+- `prd.md`: the product requirements, including every decision made for 1.5 and 1.6.
+- `PRODUCT.md`: who the app is for and how it should feel.
+- `docs/RELEASE.md`: how App Store builds ship.
+- `docs/superpowers/plans/`: the implementation plans behind 1.5.0 and 1.6.0.
+- `www/`: the product page. `marketing/`: listing copy and screenshots.
 
-| RAID Level | Capacity Formula | Fault Tolerance | Speed | Availability |
-|------------|------------------|-----------------|-------|--------------|
-| RAID 0     | n × S            | 0 drives        | ⭐⭐⭐⭐⭐ | ⭐ |
-| RAID 1     | S                | n-1 drives      | ⭐⭐   | ⭐⭐⭐⭐⭐ |
-| RAID 5     | (n-1) × S        | 1 drive         | ⭐⭐⭐  | ⭐⭐⭐ |
-| RAID 6     | (n-2) × S        | 2 drives        | ⭐⭐   | ⭐⭐⭐⭐ |
-| RAID 10    | (n/2) × S        | Up to n/2*      | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ |
-| JBOD       | n × S            | 0 drives**      | ⭐⭐   | ⭐ |
+## Releasing
 
-*Depends on which drives fail  
-**Data loss on any failed drive
+- **App:** push a `v<version>` tag (for example `v1.6.0`). `.github/workflows/deploy.yml` runs the full CI gate, archives and uploads to App Store Connect after approval in the `app-store` environment. See `docs/RELEASE.md`.
+- **Website:** push a `www-v<version>` tag. `.github/workflows/www.yml` deploys `www/` to the server.
 
-## 🧪 Testing
+## Trademarks
 
-The app includes comprehensive unit tests covering:
-- ✅ All RAID level calculations
-- ✅ Validation logic for invalid configurations
-- ✅ Edge cases (decimal sizes, different units)
-- ✅ Minimum drive requirements
+Not affiliated with or endorsed by Synology Inc. Synology and SHR are trademarks of Synology Inc. Not affiliated with or endorsed by Lime Technology, Inc. Unraid is a trademark of Lime Technology, Inc. ZFS is a trademark of Oracle and/or its affiliates. Not affiliated with or endorsed by Oracle.
 
-Run tests with:
-```bash
-xcodebuild test -scheme RaidCalculator2 -destination 'platform=iOS Simulator,name=iPhone 15 Pro'
-```
+## License
 
-## 📦 Installation
-
-### Requirements
-- Xcode 15.0+
-- iOS 17.0+ target
-- Swift 5.9+
-
-### Build Steps
-1. Clone the repository
-2. Open `RaidCalculator2.xcodeproj` in Xcode
-3. Select your target device or simulator
-4. Build and run (⌘+R)
-
-## 🎯 Use Cases
-
-Perfect for:
-- **🏠 Home Lab Tinkerers** - Planning NAS storage capacity
-- **👨‍🎓 Students & Learners** - Understanding RAID concepts
-- **💼 IT Professionals** - Quick capacity planning reference
-- **🔧 System Administrators** - Offline RAID calculations
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
-
-### Development Guidelines
-- Follow Swift style conventions
-- Maintain the glassmorphic design system
-- Add tests for new features
-- Update documentation as needed
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- **Apple** - For SwiftUI and the incredible iOS design system
-- **SF Symbols** - For the beautiful, scalable icons
-- **Swift Testing** - For the modern testing framework
-
----
-
-Made with ❤️ for the iOS community
-
-**RAIDGauge** - Making RAID storage decisions simple and beautiful 🚀
+MIT. See [LICENSE](LICENSE).
