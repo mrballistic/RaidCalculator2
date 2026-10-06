@@ -18,9 +18,9 @@ concurrency:
 jobs:
   build-and-test:
     name: Build and test
-    # The app targets iOS 26 and the project is Xcode 27 format; macos-26 ships
-    # current Xcode with iOS 26+ simulator runtimes (macos-latest lagged behind).
-    runs-on: macos-26
+    # The app targets iOS 26 but builds with the 27.1 SDK (ArrangementView needs it).
+    # Only the preview `xcode-27` image carries Xcode 27.1; macos-26 stops at 26.6.
+    runs-on: xcode-27
     timeout-minutes: 45
     steps:
       - uses: actions/checkout@v7
@@ -28,7 +28,7 @@ jobs:
       - name: Select Xcode
         uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: latest-stable
+          xcode-version: '27.1'
 
       - name: Pick an iPhone simulator
         run: |
