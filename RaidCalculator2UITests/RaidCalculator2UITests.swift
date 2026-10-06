@@ -205,8 +205,12 @@ final class RaidCalculator2UITests: XCTestCase {
         field.typeText("0")
         XCTAssertTrue(prompt.exists, "0 isn't a drive size")
         app.toolbars.buttons["Done"].tap()
-        let gone = expectation(for: NSPredicate(format: "exists == false"), evaluatedWith: prompt)
-        wait(for: [gone], timeout: 2)
+        // The app drops the prompt within milliseconds of Done, but while the
+        // keyboard animates away a slow CI simulator can take over a second to
+        // answer one accessibility snapshot, and retries it. A 2 s predicate
+        // expectation then never sees a single answer (iOS 26.5, CI), so wait
+        // the way the other disappearance checks here do.
+        XCTAssertTrue(prompt.waitForNonExistence(timeout: 5), "the prompt goes once editing ends")
         XCTAssertFalse(footerPrompt.exists)
         XCTAssertTrue(capacity(app).hasPrefix("Usable Capacity, 12 TB,"), capacity(app))
     }
@@ -222,9 +226,8 @@ final class RaidCalculator2UITests: XCTestCase {
         field.typeText(XCUIKeyboardKey.delete.rawValue + "0.0004")
         app.toolbars.buttons["Done"].tap()
         let prompt = app.descendants(matching: .any).matching(identifier: "enterDriveSize").firstMatch
-        let gone = expectation(for: NSPredicate(format: "exists == false"), evaluatedWith: prompt)
-        wait(for: [gone], timeout: 2)
-        XCTAssertFalse(prompt.exists, "no prompt is left after Done")
+        // Same budget as testEmptyDriveSizeShowsPrompt, for the same reason.
+        XCTAssertTrue(prompt.waitForNonExistence(timeout: 5), "no prompt is left after Done")
     }
 
     /// FR-19: the custom-size alert can't be confirmed empty.
