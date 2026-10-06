@@ -432,8 +432,11 @@ struct DriveStrip: View {
 
     private var barSpacing: CGFloat { roles.count > 12 ? 3 : 5 }
 
-    /// On a regular-width layout each group gets its own row, using the extra width.
-    private var groupsAsRows: Bool { horizontalSizeClass == .regular && groupCount > 1 }
+    /// On a regular-width layout each group gets its own row, using the extra
+    /// width, unless there are so many groups that the rows would stack too tall.
+    private var groupsAsRows: Bool {
+        AdaptiveLayout.groupsAsRows(isRegularWidth: horizontalSizeClass == .regular, groupCount: groupCount)
+    }
     private var rowSpacing: CGFloat { barSpacing * 2 }
 
     private var rowsHeight: CGFloat {

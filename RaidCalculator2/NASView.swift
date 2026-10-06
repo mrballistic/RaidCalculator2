@@ -489,6 +489,10 @@ struct BayDiagram: View {
             .foregroundStyle(.secondary)
             .accessibilityHidden(true)
         }
+        // Measures the width on offer, not the diagram's own: after wrapping,
+        // the rows hug fewer columns, and a hugging width would never grow
+        // back to re-merge them when the window widens.
+        .frame(maxWidth: .infinity, alignment: .leading)
         .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { width = $0 }
     }
 
@@ -513,7 +517,8 @@ struct BayDiagram: View {
         let segments = bays[index]
         return VStack(spacing: 4) {
             column(segments)
-                .frame(minWidth: scrolls ? minColumn : nil, maxWidth: max(72, minColumn))
+                // minColumn stops at 64 pt, so it never outgrows this cap.
+                .frame(minWidth: scrolls ? minColumn : nil, maxWidth: 72)
                 .frame(height: maxHeight, alignment: .bottom)
             Text(label(for: segments))
                 .font(bays.count > 6 ? .caption2 : .caption)
