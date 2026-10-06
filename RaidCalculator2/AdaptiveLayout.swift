@@ -18,20 +18,6 @@ enum AdaptiveLayout {
         isRegularWidth && width >= twoColumnMinWidth
     }
 
-    /// Whether results and inputs go in the split rather than one Form: the
-    /// two-column rule, or an active fold across the screen (iPhone Duo in
-    /// book portrait), where the split puts results above the fold and
-    /// inputs below it instead of scrolling one Form through it.
-    static func usesSplit(isRegularWidth: Bool, width: CGFloat, hasActiveHorizontalFold: Bool) -> Bool {
-        hasActiveHorizontalFold || usesTwoColumns(isRegularWidth: isRegularWidth, width: width)
-    }
-
-    /// Whether any active fold region runs across the screen (wider than
-    /// tall). A fold down the screen leaves the layout to the width rule.
-    static func hasActiveHorizontalFold(_ folds: [(frame: CGRect, isActive: Bool)]) -> Bool {
-        folds.contains { $0.isActive && $0.frame.width > $0.frame.height }
-    }
-
     /// The margin each pane of the split gets at its inner edge, so the
     /// gap at the split (or each side of a fold) matches the outer margin.
     /// `leading` and `trailing` are the system container margins around the

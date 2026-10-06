@@ -18,38 +18,6 @@ struct AdaptiveLayoutTests {
         #expect(!AdaptiveLayout.usesTwoColumns(isRegularWidth: false, width: 1200))
     }
 
-    // Ruling R7: iPhone Duo in book portrait folds across the middle, so the
-    // split puts results above the fold and inputs below it.
-    @Test func noFoldKeepsTheTwoColumnRule() {
-        #expect(AdaptiveLayout.usesSplit(isRegularWidth: true, width: 1032, hasActiveHorizontalFold: false))
-        #expect(!AdaptiveLayout.usesSplit(isRegularWidth: true, width: 744, hasActiveHorizontalFold: false))
-        #expect(!AdaptiveLayout.usesSplit(isRegularWidth: false, width: 1200, hasActiveHorizontalFold: false))
-    }
-
-    @Test func horizontalFoldGivesTheSplit() {
-        #expect(AdaptiveLayout.usesSplit(isRegularWidth: true, width: 669, hasActiveHorizontalFold: true))
-        #expect(AdaptiveLayout.usesSplit(isRegularWidth: false, width: 669, hasActiveHorizontalFold: true))
-        #expect(AdaptiveLayout.usesSplit(isRegularWidth: true, width: 951, hasActiveHorizontalFold: true))
-    }
-
-    // A fold region wider than tall runs across the screen; only active ones count.
-    @Test func onlyAnActiveFoldAcrossTheScreenIsHorizontal() {
-        let across = CGRect(x: 0, y: 470, width: 669, height: 12)
-        let down = CGRect(x: 470, y: 0, width: 12, height: 669)
-        #expect(AdaptiveLayout.hasActiveHorizontalFold([(frame: across, isActive: true)]))
-        #expect(!AdaptiveLayout.hasActiveHorizontalFold([(frame: across, isActive: false)]))
-        #expect(!AdaptiveLayout.hasActiveHorizontalFold([(frame: down, isActive: true)]))
-        #expect(!AdaptiveLayout.hasActiveHorizontalFold([]))
-    }
-
-    // Book landscape: the fold runs down the screen. Under 800 points that
-    // changes nothing; still one column.
-    @Test func verticalFoldUnder800ChangesNothing() {
-        let down = CGRect(x: 330, y: 0, width: 12, height: 669)
-        let fold = AdaptiveLayout.hasActiveHorizontalFold([(frame: down, isActive: true)])
-        #expect(!AdaptiveLayout.usesSplit(isRegularWidth: true, width: 744, hasActiveHorizontalFold: fold))
-    }
-
     // Each pane's inner edge at the split gets the system's outer margin.
     // Next to iPhone Duo's vertical bar the guide can be larger on one side,
     // so the smaller side is the plain margin; nothing usable means 16.

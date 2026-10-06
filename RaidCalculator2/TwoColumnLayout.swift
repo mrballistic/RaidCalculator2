@@ -9,8 +9,6 @@
 import SwiftUI
 
 struct TwoColumnLayout<Results: View, Inputs: View>: View {
-    /// A fold runs across the screen: stack results above it, inputs below.
-    var stacksForFold = false
     @ViewBuilder var results: Results
     @ViewBuilder var inputs: Inputs
 
@@ -45,22 +43,18 @@ struct TwoColumnLayout<Results: View, Inputs: View>: View {
             // edge. No split modifier sets pane margins, so each pane takes
             // the system's container margin (ContentMarginGuide.container)
             // on its inner edge. Outer edges keep the Form's own margin and
-            // safe area, which keeps them clear of a vertical bar. Only side
-            // by side: stacked, the Forms' own top and bottom insets
-            // separate them. The axis comes from `stacksForFold`, not
+            // safe area, which keeps them clear of a vertical bar. The
+            // margin is applied unconditionally rather than gated on
             // `splitArrangementAxis`, which reads nil inside these panes
             // on the 27.1 simulator.
-            let paneMargin: CGFloat? = stacksForFold ? nil : innerMargin
             ArrangementView {
                 results
-                    .contentMargins(.trailing, paneMargin, for: .scrollContent)
+                    .contentMargins(.trailing, innerMargin, for: .scrollContent)
             } secondary: {
                 inputs
-                    .contentMargins(.leading, paneMargin, for: .scrollContent)
+                    .contentMargins(.leading, innerMargin, for: .scrollContent)
             }
-            // Across a fold the split stacks, so the fold falls between
-            // results and inputs rather than through a Form.
-            .arrangementViewStyle(stacksForFold ? .split.axes(.vertical) : .split)
+            .arrangementViewStyle(.split)
             .onGeometryChange(for: EdgeInsets.self) { proxy in
                 proxy.contentMargins(for: .container, edges: .horizontal)
             } action: { margins in
@@ -77,46 +71,5 @@ struct TwoColumnLayout<Results: View, Inputs: View>: View {
                 inputs
             }
         }
-    }
-}
-
-extension View {
-    /// Keeps `fold` true while an active fold region runs across this view
-    /// (iPhone Duo in book portrait). Always false before iOS 27.1.
-    func readsHorizontalFold(_ fold: Binding<Bool>) -> some View {
-        modifier(HorizontalFoldReader(fold: fold))
-    }
-}
-
-private struct HorizontalFoldReader: ViewModifier {
-    @Binding var fold: Bool
-
-    func body(content: Content) -> some View {
-        if #available(iOS 27.1, *) {
-            content.background { FoldRegionReader(fold: $fold) }
-        } else {
-            content
-        }
-    }
-}
-
-/// Reads the division regions in a GeometryReader. Folding from flat to
-/// book doesn't change the view's size, so the reader is also rebuilt on
-/// every hinge change, which makes it read the regions again.
-@available(iOS 27.1, *)
-private struct FoldRegionReader: View {
-    @Binding var fold: Bool
-    @State private var hinge: DeviceHinge?
-
-    var body: some View {
-        GeometryReader { proxy in
-            let regions = proxy.reservedRegions(kind: .division)
-            let across = AdaptiveLayout.hasActiveHorizontalFold(regions.map { (frame: $0.frame, isActive: $0.isActive) })
-            Color.clear
-                .onChange(of: across, initial: true) { _, now in fold = now }
-        }
-        .id(hinge?.status)
-        .onHingeChange { _, new in hinge = new.hinge }
-        .accessibilityHidden(true)
     }
 }

@@ -20,12 +20,8 @@ struct ContentView: View {
     /// Widest the form grows on iPad before it centers instead of stretching.
     private let readableWidth: CGFloat = 720
 
-    /// An active fold across the screen (iPhone Duo in book portrait).
-    @State private var horizontalFold = false
-
-    /// Results and inputs in the split: wide windows, or across a fold.
     private var twoColumns: Bool {
-        AdaptiveLayout.usesSplit(isRegularWidth: horizontalSizeClass == .regular, width: contentWidth, hasActiveHorizontalFold: horizontalFold)
+        AdaptiveLayout.usesTwoColumns(isRegularWidth: horizontalSizeClass == .regular, width: contentWidth)
     }
 
     /// The answer and anything wrong with it.
@@ -236,7 +232,7 @@ struct ContentView: View {
             if twoColumns {
                 // Results lead so reading and VoiceOver order match the
                 // stacked layout, where the answer comes first.
-                TwoColumnLayout(stacksForFold: horizontalFold) {
+                TwoColumnLayout {
                     Form {
                         answerSections
                         ratingsSection
@@ -276,7 +272,6 @@ struct ContentView: View {
         }
         .scrollDismissesKeyboard(.interactively)
         .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { contentWidth = $0 }
-        .readsHorizontalFold($horizontalFold)
         .sensoryFeedback(.selection, trigger: viewModel.selectedLevel)
         .sheet(isPresented: $showingInfoSheet) {
             InfoSheet(topic: .level(viewModel.selectedLevel))
