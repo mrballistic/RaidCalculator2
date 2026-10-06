@@ -1086,6 +1086,41 @@
         }
       }
     },
+    "drive_strip_drive_accessibility" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Group %1$d of %2$d, drive %3$d: %4$@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grupo %1$d de %2$d, disco %3$d: %4$@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Groupe %1$d sur %2$d, disque %3$d : %4$@"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gruppo %1$d di %2$d, disco %3$d: %4$@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "グループ%1$d/%2$d、ドライブ%3$d：%4$@"
+          }
+        }
+      }
+    },
     "drive_strip_group_accessibility" : {
       "extractionState" : "manual",
       "localizations" : {

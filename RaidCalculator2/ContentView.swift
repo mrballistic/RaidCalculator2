@@ -602,13 +602,16 @@ struct DriveStrip: View {
             .font(.caption)
             .foregroundStyle(.secondary)
         }
-        // The summary, then one element per group, so VoiceOver reads the structure.
+        // The summary, then one element per group followed by one per drive in it, so VoiceOver reads the structure.
         .accessibilityRepresentation {
             VStack {
                 Text(accessibilitySummary)
                 if groupCount > 1 {
                     ForEach(0..<groupCount, id: \.self) { group in
                         Text(groupAccessibility(group))
+                        ForEach(Array(groupRange(group).enumerated()), id: \.element) { position, index in
+                            Text(String(format: "drive_strip_drive_accessibility".localized(), group + 1, groupCount, position + 1, Self.name(of: roles[index])))
+                        }
                     }
                 }
             }

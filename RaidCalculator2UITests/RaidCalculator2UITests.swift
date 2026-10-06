@@ -382,6 +382,22 @@ final class RaidCalculator2UITests: XCTestCase {
         XCTAssertTrue(capacity(app).hasPrefix("Usable Capacity, 44 TB,"), capacity(app))
     }
 
+    /// §1.6: within a grouped level VoiceOver reaches each drive
+    /// (“Group 2 of 2, drive 1: Data”); an ungrouped level stays a summary.
+    @MainActor
+    func testDriveStripReadsEachDrive() throws {
+        let app = launchApp(level: "R 60", drives: 12, groups: 2)
+        XCTAssertTrue(app.staticTexts.matching(identifier: "usableCapacity").firstMatch.waitForExistence(timeout: 5))
+        let groupTwo = app.staticTexts.matching(NSPredicate(format: "label BEGINSWITH %@", "Group 2 of 2, drive "))
+        XCTAssertEqual(groupTwo.count, 6)
+        XCTAssertTrue(app.staticTexts["Group 2 of 2, drive 1: Data"].exists || app.staticTexts["Group 2 of 2, drive 1: Parity"].exists)
+        app.terminate()
+
+        let raid5 = launchApp()
+        XCTAssertTrue(raid5.staticTexts.matching(identifier: "usableCapacity").firstMatch.waitForExistence(timeout: 5))
+        XCTAssertEqual(raid5.staticTexts.matching(NSPredicate(format: "label CONTAINS %@", ", drive ")).count, 0)
+    }
+
     /// §1.6: VoiceOver reads group structure, one element per group.
     @MainActor
     func testDriveStripReadsEachGroup() throws {
