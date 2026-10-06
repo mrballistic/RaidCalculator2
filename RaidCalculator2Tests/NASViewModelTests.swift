@@ -159,4 +159,20 @@ struct NASViewModelTests {
         model.system = .unraid
         #expect(model.comparison.allSatisfy { $0.readsAllBays == nil })
     }
+
+    // Stored parity outside a system's range is clamped on load, so it can't trap the calculator.
+    @Test func storedParityIsClampedToEachSystemsRange() throws {
+        let defaults = freshDefaults()
+        var stored = NASSettings()
+        stored.zfsParity = 7
+        stored.unraidParity = 0
+        stored.snapraidParity = 9
+        defaults.set(try JSONEncoder().encode(stored), forKey: "nas.settings")
+        let model = NASViewModel(userDefaults: defaults)
+        #expect(model.settings.zfsParity == 3)
+        #expect(model.settings.unraidParity == 1)
+        #expect(model.settings.snapraidParity == 6)
+        model.system = .zfs
+        _ = model.result
+    }
 }

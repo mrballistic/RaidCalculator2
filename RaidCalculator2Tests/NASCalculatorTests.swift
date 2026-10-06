@@ -98,6 +98,8 @@ struct NASCalculatorTests {
     @Test func noSuggestionWhenInvalid() {
         #expect(calculator.suggestion(setup(.unraid, [8, 8], parity: 2)) == nil)
         #expect(calculator.suggestion(setup(.zfs, [8, 4], parity: 2)) == nil)
+        // Btrfs RAID1 needs two drives; one drive and an empty bay has no suggestion.
+        #expect(calculator.suggestion(setup(.btrfs, [8, nil])) == nil)
     }
 
     @Test func snapraidParityHint() {

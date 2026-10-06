@@ -124,6 +124,17 @@ final class NASViewModel {
         userDefaults.set(try? JSONEncoder().encode(current), forKey: Keys.currentSetup)
     }
 
+    /// Stored parity can be out of range if the data was corrupted or edited;
+    /// pull each back into its system's range so the calculator never sees it.
+    private static func clamped(_ settings: NASSettings) -> NASSettings {
+        var result = settings
+        for system in NASSystem.allCases {
+            guard let range = system.parityRange, let value = result.parity(for: system) else { continue }
+            result.setParity(min(max(value, range.lowerBound), range.upperBound), for: system)
+        }
+        return result
+    }
+
     private func load() {
         isLoading = true
         defer { isLoading = false }
@@ -134,7 +145,7 @@ final class NASViewModel {
 
         if let data = userDefaults.data(forKey: Keys.settings),
            let saved = try? JSONDecoder().decode(NASSettings.self, from: data) {
-            settings = saved
+            settings = Self.clamped(saved)
         } else if let type = userDefaults.string(forKey: Keys.legacyRaidType).flatMap(SynologyRaidType.init) {
             settings.synologyType = type
         }
@@ -145,6 +156,7 @@ final class NASViewModel {
         if let data = userDefaults.data(forKey: Keys.currentSetup),
            let saved = try? JSONDecoder().decode(NASSetup.self, from: data) {
             current = saved
+            current.settings = Self.clamped(saved.settings)
         } else {
             var legacy = NASSetup(system: system, bays: bays, settings: settings)
             if let data = userDefaults.data(forKey: Keys.legacyCurrentBays),
