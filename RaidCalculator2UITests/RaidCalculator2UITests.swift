@@ -538,10 +538,29 @@ final class RaidCalculator2UITests: XCTestCase {
             scroll(down: scrollingDown)
         }
         // The floating tab bar covers the last rows, which still report hittable.
-        if element.exists, element.frame.intersects(app.tabBars.firstMatch.frame) {
+        if element.exists, let bar = tabBarFrame(in: app), element.frame.intersects(bar) {
             scroll(down: true)
         }
         XCTAssertTrue(element.isHittable, "not revealed: \(element)")
+    }
+
+    /// A tab's button, wherever the system puts the bar. On iPhone Duo's
+    /// outer display the bar is vertical and isn't exposed as a TabBar,
+    /// only as its buttons.
+    @MainActor
+    private func tabButton(_ title: String, in app: XCUIApplication) -> XCUIElement {
+        let inBar = app.tabBars.buttons[title]
+        return inBar.exists ? inBar : app.buttons[title].firstMatch
+    }
+
+    /// The tab bar's frame: the TabBar when there is one, otherwise the
+    /// span of the tab buttons in the vertical bar. Nil if neither is found.
+    @MainActor
+    private func tabBarFrame(in app: XCUIApplication) -> CGRect? {
+        let bar = app.tabBars.firstMatch
+        if bar.exists { return bar.frame }
+        let tabs = [tabButton("RAID", in: app), tabButton("NAS", in: app)].filter(\.exists)
+        return tabs.map(\.frame).reduce(nil) { $0?.union($1) ?? $1 }
     }
 
     /// Capacities join number and unit with a no-break space.
@@ -674,7 +693,7 @@ final class RaidCalculator2UITests: XCTestCase {
         app.launchArguments += ["-selectedTab", "synology", "-AppleLanguages", "(en)"]
         app.launch()
         XCTAssertTrue(app.segmentedControls.firstMatch.waitForExistence(timeout: 5))
-        XCTAssertTrue(app.tabBars.buttons["RAID"].isSelected)
+        XCTAssertTrue(tabButton("RAID", in: app).isSelected)
     }
 
     /// FR-14: on a wide iPad the answer sits beside the inputs, so both are
