@@ -26,8 +26,12 @@ struct NASView: View {
 
     private let readableWidth: CGFloat = 720
 
+    /// An active fold across the screen (iPhone Duo in book portrait).
+    @State private var horizontalFold = false
+
+    /// Results and inputs in the split: wide windows, or across a fold.
     private var twoColumns: Bool {
-        AdaptiveLayout.usesTwoColumns(isRegularWidth: horizontalSizeClass == .regular, width: contentWidth)
+        AdaptiveLayout.usesSplit(isRegularWidth: horizontalSizeClass == .regular, width: contentWidth, hasActiveHorizontalFold: horizontalFold)
     }
 
     @ViewBuilder private var summarySection: some View {
@@ -194,7 +198,7 @@ struct NASView: View {
     var body: some View {
         Group {
             if twoColumns {
-                TwoColumnLayout {
+                TwoColumnLayout(stacksForFold: horizontalFold) {
                     Form {
                         summarySection
                         Section("compare_header".localized()) {
@@ -252,6 +256,7 @@ struct NASView: View {
             NASComparisonSheet(comparison: viewModel.comparison, current: viewModel.system) { pendingSystem = $0 }
         }
         .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { contentWidth = $0 }
+        .readsHorizontalFold($horizontalFold)
         .alert(
             "custom_size".localized(),
             isPresented: Binding(get: { customSizeBay != nil }, set: { if !$0 { customSizeBay = nil } })
