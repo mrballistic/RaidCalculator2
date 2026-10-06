@@ -70,6 +70,7 @@ struct NASComparisonSheet: View {
     let current: NASSystem
     let select: (NASSystem) -> Void
     @Environment(\.dismiss) private var dismiss
+    @State private var detent: PresentationDetent = .large
 
     var body: some View {
         NavigationStack {
@@ -92,7 +93,7 @@ struct NASComparisonSheet: View {
                 }
             }
         }
-        .presentationDetents([.medium, .large])
+        .presentationDetents([.medium, .large], selection: $detent)
     }
 }
 

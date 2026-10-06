@@ -590,9 +590,6 @@ final class RaidCalculator2UITests: XCTestCase {
         compare.tap()
         let zfs = app.buttons["compare_zfs"]
         XCTAssertTrue(zfs.waitForExistence(timeout: 3))
-        // The sheet opens at the medium detent, where the list hasn't loaded
-        // its last row yet; pull it up to large to see every system.
-        app.buttons["compare_synology"].swipeUp()
         XCTAssertEqual(app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'compare_'")).count, 5)
         zfs.tap()
         let gone = expectation(for: NSPredicate(format: "exists == false"), evaluatedWith: zfs)
