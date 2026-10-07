@@ -90,11 +90,22 @@ struct ContentView: View {
     @ViewBuilder private var inputSections: some View {
         Section("raid_level".localized()) {
             // Segmented controls stay near 13 pt at accessibility sizes, so
-            // the standard levels become a menu there.
+            // there one menu holds every level, nested and ZFS included, and
+            // the More Levels menu goes.
             if dynamicTypeSize.isAccessibilitySize {
-                Picker("raid_level".localized(), selection: standardLevelSelection) {
+                Picker("raid_level".localized(), selection: levelSelection) {
                     ForEach(RaidLevel.levels(in: .standard)) { level in
-                        Text(level.displayName).tag(Optional(level))
+                        Text(level.displayName).tag(level)
+                    }
+                    Section("nested_levels".localized()) {
+                        ForEach(RaidLevel.levels(in: .nested)) { level in
+                            Text(level.displayName).tag(level)
+                        }
+                    }
+                    Section("zfs_levels".localized()) {
+                        ForEach(RaidLevel.levels(in: .zfs)) { level in
+                            Text(level.displayName).tag(level)
+                        }
                     }
                 }
                 .pickerStyle(.menu)
@@ -109,38 +120,33 @@ struct ContentView: View {
                 }
                 .pickerStyle(.segmented)
                 .labelsHidden()
-            }
 
-            Menu {
-                Section("nested_levels".localized()) {
-                    ForEach(RaidLevel.levels(in: .nested)) { levelButton($0) }
-                }
-                Section("zfs_levels".localized()) {
-                    ForEach(RaidLevel.levels(in: .zfs)) { levelButton($0) }
-                }
-            } label: {
-                // At accessibility sizes the label sits above the selection,
-                // so neither has to share the row and break mid-word.
-                let layout = dynamicTypeSize.isAccessibilitySize
-                    ? AnyLayout(VStackLayout(alignment: .leading, spacing: 4))
-                    : AnyLayout(HStackLayout())
-                layout {
-                    Text("more_levels".localized())
-                    if !dynamicTypeSize.isAccessibilitySize { Spacer(minLength: 8) }
-                    HStack(spacing: 6) {
-                        if viewModel.selectedLevel.family != .standard {
-                            Text(viewModel.selectedLevel.displayName)
-                                .foregroundStyle(.tint)
+                Menu {
+                    Section("nested_levels".localized()) {
+                        ForEach(RaidLevel.levels(in: .nested)) { levelButton($0) }
+                    }
+                    Section("zfs_levels".localized()) {
+                        ForEach(RaidLevel.levels(in: .zfs)) { levelButton($0) }
+                    }
+                } label: {
+                    HStack {
+                        Text("more_levels".localized())
+                        Spacer(minLength: 8)
+                        HStack(spacing: 6) {
+                            if viewModel.selectedLevel.family != .standard {
+                                Text(viewModel.selectedLevel.displayName)
+                                    .foregroundStyle(.tint)
+                            }
+                            Image(systemName: "chevron.up.chevron.down")
+                                .font(.caption)
+                                .foregroundStyle(.tertiary)
+                                .accessibilityHidden(true)
                         }
-                        Image(systemName: "chevron.up.chevron.down")
-                            .font(.caption)
-                            .foregroundStyle(.tertiary)
-                            .accessibilityHidden(true)
                     }
                 }
+                .tint(.primary)
+                .accessibilityIdentifier("moreLevels")
             }
-            .tint(.primary)
-            .accessibilityIdentifier("moreLevels")
         }
 
         Section {
@@ -337,6 +343,14 @@ struct ContentView: View {
         Binding(
             get: { viewModel.selectedLevel.family == .standard ? viewModel.selectedLevel : nil },
             set: { if let level = $0 { withAnimation(motion) { viewModel.selectedLevel = level } } }
+        )
+    }
+
+    /// Every level, for the single menu at accessibility sizes.
+    private var levelSelection: Binding<RaidLevel> {
+        Binding(
+            get: { viewModel.selectedLevel },
+            set: { level in withAnimation(motion) { viewModel.selectedLevel = level } }
         )
     }
 

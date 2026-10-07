@@ -546,6 +546,17 @@ final class RaidCalculator2UITests: XCTestCase {
         XCTAssertTrue(app.buttons["unitPicker"].label.contains("GB"), app.buttons["unitPicker"].label)
     }
 
+    /// At accessibility sizes one menu holds every level, so a nested level
+    /// shows its name there instead of an empty row.
+    @MainActor
+    func testAccessibilityLevelMenuShowsNestedLevel() throws {
+        let app = launchApp(level: "R 50", drives: 6, groups: 2, contentSize: "UICTContentSizeCategoryAccessibilityXXXL")
+        let level = app.buttons["levelPicker"]
+        reveal(level, in: app)
+        XCTAssertTrue(level.label.contains("RAID 50"), level.label)
+        XCTAssertFalse(app.buttons["moreLevels"].exists)
+    }
+
     /// VoiceOver reads each segment as the full level name, not “5”.
     @MainActor
     func testSegmentsReadFullLevelNames() throws {
