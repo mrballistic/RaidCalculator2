@@ -23,7 +23,11 @@ final class NASViewModel {
 
     /// The setup the owner has today. Every change is compared against it, so
     /// “what if I buy this drive?” reads as a difference, not a new total.
-    private(set) var current = NASSetup(system: .synology, bays: [4, 4, 8, 8], settings: NASSettings())
+    private(set) var current = NASViewModel.sample
+
+    /// The drives a fresh install starts with. 1.6 stored the current setup
+    /// on every edit, so a stored copy of this is the sample, not a save.
+    static let sample = NASSetup(system: .synology, bays: [4, 4, 8, 8], settings: NASSettings())
 
     var bayCount: Int { min(max(requestedBayCount, system.bayRange.lowerBound), system.bayRange.upperBound) }
     var bays: [Double?] { bays(for: system) }
@@ -180,19 +184,20 @@ final class NASViewModel {
            let saved = try? JSONDecoder().decode(NASSetup.self, from: data) {
             current = saved
             current.settings = Self.clamped(saved.settings)
-            // Review Focus 2: a setup stored by an earlier version counts as saved.
-            hasSavedCurrent = true
+            // Review Focus 2: a setup stored by an earlier version counts as
+            // saved, unless it's only the sample 1.6 stored on every edit.
+            hasSavedCurrent = !current.isEquivalent(to: Self.sample)
         } else {
             var legacy = NASSetup(system: system, bays: bays, settings: settings)
-            if let data = userDefaults.data(forKey: Keys.legacyCurrentBays),
-               let saved = try? JSONDecoder().decode([Double?].self, from: data) {
-                legacy.bays = saved
-                hasSavedCurrent = true    // so does the Synology tab's, from before the NAS tab
-            }
+            let legacyBays = userDefaults.data(forKey: Keys.legacyCurrentBays)
+                .flatMap { try? JSONDecoder().decode([Double?].self, from: $0) }
+            if let legacyBays { legacy.bays = legacyBays }
             if let type = userDefaults.string(forKey: Keys.legacyCurrentRaidType).flatMap(SynologyRaidType.init) {
                 legacy.settings.synologyType = type
             }
             current = legacy
+            // The Synology tab's stored setup, from before the NAS tab, under the same rule.
+            hasSavedCurrent = legacyBays != nil && !legacy.isEquivalent(to: Self.sample)
         }
         if userDefaults.bool(forKey: Keys.hasSavedCurrent) { hasSavedCurrent = true }
     }

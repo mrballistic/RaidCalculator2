@@ -70,12 +70,34 @@ struct NASViewModelTests {
     // Review Focus 2: a setup saved before 1.7.0 still counts as saved.
     @Test func existingSavedSetupStillCompares() throws {
         let defaults = freshDefaults()
-        let saved = NASSetup(system: .synology, bays: [4, 4, 8, 8], settings: NASSettings())
+        let saved = NASSetup(system: .synology, bays: [8, 8, 8, 8], settings: NASSettings())
         defaults.set(try JSONEncoder().encode(saved), forKey: "nas.currentSetup")
         let model = NASViewModel(userDefaults: defaults)
         #expect(model.hasSavedCurrent)
+        #expect(model.usableDelta == -8)                          // [4, 4, 8, 8] SHR 16 against SHR 24
         model.system = .btrfs
-        #expect(model.usableDelta == -4)
+        #expect(model.usableDelta == -12)
+    }
+
+    // 1.6 stored the sample on every edit, so a stored sample isn't a save,
+    // unless the 1.7 flag says the owner really saved it.
+    @Test func storedSampleSetupCountsAsUnsaved() throws {
+        let defaults = freshDefaults()
+        let sample = NASSetup(system: .synology, bays: [4, 4, 8, 8], settings: NASSettings())
+        defaults.set(try JSONEncoder().encode(sample), forKey: "nas.currentSetup")
+        defaults.set(try JSONEncoder().encode([16, 4, 8, 8] as [Double?]), forKey: "synology.bays")
+        let model = NASViewModel(userDefaults: defaults)
+        #expect(!model.hasSavedCurrent)
+        #expect(model.usableDelta == nil)
+        defaults.set(true, forKey: "nas.hasSavedCurrent")
+        #expect(NASViewModel(userDefaults: defaults).hasSavedCurrent)
+    }
+
+    @Test func legacyStoredSampleCountsAsUnsaved() throws {
+        let defaults = freshDefaults()
+        defaults.set(try JSONEncoder().encode([4, 4, 8, 8] as [Double?]), forKey: "synology.currentBays")
+        defaults.set("SHR", forKey: "synology.currentRaidType")
+        #expect(!NASViewModel(userDefaults: defaults).hasSavedCurrent)
     }
 
     @Test func legacySynologyCurrentStillCompares() throws {
