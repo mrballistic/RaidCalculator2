@@ -307,9 +307,10 @@ struct ContentView: View {
                         showingInfoSheet = true
                     }
                 } label: {
-                    Image(systemName: "info")
+                    // Titled, so a toolbar that shows titles (iPhone Duo's
+                    // vertical bar) can; the top bar still shows the symbol.
+                    Label(String(format: "about_level".localized(), viewModel.selectedLevel.displayName), systemImage: "info")
                 }
-                .accessibilityLabel(String(format: "about_level".localized(), viewModel.selectedLevel.displayName))
                 .accessibilityIdentifier("raidInfo")
                 // In pane mode the button also closes the info, so it reads as a toggle.
                 .accessibilityAddTraits(infoInPane && showingInfoSheet ? .isSelected : [])

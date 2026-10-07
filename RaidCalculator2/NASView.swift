@@ -279,9 +279,10 @@ struct NASView: View {
                         showingInfo = true
                     }
                 } label: {
-                    Image(systemName: "info")
+                    // Titled, so a toolbar that shows titles (iPhone Duo's
+                    // vertical bar) can; the top bar still shows the symbol.
+                    Label(String(format: "about_level".localized(), viewModel.system.displayName), systemImage: "info")
                 }
-                .accessibilityLabel(String(format: "about_level".localized(), viewModel.system.displayName))
                 .accessibilityIdentifier("nasInfo")
                 // In pane mode the button also closes the info, so it reads as a toggle.
                 .accessibilityAddTraits(infoInPane && showingInfo ? .isSelected : [])
