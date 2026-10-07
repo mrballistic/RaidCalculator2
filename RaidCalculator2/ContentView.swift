@@ -269,7 +269,7 @@ struct ContentView: View {
             if twoColumns {
                 // Results lead so reading and VoiceOver order match the
                 // stacked layout, where the answer comes first.
-                TwoColumnLayout(showsInfo: infoInPane && showingInfoSheet) {
+                TwoColumnLayout(hasFold: hasFold, showsInfo: infoInPane && showingInfoSheet) {
                     Form {
                         answerSections
                         ratingsSection

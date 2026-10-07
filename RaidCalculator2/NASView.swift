@@ -233,7 +233,7 @@ struct NASView: View {
     var body: some View {
         Group {
             if twoColumns {
-                TwoColumnLayout(showsInfo: infoInPane && showingInfo) {
+                TwoColumnLayout(hasFold: hasFold, showsInfo: infoInPane && showingInfo) {
                     Form {
                         summarySection
                         Section("compare_header".localized()) {

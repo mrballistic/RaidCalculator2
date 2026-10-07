@@ -9,6 +9,9 @@
 import SwiftUI
 
 struct TwoColumnLayout<Results: View, Inputs: View, Info: View>: View {
+    /// The device has a fold (iPhone Duo; see `readsFold`). Only then do
+    /// the columns use a split arrangement.
+    var hasFold = false
     /// Show `info` in place of the inputs (iPhone Duo; see `readsFold`).
     var showsInfo = false
     @ViewBuilder var results: Results
@@ -31,19 +34,23 @@ struct TwoColumnLayout<Results: View, Inputs: View, Info: View>: View {
     }
 
     @ViewBuilder private var columns: some View {
-        if #available(iOS 27.1, *) {
+        if #available(iOS 27.1, *), hasFold {
             // A split arrangement keeps iPhone Duo's fold in the gap between
             // the columns. Results are the primary view, so they lead in
             // reading and VoiceOver order as in the stacked layout.
+            //
+            // Only with a fold: the store-assets brief calls for a split
+            // arrangement only where a fold divides the view, and no
+            // Simulator can check one on iPad or an iPhone Pro Max on 27.1,
+            // so everything without a fold keeps the plain columns below.
             //
             // The axes are deliberately left open. On the 27.1 simulator a
             // split limited to `.axes(.horizontal)` that finds too little
             // room for side by side shows only the primary view, hiding
             // every input; unconstrained, it stacks results over inputs
             // instead. This view is only chosen at regular width, 800+
-            // points wide and 600+ tall, where the split is expected to go side by side, so
-            // leaving the axes open can't lose the inputs; if it ever
-            // stacks there, the testIPad*Beside* UI tests fail.
+            // points wide and 600+ tall, where the split is expected to go
+            // side by side, so leaving the axes open can't lose the inputs.
             //
             // The split gives the panes no margin where they meet: flat, the
             // cards butt together; at a fold, the results run up to its
