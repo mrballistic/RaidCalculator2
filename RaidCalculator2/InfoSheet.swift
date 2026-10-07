@@ -49,7 +49,9 @@ struct InfoSheet: View {
             list
                 .task {
                     // After the cross-fade, or VoiceOver keeps its place.
-                    try? await Task.sleep(for: .milliseconds(300))
+                    // A pane closed before then cancels the task; don't
+                    // move focus into a view on its way out.
+                    do { try await Task.sleep(for: .milliseconds(300)) } catch { return }
                     titleFocused = true
                 }
         } else {
