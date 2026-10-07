@@ -175,12 +175,12 @@ struct GroupedLevelTests {
     }
 
     @Test func rebuildCautionSuggestsDualParity() {
-        func caution(_ level: RaidLevel, size: Double, groups: Int = 1, drives: Int = 8) -> RaidLevel? {
-            calculator.rebuildCautionSuggestion(for: RaidConfiguration(level: level, driveCount: drives, driveSize: size, unit: .tb, groups: groups))
+        func caution(_ level: RaidLevel, size: Double, groups: Int = 1, drives: Int = 8) -> RebuildCaution? {
+            calculator.rebuildCaution(for: RaidConfiguration(level: level, driveCount: drives, driveSize: size, unit: .tb, groups: groups))
         }
-        #expect(caution(.raid5, size: 8) == .raid6)
-        #expect(caution(.raid50, size: 8, groups: 2) == .raid60)
-        #expect(caution(.raidz1, size: 10) == .raidz2)
+        #expect(caution(.raid5, size: 8) == .suggest(.raid6))
+        #expect(caution(.raid50, size: 8, groups: 2) == .suggest(.raid60))
+        #expect(caution(.raidz1, size: 10) == .suggest(.raidz2))
         #expect(caution(.raid5, size: 4) == nil)
         #expect(caution(.raidz2, size: 20) == nil)
         #expect(caution(.raid50, size: 8, groups: 1) == nil)   // invalid configurations get no caution
@@ -188,13 +188,37 @@ struct GroupedLevelTests {
 
     // Review Minor 6: only suggest a level the current group width can be.
     @Test func rebuildCautionOnlySuggestsAReachableLevel() {
-        func caution(_ level: RaidLevel, drives: Int, groups: Int) -> RaidLevel? {
-            calculator.rebuildCautionSuggestion(for: RaidConfiguration(level: level, driveCount: drives, driveSize: 8, unit: .tb, groups: groups))
+        func caution(_ level: RaidLevel, drives: Int, groups: Int) -> RebuildCaution? {
+            calculator.rebuildCaution(for: RaidConfiguration(level: level, driveCount: drives, driveSize: 8, unit: .tb, groups: groups))
         }
-        #expect(caution(.raid50, drives: 6, groups: 2) == nil)    // 3-wide groups; RAID 60 needs 4
-        #expect(caution(.raidz1, drives: 4, groups: 2) == nil)    // 2-wide groups; RAID-Z2 needs 3
-        #expect(caution(.raid50, drives: 8, groups: 2) == .raid60)
-        #expect(caution(.raidz1, drives: 6, groups: 2) == .raidz2)
+        #expect(caution(.raid50, drives: 6, groups: 2) == .warnOnly)    // 3-wide groups; RAID 60 needs 4
+        #expect(caution(.raidz1, drives: 4, groups: 2) == .warnOnly)    // 2-wide groups; RAID-Z2 needs 3
+        #expect(caution(.raid50, drives: 8, groups: 2) == .suggest(.raid60))
+        #expect(caution(.raidz1, drives: 6, groups: 2) == .suggest(.raidz2))
+    }
+
+    @Test func narrowGroupsWarnWithoutSuggestion() {
+        let config = RaidConfiguration(level: .raid50, driveCount: 6, driveSize: 12, unit: .tb, groups: 2)
+        #expect(calculator.rebuildCaution(for: config) == .warnOnly)
+    }
+
+    @Test func wideGroupsWarnWithSuggestion() {
+        let config = RaidConfiguration(level: .raid50, driveCount: 8, driveSize: 12, unit: .tb, groups: 2)
+        #expect(calculator.rebuildCaution(for: config) == .suggest(.raid60))
+    }
+
+    @Test func raid5AlwaysSuggestsRaid6() {
+        for count in [3, 5, 12] {
+            let config = RaidConfiguration(level: .raid5, driveCount: count, driveSize: 12, unit: .tb, groups: 1)
+            #expect(calculator.rebuildCaution(for: config) == .suggest(.raid6))
+        }
+    }
+
+    @Test func smallDrivesGetNoRebuildCaution() {
+        for level in [RaidLevel.raid5, .raid50, .raidz1] {
+            let config = RaidConfiguration(level: level, driveCount: 6, driveSize: 4, unit: .tb, groups: level == .raid50 ? 2 : 1)
+            #expect(calculator.rebuildCaution(for: config) == nil)
+        }
     }
 
     @Test func wideRaidZGroup() {

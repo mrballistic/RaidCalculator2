@@ -516,6 +516,14 @@ final class RaidCalculator2UITests: XCTestCase {
         XCTAssertTrue(capacity(app).hasPrefix("Usable Capacity, 120 TB,"), capacity(app))
     }
 
+    /// Narrow RAID 50 groups on large drives warn, but offer no level to move to.
+    @MainActor
+    func testNarrowGroupsWarnWithoutSuggestion() throws {
+        let app = launchApp(level: "R 50", drives: 6, size: 12, groups: 2)
+        XCTAssertTrue(app.staticTexts["narrowGroupCaution"].waitForExistence(timeout: 5))
+        XCTAssertFalse(app.buttons["applyRebuildSuggestion"].exists)
+    }
+
     /// Segmented controls stay near 13 pt at accessibility sizes, so both
     /// pickers become menus there.
     @MainActor

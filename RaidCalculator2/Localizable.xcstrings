@@ -8776,6 +8776,71 @@
         }
       }
     },
+    "rebuild_caution_narrow" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ein Rebuild von %@ kann bei so großen Laufwerken Tage dauern, und ein zweiter Ausfall währenddessen kostet das ganze Array. Mit breiteren Gruppen wäre doppelte Parität möglich."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rebuilding %@ on drives this large can take days, and a second failure during the rebuild loses the array. Wider groups would allow dual parity."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reconstruir un %@ con unidades tan grandes puede tardar días, y un segundo fallo durante la reconstrucción hace perder el conjunto. Con grupos más anchos sería posible usar doble paridad."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reconstruire un %@ avec des disques aussi gros peut prendre des jours, et une seconde panne pendant la reconstruction fait perdre la grappe. Des groupes plus larges permettraient la double parité."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ricostruire un %@ con dischi così grandi può richiedere giorni e un secondo guasto durante la ricostruzione fa perdere l’array. Gruppi più ampi consentirebbero la doppia parità."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "これほど大容量のドライブでは%@の再構築に数日かかることがあり、その間に2台目が故障するとアレイ全体を失います。グループの幅を広げれば、ダブルパリティが使えます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이렇게 큰 드라이브에서는 %@ 재구축에 며칠이 걸릴 수 있으며, 재구축 중 두 번째 장애가 발생하면 어레이가 손실됩니다. 그룹이 더 넓으면 이중 패리티를 사용할 수 있습니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reconstruir um %@ com discos tão grandes pode levar dias, e uma segunda falha durante a reconstrução faz perder o conjunto. Grupos mais largos permitiriam paridade dupla."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在这么大的硬盘上重建 %@ 可能需要数天，重建期间如再有一块硬盘故障，整个阵列都会丢失。组更宽的话，就可以使用双奇偶校验。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在這麼大的硬碟上重建 %@ 可能需要數天，重建期間若再有一顆故障，就會遺失整個陣列。群組更寬的話，就能使用雙重同位。"
+          }
+        }
+      }
+    },
     "remove_drive" : {
       "extractionState" : "manual",
       "localizations" : {

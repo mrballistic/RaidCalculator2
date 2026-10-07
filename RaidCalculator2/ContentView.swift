@@ -65,11 +65,17 @@ struct ContentView: View {
                     .accessibilityIdentifier("applySuggestedGroups")
                 }
             }
-        } else if viewModel.rebuildCautionSuggestion != nil || viewModel.wideZFSGroupWidth != nil {
+        } else if viewModel.rebuildCaution != nil || viewModel.wideZFSGroupWidth != nil {
             Section {
-                if let safer = viewModel.rebuildCautionSuggestion {
+                switch viewModel.rebuildCaution {
+                case .suggest(let safer):
                     caution(String(format: "rebuild_caution_level".localized(), viewModel.selectedLevel.displayName, safer.displayName))
                     useLevelButton(safer)
+                case .warnOnly:
+                    caution(String(format: "rebuild_caution_narrow".localized(), viewModel.selectedLevel.displayName))
+                        .accessibilityIdentifier("narrowGroupCaution")
+                case nil:
+                    EmptyView()
                 }
                 if let width = viewModel.wideZFSGroupWidth {
                     caution(String(format: (viewModel.groups > 1 ? "wide_zfs_group_caution" : "wide_zfs_group_caution_single").localized(), width))
