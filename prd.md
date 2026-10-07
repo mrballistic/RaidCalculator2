@@ -351,7 +351,7 @@ The 1.4.0 engine tried a largest-size drive in an empty bay, or in place of the 
 **FR-14: iPad layouts** (1.6.0)
 
 * Size-class adaptive, never iPad-only.
-* **Two columns** only when the horizontal size class is regular **and** the window is at least 800 points wide (`AdaptiveLayout.twoColumnMinWidth`). Everything else is stacked: iPhone in portrait, iPhone Duo’s outer display and its inner display in portrait, iPad mini in portrait (744 points), and iPad split view and Slide Over. iPhone Duo’s inner display in landscape (951 points) gets two columns by the same rule (FR-21).
+* **Two columns** only when the horizontal size class is regular **and** the window is at least 800 points wide (`AdaptiveLayout.twoColumnMinWidth`). Everything else is stacked: iPhone in portrait, iPhone Duo’s outer display and its inner display in portrait, iPad mini in portrait (744 points), and iPad split view and Slide Over. iPhone Duo’s inner display in landscape (951 points) gets two columns by the same rule (FR-21). iPhone landscape: see Task 13 (Pro Max may show two columns).
   * Decided in plan 3: the RAID tab did not already have a two-column layout (both tabs centered a 720-point column), so 1.6.0 built it for both tabs.
 * **Reading order:** in two columns, results lead (left) and inputs follow (right), so VoiceOver and reading order match the stacked layout, where the answer comes first.
 * **Bay diagram, more bays than fit one row:** at regular width, wrap into balanced rows (30 bays become 2 × 15); at compact width, scroll horizontally. The narrowest column is 24 points, scaled with Dynamic Type; bars never shrink below a readable size. Bay diagrams stay legible up to 30 bays on iPad.
@@ -475,7 +475,7 @@ Motion shows *what a change did to your drives*. The drive strip and bay diagram
 * **Info in place of the inputs, on iPhone Duo only.** In two columns on iPhone Duo, the “i” button shows the info sheet’s content in the inputs pane, with a Close button, so the results stay visible. The inputs stay underneath, hidden, and keep their scroll position. This is keyed on the device having a fold region (`reservedRegions(kind: .division, options: .includeInactive)`), not on the idiom. **iPad keeps the modal sheet,** and so does every single-column layout.
   * Tried first and dropped: presenting the sheet from the inputs pane (the system still placed it over the results), and an inspector (on iPhone Duo it fell back to a sheet, and on iPad it squeezed both columns instead of covering the inputs).
 * **No fold-aware Compare grid or bay rows.** They were built (plan task 5, commit `e84b7cd`) and reverted, because the split always puts the fold between the panes, so no custom view ever straddles it. Re-apply from history if a pose ever puts a fold through one pane.
-* **Testing:** the two-column UI tests (`testIPad*`) skip unless the two-column layout is on screen, detected by its `twoColumnLayout` accessibility identifier and the window size, not by device type. They also run on iPhone Duo’s inner display in landscape. iPhone Duo runs only on the iOS 27.1 Simulator runtime, and its pose and rotation can’t be scripted.
+* **Testing:** the two-column UI tests (`testIPad*`) skip unless the two-column layout is on screen, detected by its `twoColumnLayout` accessibility identifier, not by device type. They also run on iPhone Duo’s inner display in landscape. iPhone Duo runs only on the iOS 27.1 Simulator runtime, and its pose and rotation can’t be scripted.
 
 **FR-22: Review fixes** (1.7.0)
 

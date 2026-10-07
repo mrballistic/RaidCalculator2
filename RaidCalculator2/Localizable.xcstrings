@@ -9562,7 +9562,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sichere deine Laufwerke, um Upgrades mit ihnen zu vergleichen."
+            "value" : "Sichere deine Laufwerke, um sie mit Upgrades zu vergleichen."
           }
         },
         "en" : {
@@ -9574,7 +9574,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Guarda tus discos para comparar las mejoras con ellos."
+            "value" : "Guarda tus discos para compararlos con las mejoras."
           }
         },
         "fr" : {
@@ -9604,7 +9604,7 @@
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Salve seus discos para comparar upgrades com eles."
+            "value" : "Salve seus discos para compará-los com os upgrades."
           }
         },
         "zh-Hans" : {

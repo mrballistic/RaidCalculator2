@@ -22,9 +22,9 @@ A native iOS and iPadOS app, for iPhone, iPad and iPhone Duo, that shows how muc
 
 **Everywhere**
 - An info sheet per RAID level and NAS system: overview, pros, cons, typical uses, ratings for RAID levels, and how the app calculates RAID-Z and each NAS system.
-- Results beside inputs once the window is regular width and at least 800 points wide: on iPad, and on iPhone Duo’s open inner display in landscape, where the fold falls in the gap between the columns. iPhone Duo’s closed outer display (beside the system’s vertical bars) and its inner display in portrait, open or folded like a book, use one column. Bay diagrams stay legible up to 30 bays.
+- Results beside inputs once the window is regular width and at least 800 points wide, as on iPad and on iPhone Duo’s open inner display in landscape, where the fold falls in the gap between the columns. iPhone Duo’s closed outer display (beside the system’s vertical bars) and its inner display in portrait, open or folded like a book, use one column. Bay diagrams stay legible up to 30 bays.
 - Info sheets open as a sheet, except on iPhone Duo in two columns, where the info takes the place of the inputs so the results stay in view.
-- iPhone rotates to landscape, and iPhone Duo works in every pose.
+- iPhone rotates to landscape.
 - At accessibility text sizes the level and unit pickers become menus.
 - Light and dark mode, a tint dark enough for text contrast (darker still with Increase Contrast), Dynamic Type up to the largest accessibility sizes, VoiceOver (which reads each drive within a group), and Reduce Motion.
 - English, Spanish, French, Italian, Japanese, German, Traditional Chinese, Simplified Chinese, Korean and Brazilian Portuguese.
@@ -45,7 +45,7 @@ xcodebuild test -project "RAID Calculator.xcodeproj" -scheme "RAID Calc" \
   -destination 'platform=iOS Simulator,name=iPhone 17' -parallel-testing-enabled NO
 ```
 
-The `testIPad*` UI tests skip unless the two-column layout is showing, which they check by window size rather than device type, so they skip on iPhone and run on an iPad Simulator (for example `name=iPad Pro 13-inch (M5)`) and on iPhone Duo’s inner display in landscape. iPhone Duo needs the iOS 27.1 Simulator runtime, and its pose and rotation can’t be scripted: set them in the Simulator and Xcode’s Device Hub.
+The `testIPad*` UI tests skip unless the two-column layout is on screen (they look for its `twoColumnLayout` identifier, and that layout follows size class and window width, not device type), so they skip on iPhone in portrait and run on an iPad Simulator (for example `name=iPad Pro 13-inch (M5)`) and on iPhone Duo’s inner display in landscape. iPhone Duo needs the iOS 27.1 Simulator runtime, and its pose and rotation can’t be scripted: set them in the Simulator and Xcode’s Device Hub.
 
 ## Strings
 
