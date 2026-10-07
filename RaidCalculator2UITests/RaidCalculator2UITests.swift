@@ -365,6 +365,7 @@ final class RaidCalculator2UITests: XCTestCase {
         let app = launchApp(level: "R 10", drives: 5)
         XCTAssertTrue(app.staticTexts.matching(identifier: "usableCapacity").firstMatch.waitForExistence(timeout: 5))
         XCTAssertTrue(capacity(app).hasPrefix("Not a valid setup."), capacity(app))
+        XCTAssertTrue(capacity(app).contains("Usable Capacity"), capacity(app))
         XCTAssertFalse(app.descendants(matching: .any).matching(identifier: "failuresTolerated").firstMatch.exists)
     }
 

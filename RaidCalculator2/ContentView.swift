@@ -387,22 +387,6 @@ struct CapacitySummary: View {
 
     private var isValid: Bool { result.warningMessage == nil && !awaitingSize }
 
-    /// The combined element's label with the invalid prefix ahead of what it
-    /// would otherwise read, or nil when the setup is valid.
-    private var invalidLabel: String? {
-        guard result.warningMessage != nil else { return nil }
-        return [
-            "invalid_setup_prefix".localized(),
-            "usable_capacity".localized(),
-            Self.capacity(result.usableCapacity, unit: unit.rawValue),
-            String(
-                format: "raw_and_efficiency".localized(),
-                Self.capacity(result.rawCapacity, unit: unit.rawValue),
-                result.efficiency.formatted(.percent.precision(.fractionLength(0)))
-            ),
-        ].joined(separator: ", ")
-    }
-
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             if awaitingSize {
@@ -440,7 +424,7 @@ struct CapacitySummary: View {
             }
             .fixedSize(horizontal: false, vertical: true)
             .accessibilityElement(children: .combine)
-            .accessibilityLabel(ifPresent: invalidLabel)
+            .modifier(InvalidSetupPrefix(active: result.warningMessage != nil))
 
             if !result.driveRoles.isEmpty {
                 DriveStrip(roles: result.driveRoles, groupSize: result.groupSize)
@@ -495,15 +479,19 @@ struct CapacitySummary: View {
     }
 }
 
-extension View {
-    /// Replaces a combined element's label when `label` is non-nil. Used to put
-    /// “Not a valid setup.” ahead of the figures so VoiceOver doesn't read
-    /// dimmed numbers as a real result; the caller rebuilds the rest of the label.
-    @ViewBuilder func accessibilityLabel(ifPresent label: String?) -> some View {
-        if let label {
-            accessibilityLabel(label)
+/// Puts “Not a valid setup.” ahead of a combined element's own label, so
+/// VoiceOver doesn't read dimmed figures as a real result.
+struct InvalidSetupPrefix: ViewModifier {
+    let active: Bool
+
+    @ViewBuilder func body(content: Content) -> some View {
+        if active {
+            content.accessibilityLabel { label in
+                Text("invalid_setup_prefix".localized())
+                label
+            }
         } else {
-            self
+            content
         }
     }
 }
