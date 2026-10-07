@@ -345,6 +345,12 @@ SHOTS = [
     ("duo-outer-2034x1398", "02-rebuild-caution", "duo-outer-2034x1398/02-rebuild-caution-dark.png", DUO_OL, "indigo", "duo-outer", REBUILD),
 ]
 
+# App Store Connect also takes 1206x2622 and 1179x2556 for iPhone. Same six
+# images, laid out natively from the Pro Max raws (aspect ratios match to 0.2%).
+for _size in ((1206, 2622), (1179, 2556)):
+    SHOTS += [(f"iphone-{_size[0]}x{_size[1]}",) + shot[1:3] + (_size,) + shot[4:]
+              for shot in SHOTS if shot[0] == "iphone-1320x2868"]
+
 # Header / search images, each laid out natively:
 # (file name, size, headline column width, raw, device, headline, bleed[, eyebrow]).
 # 21:9 (3840x1646) is the product page header; 16:9 serves both; 3:2 is search.
