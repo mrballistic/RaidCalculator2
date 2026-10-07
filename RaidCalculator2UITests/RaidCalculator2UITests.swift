@@ -37,9 +37,9 @@ final class RaidCalculator2UITests: XCTestCase {
         return app
     }
 
-    /// Opens the NAS tab with known drives. An empty current setup means
-    /// “nothing saved yet”: the app takes the launch setup (whatever the
-    /// system) as current, so no comparison row appears until something changes.
+    /// Opens the NAS tab with known drives. An empty current setup and a
+    /// false saved flag mean a fresh install: nothing is compared until the
+    /// user taps Save as Current Setup, which saves the launch drives.
     @MainActor
     private func launchNAS(system: String = "synology", bays: String = "[4,4,8,8]", bayCount: Int = 4) -> XCUIApplication {
         let hex = bays.data(using: .utf8)!.map { String(format: "%02x", $0) }.joined()
@@ -51,6 +51,7 @@ final class RaidCalculator2UITests: XCTestCase {
             "-synology.bays", "<\(hex)>",
             "-nas.settings", "",
             "-nas.currentSetup", "",
+            "-nas.hasSavedCurrent", "NO",
             "-AppleLanguages", "(en)",
             "-AppleLocale", "en_US",
         ]
@@ -673,6 +674,11 @@ final class RaidCalculator2UITests: XCTestCase {
         let app = launchNAS()
         let compare = app.buttons["compareSystems"]
         XCTAssertTrue(compare.waitForExistence(timeout: 5))
+        // Save [4, 4, 8, 8] in SHR first, so the switch is compared with it.
+        let save = app.buttons["saveAsCurrent"]
+        reveal(save, in: app)
+        save.tap()
+        reveal(compare, in: app, scrollingDown: false)
         compare.tap()
         let zfs = app.buttons["compare_zfs"]
         XCTAssertTrue(zfs.waitForExistence(timeout: 3))
@@ -681,9 +687,67 @@ final class RaidCalculator2UITests: XCTestCase {
         let gone = expectation(for: NSPredicate(format: "exists == false"), evaluatedWith: zfs)
         wait(for: [gone], timeout: 3)
         XCTAssertEqual(nasCapacity(app), tb(12))
+        let delta = app.descendants(matching: .any).matching(identifier: "usableDelta").firstMatch
+        reveal(delta, in: app)
+        XCTAssertTrue(delta.label.contains("−4"), delta.label)
         let bay4 = app.buttons["bay4"]
         reveal(bay4, in: app)
         XCTAssertTrue(bay4.label.contains(tb(8)), bay4.label)
+    }
+
+    /// A fresh install's drives are only a sample, so the first edit isn't
+    /// compared with them: the section asks for a save first. Once saved,
+    /// it says what it compares with.
+    @MainActor
+    func testFreshInstallAsksToSaveFirst() throws {
+        let app = launchNAS()
+        XCTAssertTrue(app.staticTexts.matching(identifier: "nasUsableCapacity").firstMatch.waitForExistence(timeout: 5))
+        app.buttons["nasSystem"].tap()
+        app.buttons["Btrfs RAID1"].tap()
+        let save = app.buttons["saveAsCurrent"]
+        reveal(save, in: app)
+        XCTAssertTrue(app.staticTexts["Save your drives to compare upgrades against them."].exists)
+        XCTAssertFalse(app.descendants(matching: .any).matching(identifier: "usableDelta").firstMatch.exists)
+        XCTAssertFalse(app.staticTexts["currentBaseline"].exists)
+
+        save.tap()
+        let baseline = app.staticTexts["currentBaseline"]
+        XCTAssertTrue(baseline.waitForExistence(timeout: 2))
+        XCTAssertEqual(baseline.label, "Current: \(tb(12)) usable · Btrfs RAID1 · 4 bays")
+        XCTAssertFalse(app.staticTexts["Save your drives to compare upgrades against them."].exists)
+    }
+
+    /// Revert asks first, and dismissing the question keeps the edit.
+    @MainActor
+    func testRevertAsksForConfirmation() throws {
+        let app = launchNAS()
+        XCTAssertTrue(app.staticTexts.matching(identifier: "nasUsableCapacity").firstMatch.waitForExistence(timeout: 5))
+        let save = app.buttons["saveAsCurrent"]
+        reveal(save, in: app)
+        save.tap()
+        XCTAssertEqual(app.staticTexts["currentBaseline"].label, "Current: \(tb(16)) usable · Synology SHR · 4 bays")
+        reveal(app.buttons["nasSystem"], in: app, scrollingDown: false)
+        app.buttons["nasSystem"].tap()
+        app.buttons["ZFS"].tap()
+        let revert = app.buttons["revertToCurrent"]
+        reveal(revert, in: app)
+
+        revert.tap()
+        XCTAssertTrue(app.staticTexts["Revert to your current setup?"].waitForExistence(timeout: 3))
+        // Since iOS 26 the dialog is a popover from the button: Cancel is
+        // tapping outside it rather than a button, where there's no Cancel.
+        let cancel = app.buttons["Cancel"]
+        if cancel.exists { cancel.tap() } else { app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.12)).tap() }
+        XCTAssertTrue(app.staticTexts["Revert to your current setup?"].waitForNonExistence(timeout: 3))
+        XCTAssertEqual(nasCapacity(app), tb(12), "Cancel keeps the edit")
+
+        reveal(revert, in: app)
+        revert.tap()
+        XCTAssertTrue(app.staticTexts["Revert to your current setup?"].waitForExistence(timeout: 3))
+        // The dialog's own Revert, not the row behind it.
+        app.buttons.matching(NSPredicate(format: "label == 'Revert' AND identifier != 'revertToCurrent'")).firstMatch.tap()
+        XCTAssertTrue(revert.waitForNonExistence(timeout: 3))
+        XCTAssertEqual(nasCapacity(app), tb(16))
     }
 
     /// A stored value from 1.5 ("synology") opens the RAID tab. (Review Focus 5)

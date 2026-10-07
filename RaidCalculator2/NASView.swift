@@ -19,6 +19,7 @@ struct NASView: View {
     @State private var showingInfo = false
     @State private var showingComparison = false
     @State private var pendingSystem: NASSystem?
+    @State private var confirmingRevert = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
@@ -161,23 +162,54 @@ struct NASView: View {
             .transition(.opacity)
         }
 
-        if let delta = viewModel.usableDelta {
+        currentSetupSection
+    }
+
+    /// Changes are compared only with a setup the owner saved: the sample
+    /// drives on a fresh install aren't theirs, so until then it only offers
+    /// to save. Once saved, it says what the comparison is against.
+    @ViewBuilder private var currentSetupSection: some View {
+        if viewModel.hasSavedCurrent {
             Section("compared_header".localized()) {
-                LabeledContent("usable_capacity".localized()) {
-                    Text(Self.signed(delta))
-                        .monospacedDigit()
-                        .contentTransition(.numericText())
-                        .foregroundStyle(delta > 0 ? AnyShapeStyle(.tint) : AnyShapeStyle(.secondary))
-                }
-                .accessibilityIdentifier("usableDelta")
-                Button("save_as_current".localized()) {
-                    withAnimation(motion) { viewModel.saveAsCurrent() }
-                }
-                Button("revert".localized(), role: .destructive) {
-                    withAnimation(motion) { viewModel.revertToCurrent() }
+                Text(Self.baseline(viewModel.currentSummary))
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .accessibilityIdentifier("currentBaseline")
+                if let delta = viewModel.usableDelta {
+                    LabeledContent("usable_capacity".localized()) {
+                        Text(Self.signed(delta))
+                            .monospacedDigit()
+                            .contentTransition(.numericText())
+                            .foregroundStyle(delta > 0 ? AnyShapeStyle(.tint) : AnyShapeStyle(.secondary))
+                    }
+                    .accessibilityIdentifier("usableDelta")
+                    saveAsCurrentButton
+                    Button("revert".localized(), role: .destructive) {
+                        confirmingRevert = true
+                    }
+                    .accessibilityIdentifier("revertToCurrent")
+                    .confirmationDialog("revert_confirm_title".localized(), isPresented: $confirmingRevert, titleVisibility: .visible) {
+                        Button("revert".localized(), role: .destructive) {
+                            withAnimation(motion) { viewModel.revertToCurrent() }
+                        }
+                        Button("cancel".localized(), role: .cancel) {}
+                    }
                 }
             }
+        } else {
+            Section {
+                saveAsCurrentButton
+            } footer: {
+                Text("save_current_prompt_footer".localized())
+            }
         }
+    }
+
+    private var saveAsCurrentButton: some View {
+        Button("save_as_current".localized()) {
+            withAnimation(motion) { viewModel.saveAsCurrent() }
+        }
+        .accessibilityIdentifier("saveAsCurrent")
     }
 
     @ViewBuilder private var drivesSection: some View {
@@ -347,6 +379,13 @@ struct NASView: View {
     /// A no-break space keeps “4 TB” from wrapping between number and unit.
     static func tb(_ value: Double) -> String {
         CapacitySummary.capacity(value, unit: CapacityUnit.tb.rawValue).replacingOccurrences(of: " ", with: "\u{00A0}")
+    }
+
+    /// “Current: 16 TB usable · Synology SHR · 4 bays”. Only Synology has a
+    /// type to name; system names stay untranslated.
+    static func baseline(_ summary: (usable: Double, system: NASSystem, typeLabel: String?, bays: Int)) -> String {
+        let system = [summary.system.displayName, summary.typeLabel].compactMap { $0 }.joined(separator: " ")
+        return String(format: "current_baseline".localized(), tb(summary.usable), system, summary.bays)
     }
 
     /// The sign goes on the amount, inside the phrase, so Japanese reads
