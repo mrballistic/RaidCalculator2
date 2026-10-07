@@ -17,6 +17,10 @@ struct TwoColumnLayout<Results: View, Inputs: View>: View {
 
     var body: some View {
         columns
+            // The fold strip, the gap between panes and the band under the
+            // navigation bar (tab picker and info button) show the grouped
+            // gray behind both Forms, not the white window background.
+            .background(Color(.systemGroupedBackground).ignoresSafeArea())
             // UI tests detect the two-column layout by this identifier.
             // Keep it on whatever container holds the columns.
             .accessibilityElement(children: .contain)
@@ -60,10 +64,6 @@ struct TwoColumnLayout<Results: View, Inputs: View>: View {
             } action: { margins in
                 innerMargin = AdaptiveLayout.splitInnerMargin(leading: margins.leading, trailing: margins.trailing)
             }
-            // The split leaves a strip at the fold and a gap between the
-            // panes; without this they show the white window background
-            // instead of the grouped gray behind both Forms.
-            .background(Color(.systemGroupedBackground).ignoresSafeArea())
         } else {
             HStack(alignment: .top, spacing: 0) {
                 results
