@@ -311,6 +311,8 @@ struct ContentView: View {
                 }
                 .accessibilityLabel(String(format: "about_level".localized(), viewModel.selectedLevel.displayName))
                 .accessibilityIdentifier("raidInfo")
+                // In pane mode the button also closes the info, so it reads as a toggle.
+                .accessibilityAddTraits(infoInPane && showingInfoSheet ? .isSelected : [])
                 .accessibilityFocused($infoButtonFocused)
             }
             ToolbarItemGroup(placement: .keyboard) {

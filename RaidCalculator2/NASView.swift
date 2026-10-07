@@ -283,6 +283,8 @@ struct NASView: View {
                 }
                 .accessibilityLabel(String(format: "about_level".localized(), viewModel.system.displayName))
                 .accessibilityIdentifier("nasInfo")
+                // In pane mode the button also closes the info, so it reads as a toggle.
+                .accessibilityAddTraits(infoInPane && showingInfo ? .isSelected : [])
                 .accessibilityFocused($infoButtonFocused)
             }
         }
