@@ -30,6 +30,13 @@ struct NASView: View {
         AdaptiveLayout.usesTwoColumns(isRegularWidth: horizontalSizeClass == .regular, width: contentWidth)
     }
 
+    /// iPhone Duo has a fold region (flat or folded); iPad never does.
+    @State private var hasFold = false
+    /// On iPhone Duo the system sheet lands over the results, so beside them
+    /// the info takes the inputs' place instead. iPad keeps the sheet.
+    private var infoInPane: Bool { twoColumns && hasFold }
+    @AccessibilityFocusState private var infoButtonFocused: Bool
+
     @ViewBuilder private var summarySection: some View {
         let result = viewModel.result
         Section {
@@ -194,7 +201,7 @@ struct NASView: View {
     var body: some View {
         Group {
             if twoColumns {
-                TwoColumnLayout {
+                TwoColumnLayout(showsInfo: infoInPane && showingInfo) {
                     Form {
                         summarySection
                         Section("compare_header".localized()) {
@@ -209,6 +216,9 @@ struct NASView: View {
                         setupSection
                         drivesSection
                     }
+                } info: {
+                    InfoSheet(topic: .system(viewModel.system))
+                        .environment(\.closeInfo) { withAnimation(motion) { showingInfo = false } }
                 }
             } else {
                 // Setup sits above every section that comes and goes, so the
@@ -231,17 +241,31 @@ struct NASView: View {
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
-                    showingInfo = true
+                    if infoInPane {
+                        withAnimation(motion) { showingInfo.toggle() }
+                    } else {
+                        showingInfo = true
+                    }
                 } label: {
                     Image(systemName: "info")
                 }
                 .accessibilityLabel(String(format: "about_level".localized(), viewModel.system.displayName))
                 .accessibilityIdentifier("nasInfo")
+                .accessibilityFocused($infoButtonFocused)
             }
         }
-        .sheet(isPresented: $showingInfo) {
+        .sheet(isPresented: Binding(
+            get: { showingInfo && !infoInPane },
+            // The pane has no binding; don't let the idle sheet close it.
+            set: { if !infoInPane { showingInfo = $0 } }
+        )) {
             InfoSheet(topic: .system(viewModel.system))
         }
+        .onChange(of: showingInfo) { _, open in
+            // Back to the info button once the pane closes.
+            if !open, infoInPane { infoButtonFocused = true }
+        }
+        .readsFold($hasFold)
         .sheet(isPresented: $showingComparison, onDismiss: {
             // Applied once the sheet is gone, so the bays visibly re-split.
             if let system = pendingSystem {

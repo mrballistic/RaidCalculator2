@@ -8,9 +8,12 @@
 
 import SwiftUI
 
-struct TwoColumnLayout<Results: View, Inputs: View>: View {
+struct TwoColumnLayout<Results: View, Inputs: View, Info: View>: View {
+    /// Show `info` in place of the inputs (iPhone Duo; see `readsFold`).
+    var showsInfo = false
     @ViewBuilder var results: Results
     @ViewBuilder var inputs: Inputs
+    @ViewBuilder var info: Info
 
     /// Each pane's margin at the split, from the system container margins.
     @State private var innerMargin: CGFloat = 16
@@ -55,7 +58,7 @@ struct TwoColumnLayout<Results: View, Inputs: View>: View {
                 results
                     .contentMargins(.trailing, innerMargin, for: .scrollContent)
             } secondary: {
-                inputs
+                inputsPane
                     .contentMargins(.leading, innerMargin, for: .scrollContent)
             }
             .arrangementViewStyle(.split)
@@ -68,8 +71,53 @@ struct TwoColumnLayout<Results: View, Inputs: View>: View {
             HStack(alignment: .top, spacing: 0) {
                 results
                 Divider()
-                inputs
+                inputsPane
             }
+        }
+    }
+
+    /// The inputs, or the info over them in the same place. The inputs stay
+    /// underneath, hidden, so their scroll position survives.
+    private var inputsPane: some View {
+        ZStack {
+            inputs
+                .opacity(showsInfo ? 0 : 1)
+                .allowsHitTesting(!showsInfo)
+                .accessibilityHidden(showsInfo)
+            if showsInfo {
+                info
+                    .environment(\.infoInPane, true)
+                    .transition(.opacity)
+            }
+        }
+    }
+}
+
+extension View {
+    /// Keeps `fold` true while the device has a fold region (iPhone Duo, flat
+    /// or folded; never iPad). A hardware feature rather than the idiom, so
+    /// the info goes in the inputs pane only where a system sheet would land
+    /// over the results. Always false before iOS 27.1.
+    func readsFold(_ fold: Binding<Bool>) -> some View {
+        modifier(FoldReader(fold: fold))
+    }
+}
+
+private struct FoldReader: ViewModifier {
+    @Binding var fold: Bool
+
+    func body(content: Content) -> some View {
+        if #available(iOS 27.1, *) {
+            content.background {
+                GeometryReader { proxy in
+                    let hasFold = !proxy.reservedRegions(kind: .division, options: .includeInactive).isEmpty
+                    Color.clear
+                        .onChange(of: hasFold, initial: true) { _, now in fold = now }
+                }
+                .accessibilityHidden(true)
+            }
+        } else {
+            content
         }
     }
 }

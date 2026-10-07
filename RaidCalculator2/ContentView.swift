@@ -24,6 +24,13 @@ struct ContentView: View {
         AdaptiveLayout.usesTwoColumns(isRegularWidth: horizontalSizeClass == .regular, width: contentWidth)
     }
 
+    /// iPhone Duo has a fold region (flat or folded); iPad never does.
+    @State private var hasFold = false
+    /// On iPhone Duo the system sheet lands over the results, so beside them
+    /// the info takes the inputs' place instead. iPad keeps the sheet.
+    private var infoInPane: Bool { twoColumns && hasFold }
+    @AccessibilityFocusState private var infoButtonFocused: Bool
+
     /// The answer and anything wrong with it.
     @ViewBuilder private var answerSections: some View {
         let result = viewModel.result
@@ -232,13 +239,16 @@ struct ContentView: View {
             if twoColumns {
                 // Results lead so reading and VoiceOver order match the
                 // stacked layout, where the answer comes first.
-                TwoColumnLayout {
+                TwoColumnLayout(showsInfo: infoInPane && showingInfoSheet) {
                     Form {
                         answerSections
                         ratingsSection
                     }
                 } inputs: {
                     Form { inputSections }
+                } info: {
+                    InfoSheet(topic: .level(viewModel.selectedLevel))
+                        .environment(\.closeInfo) { withAnimation(motion) { showingInfoSheet = false } }
                 }
             } else {
                 Form {
@@ -258,12 +268,17 @@ struct ContentView: View {
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
-                    showingInfoSheet = true
+                    if infoInPane {
+                        withAnimation(motion) { showingInfoSheet.toggle() }
+                    } else {
+                        showingInfoSheet = true
+                    }
                 } label: {
                     Image(systemName: "info")
                 }
                 .accessibilityLabel(String(format: "about_level".localized(), viewModel.selectedLevel.displayName))
                 .accessibilityIdentifier("raidInfo")
+                .accessibilityFocused($infoButtonFocused)
             }
             ToolbarItemGroup(placement: .keyboard) {
                 Spacer()
@@ -273,9 +288,18 @@ struct ContentView: View {
         .scrollDismissesKeyboard(.interactively)
         .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { contentWidth = $0 }
         .sensoryFeedback(.selection, trigger: viewModel.selectedLevel)
-        .sheet(isPresented: $showingInfoSheet) {
+        .sheet(isPresented: Binding(
+            get: { showingInfoSheet && !infoInPane },
+            // The pane has no binding; don't let the idle sheet close it.
+            set: { if !infoInPane { showingInfoSheet = $0 } }
+        )) {
             InfoSheet(topic: .level(viewModel.selectedLevel))
         }
+        .onChange(of: showingInfoSheet) { _, open in
+            // Back to the info button once the pane closes.
+            if !open, infoInPane { infoButtonFocused = true }
+        }
+        .readsFold($hasFold)
     }
 
     /// The segmented control shows only the standard levels; with a nested or

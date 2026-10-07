@@ -36,72 +36,109 @@ struct InfoTopic {
 struct InfoSheet: View {
     let topic: InfoTopic
     @Environment(\.dismiss) private var dismiss
+    /// Shown in place of the inputs pane rather than as a sheet: no
+    /// navigation bar of its own, so the title and Close are its first row.
+    @Environment(\.infoInPane) private var inPane
+    @Environment(\.closeInfo) private var closeInfo
+    /// VoiceOver moves to the title when the pane opens; a sheet gets this
+    /// from the system.
+    @AccessibilityFocusState private var titleFocused: Bool
 
     var body: some View {
-        NavigationStack {
-            List {
-                Section("overview".localized()) {
-                    Text(text("description"))
-                        .listRowBackground(Color.clear)
+        if inPane {
+            list
+                .task {
+                    // After the cross-fade, or VoiceOver keeps its place.
+                    try? await Task.sleep(for: .milliseconds(300))
+                    titleFocused = true
                 }
-
-                Section("pros".localized()) {
-                    ForEach(lines("pros"), id: \.self) { pro in
-                        bullet(pro, systemImage: "checkmark.circle.fill", tint: .green)
-                    }
-                }
-
-                Section("cons".localized()) {
-                    ForEach(lines("cons"), id: \.self) { con in
-                        bullet(con, systemImage: "xmark.circle.fill", tint: .red)
-                    }
-                }
-
-                Section("typical_use_cases".localized()) {
-                    ForEach(lines("use_cases"), id: \.self) { useCase in
-                        bullet(useCase, systemImage: "arrow.forward.circle.fill", tint: .secondary)
-                    }
-                }
-
-                if let calculation = optionalText("calculation") {
-                    Section {
-                        Text(calculation)
-                            .accessibilityIdentifier("howCalculated")
-                            .listRowBackground(Color.clear)
-                    } header: {
-                        Text("how_calculated".localized())
-                    } footer: {
-                        if topic.ratings == nil, let footnote { footnoteText(footnote) }
-                    }
-                }
-
-                if let ratings = topic.ratings {
-                    Section {
-                        RatingRow(title: "speed".localized(), rating: ratings.speed)
-                        RatingRow(title: "availability".localized(), rating: ratings.availability)
-                    } header: {
-                        Text("performance_ratings".localized())
-                    } footer: {
-                        VStack(alignment: .leading, spacing: 8) {
-                            Text("ratings_footnote".localized())
-                            if let footnote { footnoteText(footnote) }
+        } else {
+            NavigationStack {
+                list
+                    .navigationTitle(topic.title)
+                    .navigationBarTitleDisplayMode(.inline)
+                    .toolbar {
+                        ToolbarItem(placement: .topBarTrailing) {
+                            Button(role: .close) { dismiss() }
+                                .accessibilityIdentifier("closeInfo")
                         }
                     }
-                }
+            }
+        }
+    }
 
-                if topic.ratings == nil, optionalText("calculation") == nil, let footnote {
-                    Section {
-                    } footer: {
-                        footnoteText(footnote)
+    private var list: some View {
+        List {
+            if inPane {
+                HStack(alignment: .firstTextBaseline) {
+                    Text(topic.title)
+                        .font(.title2.bold())
+                        .accessibilityAddTraits(.isHeader)
+                        .accessibilityFocused($titleFocused)
+                        .accessibilityIdentifier("infoTitle")
+                    Spacer()
+                    Button(role: .close) { closeInfo?() }
+                        .buttonStyle(.bordered)
+                        .buttonBorderShape(.circle)
+                        .labelStyle(.iconOnly)
+                        .accessibilityIdentifier("closeInfo")
+                }
+                .listRowBackground(Color.clear)
+            }
+
+            Section("overview".localized()) {
+                Text(text("description"))
+                    .listRowBackground(Color.clear)
+            }
+
+            Section("pros".localized()) {
+                ForEach(lines("pros"), id: \.self) { pro in
+                    bullet(pro, systemImage: "checkmark.circle.fill", tint: .green)
+                }
+            }
+
+            Section("cons".localized()) {
+                ForEach(lines("cons"), id: \.self) { con in
+                    bullet(con, systemImage: "xmark.circle.fill", tint: .red)
+                }
+            }
+
+            Section("typical_use_cases".localized()) {
+                ForEach(lines("use_cases"), id: \.self) { useCase in
+                    bullet(useCase, systemImage: "arrow.forward.circle.fill", tint: .secondary)
+                }
+            }
+
+            if let calculation = optionalText("calculation") {
+                Section {
+                    Text(calculation)
+                        .accessibilityIdentifier("howCalculated")
+                        .listRowBackground(Color.clear)
+                } header: {
+                    Text("how_calculated".localized())
+                } footer: {
+                    if topic.ratings == nil, let footnote { footnoteText(footnote) }
+                }
+            }
+
+            if let ratings = topic.ratings {
+                Section {
+                    RatingRow(title: "speed".localized(), rating: ratings.speed)
+                    RatingRow(title: "availability".localized(), rating: ratings.availability)
+                } header: {
+                    Text("performance_ratings".localized())
+                } footer: {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("ratings_footnote".localized())
+                        if let footnote { footnoteText(footnote) }
                     }
                 }
             }
-            .navigationTitle(topic.title)
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button(role: .close) { dismiss() }
-                        .accessibilityIdentifier("closeInfo")
+
+            if topic.ratings == nil, optionalText("calculation") == nil, let footnote {
+                Section {
+                } footer: {
+                    footnoteText(footnote)
                 }
             }
         }
@@ -147,4 +184,11 @@ struct InfoSheet: View {
 
 #Preview {
     InfoSheet(topic: .level(.raid5))
+}
+
+extension EnvironmentValues {
+    /// Set by TwoColumnLayout when InfoSheet stands in for the inputs pane.
+    @Entry var infoInPane = false
+    /// Closes the info shown in the inputs pane.
+    @Entry var closeInfo: (@MainActor () -> Void)? = nil
 }
