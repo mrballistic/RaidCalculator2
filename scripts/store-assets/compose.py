@@ -330,9 +330,18 @@ SHOTS = [
     ("duo-outer-2034x1398", "02-rebuild-caution", "duo-outer-2034x1398/02-rebuild-caution-dark.png", DUO_OL, "indigo", "duo-outer", REBUILD),
 ]
 
-# Header / search images: each laid out natively. (size, headline column width)
-HEADERS = [((5244, 2950), 0.40), ((3840, 2560), 0.44), ((1920, 1280), 0.44)]
+# Header / search images, each laid out natively:
+# (file name, size, headline column width, raw, device, headline, bleed).
+# 21:9 (3840x1646) is the product page header; 16:9 serves both; 3:2 is search.
 HEADER_RAW = "iphone-1320x2868/01-usable-space-light.png"
+DUO_HEADER_RAW = "duo-inner-2853x2007/01-usable-space-light.png"
+HEADERS = [
+    ("header-5244x2950", (5244, 2950), 0.40, HEADER_RAW, "iphone", USABLE, True),
+    ("header-3840x2560", (3840, 2560), 0.44, HEADER_RAW, "iphone", USABLE, True),
+    ("header-1920x1280", (1920, 1280), 0.44, HEADER_RAW, "iphone", USABLE, True),
+    ("header-3840x1646", (3840, 1646), 0.40, HEADER_RAW, "iphone", USABLE, True),
+    ("header-3840x1646-duo", (3840, 1646), 0.36, DUO_HEADER_RAW, "duo-inner", DUO, False),
+]
 
 
 def main():
@@ -364,9 +373,13 @@ def main():
         print(compose(src, os.path.join(OUT, folder, f"{name}.png"), size, bg, headline, kind))
         sets.add(folder)
     if a.headers:
-        for (w, h), frac in HEADERS:
-            out = os.path.join(OUT, "header", f"header-{w}x{h}.png")
-            print(compose(latest(os.path.join(RAW, HEADER_RAW)), out, (w, h), "orange", USABLE, "iphone", frac, bleed=True))
+        for name, size, frac, raw, kind, headline, bleed in HEADERS:
+            src = latest(os.path.join(RAW, raw))
+            if not os.path.exists(src):
+                print(f"skip header/{name}: missing {src}", file=sys.stderr)
+                continue
+            out = os.path.join(OUT, "header", f"{name}.png")
+            print(compose(src, out, size, "orange", headline, kind, frac, bleed=bleed))
         sets.add("header")
     if a.contact:
         for folder in sorted(sets):
