@@ -59,8 +59,9 @@ final class RaidCalculator2UITests: XCTestCase {
         return app
     }
 
-    /// The two-column layout appears at regular width and at least 800 points
-    /// (AdaptiveLayout.twoColumnMinWidth), on iPad and on iPhone Duo's inner
+    /// The two-column layout appears at regular width, at least 800 points
+    /// wide and 600 tall (AdaptiveLayout.twoColumnMinWidth and
+    /// twoColumnMinHeight), on iPad and on iPhone Duo's inner
     /// display alike. The app marks that layout with an identifier, so skip
     /// unless it is actually showing.
     @MainActor
