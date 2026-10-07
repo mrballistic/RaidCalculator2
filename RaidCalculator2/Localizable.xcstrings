@@ -1703,7 +1703,7 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Current: %1$@ usable · %2$@ · %3$d bays"
+            "value" : "Current setup: %1$@ usable · %2$@ · %3$d bays"
           }
         },
         "es" : {
@@ -2164,7 +2164,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Introduce un tamaño de disco mayor que cero."
+            "value" : "Introduce un tamaño de unidad mayor que cero."
           }
         },
         "fr" : {
@@ -2229,7 +2229,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$d discos: %2$@"
+            "value" : "%1$d unidades: %2$@"
           }
         },
         "fr" : {
@@ -2294,7 +2294,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Grupo %1$d de %2$d, disco %3$d: %4$@"
+            "value" : "Grupo %1$d de %2$d, unidad %3$d: %4$@"
           }
         },
         "fr" : {
@@ -2424,7 +2424,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$d discos en %2$d grupos: %3$@"
+            "value" : "%1$d unidades en %2$d grupos: %3$@"
           }
         },
         "fr" : {
@@ -8729,7 +8729,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Reconstruir un %1$@ con discos tan grandes puede tardar días, y un segundo fallo durante la reconstrucción hace perder el conjunto. Considera %2$@."
+            "value" : "Reconstruir un %1$@ con unidades tan grandes puede tardar días, y un segundo fallo durante la reconstrucción hace perder el conjunto. Considera %2$@."
           }
         },
         "fr" : {
@@ -8812,7 +8812,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "これほど大容量のドライブでは%@の再構築に数日かかることがあり、その間に2台目が故障するとアレイ全体を失います。グループの幅を広げれば、ダブルパリティが使えます。"
+            "value" : "これほど大容量のドライブでは%@の再構築に数日かかることがあり、その間に2台目が故障するとアレイ全体を失います。グループの幅を広げれば、デュアルパリティが使えます。"
           }
         },
         "ko" : {
@@ -8830,13 +8830,13 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在这么大的硬盘上重建 %@ 可能需要数天，重建期间如再有一块硬盘故障，整个阵列都会丢失。组更宽的话，就可以使用双奇偶校验。"
+            "value" : "在这么大的硬盘上重建 %@ 可能需要数天，重建期间如再有一块硬盘故障，整个阵列都会丢失。组更宽的话，就可以使用双重校验。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在這麼大的硬碟上重建 %@ 可能需要數天，重建期間若再有一顆故障，就會遺失整個陣列。群組更寬的話，就能使用雙重同位。"
+            "value" : "在這麼大的硬碟上重建 %@ 可能需要數天，重建期間若再有一顆故障，就會遺失整個陣列。群組更寬的話，就能使用雙重同位元。"
           }
         }
       }
@@ -9580,13 +9580,13 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Enregistrez vos disques pour comparer les mises à niveau avec eux."
+            "value" : "Enregistrez vos disques pour les comparer aux mises à niveau."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Salva i dischi per confrontare con essi gli aggiornamenti."
+            "value" : "Salva i dischi attuali per confrontarli con gli aggiornamenti."
           }
         },
         "ja" : {
@@ -11459,7 +11459,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Usar %d discos"
+            "value" : "Usar %d unidades"
           }
         },
         "fr" : {
@@ -11524,7 +11524,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Usar %1$d discos en %2$d grupos"
+            "value" : "Usar %1$d unidades en %2$d grupos"
           }
         },
         "fr" : {

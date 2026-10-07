@@ -801,7 +801,7 @@ final class RaidCalculator2UITests: XCTestCase {
         save.tap()
         let baseline = app.staticTexts["currentBaseline"]
         XCTAssertTrue(baseline.waitForExistence(timeout: 2))
-        XCTAssertEqual(baseline.label, "Current: \(tb(12)) usable · Btrfs RAID1 · 4 bays")
+        XCTAssertEqual(baseline.label, "Current setup: \(tb(12)) usable · Btrfs RAID1 · 4 bays")
         XCTAssertFalse(app.staticTexts["Save your drives to compare upgrades against them."].exists)
     }
 
@@ -813,7 +813,7 @@ final class RaidCalculator2UITests: XCTestCase {
         let save = app.buttons["saveAsCurrent"]
         reveal(save, in: app)
         save.tap()
-        XCTAssertEqual(app.staticTexts["currentBaseline"].label, "Current: \(tb(16)) usable · Synology SHR · 4 bays")
+        XCTAssertEqual(app.staticTexts["currentBaseline"].label, "Current setup: \(tb(16)) usable · Synology SHR · 4 bays")
         reveal(app.buttons["nasSystem"], in: app, scrollingDown: false)
         app.buttons["nasSystem"].tap()
         app.buttons["ZFS"].tap()
