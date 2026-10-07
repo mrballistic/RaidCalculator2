@@ -87,7 +87,11 @@ struct RaidCalculator {
         guard terabytes >= 8 else { return nil }
         let safer: RaidLevel
         switch config.level {
-        case .raid5: return .suggest(.raid6)
+        case .raid5:
+            // RAID 6 needs a fourth drive; below that, warn without a level to move to.
+            var raid6 = config
+            raid6.level = .raid6
+            return validate(raid6) == nil ? .suggest(.raid6) : .warnOnly
         case .raid50: safer = .raid60
         case .raidz1: safer = .raidz2
         default: return nil

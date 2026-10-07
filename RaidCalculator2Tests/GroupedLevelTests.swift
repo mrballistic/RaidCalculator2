@@ -207,8 +207,11 @@ struct GroupedLevelTests {
         #expect(calculator.rebuildCaution(for: config) == .suggest(.raid60))
     }
 
-    @Test func raid5AlwaysSuggestsRaid6() {
-        for count in [3, 5, 12] {
+    // RAID 6 needs four drives, so three-drive RAID 5 only warns.
+    @Test func raid5SuggestsRaid6WhenItFits() {
+        let three = RaidConfiguration(level: .raid5, driveCount: 3, driveSize: 12, unit: .tb, groups: 1)
+        #expect(calculator.rebuildCaution(for: three) == .warnOnly)
+        for count in [4, 5, 12] {
             let config = RaidConfiguration(level: .raid5, driveCount: count, driveSize: 12, unit: .tb, groups: 1)
             #expect(calculator.rebuildCaution(for: config) == .suggest(.raid6))
         }

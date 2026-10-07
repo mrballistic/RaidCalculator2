@@ -524,6 +524,17 @@ final class RaidCalculator2UITests: XCTestCase {
         XCTAssertFalse(app.buttons["applyRebuildSuggestion"].exists)
     }
 
+    /// Three-drive RAID 5 can't become RAID 6, so the caution asks for a
+    /// fourth drive and offers no level to switch to.
+    @MainActor
+    func testThreeDriveRaid5CautionAsksForAFourthDrive() throws {
+        let app = launchApp(level: "R 5", drives: 3, size: 20)
+        let caution = app.staticTexts["narrowGroupCaution"]
+        XCTAssertTrue(caution.waitForExistence(timeout: 5))
+        XCTAssertTrue(caution.label.contains("A fourth drive would allow RAID 6."), caution.label)
+        XCTAssertFalse(app.buttons["applyRebuildSuggestion"].exists)
+    }
+
     /// Segmented controls stay near 13 pt at accessibility sizes, so both
     /// pickers become menus there.
     @MainActor

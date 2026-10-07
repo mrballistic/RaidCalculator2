@@ -72,7 +72,7 @@ struct ContentView: View {
                     caution(String(format: "rebuild_caution_level".localized(), viewModel.selectedLevel.displayName, safer.displayName))
                     useLevelButton(safer)
                 case .warnOnly:
-                    caution(String(format: "rebuild_caution_narrow".localized(), viewModel.selectedLevel.displayName))
+                    caution(String(format: warnOnlyCautionKey.localized(), viewModel.selectedLevel.displayName))
                         .accessibilityIdentifier("narrowGroupCaution")
                 case nil:
                     EmptyView()
@@ -374,6 +374,13 @@ struct ContentView: View {
 
     private func caution(_ text: String) -> some View {
         AdvisoryLabel(text: text)
+    }
+
+    /// A caution with no level to move to: RAID 5 is short of the fourth
+    /// drive RAID 6 needs; RAID 50 and RAID-Z1 have groups too narrow for
+    /// dual parity.
+    private var warnOnlyCautionKey: String {
+        viewModel.selectedLevel == .raid5 ? "rebuild_caution_add_drive" : "rebuild_caution_narrow"
     }
 
     /// Switches to the level a caution suggests.
