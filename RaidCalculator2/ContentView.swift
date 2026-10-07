@@ -299,6 +299,9 @@ struct ContentView: View {
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
                     if infoInPane {
+                        // The info covers the drive-size field; don't leave
+                        // its keyboard up over the results.
+                        sizeFieldFocused = false
                         withAnimation(motion) { showingInfoSheet.toggle() }
                     } else {
                         showingInfoSheet = true
