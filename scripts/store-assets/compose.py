@@ -63,10 +63,10 @@ for name, pair in BACKGROUNDS.items():
     assert contrast(pair["bg"], pair["ink"]) >= 4.5, f"{name}: headline contrast below 4.5:1"
 
 
-def font(px):
+def font(px, weight=700):
     f = ImageFont.truetype(SF, max(8, round(px)))
     # Axes: Width, Optical Size, GRAD, Weight. 96 is the display cut.
-    f.set_variation_by_axes([100, 96, 400, 700])
+    f.set_variation_by_axes([100, 96, 400, weight])
     return f
 
 
@@ -203,12 +203,16 @@ def place(canvas, body, x, y):
     canvas.alpha_composite(visible, (max(0, x), max(0, y)))
 
 
-def compose(raw, out, size, bg, headline, kind, text_frac=0.20, bleed=False):
+def compose(raw, out, size, bg, headline, kind, text_frac=0.20, bleed=False, eyebrow=None):
     """Portrait canvases: headline on top, device beneath. Landscape canvases:
     headline in a left column `text_frac` of the width, device on the right.
     With `bleed` (headers: a portrait phone on a wide canvas) the phone runs
-    off the bottom edge so it can be large while its top stays in the safe area."""
+    off the bottom edge so it can be large while its top stays in the safe area.
+    `eyebrow` (landscape only) is a secondary line above the headline, in
+    Medium at 45% of the headline's size."""
     check_copy(headline)
+    if eyebrow:
+        check_copy(eyebrow)
     W, H = size
     pal = BACKGROUNDS[bg]
     canvas = Image.new("RGBA", size, pal["bg"] + (255,))
@@ -234,7 +238,7 @@ def compose(raw, out, size, bg, headline, kind, text_frac=0.20, bleed=False):
     else:
         # Landscape: headline left, device right, the pair centred as one
         # group inside the middle ~88% width.
-        if bleed:
+        if bleed or eyebrow:
             f, lines = fit_headline(d, headline, W * text_frac, H * 0.09, max_lines=2, floor=0.6)
         else:
             # Prefer three lines unless that costs more than 20% in size
@@ -246,6 +250,14 @@ def compose(raw, out, size, bg, headline, kind, text_frac=0.20, bleed=False):
         asc, desc = f.getmetrics()
         text_h = round((asc + desc) * 1.08) * len(lines) - round((asc + desc) * 0.08)
         text_w = max(d.textlength(l, font=f) for l in lines)
+        eb = None
+        if eyebrow:
+            ef = font(f.size * 0.45, weight=510)
+            e_asc, e_desc = ef.getmetrics()
+            e_gap = round(f.size * 0.30)
+            text_w = max(text_w, d.textlength(eyebrow, font=ef))
+            eb = (ef, e_asc + e_desc + e_gap)
+            text_h += eb[1]
         gap = W * 0.04
         if bleed:
             # Phone 1.1x the canvas height, top at 12.5%, bottom cropped.
@@ -261,10 +273,13 @@ def compose(raw, out, size, bg, headline, kind, text_frac=0.20, bleed=False):
         if bleed:
             # Centre the headline on the visible part of the phone.
             text_y = (y + H) / 2 - text_h / 2 - desc / 2
-        draw_text = (lines, f, x0, text_w, text_y)
+        draw_text = (lines, f, x0, text_w, text_y, eyebrow, eb)
     place(canvas, body, x, y)
     if draw_text:
-        lines, f, tx, tw, ty = draw_text
+        lines, f, tx, tw, ty, eyebrow, eb = draw_text
+        if eyebrow:
+            d.text((tx, ty), eyebrow, font=eb[0], fill=pal["ink"])
+            ty += eb[1]
         draw_lines(d, lines, f, pal["ink"], tx, tw, ty, "left")
     os.makedirs(os.path.dirname(out), exist_ok=True)
     canvas.convert("RGB").save(out, "PNG", optimize=True)
@@ -331,16 +346,16 @@ SHOTS = [
 ]
 
 # Header / search images, each laid out natively:
-# (file name, size, headline column width, raw, device, headline, bleed).
+# (file name, size, headline column width, raw, device, headline, bleed[, eyebrow]).
 # 21:9 (3840x1646) is the product page header; 16:9 serves both; 3:2 is search.
 HEADER_RAW = "iphone-1320x2868/01-usable-space-light.png"
 DUO_HEADER_RAW = "duo-inner-2853x2007/01-usable-space-light.png"
 HEADERS = [
-    ("header-5244x2950", (5244, 2950), 0.40, HEADER_RAW, "iphone", USABLE, True),
-    ("header-3840x2560", (3840, 2560), 0.44, HEADER_RAW, "iphone", USABLE, True),
-    ("header-1920x1280", (1920, 1280), 0.44, HEADER_RAW, "iphone", USABLE, True),
-    ("header-3840x1646", (3840, 1646), 0.40, HEADER_RAW, "iphone", USABLE, True),
-    ("header-3840x1646-duo", (3840, 1646), 0.36, DUO_HEADER_RAW, "duo-inner", DUO, False),
+    ("header-5244x2950", (5244, 2950), 0.40, HEADER_RAW, "iphone", USABLE, True, None),
+    ("header-3840x2560", (3840, 2560), 0.44, HEADER_RAW, "iphone", USABLE, True, None),
+    ("header-1920x1280", (1920, 1280), 0.44, HEADER_RAW, "iphone", USABLE, True, None),
+    ("header-3840x1646", (3840, 1646), 0.40, HEADER_RAW, "iphone", USABLE, True, None),
+    ("header-3840x1646-duo", (3840, 1646), 0.40, DUO_HEADER_RAW, "duo-inner", USABLE, False, DUO),
 ]
 
 
@@ -373,13 +388,13 @@ def main():
         print(compose(src, os.path.join(OUT, folder, f"{name}.png"), size, bg, headline, kind))
         sets.add(folder)
     if a.headers:
-        for name, size, frac, raw, kind, headline, bleed in HEADERS:
+        for name, size, frac, raw, kind, headline, bleed, eyebrow in HEADERS:
             src = latest(os.path.join(RAW, raw))
             if not os.path.exists(src):
                 print(f"skip header/{name}: missing {src}", file=sys.stderr)
                 continue
             out = os.path.join(OUT, "header", f"{name}.png")
-            print(compose(src, out, size, "orange", headline, kind, frac, bleed=bleed))
+            print(compose(src, out, size, "orange", headline, kind, frac, bleed=bleed, eyebrow=eyebrow))
         sets.add("header")
     if a.contact:
         for folder in sorted(sets):
