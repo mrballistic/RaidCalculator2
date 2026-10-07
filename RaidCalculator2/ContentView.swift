@@ -69,6 +69,7 @@ struct ContentView: View {
             Section {
                 if let safer = viewModel.rebuildCautionSuggestion {
                     caution(String(format: "rebuild_caution_level".localized(), viewModel.selectedLevel.displayName, safer.displayName))
+                    useLevelButton(safer)
                 }
                 if let width = viewModel.wideZFSGroupWidth {
                     caution(String(format: (viewModel.groups > 1 ? "wide_zfs_group_caution" : "wide_zfs_group_caution_single").localized(), width))
@@ -330,13 +331,34 @@ struct ContentView: View {
     private var motion: Animation? { reduceMotion ? nil : .snappy }
 
     private func caution(_ text: String) -> some View {
+        AdvisoryLabel(text: text)
+    }
+
+    /// Switches to the level a caution suggests.
+    private func useLevelButton(_ level: RaidLevel) -> some View {
+        Button(String(format: "use_level".localized(), level.displayName)) {
+            withAnimation(motion) { viewModel.selectedLevel = level }
+        }
+        .accessibilityIdentifier("applyRebuildSuggestion")
+    }
+}
+
+/// Advice about a setup that works: an orange info symbol rather than the
+/// error triangle, so it never reads as something being wrong. VoiceOver
+/// reads the text, then the hint that it's advice; the symbol stays silent.
+struct AdvisoryLabel: View {
+    let text: String
+
+    var body: some View {
         Label {
             Text(text)
                 .font(.subheadline)
         } icon: {
-            Image(systemName: "exclamationmark.triangle.fill")
-                .symbolRenderingMode(.multicolor)
+            Image(systemName: "info.circle.fill")
+                .foregroundStyle(.orange)
+                .accessibilityHidden(true)
         }
+        .accessibilityHint("advisory_hint".localized())
     }
 }
 

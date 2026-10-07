@@ -149,13 +149,13 @@ struct NASView: View {
         if !viewModel.hints.isEmpty {
             Section {
                 ForEach(viewModel.hints, id: \.self) { hint in
-                    Label {
-                        Text(Self.text(for: hint))
-                            .font(.subheadline)
-                            .accessibilityIdentifier("nasHint")
-                    } icon: {
-                        Image(systemName: "exclamationmark.triangle.fill")
-                            .symbolRenderingMode(.multicolor)
+                    AdvisoryLabel(text: Self.text(for: hint))
+                        .accessibilityIdentifier("nasHint")
+                    if case .snapraidParity(let recommended, _) = hint {
+                        Button(String(format: "use_parity_count".localized(), recommended)) {
+                            withAnimation(motion) { viewModel.settings.setParity(recommended, for: .snapraid) }
+                        }
+                        .accessibilityIdentifier("applyParityHint")
                     }
                 }
             }

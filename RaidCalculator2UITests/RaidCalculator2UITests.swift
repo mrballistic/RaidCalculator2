@@ -21,12 +21,12 @@ final class RaidCalculator2UITests: XCTestCase {
     /// Launches with a known configuration. Launch arguments override the
     /// persisted UserDefaults, so each test starts from RAID 5, 4 × 4 TB.
     @MainActor
-    private func launchApp(level: String = "R 5", drives: Int = 4, groups: Int = 1, language: String = "en", locale: String = "en_US", contentSize: String? = nil) -> XCUIApplication {
+    private func launchApp(level: String = "R 5", drives: Int = 4, size: Int = 4, groups: Int = 1, language: String = "en", locale: String = "en_US", contentSize: String? = nil) -> XCUIApplication {
         let app = XCUIApplication()
         app.launchArguments += [
             "-selectedLevel", level,
             "-driveCount", "\(drives)",
-            "-driveSize", "4",
+            "-driveSize", "\(size)",
             "-groups", "\(groups)",
             "-unit", "TB",
             "-AppleLanguages", "(\(language))",
@@ -494,6 +494,21 @@ final class RaidCalculator2UITests: XCTestCase {
         XCTAssertTrue(note.label.contains("as ZFS reports it (estimate)"), note.label)
     }
 
+    /// RAID 5 on 20 TB drives gets the rebuild caution, and its button
+    /// switches to the suggested RAID 6, which needs no caution.
+    @MainActor
+    func testRebuildCautionOffersSaferLevel() throws {
+        let app = launchApp(level: "R 5", drives: 8, size: 20)
+        let fix = app.buttons["applyRebuildSuggestion"]
+        XCTAssertTrue(fix.waitForExistence(timeout: 5))
+        XCTAssertEqual(fix.label, "Use RAID 6")
+        fix.tap()
+
+        XCTAssertTrue(app.segmentedControls.firstMatch.buttons["RAID 6"].isSelected)
+        XCTAssertTrue(fix.waitForNonExistence(timeout: 5))
+        XCTAssertTrue(capacity(app).hasPrefix("Usable Capacity, 120 TB,"), capacity(app))
+    }
+
     /// A RAID-Z group wider than 12 drives gets the slow-rebuild caution.
     @MainActor
     func testWideRaidZGroupCaution() throws {
@@ -650,6 +665,23 @@ final class RaidCalculator2UITests: XCTestCase {
         let hint = app.staticTexts["nasHint"]
         XCTAssertTrue(hint.waitForExistence(timeout: 5))
         XCTAssertTrue(hint.label.contains("recommends 2 parity drives"), hint.label)
+    }
+
+    /// The parity hint's button sets SnapRAID to the recommended parity, and
+    /// with 2 parity for 5 data drives the hint has nothing left to say.
+    @MainActor
+    func testSnapRAIDHintAppliesParity() throws {
+        let app = launchNAS(system: "snapraid", bays: "[8,8,8,8,8,8,8]", bayCount: 7)
+        XCTAssertTrue(app.staticTexts["nasHint"].waitForExistence(timeout: 5))
+        // The button is the row after the hint, below the fold on a phone.
+        let fix = app.buttons["applyParityHint"]
+        reveal(fix, in: app)
+        XCTAssertTrue(fix.exists)
+        XCTAssertEqual(fix.label, "Use 2 parity drives")
+        fix.tap()
+
+        XCTAssertTrue(app.staticTexts["nasHint"].waitForNonExistence(timeout: 5))
+        XCTAssertEqual(app.staticTexts["parityCount"].label.components(separatedBy: ", ").last, "2")
     }
 
     /// Unraid's info sheet carries its trademark line.
