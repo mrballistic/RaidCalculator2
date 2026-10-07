@@ -256,7 +256,14 @@ final class RaidCalculator2UITests: XCTestCase {
         XCTAssertFalse(done.isEnabled, "empty")
         field.typeText("5")
         XCTAssertTrue(done.isEnabled)
-        done.tap()
+        // With the keyboard up the alert slides above it after a short delay,
+        // so a tap on the frame read before the slide lands below the button
+        // and the alert stays. Tap again on the settled frame if it stays.
+        for _ in 0..<3 where app.alerts.firstMatch.exists {
+            Thread.sleep(forTimeInterval: 1)
+            if done.exists { done.tap() }
+        }
+        XCTAssertTrue(app.alerts.firstMatch.waitForNonExistence(timeout: 5), "Done dismisses the alert")
         XCTAssertTrue(bay1.label.contains(tb(5)), bay1.label)
     }
 
