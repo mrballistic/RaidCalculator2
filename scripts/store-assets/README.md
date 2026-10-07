@@ -12,16 +12,27 @@
   /tmp/raid-assets/venv/bin/pip install pillow
   ```
 
+## Folders
+
+```
+marketing/screenshots/1.7.0/
+  raw/<set>/<NN-scene>-light.png   uncomposed captures, both modes for every
+  raw/<set>/<NN-scene>-dark.png    scene, native size, status bar overridden
+  store/<set>/<NN-name>.png        composed App Store images
+  store/header/header-<WxH>.png    header / search images
+  store/contact-<set>.png          one contact sheet per set
+```
+
+`<set>` is the device and size, e.g. `iphone-1320x2868`, `ipad-2064x2752`, `duo-inner-2853x2007`, `duo-outer-1398x2034`. Raws are kept for the website as well as the store, so they are never overwritten or deleted: a re-capture is saved as `-v2`, `-v3`, and `compose.py` uses the newest version.
+
 ## Usage
 
-Raw captures go in `marketing/screenshots/1.7.0/raw/`; output goes to `marketing/screenshots/1.7.0/store/<set>/`.
-
 ```bash
-# every shot listed in SHOTS
-/tmp/raid-assets/venv/bin/python scripts/store-assets/compose.py
+# everything: all sets, header images, contact sheets
+/tmp/raid-assets/venv/bin/python scripts/store-assets/compose.py --headers --contact
 
-# one shot from SHOTS
-/tmp/raid-assets/venv/bin/python scripts/store-assets/compose.py --only 03-saved-setup
+# shots whose set or file name contains a string
+/tmp/raid-assets/venv/bin/python scripts/store-assets/compose.py --only iphone --contact
 
 # ad hoc
 /tmp/raid-assets/venv/bin/python scripts/store-assets/compose.py \
@@ -44,7 +55,7 @@ sips -g pixelWidth -g pixelHeight -g hasAlpha marketing/screenshots/1.7.0/store/
 Use the iPhone 17 Pro Max simulator (1320 × 2868 natively). Override the status bar first:
 
 ```bash
-xcrun simctl status_bar <udid> override --time 9:41 --batteryState charged --batteryLevel 100 --cellularBars 4 --wifiBars 3
+xcrun simctl status_bar <udid> override --time 9:41 --batteryState discharging --batteryLevel 100 --cellularBars 4 --wifiBars 3
 xcrun simctl ui <udid> appearance light   # or dark
 ```
 
@@ -58,3 +69,16 @@ xcrun simctl launch <udid> <bundle-id> -selectedTab nas -nas.system synology -na
 ```
 
 States that need a scroll or a tap need a temporary UI test that saves `XCUIScreen.main.screenshot()`; delete it afterwards. Clear the status bar override (`xcrun simctl status_bar <udid> clear`) when done.
+
+## iPhone Duo
+
+The pose and rotation can't be scripted, so set them by hand, then run one pose at a time:
+
+```bash
+scripts/store-assets/capture_duo.sh inner-landscape   # open, Device > Rotate Left
+scripts/store-assets/capture_duo.sh inner-portrait    # open, portrait
+scripts/store-assets/capture_duo.sh outer-portrait    # closed, portrait
+scripts/store-assets/capture_duo.sh outer-landscape   # closed, rotated (if Device Hub allows)
+```
+
+The script checks the capture size matches the pose and that the display is lit, sets the status bar, captures each scene in light and dark into `raw/duo-…/`, composes that set, and writes its contact sheet. It uses the “RAID Duo” simulator unless `DUO_UDID` is set.

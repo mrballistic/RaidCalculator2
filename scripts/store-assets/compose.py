@@ -11,8 +11,8 @@ Typeface: SF Pro Display (the variable /System/Library/Fonts/SFNS.ttf at a
 display optical size, Bold).
 
 Usage:
-  python compose.py                      render every shot in SHOTS
-  python compose.py --only 03-saved-setup
+  python compose.py --headers --contact  render everything, plus contact sheets
+  python compose.py --only iphone        shots whose set or name contains this
   python compose.py --raw shot.png --out out.png --size 1320x2868 \
       --bg orange --device iphone --headline "See what your next drive adds"
 
@@ -38,7 +38,7 @@ BACKGROUNDS = {
 # iPhone 17 Pro Max: about 62 pt corners on a 440 pt wide screen.
 DEVICES = {
     "iphone": {"radius": 0.141, "bezel": 0.024, "island": True},
-    "ipad": {"radius": 0.058, "bezel": 0.030, "island": False},
+    "ipad": {"radius": 0.035, "bezel": 0.030, "island": False},
     "duo-outer": {"radius": 0.090, "bezel": 0.024, "island": False},
     "duo-inner": {"radius": 0.060, "bezel": 0.020, "island": False},
 }
@@ -164,62 +164,124 @@ def device(shot, screen_w, kind):
     return body
 
 
-def compose(raw, out, size, bg, headline, kind):
+def compose(raw, out, size, bg, headline, kind, text_frac=0.30, device_h=0.80):
+    """Portrait canvases: headline on top, device beneath. Landscape canvases:
+    headline in the left `text_frac` of the width, device on the right at up
+    to `device_h` of the height (headers pass their own fractions)."""
     check_copy(headline)
     W, H = size
     pal = BACKGROUNDS[bg]
     canvas = Image.new("RGBA", size, pal["bg"] + (255,))
     d = ImageDraw.Draw(canvas)
     shot = Image.open(raw)
+    spec = DEVICES[kind]
+    b = spec["bezel"]
+    ratio = shot.height / shot.width
     if H >= W:
         # Headline across the top, device centred beneath it, all inside the
         # middle ~80% width.
         margin_top = H * 0.055
-        f, lines = fit_headline(d, headline, W * 0.84, W * 0.088)
+        f, lines = fit_headline(d, headline, W * 0.84, min(W, H / 2.17) * 0.088)
         text_h = draw_lines(d, lines, f, pal["ink"], 0, W, margin_top, "center")
         gap, bottom = H * 0.035, H * 0.035
         avail_h = H - (margin_top + text_h + gap) - bottom
-        spec = DEVICES[kind]
-        ratio = shot.height / shot.width
-        # Solve screen width so the framed device fits both ways.
-        b = spec["bezel"]
-        sw = min(W * 0.80 / (1 + 2 * b), avail_h / (ratio + 2 * b))
+        # Screen width so the framed device fits both ways (bezel scales
+        # with the screen's short side).
+        short = min(1, ratio)
+        sw = min(W * 0.80 / (1 + 2 * b * short), avail_h / (ratio + 2 * b * short))
         body = device(shot, round(sw), kind)
         x = (W - body.width) // 2
         y = round(margin_top + text_h + gap + (avail_h - body.height) / 2)
         canvas.alpha_composite(body, (x, y))
     else:
-        # Landscape: headline on the left 36%, device on the right, both
-        # vertically centred inside the middle 75% height.
-        f, lines = fit_headline(d, headline, W * 0.30, H * 0.085, max_lines=3)
+        # Landscape: headline left, device right, the pair centred as one
+        # group inside the middle 80% width and vertically centred.
+        f, lines = fit_headline(d, headline, W * text_frac, H * 0.09, max_lines=3)
         asc, desc = f.getmetrics()
-        text_h = round((asc + desc) * 1.08) * len(lines)
-        draw_lines(d, lines, f, pal["ink"], W * 0.08, W * 0.30, (H - text_h) / 2, "left")
-        spec = DEVICES[kind]
-        ratio = shot.height / shot.width
-        max_w, max_h = W * 0.52, H * 0.80
-        sw = min(max_w, max_h / ratio)
+        text_h = round((asc + desc) * 1.08) * len(lines) - round((asc + desc) * 0.08)
+        text_w = max(d.textlength(l, font=f) for l in lines)
+        gap = W * 0.06
+        short = min(1, ratio)
+        room_w = W * 0.80 - text_w - gap
+        sw = min(room_w / (1 + 2 * b * short), H * device_h / (ratio + 2 * b * short))
         body = device(shot, round(sw), kind)
-        x = round(W * 0.92 - body.width)
-        y = (H - body.height) // 2
-        canvas.alpha_composite(body, (x, y))
+        x0 = (W - (text_w + gap + body.width)) / 2
+        draw_lines(d, lines, f, pal["ink"], x0, text_w, (H - text_h) / 2 - desc / 2, "left")
+        canvas.alpha_composite(body, (round(x0 + text_w + gap), (H - body.height) // 2))
     os.makedirs(os.path.dirname(out), exist_ok=True)
     canvas.convert("RGB").save(out, "PNG", optimize=True)
     return out
 
 
-# (set folder, file name, raw capture, size, background, device, headline)
+def latest(path):
+    """A raw is never overwritten; a re-capture is saved as -v2, -v3... Use the newest."""
+    base, ext = os.path.splitext(path)
+    n, best = 2, path
+    while os.path.exists(f"{base}-v{n}{ext}"):
+        best = f"{base}-v{n}{ext}"
+        n += 1
+    return best
+
+
+def contact_sheet(folder):
+    """One row of every image in a set, on neutral grey, beside the set."""
+    files = sorted(f for f in os.listdir(folder) if f.endswith(".png"))
+    if not files:
+        return None
+    ims = [Image.open(os.path.join(folder, f)).convert("RGB") for f in files]
+    h = 900 if ims[0].height >= ims[0].width else 560
+    thumbs = [im.resize((round(im.width * h / im.height), h), Image.LANCZOS) for im in ims]
+    gap = 24
+    sheet = Image.new("RGB", (sum(t.width for t in thumbs) + gap * (len(thumbs) + 1), h + 2 * gap), (236, 236, 238))
+    x = gap
+    for t in thumbs:
+        sheet.paste(t, (x, gap))
+        x += t.width + gap
+    out = os.path.join(os.path.dirname(folder.rstrip("/")), f"contact-{os.path.basename(folder.rstrip('/'))}.png")
+    sheet.save(out, "PNG", optimize=True)
+    return out
+
+
+# Raw captures live in raw/<set>/<NN-scene>-<light|dark>.png.
+IPHONE, IPAD = (1320, 2868), (2064, 2752)
+DUO_OP, DUO_OL, DUO_IP, DUO_IL = (1398, 2034), (2034, 1398), (2007, 2853), (2853, 2007)
+USABLE = "Know your real usable space"
+COMPARE = "Every system, same drives"
+SAVED = "See what your next drive adds"
+REBUILD = "Warns you before a risky rebuild"
+DUO = "Built for iPhone Duo"
+
+# (store set, file name, raw path under RAW, size, background, device, headline)
 SHOTS = [
-    ("iphone-1320x2868", "03-saved-setup", "iphone-nas-saved-light.png", (1320, 2868),
-     "orange", "iphone", "See what your next drive adds"),
-    ("iphone-1320x2868", "04-rebuild-caution", "iphone-raid5-caution-dark.png", (1320, 2868),
-     "indigo", "iphone", "Warns you before a risky rebuild"),
+    ("iphone-1320x2868", "01-usable-space", "iphone-1320x2868/01-usable-space-light.png", IPHONE, "orange", "iphone", USABLE),
+    ("iphone-1320x2868", "02-compare-systems", "iphone-1320x2868/02-compare-systems-light.png", IPHONE, "indigo", "iphone", COMPARE),
+    ("iphone-1320x2868", "03-saved-setup", "iphone-1320x2868/03-saved-setup-light.png", IPHONE, "orange", "iphone", SAVED),
+    ("iphone-1320x2868", "04-rebuild-caution", "iphone-1320x2868/04-rebuild-caution-dark.png", IPHONE, "indigo", "iphone", REBUILD),
+    ("iphone-1320x2868", "05-invalid-fix", "iphone-1320x2868/05-invalid-fix-light.png", IPHONE, "orange", "iphone", "One tap to a valid setup"),
+    ("iphone-1320x2868", "06-thirty-bays", "iphone-1320x2868/06-thirty-bays-light.png", IPHONE, "indigo", "iphone", "Up to 30 bays, drawn to scale"),
+    ("ipad-2064x2752", "01-usable-space", "ipad-2064x2752/01-usable-space-light.png", IPAD, "orange", "ipad", USABLE),
+    ("ipad-2064x2752", "02-rebuild-caution", "ipad-2064x2752/02-rebuild-caution-dark.png", IPAD, "indigo", "ipad", REBUILD),
+    ("ipad-2064x2752", "03-thirty-bays", "ipad-2064x2752/06-thirty-bays-light.png", IPAD, "orange", "ipad", "Up to 30 bays, drawn to scale"),
+    ("duo-inner-2853x2007", "01-built-for-duo", "duo-inner-2853x2007/01-usable-space-light.png", DUO_IL, "orange", "duo-inner", DUO),
+    ("duo-inner-2853x2007", "02-rebuild-caution", "duo-inner-2853x2007/02-rebuild-caution-dark.png", DUO_IL, "indigo", "duo-inner", REBUILD),
+    ("duo-inner-2007x2853", "01-built-for-duo", "duo-inner-2007x2853/01-usable-space-light.png", DUO_IP, "orange", "duo-inner", DUO),
+    ("duo-inner-2007x2853", "02-rebuild-caution", "duo-inner-2007x2853/02-rebuild-caution-dark.png", DUO_IP, "indigo", "duo-inner", REBUILD),
+    ("duo-outer-1398x2034", "01-usable-space", "duo-outer-1398x2034/01-usable-space-light.png", DUO_OP, "orange", "duo-outer", USABLE),
+    ("duo-outer-1398x2034", "02-rebuild-caution", "duo-outer-1398x2034/02-rebuild-caution-dark.png", DUO_OP, "indigo", "duo-outer", REBUILD),
+    ("duo-outer-2034x1398", "01-usable-space", "duo-outer-2034x1398/01-usable-space-light.png", DUO_OL, "orange", "duo-outer", USABLE),
+    ("duo-outer-2034x1398", "02-rebuild-caution", "duo-outer-2034x1398/02-rebuild-caution-dark.png", DUO_OL, "indigo", "duo-outer", REBUILD),
 ]
+
+# Header / search images: each laid out natively. (size, text width, device height)
+HEADERS = [((5244, 2950), 0.40, 0.75), ((3840, 2560), 0.42, 0.75), ((1920, 1280), 0.42, 0.75)]
+HEADER_RAW = "iphone-1320x2868/01-usable-space-light.png"
 
 
 def main():
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    p.add_argument("--only", help="render only this file name from SHOTS")
+    p.add_argument("--only", help="render only shots whose store set or file name contains this")
+    p.add_argument("--headers", action="store_true", help="also render the header / search images")
+    p.add_argument("--contact", action="store_true", help="also write a contact sheet per set")
     p.add_argument("--raw")
     p.add_argument("--out")
     p.add_argument("--size", help="WxH, e.g. 1320x2868")
@@ -233,14 +295,26 @@ def main():
         w, h = (int(v) for v in a.size.lower().split("x"))
         print(compose(a.raw, a.out, (w, h), a.bg, a.headline, a.device))
         return
+    sets = set()
     for folder, name, raw, size, bg, kind, headline in SHOTS:
-        if a.only and a.only != name:
+        if a.only and a.only not in folder and a.only not in name:
             continue
-        src = os.path.join(RAW, raw)
+        src = latest(os.path.join(RAW, raw))
         if not os.path.exists(src):
-            print(f"skip {name}: missing {src}", file=sys.stderr)
+            print(f"skip {folder}/{name}: missing {src}", file=sys.stderr)
             continue
         print(compose(src, os.path.join(OUT, folder, f"{name}.png"), size, bg, headline, kind))
+        sets.add(folder)
+    if a.headers:
+        for (w, h), frac, dev in HEADERS:
+            out = os.path.join(OUT, "header", f"header-{w}x{h}.png")
+            print(compose(latest(os.path.join(RAW, HEADER_RAW)), out, (w, h), "orange", USABLE, "iphone", frac, dev))
+        sets.add("header")
+    if a.contact:
+        for folder in sorted(sets):
+            sheet = contact_sheet(os.path.join(OUT, folder))
+            if sheet:
+                print(sheet)
 
 
 if __name__ == "__main__":
