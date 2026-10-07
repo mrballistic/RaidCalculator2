@@ -516,6 +516,38 @@ final class RaidCalculator2UITests: XCTestCase {
         XCTAssertTrue(capacity(app).hasPrefix("Usable Capacity, 120 TB,"), capacity(app))
     }
 
+    /// Segmented controls stay near 13 pt at accessibility sizes, so both
+    /// pickers become menus there.
+    @MainActor
+    func testPickersBecomeMenusAtAccessibilitySize() throws {
+        let app = launchApp(contentSize: "UICTContentSizeCategoryAccessibilityXXXL")
+        let level = app.buttons["levelPicker"]
+        reveal(level, in: app)
+        XCTAssertEqual(app.segmentedControls.count, 0)
+
+        level.tap()
+        XCTAssertTrue(app.buttons["RAID 5"].waitForExistence(timeout: 5))
+        app.buttons["RAID 6"].tap()
+        XCTAssertTrue(app.buttons["levelPicker"].label.contains("RAID 6"), app.buttons["levelPicker"].label)
+        XCTAssertTrue(capacity(app).hasPrefix("Usable Capacity, 8 TB,"), capacity(app))
+
+        let unit = app.buttons["unitPicker"]
+        reveal(unit, in: app)
+        unit.tap()
+        app.buttons["GB"].tap()
+        XCTAssertTrue(app.buttons["unitPicker"].label.contains("GB"), app.buttons["unitPicker"].label)
+    }
+
+    /// VoiceOver reads each segment as the full level name, not “5”.
+    @MainActor
+    func testSegmentsReadFullLevelNames() throws {
+        let app = launchApp()
+        let picker = app.segmentedControls.firstMatch
+        XCTAssertTrue(picker.waitForExistence(timeout: 5))
+        XCTAssertEqual(picker.buttons.allElementsBoundByIndex.map(\.label),
+                       ["RAID 0", "RAID 1", "RAID 5", "RAID 6", "RAID 10", "JBOD"])
+    }
+
     /// A RAID-Z group wider than 12 drives gets the slow-rebuild caution.
     @MainActor
     func testWideRaidZGroupCaution() throws {

@@ -83,15 +83,27 @@ struct ContentView: View {
     /// What the user sets: the level, then the drives.
     @ViewBuilder private var inputSections: some View {
         Section("raid_level".localized()) {
-            Picker("raid_level".localized(), selection: standardLevelSelection) {
-                ForEach(RaidLevel.levels(in: .standard)) { level in
-                    Text(level.shortLabel)
-                        .accessibilityLabel(level.displayName)
-                        .tag(Optional(level))
+            // Segmented controls stay near 13 pt at accessibility sizes, so
+            // the standard levels become a menu there.
+            if dynamicTypeSize.isAccessibilitySize {
+                Picker("raid_level".localized(), selection: standardLevelSelection) {
+                    ForEach(RaidLevel.levels(in: .standard)) { level in
+                        Text(level.displayName).tag(Optional(level))
+                    }
                 }
+                .pickerStyle(.menu)
+                .accessibilityIdentifier("levelPicker")
+            } else {
+                Picker("raid_level".localized(), selection: standardLevelSelection) {
+                    ForEach(RaidLevel.levels(in: .standard)) { level in
+                        Text(level.shortLabel)
+                            .tag(Optional(level))
+                            .accessibilityLabel(level.displayName)
+                    }
+                }
+                .pickerStyle(.segmented)
+                .labelsHidden()
             }
-            .pickerStyle(.segmented)
-            .labelsHidden()
 
             Menu {
                 Section("nested_levels".localized()) {
@@ -191,16 +203,21 @@ struct ContentView: View {
             DriveSizeField(value: $viewModel.driveSize, focus: $sizeFieldFocused, isAwaitingValue: $awaitingDriveSize)
                 .frame(minWidth: 56, maxWidth: dynamicTypeSize.isAccessibilitySize ? .infinity : 140)
 
-            Picker(selection: $viewModel.unit) {
+            let units = Picker(selection: $viewModel.unit) {
                 ForEach(CapacityUnit.allCases) { unit in
                     Text(unit.rawValue).tag(unit)
                 }
             } label: {
                 Text("drive_size".localized())
             }
-            .pickerStyle(.segmented)
             .labelsHidden()
-            .fixedSize()
+
+            // The “Drive Size” title above the row is the visible label.
+            if dynamicTypeSize.isAccessibilitySize {
+                units.pickerStyle(.menu).accessibilityIdentifier("unitPicker")
+            } else {
+                units.pickerStyle(.segmented).fixedSize()
+            }
         }
     }
 
