@@ -351,17 +351,98 @@ for _size in ((1206, 2622), (1179, 2556)):
     SHOTS += [(f"iphone-{_size[0]}x{_size[1]}",) + shot[1:3] + (_size,) + shot[4:]
               for shot in SHOTS if shot[0] == "iphone-1320x2868"]
 
-# Header / search images, each laid out natively:
-# (file name, size, headline column width, raw, device, headline, bleed[, eyebrow]).
-# 21:9 (3840x1646) is the product page header; 16:9 serves both; 3:2 is search.
+# Header / search images. Apple's templates mark an "Art Safe Area": the only
+# part every placement shows (the iPhone product page crops a header to its
+# centre and covers top and bottom). Rects are (x0, y0, x1, y1) in pixels,
+# from the official PSDs; 1920x1280 scales the 3840x2560 rect.
+SAFE_HEADER_21x9 = (1097, 493, 2743, 1154)     # 3840x1646
+SAFE_UNIVERSAL_16x9 = (1921, 660, 3323, 1622)  # 5244x2950, header and search; sits high
+SAFE_SEARCH_3x2 = (836, 765, 3004, 1795)       # 3840x2560
+SAFE_RECTS = {
+    (3840, 1646): SAFE_HEADER_21x9,
+    (5244, 2950): SAFE_UNIVERSAL_16x9,
+    (3840, 2560): SAFE_SEARCH_3x2,
+    (1920, 1280): tuple(v / 2 for v in SAFE_SEARCH_3x2),
+}
+
+# The key content of each header raw, as fractions of the screen: the part
+# that must land inside the safe area. iPhone NAS: from “16 TB” through
+# “Drive Failures Tolerated”. Duo inner landscape: both columns, from the
+# capacity card's top through “Drive Failures Tolerated”.
 HEADER_RAW = "iphone-1320x2868/01-usable-space-light.png"
 DUO_HEADER_RAW = "duo-inner-2853x2007/01-usable-space-light.png"
+KEY_CONTENT = {
+    HEADER_RAW: (0.05, 0.115, 0.95, 0.425),
+    DUO_HEADER_RAW: (0.02, 0.17, 0.91, 0.665),
+}
+DEBUG_DIR = "/tmp/raid-assets/debug"
+
+
+def compose_centered(raw, out, size, kind, headline, key, debug=False):
+    """Full-bleed header / search art: the device centred on the safe area,
+    sized so its key content fills (but stays inside) the safe rect, free to
+    run off the canvas. With `headline`, the line is centred across the top
+    of the safe rect and the key content fits beneath it."""
+    W, H = size
+    sx0, sy0, sx1, sy1 = SAFE_RECTS[size]
+    pal = BACKGROUNDS["orange"]
+    canvas = Image.new("RGBA", size, pal["bg"] + (255,))
+    d = ImageDraw.Draw(canvas)
+    shot = Image.open(raw)
+    spec = DEVICES[kind]
+    ratio = shot.height / shot.width
+    kx0, ky0, kx1, ky1 = key
+    inset = 0.03  # breathing room inside the safe rect
+    bx0, by0, bx1, by1 = sx0 + (sx1 - sx0) * inset, sy0 + (sy1 - sy0) * inset, sx1 - (sx1 - sx0) * inset, sy1 - (sy1 - sy0) * inset
+    lines = None
+    if headline:
+        check_copy(headline)
+        f, lines = fit_headline(d, headline, bx1 - bx0, (sy1 - sy0) * 0.16, max_lines=1, floor=0.5)
+        asc, desc = f.getmetrics()
+        text_top = by0
+        by0 = by0 + asc + desc + (sy1 - sy0) * 0.06
+        # The whole top of the device sits below the headline, never under it.
+        ky0 = -spec["bezel"] * min(1, 1 / ratio) / ratio
+    # Screen width so the key band fits the box both ways.
+    sw = min((bx1 - bx0) / (kx1 - kx0), (by1 - by0) / ((ky1 - ky0) * ratio))
+    body = device(shot, round(sw), kind)
+    bezel = (body.width - round(sw)) / 2
+    sh = body.height - 2 * bezel
+    cx = (sx0 + sx1) / 2
+    key_mid = (ky0 + ky1) / 2 * sh
+    x = cx - body.width / 2
+    y = (by0 + by1) / 2 - key_mid - bezel
+    place(canvas, body, x, y)
+    if lines:
+        draw_lines(d, lines, f, pal["ink"], bx0, bx1 - bx0, text_top - desc / 4, "center")
+    os.makedirs(os.path.dirname(out), exist_ok=True)
+    canvas.convert("RGB").save(out, "PNG", optimize=True)
+    if debug:
+        os.makedirs(DEBUG_DIR, exist_ok=True)
+        name = os.path.splitext(os.path.basename(out))[0]
+        dbg = canvas.convert("RGB")
+        dd = ImageDraw.Draw(dbg)
+        lw = max(2, W // 640)
+        dd.rectangle([sx0, sy0, sx1, sy1], outline=(0, 200, 0), width=lw)
+        key = [x + bezel + kx0 * sw, y + bezel + ky0 * sh, x + bezel + kx1 * sw, y + bezel + ky1 * sh]
+        dd.rectangle(key, outline=(220, 0, 160), width=lw)
+        dbg.save(os.path.join(DEBUG_DIR, f"{name}-safe.png"))
+        # Crude iPhone preview: the safe rect plus a 6% margin of the width.
+        m = W * 0.06
+        dbg_crop = canvas.convert("RGB").crop((max(0, sx0 - m), max(0, sy0 - m * 0.5), min(W, sx1 + m), min(H, sy1 + m * 0.5)))
+        dbg_crop.save(os.path.join(DEBUG_DIR, f"{name}-phone-preview.png"))
+    return out
+
+
+# (file name, size, raw, device, headline). 21:9 is the product page header;
+# 16:9 is the universal asset (header and search); 3:2 is search only.
 HEADERS = [
-    ("header-5244x2950", (5244, 2950), 0.40, HEADER_RAW, "iphone", USABLE, True, None),
-    ("header-3840x2560", (3840, 2560), 0.44, HEADER_RAW, "iphone", USABLE, True, None),
-    ("header-1920x1280", (1920, 1280), 0.44, HEADER_RAW, "iphone", USABLE, True, None),
-    ("header-3840x1646", (3840, 1646), 0.40, HEADER_RAW, "iphone", USABLE, True, None),
-    ("header-3840x1646-duo", (3840, 1646), 0.40, DUO_HEADER_RAW, "duo-inner", USABLE, False, DUO),
+    ("header-3840x1646", (3840, 1646), HEADER_RAW, "iphone", None),
+    ("header-3840x1646-duo", (3840, 1646), DUO_HEADER_RAW, "duo-inner", None),
+    ("header-5244x2950", (5244, 2950), HEADER_RAW, "iphone", None),
+    ("header-5244x2950-duo", (5244, 2950), DUO_HEADER_RAW, "duo-inner", None),
+    ("header-3840x2560", (3840, 2560), HEADER_RAW, "iphone", USABLE),
+    ("header-1920x1280", (1920, 1280), HEADER_RAW, "iphone", USABLE),
 ]
 
 
@@ -370,6 +451,8 @@ def main():
     p.add_argument("--only", help="render only shots whose store set or file name contains this")
     p.add_argument("--headers", action="store_true", help="also render the header / search images")
     p.add_argument("--contact", action="store_true", help="also write a contact sheet per set")
+    p.add_argument("--debug-safe", action="store_true",
+                   help=f"with --headers, also write safe-area overlays and phone-preview crops to {DEBUG_DIR}")
     p.add_argument("--raw")
     p.add_argument("--out")
     p.add_argument("--size", help="WxH, e.g. 1320x2868")
@@ -394,13 +477,13 @@ def main():
         print(compose(src, os.path.join(OUT, folder, f"{name}.png"), size, bg, headline, kind))
         sets.add(folder)
     if a.headers:
-        for name, size, frac, raw, kind, headline, bleed, eyebrow in HEADERS:
+        for name, size, raw, kind, headline in HEADERS:
             src = latest(os.path.join(RAW, raw))
             if not os.path.exists(src):
                 print(f"skip header/{name}: missing {src}", file=sys.stderr)
                 continue
             out = os.path.join(OUT, "header", f"{name}.png")
-            print(compose(src, out, size, "orange", headline, kind, frac, bleed=bleed, eyebrow=eyebrow))
+            print(compose_centered(src, out, size, kind, headline, KEY_CONTENT[raw], debug=a.debug_safe))
         sets.add("header")
     if a.contact:
         for folder in sorted(sets):
