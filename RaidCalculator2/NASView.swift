@@ -391,7 +391,7 @@ struct NASView: View {
 
     /// “Current: 16 TB usable · Synology SHR · 4 bays”. Only Synology has a
     /// type to name; system names stay untranslated.
-    static func baseline(_ summary: (usable: Double, system: NASSystem, typeLabel: String?, bays: Int)) -> String {
+    static func baseline(_ summary: CurrentSummary) -> String {
         let system = [summary.system.displayName, summary.typeLabel].compactMap { $0 }.joined(separator: " ")
         return String(format: "current_baseline".localized(), tb(summary.usable), system, summary.bays)
     }

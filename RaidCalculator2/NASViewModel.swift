@@ -59,8 +59,8 @@ final class NASViewModel {
 
     /// The saved setup, for the line that says what changes are compared with.
     /// `typeLabel` is Synology's RAID type; the other systems have none.
-    var currentSummary: (usable: Double, system: NASSystem, typeLabel: String?, bays: Int) {
-        (
+    var currentSummary: CurrentSummary {
+        CurrentSummary(
             usable: calculator.calculate(current).usableCapacity,
             system: current.system,
             typeLabel: current.system == .synology ? current.settings.synologyType.rawValue : nil,
@@ -201,4 +201,13 @@ final class NASViewModel {
         }
         if userDefaults.bool(forKey: Keys.hasSavedCurrent) { hasSavedCurrent = true }
     }
+}
+
+/// The saved setup, as the NAS tab's “Current: …” line describes it.
+struct CurrentSummary {
+    var usable: Double
+    var system: NASSystem
+    /// Synology's RAID type; the other systems have none.
+    var typeLabel: String?
+    var bays: Int
 }

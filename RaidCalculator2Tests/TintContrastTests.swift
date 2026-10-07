@@ -32,6 +32,11 @@ struct TintContrastTests {
         return (max(la, lb) + 0.05) / (min(la, lb) + 0.05)
     }
 
+    // Color("DataColor") falls back silently when the asset is missing.
+    @Test func dataColorAssetExists() {
+        #expect(UIColor(named: "DataColor", in: .main, compatibleWith: nil) != nil)
+    }
+
     @Test func tintMeetsContrast() throws {
         let tint = try #require(UIColor(named: "AccentColor", in: Bundle.main, compatibleWith: nil))
         let backgrounds: [(String, UIColor)] = [

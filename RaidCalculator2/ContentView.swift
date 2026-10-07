@@ -69,16 +69,16 @@ struct ContentView: View {
             Section {
                 switch viewModel.rebuildCaution {
                 case .suggest(let safer):
-                    caution(String(format: "rebuild_caution_level".localized(), viewModel.selectedLevel.displayName, safer.displayName))
+                    AdvisoryLabel(text: String(format: "rebuild_caution_level".localized(), viewModel.selectedLevel.displayName, safer.displayName))
                     useLevelButton(safer)
                 case .warnOnly:
-                    caution(String(format: warnOnlyCautionKey.localized(), viewModel.selectedLevel.displayName))
+                    AdvisoryLabel(text: String(format: warnOnlyCautionKey.localized(), viewModel.selectedLevel.displayName))
                         .accessibilityIdentifier("narrowGroupCaution")
                 case nil:
                     EmptyView()
                 }
                 if let width = viewModel.wideZFSGroupWidth {
-                    caution(String(format: (viewModel.groups > 1 ? "wide_zfs_group_caution" : "wide_zfs_group_caution_single").localized(), width))
+                    AdvisoryLabel(text: String(format: (viewModel.groups > 1 ? "wide_zfs_group_caution" : "wide_zfs_group_caution_single").localized(), width))
                         .accessibilityIdentifier("wideGroupCaution")
                 }
             }
@@ -377,10 +377,6 @@ struct ContentView: View {
     /// appear and go in place instead of sliding the rows around them; the
     /// drive strip and results still crossfade through their own animations.
     private var motion: Animation? { reduceMotion ? nil : .snappy }
-
-    private func caution(_ text: String) -> some View {
-        AdvisoryLabel(text: text)
-    }
 
     /// A caution with no level to move to: RAID 5 is short of the fourth
     /// drive RAID 6 needs; RAID 50 and RAID-Z1 have groups too narrow for
@@ -933,10 +929,4 @@ struct DriveSizeField: View {
     NavigationStack {
         ContentView()
     }
-}
-
-extension Color {
-    /// Fill color for data marks (bars, swatches, stars, the shield). Kept apart from the
-    /// tint, which is darkened for text contrast; fills don't need 4.5:1.
-    static let dataFill = Color("DataColor")
 }
