@@ -387,6 +387,22 @@ struct CapacitySummary: View {
 
     private var isValid: Bool { result.warningMessage == nil && !awaitingSize }
 
+    /// The combined element's label with the invalid prefix ahead of what it
+    /// would otherwise read, or nil when the setup is valid.
+    private var invalidLabel: String? {
+        guard result.warningMessage != nil else { return nil }
+        return [
+            "invalid_setup_prefix".localized(),
+            "usable_capacity".localized(),
+            Self.capacity(result.usableCapacity, unit: unit.rawValue),
+            String(
+                format: "raw_and_efficiency".localized(),
+                Self.capacity(result.rawCapacity, unit: unit.rawValue),
+                result.efficiency.formatted(.percent.precision(.fractionLength(0)))
+            ),
+        ].joined(separator: ", ")
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             if awaitingSize {
@@ -395,7 +411,7 @@ struct CapacitySummary: View {
                     .accessibilityIdentifier("enterDriveSize")
             }
             content
-                .opacity(isValid ? 1 : 0.4)
+                .opacity(isValid ? 1 : 0.55)
                 .animation(.default, value: isValid)
         }
         .padding(.vertical, 6)
@@ -424,12 +440,15 @@ struct CapacitySummary: View {
             }
             .fixedSize(horizontal: false, vertical: true)
             .accessibilityElement(children: .combine)
+            .accessibilityLabel(ifPresent: invalidLabel)
 
             if !result.driveRoles.isEmpty {
                 DriveStrip(roles: result.driveRoles, groupSize: result.groupSize)
             }
 
-            FailuresToleratedRow(value: result.failuresTolerated)
+            if result.warningMessage == nil {
+                FailuresToleratedRow(value: result.failuresTolerated)
+            }
 
             if isValid, result.usableCapacity > 0 {
                 if let estimate = result.zfsEstimate {
@@ -472,6 +491,19 @@ struct CapacitySummary: View {
         switch unit {
         case .tb: capacity(bytes / 1_099_511_627_776, unit: "TiB", maxFractionDigits: 1)
         case .gb: capacity(bytes / 1_073_741_824, unit: "GiB", maxFractionDigits: 1)
+        }
+    }
+}
+
+extension View {
+    /// Replaces a combined element's label when `label` is non-nil. Used to put
+    /// “Not a valid setup.” ahead of the figures so VoiceOver doesn't read
+    /// dimmed numbers as a real result; the caller rebuilds the rest of the label.
+    @ViewBuilder func accessibilityLabel(ifPresent label: String?) -> some View {
+        if let label {
+            accessibilityLabel(label)
+        } else {
+            self
         }
     }
 }

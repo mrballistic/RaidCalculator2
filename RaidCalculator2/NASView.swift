@@ -412,6 +412,21 @@ struct NASSummary: View {
 
     private var isValid: Bool { result.warningMessage == nil }
 
+    /// The combined element's label with the invalid prefix ahead of what it
+    /// would otherwise read, or nil when the setup is valid.
+    private var invalidLabel: String? {
+        guard !isValid else { return nil }
+        var parts = ["invalid_setup_prefix".localized(), "usable_capacity".localized(), NASView.tb(result.usableCapacity)]
+        if result.rawCapacity > 0 {
+            parts.append(String(
+                format: "raw_and_efficiency".localized(),
+                NASView.tb(result.rawCapacity),
+                result.efficiency.formatted(.percent.precision(.fractionLength(0)))
+            ))
+        }
+        return parts.joined(separator: ", ")
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
             VStack(alignment: .leading, spacing: 2) {
@@ -437,6 +452,7 @@ struct NASSummary: View {
             }
             .fixedSize(horizontal: false, vertical: true)
             .accessibilityElement(children: .combine)
+            .accessibilityLabel(ifPresent: invalidLabel)
 
             BayDiagram(bays: result.bays, system: system)
 
@@ -478,7 +494,7 @@ struct NASSummary: View {
             }
         }
         .padding(.vertical, 6)
-        .opacity(isValid ? 1 : 0.4)
+        .opacity(isValid ? 1 : 0.55)
         .animation(.default, value: isValid)
     }
 }

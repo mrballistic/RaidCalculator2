@@ -361,6 +361,14 @@ final class RaidCalculator2UITests: XCTestCase {
     }
 
     @MainActor
+    func testInvalidSetupIsAnnounced() throws {
+        let app = launchApp(level: "R 10", drives: 5)
+        XCTAssertTrue(app.staticTexts.matching(identifier: "usableCapacity").firstMatch.waitForExistence(timeout: 5))
+        XCTAssertTrue(capacity(app).hasPrefix("Not a valid setup."), capacity(app))
+        XCTAssertFalse(app.descendants(matching: .any).matching(identifier: "failuresTolerated").firstMatch.exists)
+    }
+
+    @MainActor
     func testInfoSheetPresentation() throws {
         let app = launchApp()
         let infoButton = app.buttons["raidInfo"]
