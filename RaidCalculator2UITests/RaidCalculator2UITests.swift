@@ -24,6 +24,8 @@ final class RaidCalculator2UITests: XCTestCase {
     private func launchApp(level: String = "R 5", drives: Int = 4, size: Int = 4, groups: Int = 1, language: String = "en", locale: String = "en_US", contentSize: String? = nil) -> XCUIApplication {
         let app = XCUIApplication()
         app.launchArguments += [
+            // A test that leaves the NAS tab selected must not move the next one.
+            "-selectedTab", "raid",
             "-selectedLevel", level,
             "-driveCount", "\(drives)",
             "-driveSize", "\(size)",
