@@ -625,15 +625,15 @@ struct SegmentSwatch: View {
 
     private var fill: Color {
         switch role {
-        case .data: .accentColor
+        case .data: Color.dataFill
         case .parity: .indigo
-        case .mirror: .accentColor.opacity(0.22)
+        case .mirror: Color.dataFill.opacity(0.22)
         case .unused: .secondary.opacity(0.12)
         }
     }
 
     /// Mirrors are outlined so the distinction doesn't rest on colour alone.
-    private var stroke: Color { role == .mirror ? .accentColor : .clear }
+    private var stroke: Color { role == .mirror ? Color.dataFill : .clear }
 
     static func name(of role: SegmentRole) -> String {
         switch role {

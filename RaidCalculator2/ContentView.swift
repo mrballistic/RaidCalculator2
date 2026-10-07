@@ -485,7 +485,7 @@ struct FailuresToleratedRow: View {
     var body: some View {
         HStack(alignment: .firstTextBaseline, spacing: 8) {
             Image(systemName: "shield.lefthalf.filled")
-                .foregroundStyle(.tint)
+                .foregroundStyle(Color.dataFill)
                 .accessibilityHidden(true)
             ViewThatFits(in: .horizontal) {
                 HStack(alignment: .firstTextBaseline, spacing: 12) {
@@ -675,9 +675,9 @@ struct DriveStrip: View {
     private func bar(for role: DriveRole) -> some View {
         let shape = RoundedRectangle(cornerRadius: 4, style: .continuous)
         let (fill, stroke): (Color, Color) = switch role {
-        case .data: (.accentColor, .clear)
+        case .data: (Color.dataFill, .clear)
         case .parity: (.indigo, .clear)
-        case .mirror: (.accentColor.opacity(0.22), .accentColor)
+        case .mirror: (Color.dataFill.opacity(0.22), Color.dataFill)
         }
         return shape.fill(fill)
             .overlay(shape.strokeBorder(stroke, lineWidth: 1.5))
@@ -766,7 +766,7 @@ struct RatingRow: View {
         HStack(spacing: 2) {
             ForEach(1...5, id: \.self) { star in
                 Image(systemName: star <= rating ? "star.fill" : "star")
-                    .foregroundStyle(star <= rating ? AnyShapeStyle(.tint) : AnyShapeStyle(.tertiary))
+                    .foregroundStyle(star <= rating ? AnyShapeStyle(Color.dataFill) : AnyShapeStyle(.tertiary))
             }
         }
         .font(.footnote)
@@ -836,4 +836,10 @@ struct DriveSizeField: View {
     NavigationStack {
         ContentView()
     }
+}
+
+extension Color {
+    /// Fill color for data marks (bars, swatches, stars, the shield). Kept apart from the
+    /// tint, which is darkened for text contrast; fills don't need 4.5:1.
+    static let dataFill = Color("DataColor")
 }
