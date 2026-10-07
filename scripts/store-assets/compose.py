@@ -107,10 +107,10 @@ def wrap(d, text, f, max_w):
     return lines
 
 
-def fit_headline(d, text, max_w, size, max_lines=2):
-    """Largest size (down to 70%) at which the headline fits max_lines."""
+def fit_headline(d, text, max_w, size, max_lines=2, floor=0.7):
+    """Largest size (down to `floor` of `size`) at which the headline fits max_lines."""
     s = size
-    while s > size * 0.7:
+    while s > size * floor:
         f = font(s)
         lines = wrap(d, text, f, max_w)
         if len(lines) <= max_lines and all(d.textlength(l, font=f) <= max_w for l in lines):
@@ -161,13 +161,53 @@ def device(shot, screen_w, kind):
             [x0 * SS, top * SS, (x0 + iw) * SS, (top + ih) * SS], radius=ih / 2 * SS, fill=255)
         isl = isl.resize((W, H), Image.LANCZOS)
         body.paste(Image.new("RGBA", (W, H), (0, 0, 0, 255)), (0, 0), isl)
+    body.info["radius"] = r + bezel
     return body
 
 
-def compose(raw, out, size, bg, headline, kind, text_frac=0.30, device_h=0.80):
+# Flat long shadow: the device silhouette swept 45 degrees down and to the
+# right, hard-edged, black at SHADOW_ALPHA. Length is a fraction of the
+# device's short side, the same on every image.
+SHADOW_ALPHA = 0.20
+SHADOW_LENGTH = 0.45
+SHADOW_SS = 2  # supersampling for anti-aliased edges
+
+
+def long_shadow(canvas, x, y, w, h, radius):
+    """Draw the swept silhouette of the rounded rect (x, y, w, h). A convex
+    shape swept along a line is the hull of its two end copies, so it's two
+    rounded rects plus the band joining their 45-degree tangent points."""
+    W, H = canvas.size
+    k = SHADOW_SS
+    L = SHADOW_LENGTH * min(w, h) * k
+    x0, y0, x1, y1, r = x * k, y * k, (x + w) * k, (y + h) * k, radius * k
+    m = Image.new("L", (W * k, H * k), 0)
+    d = ImageDraw.Draw(m)
+    for t in (0, L):
+        d.rounded_rectangle([x0 + t, y0 + t, x1 + t, y1 + t], radius=r, fill=255)
+    c = r * (1 - 2 ** -0.5)
+    tr, bl = (x1 - c, y0 + c), (x0 + c, y1 - c)
+    d.polygon([tr, (tr[0] + L, tr[1] + L), (bl[0] + L, bl[1] + L), bl], fill=255)
+    m = m.resize((W, H), Image.LANCZOS).point(lambda a: round(a * SHADOW_ALPHA))
+    shade = Image.new("RGBA", (W, H), (0, 0, 0, 255))
+    shade.putalpha(m)
+    canvas.alpha_composite(shade)
+
+
+def place(canvas, body, x, y):
+    """Shadow first, then the device, both clipped to the canvas."""
+    x, y = round(x), round(y)
+    long_shadow(canvas, x, y, body.width, body.height, body.info.get("radius", 0))
+    W, H = canvas.size
+    visible = body.crop((max(0, -x), max(0, -y), min(body.width, W - x), min(body.height, H - y)))
+    canvas.alpha_composite(visible, (max(0, x), max(0, y)))
+
+
+def compose(raw, out, size, bg, headline, kind, text_frac=0.20, bleed=False):
     """Portrait canvases: headline on top, device beneath. Landscape canvases:
-    headline in the left `text_frac` of the width, device on the right at up
-    to `device_h` of the height (headers pass their own fractions)."""
+    headline in a left column `text_frac` of the width, device on the right.
+    With `bleed` (headers: a portrait phone on a wide canvas) the phone runs
+    off the bottom edge so it can be large while its top stays in the safe area."""
     check_copy(headline)
     W, H = size
     pal = BACKGROUNDS[bg]
@@ -177,37 +217,55 @@ def compose(raw, out, size, bg, headline, kind, text_frac=0.30, device_h=0.80):
     spec = DEVICES[kind]
     b = spec["bezel"]
     ratio = shot.height / shot.width
+    short = min(1, ratio)
     if H >= W:
-        # Headline across the top, device centred beneath it, all inside the
-        # middle ~80% width.
-        margin_top = H * 0.055
+        # Headline across the top, device centred beneath it, inside the
+        # middle ~84% width.
+        margin_top = H * 0.05
         f, lines = fit_headline(d, headline, W * 0.84, min(W, H / 2.17) * 0.088)
         text_h = draw_lines(d, lines, f, pal["ink"], 0, W, margin_top, "center")
-        gap, bottom = H * 0.035, H * 0.035
+        gap, bottom = H * 0.03, H * 0.03
         avail_h = H - (margin_top + text_h + gap) - bottom
-        # Screen width so the framed device fits both ways (bezel scales
-        # with the screen's short side).
-        short = min(1, ratio)
-        sw = min(W * 0.80 / (1 + 2 * b * short), avail_h / (ratio + 2 * b * short))
+        sw = min(W * 0.84 / (1 + 2 * b * short), avail_h / (ratio + 2 * b * short))
         body = device(shot, round(sw), kind)
-        x = (W - body.width) // 2
-        y = round(margin_top + text_h + gap + (avail_h - body.height) / 2)
-        canvas.alpha_composite(body, (x, y))
+        x = (W - body.width) / 2
+        y = margin_top + text_h + gap + (avail_h - body.height) / 2
+        draw_text = None
     else:
         # Landscape: headline left, device right, the pair centred as one
-        # group inside the middle 80% width and vertically centred.
-        f, lines = fit_headline(d, headline, W * text_frac, H * 0.09, max_lines=3)
+        # group inside the middle ~88% width.
+        if bleed:
+            f, lines = fit_headline(d, headline, W * text_frac, H * 0.09, max_lines=2, floor=0.6)
+        else:
+            # Prefer three lines unless that costs more than 20% in size
+            # over four (a lone short word on its own line reads badly).
+            f, lines = fit_headline(d, headline, W * text_frac, H * 0.09, max_lines=4, floor=0.6)
+            f3, lines3 = fit_headline(d, headline, W * text_frac * 1.15, H * 0.09, max_lines=3, floor=0.6)
+            if len(lines3) <= 3 and f3.size >= f.size * 0.8:
+                f, lines = f3, lines3
         asc, desc = f.getmetrics()
         text_h = round((asc + desc) * 1.08) * len(lines) - round((asc + desc) * 0.08)
         text_w = max(d.textlength(l, font=f) for l in lines)
-        gap = W * 0.06
-        short = min(1, ratio)
-        room_w = W * 0.80 - text_w - gap
-        sw = min(room_w / (1 + 2 * b * short), H * device_h / (ratio + 2 * b * short))
+        gap = W * 0.04
+        if bleed:
+            # Phone 1.1x the canvas height, top at 12.5%, bottom cropped.
+            sw = H * 1.10 / (ratio + 2 * b)
+        else:
+            room_w = W * 0.88 - text_w - gap
+            sw = min(room_w / (1 + 2 * b * short), H * 0.80 / (ratio + 2 * b * short))
         body = device(shot, round(sw), kind)
         x0 = (W - (text_w + gap + body.width)) / 2
-        draw_lines(d, lines, f, pal["ink"], x0, text_w, (H - text_h) / 2 - desc / 2, "left")
-        canvas.alpha_composite(body, (round(x0 + text_w + gap), (H - body.height) // 2))
+        x = x0 + text_w + gap
+        y = H * 0.125 if bleed else (H - body.height) / 2
+        text_y = (H - text_h) / 2 - desc / 2
+        if bleed:
+            # Centre the headline on the visible part of the phone.
+            text_y = (y + H) / 2 - text_h / 2 - desc / 2
+        draw_text = (lines, f, x0, text_w, text_y)
+    place(canvas, body, x, y)
+    if draw_text:
+        lines, f, tx, tw, ty = draw_text
+        draw_lines(d, lines, f, pal["ink"], tx, tw, ty, "left")
     os.makedirs(os.path.dirname(out), exist_ok=True)
     canvas.convert("RGB").save(out, "PNG", optimize=True)
     return out
@@ -272,8 +330,8 @@ SHOTS = [
     ("duo-outer-2034x1398", "02-rebuild-caution", "duo-outer-2034x1398/02-rebuild-caution-dark.png", DUO_OL, "indigo", "duo-outer", REBUILD),
 ]
 
-# Header / search images: each laid out natively. (size, text width, device height)
-HEADERS = [((5244, 2950), 0.40, 0.75), ((3840, 2560), 0.42, 0.75), ((1920, 1280), 0.42, 0.75)]
+# Header / search images: each laid out natively. (size, headline column width)
+HEADERS = [((5244, 2950), 0.40), ((3840, 2560), 0.44), ((1920, 1280), 0.44)]
 HEADER_RAW = "iphone-1320x2868/01-usable-space-light.png"
 
 
@@ -306,9 +364,9 @@ def main():
         print(compose(src, os.path.join(OUT, folder, f"{name}.png"), size, bg, headline, kind))
         sets.add(folder)
     if a.headers:
-        for (w, h), frac, dev in HEADERS:
+        for (w, h), frac in HEADERS:
             out = os.path.join(OUT, "header", f"header-{w}x{h}.png")
-            print(compose(latest(os.path.join(RAW, HEADER_RAW)), out, (w, h), "orange", USABLE, "iphone", frac, dev))
+            print(compose(latest(os.path.join(RAW, HEADER_RAW)), out, (w, h), "orange", USABLE, "iphone", frac, bleed=True))
         sets.add("header")
     if a.contact:
         for folder in sorted(sets):
