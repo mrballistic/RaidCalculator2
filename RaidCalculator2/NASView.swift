@@ -7,7 +7,7 @@ import SwiftUI
 
 struct NASView: View {
     @State private var viewModel = NASViewModel()
-    @State private var contentWidth: CGFloat = 0
+    @State private var contentSize: CGSize = .zero
     @State private var customSizeBay: Int?
     @State private var customSizeText = ""
 
@@ -28,7 +28,7 @@ struct NASView: View {
     private let readableWidth: CGFloat = 720
 
     private var twoColumns: Bool {
-        AdaptiveLayout.usesTwoColumns(isRegularWidth: horizontalSizeClass == .regular, width: contentWidth)
+        AdaptiveLayout.usesTwoColumns(isRegularWidth: horizontalSizeClass == .regular, width: contentSize.width, height: contentSize.height)
     }
 
     /// iPhone Duo has a fold region (flat or folded); iPad never does.
@@ -263,7 +263,7 @@ struct NASView: View {
                 }
                 .contentMargins(
                     .horizontal,
-                    contentWidth > readableWidth + 40 ? (contentWidth - readableWidth) / 2 : nil,
+                    contentSize.width > readableWidth + 40 ? (contentSize.width - readableWidth) / 2 : nil,
                     for: .scrollContent
                 )
             }
@@ -307,7 +307,12 @@ struct NASView: View {
         }) {
             NASComparisonSheet(comparison: viewModel.comparison, current: viewModel.system) { pendingSystem = $0 }
         }
-        .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { contentWidth = $0 }
+        // The height adds back the bars' safe area, so the two-column
+        // gate compares the window's height, not what's left under them.
+        .onGeometryChange(for: CGSize.self) { proxy in
+            CGSize(width: proxy.size.width,
+                   height: proxy.size.height + proxy.safeAreaInsets.top + proxy.safeAreaInsets.bottom)
+        } action: { contentSize = $0 }
         .alert(
             "custom_size".localized(),
             isPresented: Binding(get: { customSizeBay != nil }, set: { if !$0 { customSizeBay = nil } })

@@ -14,8 +14,17 @@ enum AdaptiveLayout {
     /// be narrower than an iPhone.
     static let twoColumnMinWidth: CGFloat = 800
 
-    static func usesTwoColumns(isRegularWidth: Bool, width: CGFloat) -> Bool {
-        isRegularWidth && width >= twoColumnMinWidth
+    /// Shortest window that puts results and inputs side by side. An iPhone
+    /// Pro Max in landscape (956 × 440) is regular width and wide enough,
+    /// but each column would show only a few rows, so it stays one column.
+    /// iPhone Duo's inner display in landscape (669 tall) and full-screen
+    /// iPads in either orientation clear it.
+    static let twoColumnMinHeight: CGFloat = 600
+
+    /// Two columns need a regular width class, at least `twoColumnMinWidth`
+    /// of width and at least `twoColumnMinHeight` of height.
+    static func usesTwoColumns(isRegularWidth: Bool, width: CGFloat, height: CGFloat) -> Bool {
+        isRegularWidth && width >= twoColumnMinWidth && height >= twoColumnMinHeight
     }
 
     /// The margin each pane of the split gets at its inner edge, so the

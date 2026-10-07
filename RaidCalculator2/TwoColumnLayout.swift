@@ -3,7 +3,7 @@
 //  RaidCalculator2
 //
 //  Results beside inputs, shared by both tabs once the window is wide
-//  enough (`AdaptiveLayout.usesTwoColumns`).
+//  and tall enough (`AdaptiveLayout.usesTwoColumns`).
 //
 
 import SwiftUI
@@ -40,8 +40,8 @@ struct TwoColumnLayout<Results: View, Inputs: View, Info: View>: View {
             // split limited to `.axes(.horizontal)` that finds too little
             // room for side by side shows only the primary view, hiding
             // every input; unconstrained, it stacks results over inputs
-            // instead. This view is only chosen at regular width and 800+
-            // points, where the split is expected to go side by side, so
+            // instead. This view is only chosen at regular width, 800+
+            // points wide and 600+ tall, where the split is expected to go side by side, so
             // leaving the axes open can't lose the inputs; if it ever
             // stacks there, the testIPad*Beside* UI tests fail.
             //

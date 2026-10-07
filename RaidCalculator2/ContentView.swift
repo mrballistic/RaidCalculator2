@@ -10,7 +10,7 @@ import SwiftUI
 struct ContentView: View {
     @State private var viewModel = RaidCalculatorViewModel()
     @State private var showingInfoSheet = false
-    @State private var contentWidth: CGFloat = 0
+    @State private var contentSize: CGSize = .zero
     @FocusState private var sizeFieldFocused: Bool
     @State private var awaitingDriveSize = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -21,7 +21,7 @@ struct ContentView: View {
     private let readableWidth: CGFloat = 720
 
     private var twoColumns: Bool {
-        AdaptiveLayout.usesTwoColumns(isRegularWidth: horizontalSizeClass == .regular, width: contentWidth)
+        AdaptiveLayout.usesTwoColumns(isRegularWidth: horizontalSizeClass == .regular, width: contentSize.width, height: contentSize.height)
     }
 
     /// iPhone Duo has a fold region (flat or folded); iPad never does.
@@ -282,7 +282,7 @@ struct ContentView: View {
                 }
                 .contentMargins(
                     .horizontal,
-                    contentWidth > readableWidth + 40 ? (contentWidth - readableWidth) / 2 : nil,
+                    contentSize.width > readableWidth + 40 ? (contentSize.width - readableWidth) / 2 : nil,
                     for: .scrollContent
                 )
             }
@@ -310,7 +310,12 @@ struct ContentView: View {
             }
         }
         .scrollDismissesKeyboard(.interactively)
-        .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { contentWidth = $0 }
+        // The height adds back the bars' safe area, so the two-column
+        // gate compares the window's height, not what's left under them.
+        .onGeometryChange(for: CGSize.self) { proxy in
+            CGSize(width: proxy.size.width,
+                   height: proxy.size.height + proxy.safeAreaInsets.top + proxy.safeAreaInsets.bottom)
+        } action: { contentSize = $0 }
         .sensoryFeedback(.selection, trigger: viewModel.selectedLevel)
         .sheet(isPresented: Binding(
             get: { showingInfoSheet && !infoInPane },

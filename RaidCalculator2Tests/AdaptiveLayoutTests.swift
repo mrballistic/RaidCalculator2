@@ -11,11 +11,23 @@ struct AdaptiveLayoutTests {
 
     // Review Focus 3: regular width alone isn't enough room for two columns.
     @Test func twoColumnsNeedRegularWidthAndRoom() {
-        #expect(AdaptiveLayout.usesTwoColumns(isRegularWidth: true, width: 1032))   // 13-inch iPad, portrait
-        #expect(AdaptiveLayout.usesTwoColumns(isRegularWidth: true, width: 800))
-        #expect(!AdaptiveLayout.usesTwoColumns(isRegularWidth: true, width: 744))   // iPad mini, portrait
-        #expect(!AdaptiveLayout.usesTwoColumns(isRegularWidth: true, width: 678))   // half of a 13-inch iPad
-        #expect(!AdaptiveLayout.usesTwoColumns(isRegularWidth: false, width: 1200))
+        #expect(AdaptiveLayout.usesTwoColumns(isRegularWidth: true, width: 1032, height: 1376))   // 13-inch iPad, portrait
+        #expect(AdaptiveLayout.usesTwoColumns(isRegularWidth: true, width: 800, height: 1000))
+        #expect(!AdaptiveLayout.usesTwoColumns(isRegularWidth: true, width: 744, height: 1133))   // iPad mini, portrait
+        #expect(!AdaptiveLayout.usesTwoColumns(isRegularWidth: true, width: 678, height: 1024))   // half of a 13-inch iPad
+        #expect(!AdaptiveLayout.usesTwoColumns(isRegularWidth: false, width: 1200, height: 1000))
+    }
+
+    // Two columns also need height: a landscape iPhone is one column, even
+    // the Pro Max, which is regular width. iPhone Duo's inner display and
+    // full-screen iPads are tall enough in either orientation.
+    @Test func twoColumnsNeedHeight() {
+        #expect(!AdaptiveLayout.usesTwoColumns(isRegularWidth: true, width: 956, height: 440))   // iPhone Pro Max, landscape
+        #expect(AdaptiveLayout.usesTwoColumns(isRegularWidth: true, width: 951, height: 669))    // iPhone Duo inner display, landscape
+        #expect(AdaptiveLayout.usesTwoColumns(isRegularWidth: true, width: 1366, height: 1024))  // 13-inch iPad, landscape
+        #expect(AdaptiveLayout.usesTwoColumns(isRegularWidth: true, width: 1032, height: 1376))  // 13-inch iPad, portrait
+        #expect(AdaptiveLayout.usesTwoColumns(isRegularWidth: true, width: 800, height: 600))
+        #expect(!AdaptiveLayout.usesTwoColumns(isRegularWidth: true, width: 800, height: 599))
     }
 
     // Each pane's inner edge at the split gets the system's outer margin.
