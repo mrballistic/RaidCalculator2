@@ -16,12 +16,12 @@
 <meta property="og:image:type" content="image/jpeg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="RAID Calculator: “How much space will you actually get?” beside the app showing 16 TB usable from four mixed drives in Synology SHR.">
+<meta property="og:image:alt" content="RAID Calculator: “How much space will you actually get?” beside the app showing 16 TB usable from four mixed drives in Synology SHR, and a RAID 5 rebuild caution in dark mode behind it.">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="RAID Calculator for iPhone and iPad">
 <meta name="twitter:description" content="Usable capacity, fault tolerance and the one drive worth buying next. RAID 0 to 60, ZFS RAID-Z, Synology SHR, Unraid, SnapRAID and Btrfs RAID1, for iPhone and iPad.">
 <meta name="twitter:image" content="https://mrballistic.com/raid/assets/og-image.jpg">
-<meta name="twitter:image:alt" content="RAID Calculator: “How much space will you actually get?” beside the app showing 16 TB usable from four mixed drives in Synology SHR.">
+<meta name="twitter:image:alt" content="RAID Calculator: “How much space will you actually get?” beside the app showing 16 TB usable from four mixed drives in Synology SHR, and a RAID 5 rebuild caution in dark mode behind it.">
 <meta name="apple-mobile-web-app-title" content="RAID Calculator">
 <link rel="manifest" href="site.webmanifest">
 <script type="application/ld+json">
@@ -50,6 +50,7 @@
   "image": "https://mrballistic.com/raid/assets/og-image.jpg",
   "screenshot": [
     "https://mrballistic.com/raid/assets/17-iphone-nas-shr-light.webp",
+    "https://mrballistic.com/raid/assets/17-iphone-raid5-caution-dark.webp",
     "https://mrballistic.com/raid/assets/17-ipad-nas-saved-light.webp"
   ],
   "author": {
@@ -146,7 +147,7 @@
   .hero-sub { font-size: clamp(18px, 2vw, 21px); color: var(--ink-2); max-width: 30em; margin-top: 22px; }
   .hero-cta { margin-top: 34px; }
   /* Two phones stacked in one grid cell: the NAS tab in front, the
-     Compare Systems sheet for the same drives behind it. As the page scrolls away from the hero they
+     RAID tab's rebuild caution in dark mode behind it. As the page scrolls away from the hero they
      fan apart, like the drives in the photo below. The static overlap is the
      resting state, so browsers without scroll timelines, and visitors who ask
      for reduced motion, see a finished composition rather than a missing one. */
@@ -320,7 +321,7 @@
         <img src="assets/17-iphone-nas-shr-light.webp" width="640" height="1391" fetchpriority="high" alt="The NAS tab on iPhone: 4, 4, 8 and 8 TB drives in Synology SHR, 16 TB usable of 24 TB raw, 67% efficient, with part of one 8 TB drive as a mirror copy and one drive failure tolerated">
       </div>
       <div class="phone">
-        <img src="assets/17-iphone-compare-light.webp" width="640" height="1391" alt="The Compare Systems sheet on iPhone, with 4, 4, 8 and 8 TB drives: Synology 16 TB, Unraid 16 TB, SnapRAID 16 TB, ZFS 12 TB with 8 TB unused, and Btrfs RAID1 12 TB, each tolerating one drive failure">
+        <img src="assets/17-iphone-raid5-caution-dark.webp" width="640" height="1391" alt="The RAID tab on iPhone in dark mode: RAID 5 on eight 20 TB drives, 140 TB usable of 160 TB raw, with a caution that a rebuild can take days and a one-tap Use RAID 6 button">
       </div>
     </div>
   </section>
