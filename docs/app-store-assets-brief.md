@@ -16,7 +16,7 @@ All PNG, **no alpha channel**, exact pixel sizes (check every file with `sips -g
 
 Up to 10 screenshots per size. 4–6 is plenty.
 
-**Raw or composed?** RAID's existing listing uses raw captures; that's fine and consistent. If the user asks for composed images (framed device, headline, wordmark), Wax Wishlist's `tools/store-assets/compose_ios.py` and `feature_ios.py` in `/Users/todd.greco/current_work/rsd-app/wax-wishlist-ios/` are a working starting point (Pillow, exact-size output). Ask the user before choosing composed.
+**Raw or composed?** (Decided for 1.7.0: composed, with `scripts/store-assets/compose.py`; see its README.) RAID's existing listing uses raw captures; that's fine and consistent. If the user asks for composed images (framed device, headline, wordmark), Wax Wishlist's `tools/store-assets/compose_ios.py` and `feature_ios.py` in `/Users/todd.greco/current_work/rsd-app/wax-wishlist-ios/` are a working starting point (Pillow, exact-size output). Ask the user before choosing composed.
 
 ## 2. Capturing
 

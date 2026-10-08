@@ -10,7 +10,7 @@ The project's `PRODUCT_BUNDLE_IDENTIFIER` decides the record: App Store Connect 
 
 This codebase ships to the original **RAID calculator** record (Apple ID `395601653`, bundle ID `53Q4825KDF`, an identifier from the app's 2010 origins), not the newer **RAID Calc2** record (Apple ID `6755641457`, bundle ID `com.mrballistic.RaidCalculator2`). App Store Connect can't merge two records, so the old record simply receives new versions again:
 
-- 1.2 is the last version that shipped on the old record. A 1.3 version is sitting in **Prepare for Submission**; rename it in App Store Connect to match the first tag you push (for example `1.4.0`), since an uploaded build's version must match a version record and must be higher than 1.3.2 to avoid confusion with RAID Calc2.
+- Each release needs a matching version record in App Store Connect (1.4.0 through 1.6.0 shipped this way; 1.7.0 is next). The uploaded build's version must match that record.
 - Make sure the old record's **Pricing and Availability** is set back to available when you submit, since it's currently removed from sale.
 - After the new version is live, remove RAID Calc2 from sale. People who still have the old app installed get the new version as an update; RAID Calc2 owners keep what they have.
 - If `53Q4825KDF` isn't registered under the current team (developer.apple.com → Identifiers), the first archive's cloud signing will fail with a profile error. Check it's listed there before the first tag.
