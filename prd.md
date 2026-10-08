@@ -559,7 +559,7 @@ The plans: `docs/superpowers/plans/2026-10-03-raid-tab-nested-zfs.md` (1.5.0), `
 
 ## 2. Technical Design Doc
 
-**Note:** §2 and §3 are the original v1 design and build plan, kept as history. The code is authoritative where they differ. For example, `RaidLevel` raw values are `"R 0"` and so on (FR-15), the deployment target is iOS 26, and 1.5.0 and 1.6.0 added the grouped levels, `ZFSEstimate`, the NAS calculators (`SynologyCalculator`, `ParityArrayCalculator`, `ZFSMixedCalculator`, `BtrfsRaid1Calculator`), `NASViewModel`, the shared `InfoSheet` and `AdaptiveLayout`. Their plans are listed in §1.9.
+**Note:** §2 and §3 are the original v1 design and build plan, kept as history. The code is authoritative where they differ. For example, `RaidLevel` raw values are `"R 0"` and so on (FR-15), the deployment target is iOS 26, and 1.5.0 and 1.6.0 added the grouped levels, `ZFSEstimate`, the NAS calculators (`SynologyCalculator`, `ParityArrayCalculator`, `ZFSMixedCalculator`, `BtrfsRaid1Calculator`), `NASViewModel`, the shared `InfoSheet` and `AdaptiveLayout`. Their plans are listed in §1.9. The current implementation is described in `ARCHITECTURE.md`, and version history in `CHANGELOG.md`.
 
 ### 2.1 Tech stack
 
