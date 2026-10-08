@@ -73,4 +73,30 @@ struct NASModelTests {
         synology.system = .synology
         #expect(!base.isEquivalent(to: synology))
     }
+
+    // Different drives are a different setup, whatever the system.
+    @Test func differentBaysAreNotEquivalent() {
+        let base = NASSetup(system: .zfs, bays: [8, 8, 4], settings: NASSettings())
+        var other = base
+        other.bays = [8, 8, 8]
+        #expect(!base.isEquivalent(to: other))
+    }
+
+    // Synology compares its RAID type, not a parity setting.
+    @Test func synologyTypeMatters() {
+        let base = NASSetup(system: .synology, bays: [8, 8, 4], settings: NASSettings(synologyType: .shr1))
+        var other = base
+        other.settings.synologyType = .raid5
+        #expect(!base.isEquivalent(to: other))
+    }
+
+    // Btrfs has no setting of its own, so every other setting is ignored.
+    @Test func btrfsIgnoresEverySetting() {
+        let base = NASSetup(system: .btrfs, bays: [8, 8, 4], settings: NASSettings())
+        var other = base
+        other.settings.synologyType = .raid5
+        other.settings.setParity(3, for: .zfs)
+        other.settings.setParity(2, for: .unraid)
+        #expect(base.isEquivalent(to: other))
+    }
 }

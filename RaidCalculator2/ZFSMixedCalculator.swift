@@ -11,7 +11,8 @@ import Foundation
 struct ZFSMixedCalculator {
 
     static func level(parity: Int) -> RaidLevel {
-        switch parity {
+        precondition((1...3).contains(parity), "RAID-Z parity is 1 to 3")
+        return switch parity {
         case 3: .raidz3
         case 2: .raidz2
         default: .raidz1

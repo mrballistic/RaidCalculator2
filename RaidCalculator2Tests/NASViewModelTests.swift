@@ -29,12 +29,110 @@ struct NASViewModelTests {
         #expect(!model.differsFromCurrent)
     }
 
+    // A saved current setup with an out-of-range parity (ZFS tops out at 3) is
+    // clamped on load, so a later comparison against it can't trap.
+    @Test func savedCurrentSetupClampsOutOfRangeParity() throws {
+        let defaults = freshDefaults()
+        var settings = NASSettings()
+        settings.zfsParity = 7
+        let saved = NASSetup(system: .zfs, bays: [8, 8, 8], settings: settings)
+        defaults.set(try JSONEncoder().encode(saved), forKey: "nas.currentSetup")
+        let model = NASViewModel(userDefaults: defaults)
+        #expect(model.current.settings.zfsParity == 3)
+        model.setSize(4, forBay: 0)
+        #expect(model.differsFromCurrent)
+        _ = model.usableDelta
+    }
+
     @Test func freshInstallDefaults() {
         let model = NASViewModel(userDefaults: freshDefaults())
         #expect(model.system == .synology)
         #expect(model.bays == [4, 4, 8, 8])
         // Nothing saved yet: the launch setup is current, so there's no comparison.
         #expect(model.usableDelta == nil)
+    }
+
+    // The sample drives aren't the owner's: no comparison until they save.
+    @Test func freshInstallHidesComparisonUntilSave() {
+        let model = NASViewModel(userDefaults: freshDefaults())
+        #expect(!model.hasSavedCurrent)
+        model.system = .btrfs                                     // [4, 4, 8, 8]: SHR 16 → Btrfs 12
+        #expect(model.differsFromCurrent)
+        #expect(model.usableDelta == nil)
+        model.system = .synology
+        model.saveAsCurrent()
+        #expect(model.hasSavedCurrent)
+        #expect(model.usableDelta == nil)
+        model.system = .btrfs
+        #expect(model.usableDelta == -4)
+    }
+
+    // Review Focus 2: a setup saved before 1.7.0 still counts as saved.
+    @Test func existingSavedSetupStillCompares() throws {
+        let defaults = freshDefaults()
+        let saved = NASSetup(system: .synology, bays: [8, 8, 8, 8], settings: NASSettings())
+        defaults.set(try JSONEncoder().encode(saved), forKey: "nas.currentSetup")
+        let model = NASViewModel(userDefaults: defaults)
+        #expect(model.hasSavedCurrent)
+        #expect(model.usableDelta == -8)                          // [4, 4, 8, 8] SHR 16 against SHR 24
+        model.system = .btrfs
+        #expect(model.usableDelta == -12)
+    }
+
+    // 1.6 stored the sample on every edit, so a stored sample isn't a save,
+    // unless the 1.7 flag says the owner really saved it.
+    @Test func storedSampleSetupCountsAsUnsaved() throws {
+        let defaults = freshDefaults()
+        let sample = NASSetup(system: .synology, bays: [4, 4, 8, 8], settings: NASSettings())
+        defaults.set(try JSONEncoder().encode(sample), forKey: "nas.currentSetup")
+        defaults.set(try JSONEncoder().encode([16, 4, 8, 8] as [Double?]), forKey: "synology.bays")
+        let model = NASViewModel(userDefaults: defaults)
+        #expect(!model.hasSavedCurrent)
+        #expect(model.usableDelta == nil)
+        defaults.set(true, forKey: "nas.hasSavedCurrent")
+        #expect(NASViewModel(userDefaults: defaults).hasSavedCurrent)
+    }
+
+    @Test func legacyStoredSampleCountsAsUnsaved() throws {
+        let defaults = freshDefaults()
+        defaults.set(try JSONEncoder().encode([4, 4, 8, 8] as [Double?]), forKey: "synology.currentBays")
+        defaults.set("SHR", forKey: "synology.currentRaidType")
+        #expect(!NASViewModel(userDefaults: defaults).hasSavedCurrent)
+    }
+
+    @Test func legacySynologyCurrentStillCompares() throws {
+        let defaults = freshDefaults()
+        defaults.set(try JSONEncoder().encode([8, 8, 8, 8] as [Double?]), forKey: "synology.currentBays")
+        let model = NASViewModel(userDefaults: defaults)
+        #expect(model.hasSavedCurrent)
+        #expect(model.usableDelta == -8)                          // [4, 4, 8, 8] SHR 16 against [8, 8, 8, 8] SHR 24
+    }
+
+    @Test func hasSavedCurrentPersists() {
+        let defaults = freshDefaults()
+        let first = NASViewModel(userDefaults: defaults)
+        first.setSize(16, forBay: 0)                              // an edit alone isn't a save
+        #expect(!NASViewModel(userDefaults: defaults).hasSavedCurrent)
+        first.saveAsCurrent()
+        let second = NASViewModel(userDefaults: defaults)
+        #expect(second.hasSavedCurrent)
+        #expect(second.current.bays == [16, 4, 8, 8])
+    }
+
+    @Test func currentSummaryDescribesTheSavedSetup() {
+        let model = NASViewModel(userDefaults: freshDefaults())
+        model.saveAsCurrent()
+        model.system = .unraid
+        let summary = model.currentSummary
+        #expect(summary.usable == 16)
+        #expect(summary.system == .synology)
+        #expect(summary.typeLabel == "SHR")
+        #expect(summary.bays == 4)
+        model.setBayCount(5)
+        model.saveAsCurrent()
+        #expect(model.currentSummary.system == .unraid)
+        #expect(model.currentSummary.typeLabel == nil)
+        #expect(model.currentSummary.bays == 5)
     }
 
     // Review Focus 1
@@ -139,5 +237,40 @@ struct NASViewModelTests {
         #expect(unraid?.usableCapacity == 104)    // 14 bays × 8 TB, one parity
         #expect(model.bays(for: .synology).count == 12)
         #expect(model.bays.count == 14)
+    }
+
+    // Synology current with 14 bays set up: it shows 12, Unraid reads all 14.
+    @Test func comparisonNotesSystemsThatReadMoreBays() {
+        let model = NASViewModel(userDefaults: freshDefaults())
+        model.system = .unraid
+        model.setBayCount(14)
+        for bay in 0..<14 { model.setSize(8, forBay: bay) }
+        model.system = .synology
+        let rows = model.comparison
+        #expect(rows.first { $0.system == .unraid }?.readsAllBays == 14)
+        #expect(rows.first { $0.system == .synology }?.readsAllBays == nil)
+    }
+
+    // Review Focus 2: nothing hidden, no note.
+    @Test func noAllBaysNoteWhenNothingIsHidden() {
+        let model = NASViewModel(userDefaults: freshDefaults())
+        model.system = .unraid
+        #expect(model.comparison.allSatisfy { $0.readsAllBays == nil })
+    }
+
+    // Stored parity outside a system's range is clamped on load, so it can't trap the calculator.
+    @Test func storedParityIsClampedToEachSystemsRange() throws {
+        let defaults = freshDefaults()
+        var stored = NASSettings()
+        stored.zfsParity = 7
+        stored.unraidParity = 0
+        stored.snapraidParity = 9
+        defaults.set(try JSONEncoder().encode(stored), forKey: "nas.settings")
+        let model = NASViewModel(userDefaults: defaults)
+        #expect(model.settings.zfsParity == 3)
+        #expect(model.settings.unraidParity == 1)
+        #expect(model.settings.snapraidParity == 6)
+        model.system = .zfs
+        _ = model.result
     }
 }

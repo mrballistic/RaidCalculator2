@@ -23,7 +23,11 @@ final class NASViewModel {
 
     /// The setup the owner has today. Every change is compared against it, so
     /// “what if I buy this drive?” reads as a difference, not a new total.
-    private(set) var current = NASSetup(system: .synology, bays: [4, 4, 8, 8], settings: NASSettings())
+    private(set) var current = NASViewModel.sample
+
+    /// The drives a fresh install starts with. 1.6 stored the current setup
+    /// on every edit, so a stored copy of this is the sample, not a save.
+    static let sample = NASSetup(system: .synology, bays: [4, 4, 8, 8], settings: NASSettings())
 
     var bayCount: Int { min(max(requestedBayCount, system.bayRange.lowerBound), system.bayRange.upperBound) }
     var bays: [Double?] { bays(for: system) }
@@ -44,15 +48,32 @@ final class NASViewModel {
     var comparison: [NASComparison] {
         calculator.compare(
             NASSystem.allCases.map { NASSetup(system: $0, bays: bays(for: $0), settings: settings) },
-            requestedBayCount: requestedBayCount
+            requestedBayCount: requestedBayCount,
+            shownBayCount: bayCount
+        )
+    }
+
+    /// Whether the owner has ever saved a current setup. Until then `current`
+    /// is only the sample drives, so nothing is compared against it.
+    private(set) var hasSavedCurrent = false
+
+    /// The saved setup, for the line that says what changes are compared with.
+    /// `typeLabel` is Synology's RAID type; the other systems have none.
+    var currentSummary: CurrentSummary {
+        CurrentSummary(
+            usable: calculator.calculate(current).usableCapacity,
+            system: current.system,
+            typeLabel: current.system == .synology ? current.settings.synologyType.rawValue : nil,
+            bays: current.bays.count
         )
     }
 
     var differsFromCurrent: Bool { !setup.isEquivalent(to: current) }
 
-    /// Usable-capacity change against the current setup; nil when nothing changed.
+    /// Usable-capacity change against the current setup; nil when nothing
+    /// changed, or when no current setup has been saved yet.
     var usableDelta: Double? {
-        guard differsFromCurrent else { return nil }
+        guard hasSavedCurrent, differsFromCurrent else { return nil }
         return result.usableCapacity - calculator.calculate(current).usableCapacity
     }
 
@@ -66,6 +87,7 @@ final class NASViewModel {
         static let bayCount = "nas.bayCount"
         static let settings = "nas.settings"
         static let currentSetup = "nas.currentSetup"
+        static let hasSavedCurrent = "nas.hasSavedCurrent"
         // Read only as fallbacks, from before the NAS tab.
         static let legacyRaidType = "synology.raidType"
         static let legacyCurrentBays = "synology.currentBays"
@@ -101,6 +123,7 @@ final class NASViewModel {
 
     func saveAsCurrent() {
         current = setup
+        hasSavedCurrent = true
         save()
     }
 
@@ -120,7 +143,23 @@ final class NASViewModel {
         userDefaults.set(system.rawValue, forKey: Keys.system)
         userDefaults.set(requestedBayCount, forKey: Keys.bayCount)
         userDefaults.set(try? JSONEncoder().encode(settings), forKey: Keys.settings)
+        // Before 1.7.0 the sample setup was stored here on every edit, so
+        // only a real save writes it now; otherwise a relaunch would read
+        // the sample drives as saved.
+        guard hasSavedCurrent else { return }
         userDefaults.set(try? JSONEncoder().encode(current), forKey: Keys.currentSetup)
+        userDefaults.set(true, forKey: Keys.hasSavedCurrent)
+    }
+
+    /// Stored parity can be out of range if the data was corrupted or edited;
+    /// pull each back into its system's range so the calculator never sees it.
+    private static func clamped(_ settings: NASSettings) -> NASSettings {
+        var result = settings
+        for system in NASSystem.allCases {
+            guard let range = system.parityRange, let value = result.parity(for: system) else { continue }
+            result.setParity(min(max(value, range.lowerBound), range.upperBound), for: system)
+        }
+        return result
     }
 
     private func load() {
@@ -133,7 +172,7 @@ final class NASViewModel {
 
         if let data = userDefaults.data(forKey: Keys.settings),
            let saved = try? JSONDecoder().decode(NASSettings.self, from: data) {
-            settings = saved
+            settings = Self.clamped(saved)
         } else if let type = userDefaults.string(forKey: Keys.legacyRaidType).flatMap(SynologyRaidType.init) {
             settings.synologyType = type
         }
@@ -144,14 +183,31 @@ final class NASViewModel {
         if let data = userDefaults.data(forKey: Keys.currentSetup),
            let saved = try? JSONDecoder().decode(NASSetup.self, from: data) {
             current = saved
+            current.settings = Self.clamped(saved.settings)
+            // Review Focus 2: a setup stored by an earlier version counts as
+            // saved, unless it's only the sample 1.6 stored on every edit.
+            hasSavedCurrent = !current.isEquivalent(to: Self.sample)
         } else {
             var legacy = NASSetup(system: system, bays: bays, settings: settings)
-            if let data = userDefaults.data(forKey: Keys.legacyCurrentBays),
-               let saved = try? JSONDecoder().decode([Double?].self, from: data) { legacy.bays = saved }
+            let legacyBays = userDefaults.data(forKey: Keys.legacyCurrentBays)
+                .flatMap { try? JSONDecoder().decode([Double?].self, from: $0) }
+            if let legacyBays { legacy.bays = legacyBays }
             if let type = userDefaults.string(forKey: Keys.legacyCurrentRaidType).flatMap(SynologyRaidType.init) {
                 legacy.settings.synologyType = type
             }
             current = legacy
+            // The Synology tab's stored setup, from before the NAS tab, under the same rule.
+            hasSavedCurrent = legacyBays != nil && !legacy.isEquivalent(to: Self.sample)
         }
+        if userDefaults.bool(forKey: Keys.hasSavedCurrent) { hasSavedCurrent = true }
     }
+}
+
+/// The saved setup, as the NAS tab's “Current: …” line describes it.
+struct CurrentSummary {
+    var usable: Double
+    var system: NASSystem
+    /// Synology's RAID type; the other systems have none.
+    var typeLabel: String?
+    var bays: Int
 }

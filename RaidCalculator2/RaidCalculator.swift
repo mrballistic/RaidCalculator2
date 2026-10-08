@@ -80,21 +80,23 @@ struct RaidCalculator {
     }
 
     /// Single-parity layouts on drives of 8 TB or more: a rebuild takes days,
-    /// and a second failure during it loses the array. Returns the dual-parity
-    /// level to suggest instead.
-    func rebuildCautionSuggestion(for config: RaidConfiguration) -> RaidLevel? {
+    /// and a second failure during it loses the array.
+    func rebuildCaution(for config: RaidConfiguration) -> RebuildCaution? {
         guard validate(config) == nil else { return nil }
         let terabytes = config.unit == .tb ? config.driveSize : config.driveSize / 1000
         guard terabytes >= 8 else { return nil }
         let safer: RaidLevel
         switch config.level {
-        case .raid5: return .raid6
+        case .raid5:
+            // RAID 6 needs a fourth drive; below that, warn without a level to move to.
+            var raid6 = config
+            raid6.level = .raid6
+            return validate(raid6) == nil ? .suggest(.raid6) : .warnOnly
         case .raid50: safer = .raid60
         case .raidz1: safer = .raidz2
         default: return nil
         }
-        // Only a level the current groups are wide enough to become.
-        return config.driveCount / groupCount(config) >= safer.minimumGroupWidth ? safer : nil
+        return config.driveCount / groupCount(config) >= safer.minimumGroupWidth ? .suggest(safer) : .warnOnly
     }
 
     /// Group width when a RAID-Z group is wider than 12 drives, which rebuilds slowly.
@@ -242,4 +244,12 @@ struct RaidCalculator {
         default: return ""
         }
     }
+}
+
+enum RebuildCaution: Equatable {
+    /// A dual-parity level this setup's groups are wide enough to become.
+    case suggest(RaidLevel)
+    /// Large drives on single parity, but the groups are too narrow for the
+    /// dual-parity level; warn without a suggestion.
+    case warnOnly
 }

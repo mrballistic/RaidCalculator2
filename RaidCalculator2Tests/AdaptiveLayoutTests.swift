@@ -11,11 +11,35 @@ struct AdaptiveLayoutTests {
 
     // Review Focus 3: regular width alone isn't enough room for two columns.
     @Test func twoColumnsNeedRegularWidthAndRoom() {
-        #expect(AdaptiveLayout.usesTwoColumns(isRegularWidth: true, width: 1032))   // 13-inch iPad, portrait
-        #expect(AdaptiveLayout.usesTwoColumns(isRegularWidth: true, width: 800))
-        #expect(!AdaptiveLayout.usesTwoColumns(isRegularWidth: true, width: 744))   // iPad mini, portrait
-        #expect(!AdaptiveLayout.usesTwoColumns(isRegularWidth: true, width: 678))   // half of a 13-inch iPad
-        #expect(!AdaptiveLayout.usesTwoColumns(isRegularWidth: false, width: 1200))
+        #expect(AdaptiveLayout.usesTwoColumns(isRegularWidth: true, width: 1032, height: 1376))   // 13-inch iPad, portrait
+        #expect(AdaptiveLayout.usesTwoColumns(isRegularWidth: true, width: 800, height: 1000))
+        #expect(!AdaptiveLayout.usesTwoColumns(isRegularWidth: true, width: 744, height: 1133))   // iPad mini, portrait
+        #expect(!AdaptiveLayout.usesTwoColumns(isRegularWidth: true, width: 678, height: 1024))   // half of a 13-inch iPad
+        #expect(!AdaptiveLayout.usesTwoColumns(isRegularWidth: false, width: 1200, height: 1000))
+    }
+
+    // Two columns also need height: a landscape iPhone is one column, even
+    // the Pro Max, which is regular width. iPhone Duo's inner display and
+    // full-screen iPads are tall enough in either orientation.
+    @Test func twoColumnsNeedHeight() {
+        #expect(!AdaptiveLayout.usesTwoColumns(isRegularWidth: true, width: 956, height: 440))   // iPhone Pro Max, landscape
+        #expect(AdaptiveLayout.usesTwoColumns(isRegularWidth: true, width: 951, height: 669))    // iPhone Duo inner display, landscape
+        #expect(AdaptiveLayout.usesTwoColumns(isRegularWidth: true, width: 1366, height: 1024))  // 13-inch iPad, landscape
+        #expect(AdaptiveLayout.usesTwoColumns(isRegularWidth: true, width: 1032, height: 1376))  // 13-inch iPad, portrait
+        #expect(AdaptiveLayout.usesTwoColumns(isRegularWidth: true, width: 800, height: 600))
+        #expect(!AdaptiveLayout.usesTwoColumns(isRegularWidth: true, width: 800, height: 599))
+    }
+
+    // Each pane's inner edge at the split gets the system's outer margin.
+    // Next to iPhone Duo's vertical bar the guide can be larger on one side,
+    // so the smaller side is the plain margin; nothing usable means 16.
+    @Test func splitInnerMarginIsTheSystemOuterMargin() {
+        #expect(AdaptiveLayout.splitInnerMargin(leading: 20, trailing: 20) == 20)
+        #expect(AdaptiveLayout.splitInnerMargin(leading: 16, trailing: 28) == 16)
+        #expect(AdaptiveLayout.splitInnerMargin(leading: 24, trailing: 20) == 20)
+        #expect(AdaptiveLayout.splitInnerMargin(leading: 0, trailing: 0) == 16)
+        #expect(AdaptiveLayout.splitInnerMargin(leading: .nan, trailing: 20) == 20)   // an unusable side is ignored
+        #expect(AdaptiveLayout.splitInnerMargin(leading: .nan, trailing: .infinity) == 16)
     }
 
     @Test func baysThatFitStayInOneRow() {
@@ -26,6 +50,8 @@ struct AdaptiveLayoutTests {
     @Test func tooManyBaysWrapIntoBalancedRows() {
         #expect(AdaptiveLayout.bayRows(count: 30, width: 480, minColumn: 24, spacing: 4, wrap: true) == [0..<15, 15..<30])
         #expect(AdaptiveLayout.bayRows(count: 13, width: 300, minColumn: 24, spacing: 4, wrap: true) == [0..<7, 7..<13])
+        // One more than fits in a row (17) still splits evenly, not 17 and 1.
+        #expect(AdaptiveLayout.bayRows(count: 18, width: 480, minColumn: 24, spacing: 4, wrap: true) == [0..<9, 9..<18])
     }
 
     @Test func withoutWrappingEveryBayIsOneRow() {

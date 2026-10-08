@@ -109,7 +109,7 @@ struct NASSetup: Codable, Equatable {
 }
 
 /// Advice shown under the results; never a block.
-enum NASHint: Equatable, Hashable {
+enum NASHint: Hashable {
     /// SnapRAID recommends more parity for this many data drives.
     case snapraidParity(recommended: Int, dataDrives: ClosedRange<Int>)
     /// A RAID-Z group wider than 12 drives rebuilds slowly.
@@ -145,19 +145,13 @@ struct NASCalculator {
     /// - Btrfs RAID1: a drive the size of the largest, into an empty bay or in
     ///   place of the smallest.
     func suggestion(_ setup: NASSetup) -> BaySuggestion? {
-        if setup.system == .synology {
-            return synology.suggestion(bays: setup.bays, type: setup.settings.synologyType)
-        }
-        let current = calculate(setup)
-        guard current.warningMessage == nil else { return nil }
-
         let sizes = setup.bays.compactMap { $0 }
         let emptyBay = setup.bays.firstIndex { $0 == nil }
         var candidate: (kind: BaySuggestion.Kind, size: Double)?
 
         switch setup.system {
         case .synology:
-            return nil
+            return synology.suggestion(bays: setup.bays, type: setup.settings.synologyType)
         case .unraid, .snapraid:
             let parityBays = ParityArrayCalculator.parityBays(bays: setup.bays, parity: setup.settings.parity(for: setup.system) ?? 1)
             guard let paritySize = parityBays.compactMap({ setup.bays[$0] }).min() else { return nil }
@@ -181,6 +175,9 @@ struct NASCalculator {
             }
         }
 
+        // A warned setup (e.g. too few drives) has nothing sensible to suggest.
+        let current = calculate(setup)
+        guard current.warningMessage == nil else { return nil }
         guard let candidate else { return nil }
         var upgraded = setup
         switch candidate.kind {
@@ -219,6 +216,9 @@ struct NASComparison: Identifiable, Equatable {
     /// How many bays this system reads, when that's fewer than the user set
     /// up (Synology stops at 12); nil when it reads them all.
     let bayLimit: Int?
+    /// How many bays this system reads, when that's more than the current
+    /// system shows (Synology hides bays past 12); nil otherwise.
+    let readsAllBays: Int?
 
     var id: NASSystem { system }
     var isValid: Bool { warningMessage == nil }
@@ -227,7 +227,7 @@ struct NASComparison: Identifiable, Equatable {
 extension NASCalculator {
     /// The same drives under every system, most usable first. Setups that
     /// don't work sort last; ties keep the picker's order.
-    func compare(_ setups: [NASSetup], requestedBayCount: Int) -> [NASComparison] {
+    func compare(_ setups: [NASSetup], requestedBayCount: Int, shownBayCount: Int) -> [NASComparison] {
         let order = Dictionary(uniqueKeysWithValues: NASSystem.allCases.enumerated().map { ($1, $0) })
         return setups.map { setup in
             let result = calculate(setup)
@@ -237,7 +237,8 @@ extension NASCalculator {
                 unusedCapacity: result.unusedCapacity,
                 failuresTolerated: result.failuresTolerated,
                 warningMessage: result.warningMessage,
-                bayLimit: setup.bays.count < requestedBayCount ? setup.bays.count : nil
+                bayLimit: setup.bays.count < requestedBayCount ? setup.bays.count : nil,
+                readsAllBays: setup.bays.count > shownBayCount ? setup.bays.count : nil
             )
         }
         .sorted { a, b in

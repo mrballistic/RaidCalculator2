@@ -75,6 +75,20 @@ struct NASCalculatorTests {
                 == BaySuggestion(kind: .add(bay: 3), size: 20, gain: 16))
     }
 
+    @Test func snapraidAddsADataDriveAtParitySize() {
+        // Parity is the 16; the empty bay 4 takes a 16: data 8 + 8 + 16 = 32, from 16.
+        #expect(calculator.suggestion(setup(.snapraid, [16, 8, 8, nil]))
+                == BaySuggestion(kind: .add(bay: 3), size: 16, gain: 16))
+    }
+
+    @Test func btrfsSuggestsTheFirstOfSeveralEmptyBays() {
+        // 8 + 8 mirrors to 8 usable; the first empty bay (index 1) takes an 8: 24 total → 12, so +4.
+        let drives: [Double?] = [8, nil, 8, nil]
+        #expect(calculator.calculate(setup(.btrfs, drives)).usableCapacity == 8)
+        #expect(calculator.suggestion(setup(.btrfs, drives))
+                == BaySuggestion(kind: .add(bay: 1), size: 8, gain: 4))
+    }
+
     @Test func btrfsReplacesTheSmallestWhenFull() {
         // 20, 20, 4: total 44, largest 20 → 22, from 8.
         #expect(calculator.suggestion(setup(.btrfs, [20, 4, 4]))
@@ -84,6 +98,8 @@ struct NASCalculatorTests {
     @Test func noSuggestionWhenInvalid() {
         #expect(calculator.suggestion(setup(.unraid, [8, 8], parity: 2)) == nil)
         #expect(calculator.suggestion(setup(.zfs, [8, 4], parity: 2)) == nil)
+        // Btrfs RAID1 needs two drives; one drive and an empty bay has no suggestion.
+        #expect(calculator.suggestion(setup(.btrfs, [8, nil])) == nil)
     }
 
     @Test func snapraidParityHint() {
@@ -126,12 +142,26 @@ struct NASCalculatorTests {
         let bays: [Double?] = [16, 8, 8, 4]
         let rows = NASCalculator().compare(
             NASSystem.allCases.map { NASSetup(system: $0, bays: bays, settings: NASSettings()) },
-            requestedBayCount: 4
+            requestedBayCount: 4,
+            shownBayCount: 4
         )
         #expect(rows.map(\.system) == [.synology, .unraid, .snapraid, .btrfs, .zfs])
         #expect(rows.map(\.usableCapacity) == [20, 20, 20, 18, 12])
         #expect(rows.allSatisfy { $0.isValid && $0.failuresTolerated == 1 && $0.bayLimit == nil })
         #expect(rows.last?.unusedCapacity == 20)
+    }
+
+    // Rows read fewer or more bays than the view shows (FR-13).
+    @Test func compareFlagsSystemsReadingMoreBaysThanShown() {
+        let eight = [Double?](repeating: 8, count: 8)
+        let rows = NASCalculator().compare(
+            NASSystem.allCases.map { NASSetup(system: $0, bays: eight, settings: NASSettings()) },
+            requestedBayCount: 8,
+            shownBayCount: 4
+        )
+        #expect(rows.allSatisfy { $0.readsAllBays == 8 })
+        let unraid = rows.first { $0.system == .unraid }
+        #expect(unraid?.bayLimit == nil)
     }
 
     // Review Focus 2: a system that can't use the drives sorts below every one that can.
@@ -140,7 +170,8 @@ struct NASCalculatorTests {
         settings.snapraidParity = 2
         let rows = NASCalculator().compare(
             NASSystem.allCases.map { NASSetup(system: $0, bays: [8, 8], settings: settings) },
-            requestedBayCount: 2
+            requestedBayCount: 2,
+            shownBayCount: 2
         )
         let firstInvalid = try #require(rows.firstIndex { !$0.isValid })
         #expect(firstInvalid > 0)

@@ -21,12 +21,14 @@ final class RaidCalculator2UITests: XCTestCase {
     /// Launches with a known configuration. Launch arguments override the
     /// persisted UserDefaults, so each test starts from RAID 5, 4 × 4 TB.
     @MainActor
-    private func launchApp(level: String = "R 5", drives: Int = 4, groups: Int = 1, language: String = "en", locale: String = "en_US", contentSize: String? = nil) -> XCUIApplication {
+    private func launchApp(level: String = "R 5", drives: Int = 4, size: Int = 4, groups: Int = 1, language: String = "en", locale: String = "en_US", contentSize: String? = nil) -> XCUIApplication {
         let app = XCUIApplication()
         app.launchArguments += [
+            // A test that leaves the NAS tab selected must not move the next one.
+            "-selectedTab", "raid",
             "-selectedLevel", level,
             "-driveCount", "\(drives)",
-            "-driveSize", "4",
+            "-driveSize", "\(size)",
             "-groups", "\(groups)",
             "-unit", "TB",
             "-AppleLanguages", "(\(language))",
@@ -37,9 +39,9 @@ final class RaidCalculator2UITests: XCTestCase {
         return app
     }
 
-    /// Opens the NAS tab with known drives. An empty current setup means
-    /// “nothing saved yet”: the app takes the launch setup (whatever the
-    /// system) as current, so no comparison row appears until something changes.
+    /// Opens the NAS tab with known drives. An empty current setup and a
+    /// false saved flag mean a fresh install: nothing is compared until the
+    /// user taps Save as Current Setup, which saves the launch drives.
     @MainActor
     private func launchNAS(system: String = "synology", bays: String = "[4,4,8,8]", bayCount: Int = 4) -> XCUIApplication {
         let hex = bays.data(using: .utf8)!.map { String(format: "%02x", $0) }.joined()
@@ -51,11 +53,22 @@ final class RaidCalculator2UITests: XCTestCase {
             "-synology.bays", "<\(hex)>",
             "-nas.settings", "",
             "-nas.currentSetup", "",
+            "-nas.hasSavedCurrent", "NO",
             "-AppleLanguages", "(en)",
             "-AppleLocale", "en_US",
         ]
         app.launch()
         return app
+    }
+
+    /// The two-column layout appears at regular width, at least 800 points
+    /// wide and 600 tall (AdaptiveLayout.twoColumnMinWidth and
+    /// twoColumnMinHeight), on iPad and on iPhone Duo's inner
+    /// display alike. The app marks that layout with an identifier, so skip
+    /// unless it is actually showing.
+    @MainActor
+    private func skipUnlessTwoColumns(_ app: XCUIApplication) throws {
+        try XCTSkipUnless(app.otherElements["twoColumnLayout"].waitForExistence(timeout: 3), "two-column layout not showing")
     }
 
     /// At the largest text size a rating row still reads as one phrase and
@@ -74,7 +87,7 @@ final class RaidCalculator2UITests: XCTestCase {
         let row = speedRow(app)
         XCTAssertTrue(row.label.hasPrefix("Speed, 3 of 5, "), row.label)
         XCTAssertGreaterThan(row.frame.height, normalHeight * 3, "title, stars and word are all at the large size")
-        XCTAssertLessThan(row.frame.height, 300, "stacked rows don't wrap inside a squeezed column")
+        XCTAssertLessThan(row.frame.height, normalHeight * 4.5, "stacked rows don't wrap inside a squeezed column")
     }
 
     /// The combined VoiceOver element for the answer, which reads
@@ -246,7 +259,14 @@ final class RaidCalculator2UITests: XCTestCase {
         XCTAssertFalse(done.isEnabled, "empty")
         field.typeText("5")
         XCTAssertTrue(done.isEnabled)
-        done.tap()
+        // With the keyboard up the alert slides above it after a short delay,
+        // so a tap on the frame read before the slide lands below the button
+        // and the alert stays. Tap again on the settled frame if it stays.
+        for _ in 0..<3 where app.alerts.firstMatch.exists {
+            Thread.sleep(forTimeInterval: 1)
+            if done.exists { done.tap() }
+        }
+        XCTAssertTrue(app.alerts.firstMatch.waitForNonExistence(timeout: 5), "Done dismisses the alert")
         XCTAssertTrue(bay1.label.contains(tb(5)), bay1.label)
     }
 
@@ -278,6 +298,54 @@ final class RaidCalculator2UITests: XCTestCase {
         XCTAssertEqual(sizeField.value as? String, "12,5")
     }
 
+    // MARK: Added languages (1.6.5): each launches with its own title; de and pt-BR also take a decimal comma.
+
+    @MainActor
+    func testLaunchesInGerman() throws {
+        let app = launchApp(language: "de", locale: "de_DE")
+        XCTAssertTrue(app.navigationBars["RAID-Rechner"].waitForExistence(timeout: 5), app.debugDescription)
+
+        let sizeField = app.textFields["driveSizeField"]
+        XCTAssertTrue(sizeField.waitForExistence(timeout: 5))
+        sizeField.coordinate(withNormalizedOffset: CGVector(dx: 0.3, dy: 0.5)).tap()
+        sizeField.typeText(XCUIKeyboardKey.delete.rawValue + "2,5")
+        app.buttons["Fertig"].tap()
+        XCTAssertEqual(sizeField.value as? String, "2,5")
+        XCTAssertTrue(capacity(app).contains("7,5"), capacity(app))
+    }
+
+    @MainActor
+    func testLaunchesInTraditionalChinese() throws {
+        let app = launchApp(language: "zh-Hant", locale: "zh_TW")
+        XCTAssertTrue(app.navigationBars["RAID 計算機"].waitForExistence(timeout: 5), app.debugDescription)
+    }
+
+    @MainActor
+    func testLaunchesInSimplifiedChinese() throws {
+        let app = launchApp(language: "zh-Hans", locale: "zh_CN")
+        XCTAssertTrue(app.navigationBars["RAID 计算器"].waitForExistence(timeout: 5), app.debugDescription)
+    }
+
+    @MainActor
+    func testLaunchesInKorean() throws {
+        let app = launchApp(language: "ko", locale: "ko_KR")
+        XCTAssertTrue(app.navigationBars["RAID 계산기"].waitForExistence(timeout: 5), app.debugDescription)
+    }
+
+    @MainActor
+    func testLaunchesInBrazilianPortuguese() throws {
+        let app = launchApp(language: "pt-BR", locale: "pt_BR")
+        XCTAssertTrue(app.navigationBars["Calculadora RAID"].waitForExistence(timeout: 5), app.debugDescription)
+
+        let sizeField = app.textFields["driveSizeField"]
+        XCTAssertTrue(sizeField.waitForExistence(timeout: 5))
+        sizeField.coordinate(withNormalizedOffset: CGVector(dx: 0.3, dy: 0.5)).tap()
+        sizeField.typeText(XCUIKeyboardKey.delete.rawValue + "2,5")
+        app.buttons["OK"].tap()
+        XCTAssertEqual(sizeField.value as? String, "2,5")
+        XCTAssertTrue(capacity(app).contains("7,5"), capacity(app))
+    }
+
     /// A decimal survives being typed one keystroke at a time; reformatting
     /// on every keystroke would drop the trailing point of “12.”.
     @MainActor
@@ -300,6 +368,15 @@ final class RaidCalculator2UITests: XCTestCase {
 
         XCTAssertEqual(driveCount(app), "6")
         XCTAssertFalse(app.buttons["applySuggestedDriveCount"].exists)
+    }
+
+    @MainActor
+    func testInvalidSetupIsAnnounced() throws {
+        let app = launchApp(level: "R 10", drives: 5)
+        XCTAssertTrue(app.staticTexts.matching(identifier: "usableCapacity").firstMatch.waitForExistence(timeout: 5))
+        XCTAssertTrue(capacity(app).hasPrefix("Not a valid setup."), capacity(app))
+        XCTAssertTrue(capacity(app).contains("Usable Capacity"), capacity(app))
+        XCTAssertFalse(app.descendants(matching: .any).matching(identifier: "failuresTolerated").firstMatch.exists)
     }
 
     @MainActor
@@ -382,6 +459,22 @@ final class RaidCalculator2UITests: XCTestCase {
         XCTAssertTrue(capacity(app).hasPrefix("Usable Capacity, 44 TB,"), capacity(app))
     }
 
+    /// §1.6: within a grouped level VoiceOver reaches each drive
+    /// (“Group 2 of 2, drive 1: Data”); an ungrouped level stays a summary.
+    @MainActor
+    func testDriveStripReadsEachDrive() throws {
+        let app = launchApp(level: "R 60", drives: 12, groups: 2)
+        XCTAssertTrue(app.staticTexts.matching(identifier: "usableCapacity").firstMatch.waitForExistence(timeout: 5))
+        let groupTwo = app.staticTexts.matching(NSPredicate(format: "label BEGINSWITH %@", "Group 2 of 2, drive "))
+        XCTAssertEqual(groupTwo.count, 6)
+        XCTAssertTrue(app.staticTexts["Group 2 of 2, drive 1: Data"].exists)
+        app.terminate()
+
+        let raid5 = launchApp()
+        XCTAssertTrue(raid5.staticTexts.matching(identifier: "usableCapacity").firstMatch.waitForExistence(timeout: 5))
+        XCTAssertEqual(raid5.staticTexts.matching(NSPredicate(format: "label CONTAINS %@", ", drive ")).count, 0)
+    }
+
     /// §1.6: VoiceOver reads group structure, one element per group.
     @MainActor
     func testDriveStripReadsEachGroup() throws {
@@ -409,6 +502,83 @@ final class RaidCalculator2UITests: XCTestCase {
         let note = app.staticTexts["zfsReportedNote"]
         XCTAssertTrue(note.waitForExistence(timeout: 5))
         XCTAssertTrue(note.label.contains("as ZFS reports it (estimate)"), note.label)
+    }
+
+    /// RAID 5 on 20 TB drives gets the rebuild caution, and its button
+    /// switches to the suggested RAID 6, which needs no caution.
+    @MainActor
+    func testRebuildCautionOffersSaferLevel() throws {
+        let app = launchApp(level: "R 5", drives: 8, size: 20)
+        let fix = app.buttons["applyRebuildSuggestion"]
+        XCTAssertTrue(fix.waitForExistence(timeout: 5))
+        XCTAssertEqual(fix.label, "Use RAID 6")
+        fix.tap()
+
+        XCTAssertTrue(app.segmentedControls.firstMatch.buttons["RAID 6"].isSelected)
+        XCTAssertTrue(fix.waitForNonExistence(timeout: 5))
+        XCTAssertTrue(capacity(app).hasPrefix("Usable Capacity, 120 TB,"), capacity(app))
+    }
+
+    /// Narrow RAID 50 groups on large drives warn, but offer no level to move to.
+    @MainActor
+    func testNarrowGroupsWarnWithoutSuggestion() throws {
+        let app = launchApp(level: "R 50", drives: 6, size: 12, groups: 2)
+        XCTAssertTrue(app.staticTexts["narrowGroupCaution"].waitForExistence(timeout: 5))
+        XCTAssertFalse(app.buttons["applyRebuildSuggestion"].exists)
+    }
+
+    /// Three-drive RAID 5 can't become RAID 6, so the caution asks for a
+    /// fourth drive and offers no level to switch to.
+    @MainActor
+    func testThreeDriveRaid5CautionAsksForAFourthDrive() throws {
+        let app = launchApp(level: "R 5", drives: 3, size: 20)
+        let caution = app.staticTexts["narrowGroupCaution"]
+        XCTAssertTrue(caution.waitForExistence(timeout: 5))
+        XCTAssertTrue(caution.label.contains("A fourth drive would allow RAID 6."), caution.label)
+        XCTAssertFalse(app.buttons["applyRebuildSuggestion"].exists)
+    }
+
+    /// Segmented controls stay near 13 pt at accessibility sizes, so both
+    /// pickers become menus there.
+    @MainActor
+    func testPickersBecomeMenusAtAccessibilitySize() throws {
+        let app = launchApp(contentSize: "UICTContentSizeCategoryAccessibilityXXXL")
+        let level = app.buttons["levelPicker"]
+        reveal(level, in: app)
+        XCTAssertEqual(app.segmentedControls.count, 0)
+
+        level.tap()
+        XCTAssertTrue(app.buttons["RAID 5"].waitForExistence(timeout: 5))
+        app.buttons["RAID 6"].tap()
+        XCTAssertTrue(app.buttons["levelPicker"].label.contains("RAID 6"), app.buttons["levelPicker"].label)
+        XCTAssertTrue(capacity(app).hasPrefix("Usable Capacity, 8 TB,"), capacity(app))
+
+        let unit = app.buttons["unitPicker"]
+        reveal(unit, in: app)
+        unit.tap()
+        app.buttons["GB"].tap()
+        XCTAssertTrue(app.buttons["unitPicker"].label.contains("GB"), app.buttons["unitPicker"].label)
+    }
+
+    /// At accessibility sizes one menu holds every level, so a nested level
+    /// shows its name there instead of an empty row.
+    @MainActor
+    func testAccessibilityLevelMenuShowsNestedLevel() throws {
+        let app = launchApp(level: "R 50", drives: 6, groups: 2, contentSize: "UICTContentSizeCategoryAccessibilityXXXL")
+        let level = app.buttons["levelPicker"]
+        reveal(level, in: app)
+        XCTAssertTrue(level.label.contains("RAID 50"), level.label)
+        XCTAssertFalse(app.buttons["moreLevels"].exists)
+    }
+
+    /// VoiceOver reads each segment as the full level name, not “5”.
+    @MainActor
+    func testSegmentsReadFullLevelNames() throws {
+        let app = launchApp()
+        let picker = app.segmentedControls.firstMatch
+        XCTAssertTrue(picker.waitForExistence(timeout: 5))
+        XCTAssertEqual(picker.buttons.allElementsBoundByIndex.map(\.label),
+                       ["RAID 0", "RAID 1", "RAID 5", "RAID 6", "RAID 10", "JBOD"])
     }
 
     /// A RAID-Z group wider than 12 drives gets the slow-rebuild caution.
@@ -451,14 +621,43 @@ final class RaidCalculator2UITests: XCTestCase {
     /// hierarchy until it's scrolled to.
     @MainActor
     private func reveal(_ element: XCUIElement, in app: XCUIApplication, scrollingDown: Bool = true) {
+        // Swiping the app element itself does nothing once the device is in
+        // landscape, so in landscape swipe the scrolling list directly.
+        func scroll(down: Bool) {
+            // iPad landscape shows two lists, so only a single-column
+            // landscape window (iPhone) swipes the list directly.
+            let window = app.windows.firstMatch.frame
+            let singleList = window.width > window.height && !app.otherElements["twoColumnLayout"].exists && app.collectionViews.firstMatch.exists
+            let target = singleList ? app.collectionViews.firstMatch : app
+            down ? target.swipeUp() : target.swipeDown()
+        }
         for _ in 0..<6 where !(element.exists && element.isHittable) {
-            scrollingDown ? app.swipeUp() : app.swipeDown()
+            scroll(down: scrollingDown)
         }
         // The floating tab bar covers the last rows, which still report hittable.
-        if element.exists, element.frame.intersects(app.tabBars.firstMatch.frame) {
-            app.swipeUp()
+        if element.exists, let bar = tabBarFrame(in: app), element.frame.intersects(bar) {
+            scroll(down: true)
         }
         XCTAssertTrue(element.isHittable, "not revealed: \(element)")
+    }
+
+    /// A tab's button, wherever the system puts the bar. On iPhone Duo's
+    /// outer display the bar is vertical and isn't exposed as a TabBar,
+    /// only as its buttons.
+    @MainActor
+    private func tabButton(_ title: String, in app: XCUIApplication) -> XCUIElement {
+        let inBar = app.tabBars.buttons[title]
+        return inBar.exists ? inBar : app.buttons[title].firstMatch
+    }
+
+    /// The tab bar's frame: the TabBar when there is one, otherwise the
+    /// span of the tab buttons in the vertical bar. Nil if neither is found.
+    @MainActor
+    private func tabBarFrame(in app: XCUIApplication) -> CGRect? {
+        let bar = app.tabBars.firstMatch
+        if bar.exists { return bar.frame }
+        let tabs = [tabButton("RAID", in: app), tabButton("NAS", in: app)].filter(\.exists)
+        return tabs.map(\.frame).reduce(nil) { $0?.union($1) ?? $1 }
     }
 
     /// Capacities join number and unit with a no-break space.
@@ -540,6 +739,23 @@ final class RaidCalculator2UITests: XCTestCase {
         XCTAssertTrue(hint.label.contains("recommends 2 parity drives"), hint.label)
     }
 
+    /// The parity hint's button sets SnapRAID to the recommended parity, and
+    /// with 2 parity for 5 data drives the hint has nothing left to say.
+    @MainActor
+    func testSnapRAIDHintAppliesParity() throws {
+        let app = launchNAS(system: "snapraid", bays: "[8,8,8,8,8,8,8]", bayCount: 7)
+        XCTAssertTrue(app.staticTexts["nasHint"].waitForExistence(timeout: 5))
+        // The button is the row after the hint, below the fold on a phone.
+        let fix = app.buttons["applyParityHint"]
+        reveal(fix, in: app)
+        XCTAssertTrue(fix.exists)
+        XCTAssertEqual(fix.label, "Use 2 parity drives")
+        fix.tap()
+
+        XCTAssertTrue(app.staticTexts["nasHint"].waitForNonExistence(timeout: 5))
+        XCTAssertEqual(app.staticTexts["parityCount"].label.components(separatedBy: ", ").last, "2")
+    }
+
     /// Unraid's info sheet carries its trademark line.
     @MainActor
     func testNASInfoSheetHasTrademarkLine() throws {
@@ -571,20 +787,80 @@ final class RaidCalculator2UITests: XCTestCase {
         let app = launchNAS()
         let compare = app.buttons["compareSystems"]
         XCTAssertTrue(compare.waitForExistence(timeout: 5))
+        // Save [4, 4, 8, 8] in SHR first, so the switch is compared with it.
+        let save = app.buttons["saveAsCurrent"]
+        reveal(save, in: app)
+        save.tap()
+        reveal(compare, in: app, scrollingDown: false)
         compare.tap()
         let zfs = app.buttons["compare_zfs"]
         XCTAssertTrue(zfs.waitForExistence(timeout: 3))
-        // The sheet opens at the medium detent, where the list hasn't loaded
-        // its last row yet; pull it up to large to see every system.
-        app.buttons["compare_synology"].swipeUp()
         XCTAssertEqual(app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'compare_'")).count, 5)
         zfs.tap()
         let gone = expectation(for: NSPredicate(format: "exists == false"), evaluatedWith: zfs)
         wait(for: [gone], timeout: 3)
         XCTAssertEqual(nasCapacity(app), tb(12))
+        let delta = app.descendants(matching: .any).matching(identifier: "usableDelta").firstMatch
+        reveal(delta, in: app)
+        XCTAssertTrue(delta.label.contains("−4"), delta.label)
         let bay4 = app.buttons["bay4"]
         reveal(bay4, in: app)
         XCTAssertTrue(bay4.label.contains(tb(8)), bay4.label)
+    }
+
+    /// A fresh install's drives are only a sample, so the first edit isn't
+    /// compared with them: the section asks for a save first. Once saved,
+    /// it says what it compares with.
+    @MainActor
+    func testFreshInstallAsksToSaveFirst() throws {
+        let app = launchNAS()
+        XCTAssertTrue(app.staticTexts.matching(identifier: "nasUsableCapacity").firstMatch.waitForExistence(timeout: 5))
+        app.buttons["nasSystem"].tap()
+        app.buttons["Btrfs RAID1"].tap()
+        let save = app.buttons["saveAsCurrent"]
+        reveal(save, in: app)
+        XCTAssertTrue(app.staticTexts["Save your drives to compare upgrades against them."].exists)
+        XCTAssertFalse(app.descendants(matching: .any).matching(identifier: "usableDelta").firstMatch.exists)
+        XCTAssertFalse(app.staticTexts["currentBaseline"].exists)
+
+        save.tap()
+        let baseline = app.staticTexts["currentBaseline"]
+        XCTAssertTrue(baseline.waitForExistence(timeout: 2))
+        XCTAssertEqual(baseline.label, "Current setup: \(tb(12)) usable · Btrfs RAID1 · 4 bays")
+        XCTAssertFalse(app.staticTexts["Save your drives to compare upgrades against them."].exists)
+    }
+
+    /// Revert asks first, and dismissing the question keeps the edit.
+    @MainActor
+    func testRevertAsksForConfirmation() throws {
+        let app = launchNAS()
+        XCTAssertTrue(app.staticTexts.matching(identifier: "nasUsableCapacity").firstMatch.waitForExistence(timeout: 5))
+        let save = app.buttons["saveAsCurrent"]
+        reveal(save, in: app)
+        save.tap()
+        XCTAssertEqual(app.staticTexts["currentBaseline"].label, "Current setup: \(tb(16)) usable · Synology SHR · 4 bays")
+        reveal(app.buttons["nasSystem"], in: app, scrollingDown: false)
+        app.buttons["nasSystem"].tap()
+        app.buttons["ZFS"].tap()
+        let revert = app.buttons["revertToCurrent"]
+        reveal(revert, in: app)
+
+        revert.tap()
+        XCTAssertTrue(app.staticTexts["Revert to your current setup?"].waitForExistence(timeout: 3))
+        // Since iOS 26 the dialog is a popover from the button: Cancel is
+        // tapping outside it rather than a button, where there's no Cancel.
+        let cancel = app.buttons["Cancel"]
+        if cancel.exists { cancel.tap() } else { app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.12)).tap() }
+        XCTAssertTrue(app.staticTexts["Revert to your current setup?"].waitForNonExistence(timeout: 3))
+        XCTAssertEqual(nasCapacity(app), tb(12), "Cancel keeps the edit")
+
+        reveal(revert, in: app)
+        revert.tap()
+        XCTAssertTrue(app.staticTexts["Revert to your current setup?"].waitForExistence(timeout: 3))
+        // The dialog's own Revert, not the row behind it.
+        app.buttons.matching(NSPredicate(format: "label == 'Revert' AND identifier != 'revertToCurrent'")).firstMatch.tap()
+        XCTAssertTrue(revert.waitForNonExistence(timeout: 3))
+        XCTAssertEqual(nasCapacity(app), tb(16))
     }
 
     /// A stored value from 1.5 ("synology") opens the RAID tab. (Review Focus 5)
@@ -594,16 +870,16 @@ final class RaidCalculator2UITests: XCTestCase {
         app.launchArguments += ["-selectedTab", "synology", "-AppleLanguages", "(en)"]
         app.launch()
         XCTAssertTrue(app.segmentedControls.firstMatch.waitForExistence(timeout: 5))
-        XCTAssertTrue(app.tabBars.buttons["RAID"].isSelected)
+        XCTAssertTrue(tabButton("RAID", in: app).isSelected)
     }
 
     /// FR-14: on a wide iPad the answer sits beside the inputs, so both are
-    /// on screen without scrolling. Skips on iPhone.
+    /// on screen without scrolling. Skips unless the two-column layout is showing.
     @MainActor
     func testIPadPutsResultsBesideInputs() throws {
-        try XCTSkipUnless(UIDevice.current.userInterfaceIdiom == .pad, "iPad layout")
         XCUIDevice.shared.orientation = .landscapeLeft
         let app = launchApp()
+        try skipUnlessTwoColumns(app)
         let usable = app.staticTexts.matching(identifier: "usableCapacity").firstMatch
         XCTAssertTrue(usable.waitForExistence(timeout: 5))
         let count = app.staticTexts.matching(identifier: "driveCount").firstMatch
@@ -612,11 +888,22 @@ final class RaidCalculator2UITests: XCTestCase {
         XCTAssertLessThan(usable.frame.maxX, count.frame.minX, "results should lead, inputs follow")
     }
 
+    /// iPhone rotates (the app no longer locks to portrait): the answer shows
+    /// and the drive-size field can still be reached.
+    @MainActor
+    func testLandscapeShowsTheAnswer() throws {
+        XCUIDevice.shared.orientation = .landscapeLeft
+        let app = launchApp()
+        XCTAssertTrue(app.staticTexts.matching(identifier: "usableCapacity").firstMatch.waitForExistence(timeout: 5))
+        XCTAssertGreaterThan(app.windows.firstMatch.frame.width, app.windows.firstMatch.frame.height, "the app should be in landscape")
+        reveal(app.textFields["driveSizeField"], in: app)
+    }
+
     @MainActor
     func testIPadNASPutsResultsBesideInputs() throws {
-        try XCTSkipUnless(UIDevice.current.userInterfaceIdiom == .pad, "iPad layout")
         XCUIDevice.shared.orientation = .landscapeLeft
         let app = launchNAS()
+        try skipUnlessTwoColumns(app)
         let usable = app.staticTexts.matching(identifier: "nasUsableCapacity").firstMatch
         XCTAssertTrue(usable.waitForExistence(timeout: 5))
         let picker = app.buttons["nasSystem"]
@@ -628,10 +915,10 @@ final class RaidCalculator2UITests: XCTestCase {
     /// FR-14: 30 bays stay legible on iPad, in rows, with no scrolling.
     @MainActor
     func testIPadShowsThirtyBaysWithoutScrolling() throws {
-        try XCTSkipUnless(UIDevice.current.userInterfaceIdiom == .pad, "iPad layout")
         XCUIDevice.shared.orientation = .landscapeLeft
         let bays = "[" + Array(repeating: "8", count: 30).joined(separator: ",") + "]"
         let app = launchNAS(system: "snapraid", bays: bays, bayCount: 30)
+        try skipUnlessTwoColumns(app)
         XCTAssertTrue(app.staticTexts.matching(identifier: "nasUsableCapacity").firstMatch.waitForExistence(timeout: 5))
         func column(_ bay: Int) -> XCUIElement {
             app.descendants(matching: .any).matching(NSPredicate(format: "label BEGINSWITH %@", "Bay \(bay), ")).firstMatch
@@ -646,7 +933,6 @@ final class RaidCalculator2UITests: XCTestCase {
     /// FR-13 on iPad: columns beside the results, no sheet.
     @MainActor
     func testIPadComparesSystemsInColumns() throws {
-        try XCTSkipUnless(UIDevice.current.userInterfaceIdiom == .pad, "iPad layout")
         XCUIDevice.shared.orientation = .landscapeLeft
         try assertComparesSystemsInColumns()
     }
@@ -656,7 +942,6 @@ final class RaidCalculator2UITests: XCTestCase {
     /// than stacking into a list. Skips where portrait is a single column.
     @MainActor
     func testIPadComparesSystemsInColumnsInPortrait() throws {
-        try XCTSkipUnless(UIDevice.current.userInterfaceIdiom == .pad, "iPad layout")
         XCUIDevice.shared.orientation = .portrait
         try assertComparesSystemsInColumns()
     }
@@ -664,8 +949,8 @@ final class RaidCalculator2UITests: XCTestCase {
     @MainActor
     private func assertComparesSystemsInColumns() throws {
         let app = launchNAS()
+        try skipUnlessTwoColumns(app)
         XCTAssertTrue(app.staticTexts.matching(identifier: "nasUsableCapacity").firstMatch.waitForExistence(timeout: 5))
-        try XCTSkipIf(app.windows.firstMatch.frame.width < 800, "a single column at this width")
         let unraid = app.buttons["compare_unraid"]
         XCTAssertTrue(unraid.waitForExistence(timeout: 5))
         XCTAssertFalse(app.buttons["compareSystems"].exists)
@@ -683,10 +968,10 @@ final class RaidCalculator2UITests: XCTestCase {
     /// the shorter array. Covers both the comparison columns and the picker.
     @MainActor
     func testIPadSwitchToSynologyFromThirtyBays() throws {
-        try XCTSkipUnless(UIDevice.current.userInterfaceIdiom == .pad, "iPad layout")
         XCUIDevice.shared.orientation = .landscapeLeft
         let bays = "[" + Array(repeating: "8", count: 30).joined(separator: ",") + "]"
         let app = launchNAS(system: "unraid", bays: bays, bayCount: 30)
+        try skipUnlessTwoColumns(app)
         let usable = app.staticTexts.matching(identifier: "nasUsableCapacity").firstMatch
         XCTAssertTrue(usable.waitForExistence(timeout: 5))
 

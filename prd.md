@@ -1,7 +1,7 @@
 
 ## 1. Product Requirements Document (PRD)
 
-**Status:** current as of **1.6.0** (2026-10-05). This merges the original v1 spec with the 1.5.0 and 1.6.0 delta that lived in `prd-update.md`. FR-1 to FR-7 are the v1 requirements, updated where later releases changed them; FR-8 to FR-20 keep the numbers they had in the delta, so references in code, plans and commits still resolve.
+**Status:** current as of **1.7.0 (in progress)** (2026-10-06), which adds FR-21 and FR-22. This merges the original v1 spec with the 1.5.0 and 1.6.0 delta that lived in `prd-update.md`. FR-1 to FR-7 are the v1 requirements, updated where later releases changed them; FR-8 to FR-20 keep the numbers they had in the delta, so references in code, plans and commits still resolve.
 
 **Release history**
 
@@ -11,6 +11,7 @@
 | 1.4.1 | The drive-size cursor fix (FR-19). |
 | 1.5.0 | The RAID tab’s nested and ZFS levels (FR-8), the ZFS estimate (FR-9), the RAID-tab half of the shared info sheet (FR-17) and the RAID tab’s motion (FR-20). Tagged `v1.5.0` on 2026-10-04. |
 | 1.6.0 | The NAS tab (FR-10 to FR-12, FR-15), compare systems (FR-13), iPad layouts (FR-14), copy, trademarks and the website (FR-16), the NAS system sheets (FR-17), the one-line failures row (FR-18) and FR-19’s remaining items. |
+| 1.7.0 (in progress) | iPhone Duo and iPhone landscape (FR-21), the review fixes (FR-22), and the 1.6.5 polish, which never shipped on its own: VoiceOver reads each drive within a group, Compare’s “Uses all *N* bays” (FR-13), the full-height Compare sheet, Japanese counters (台), the drive-size field leading at accessibility sizes (FR-14), stored parity clamped on load (FR-15), and five more languages, for ten (FR-16). |
 
 ### 1.1 Product overview
 
@@ -144,7 +145,7 @@ Given:
   “Up to n/2 (depends on which drives fail)”.
 * **RAID 50, RAID 60 and RAID-Z1/Z2/Z3:** FR-8.
 * **TiB:** the results also show “≈ X TiB as most NAS systems report it”, since drives are sold in TB. ZFS levels show FR-9’s estimate in its place.
-* **Rebuild caution** (decided for 1.5.0): every single-parity layout on drives of 8 TB or more warns that a rebuild can take days and that a second failure during it loses the array. It suggests RAID 5 → RAID 6, RAID 50 → RAID 60 and RAID-Z1 → RAID-Z2, and only a level the current drives can reach.
+* **Rebuild caution** (decided for 1.5.0): every single-parity layout on drives of 8 TB or more warns that a rebuild can take days and that a second failure during it loses the array. It suggests RAID 5 → RAID 6, RAID 50 → RAID 60 and RAID-Z1 → RAID-Z2, and only a level the current drives can reach, with a one-tap “Use RAID 6” (1.7.0). Since 1.7.0, groups too narrow to move up get the warning without a suggestion (FR-22). It’s advice, not an error, and looks like it (FR-22).
 
 **FR-4: Ratings (stars)**
 
@@ -181,7 +182,7 @@ Fixed 1–5 ★ ratings. They compare levels with each other and aren’t benchm
   * Availability rating (stars + label: “Very High”, etc.).
 * If configuration is invalid for that RAID level:
 
-  * Show an inline error card (e.g., “RAID 5 requires at least 3 drives”), with a one-tap fix.
+  * Show an inline error card (e.g., “RAID 5 requires at least 3 drives”), with a one-tap fix. Since 1.7.0, VoiceOver also says “Not a valid setup.” (FR-22).
 * While the drive size is empty or zero, the card asks for a size instead (FR-19).
 
 **FR-6: RAID info sheet**
@@ -279,7 +280,7 @@ The NAS tab replaced 1.4.0’s Synology tab in 1.6.0. It models drives bay by ba
   * The **unused-capacity callout**, with the number spelled out (“8 TB unused with this mix of drives.”).
   * Usable, raw and unused capacity and failures tolerated (FR-18).
   * **Biggest Upgrade** (FR-12), with one tap to try it.
-  * **Save as Current Setup / Revert**, and every change compared with the saved setup (“+4 TB usable”). The saved setup records the system and its settings too.
+  * **Save as Current Setup / Revert**, and every change compared with the saved setup (“+4 TB usable”). The saved setup records the system and its settings too. Since 1.7.0 nothing is compared until the user saves, the saved setup is summarized above the difference, and Revert asks first (FR-22).
   * The system’s hints (FR-11) and, for ZFS, FR-9’s estimate.
   * Compare Systems (FR-13).
 
@@ -306,7 +307,7 @@ The NAS tab replaced 1.4.0’s Synology tab in 1.6.0. It models drives bay by ba
   * ZFS: each drive’s slice up to the smallest size is split into data and parity in proportion, and the remainder is unused.
   * Btrfs: each drive’s used portion is half data and half mirror, and any excess on the largest drive is unused.
   * No empty or negative slices are drawn.
-* **SnapRAID parity hint** (advice, not a block): when the parity count is below [SnapRAID’s published recommendation](https://www.snapraid.it/faq), say so. For example: “SnapRAID recommends 2 parity drives for 5–14 data drives.”
+* **SnapRAID parity hint** (advice, not a block): when the parity count is below [SnapRAID’s published recommendation](https://www.snapraid.it/faq), say so. For example: “SnapRAID recommends 2 parity drives for 5–14 data drives.” Since 1.7.0 it offers a one-tap “Use 2 parity drives” (FR-22).
 
 | Data drives | Recommended parity |
 |---|---|
@@ -338,23 +339,23 @@ The 1.4.0 engine tried a largest-size drive in an empty bay, or in place of the 
 **FR-13: Compare systems** (1.6.0)
 
 * Show the current drives under every NAS system at once: usable capacity, failures tolerated and unused capacity.
-* **iPad, two columns:** columns, side by side, beside the bay diagram, wrapping into rows of columns when they don’t fit. **iPhone and stacked layouts:** a sheet reached from the results card (“Compare Systems”), opening at the medium detent.
+* **Two columns (iPad, and iPhone Duo’s inner display in landscape):** columns, side by side, beside the bay diagram, wrapping into rows of columns when they don’t fit. **iPhone and stacked layouts:** a sheet reached from the results card (“Compare Systems”). Since 1.6.5 it opens at full height, so all five systems show; the medium detent is still there.
 * Tapping a system switches the NAS tab to it. On iPhone the switch applies after the sheet dismisses, so the user sees the bays re-split (FR-20’s signature moment); on iPad it is immediate.
 * Decided in plan 3:
   * Each system uses the user’s current setting for that system: Unraid’s and SnapRAID’s parity, the ZFS level, the Synology RAID type. These are the values switching to it would show.
   * **Sort order:** valid before invalid, then usable capacity (descending), then the picker’s order.
-  * **Honesty rule:** a system that can’t use some of the drives says so. Synology reads at most 12 bays and states “Uses the first 12 bays”. Invalid setups show their warning, never a misleading number.
+  * **Honesty rule:** a system that can’t use some of the drives says so. Synology reads at most 12 bays and states “Uses the first 12 bays”. Since 1.6.5, the reverse too: when the current system shows fewer bays than another reads, that system says “Uses all 30 bays”. Invalid setups show their warning, never a misleading number.
 
-#### Both tabs (FR-14 to FR-20)
+#### Both tabs (FR-14 to FR-22)
 
 **FR-14: iPad layouts** (1.6.0)
 
 * Size-class adaptive, never iPad-only.
-* **Two columns** only when the horizontal size class is regular **and** the window is at least 800 points wide (`AdaptiveLayout.twoColumnMinWidth`). Everything else is stacked: iPhone, iPad mini in portrait (744 points), and iPad split view and Slide Over.
+* **Two columns** only when the horizontal size class is regular **and** the window is at least 800 points wide (`AdaptiveLayout.twoColumnMinWidth`) **and** at least 600 points tall (`AdaptiveLayout.twoColumnMinHeight`, added in 1.7.0). Everything else is stacked: iPhone in portrait, iPhone in landscape (the Pro Max included: 956 × 440 points is regular width but too short), iPhone Duo’s outer display and its inner display in portrait, iPad mini in portrait (744 points), and iPad split view and Slide Over. iPhone Duo’s inner display in landscape (951 × 669 points) and full-screen iPads in either orientation get two columns by the same rule (FR-21). The height is the window’s: the content size plus the bars’ safe area.
   * Decided in plan 3: the RAID tab did not already have a two-column layout (both tabs centered a 720-point column), so 1.6.0 built it for both tabs.
 * **Reading order:** in two columns, results lead (left) and inputs follow (right), so VoiceOver and reading order match the stacked layout, where the answer comes first.
 * **Bay diagram, more bays than fit one row:** at regular width, wrap into balanced rows (30 bays become 2 × 15); at compact width, scroll horizontally. The narrowest column is 24 points, scaled with Dynamic Type; bars never shrink below a readable size. Bay diagrams stay legible up to 30 bays on iPad.
-* **At accessibility text sizes,** bay labels drop the unit (“16” rather than “16 TB”), and the legend says “Sizes in TB” once. VoiceOver labels keep full units. The rating and drive-size rows stack.
+* **At accessibility text sizes,** bay labels drop the unit (“16” rather than “16 TB”), and the legend says “Sizes in TB” once. VoiceOver labels keep full units. The rating and drive-size rows stack, and the drive-size field then leads under its label (1.6.5). Since 1.7.0 the level and unit pickers become menus (FR-22).
 * **Drive strip:** at regular width, a grouped level draws each group as its own row, with no visible group labels. VoiceOver gets one element per group: “Group 2 of 3: 3 Data, 1 Parity”.
 * iPad multitasking widths, where a compact width can occur on an iPad, are covered by the same rules.
 
@@ -366,6 +367,7 @@ The 1.4.0 engine tried a largest-size drive in an empty bay, or in place of the 
   * **Fallback:** any stored value that matches no tab opens the RAID tab, so an unexpected value never leaves `TabView` with nothing selected.
 * Keys added in 1.5.0 and 1.6.0: the NAS system, Unraid/SnapRAID parity counts, the ZFS parity level, and RAID tab groups. Stored bays keep their key (`synology.bays`).
 * `RaidLevel` raw values double as display labels and never change: `"R 0"`, `"R 1"`, `"R 5"`, `"R 6"`, `"R 10"`, `"JBOD"`, and since 1.5.0 `"R 50"`, `"R 60"`, `"Z1"`, `"Z2"`, `"Z3"`. An unknown stored value falls back to the default.
+* Since 1.6.5, stored parity settings (in the last configuration and the saved setup) are clamped to each system’s valid range on load, so a corrupted value never reaches the calculator. 1.7.0 adds `nas.hasSavedCurrent` (FR-22).
 
 **FR-16: Copy, trademarks and the website** (1.6.0)
 
@@ -380,8 +382,8 @@ The 1.4.0 engine tried a largest-size drive in an empty bay, or in place of the 
   * 1.4.0 was left as it was while in review.
 * **Keywords** in the App Store listing contain no third-party trademarks (guideline 2.3.7).
 * **Copy rules,** app and website: smart punctuation (curly “ ” ’) and American spelling; em dashes only where they earn it, at most one per sentence, closed up; en dashes in ranges stay. System names stay untranslated: Synology, SHR, SHR-2, Unraid, ZFS, RAID-Z1/Z2/Z3, SnapRAID, Btrfs RAID1.
-* **Localization:** every string in English, Spanish, French, Italian and Japanese, through `scripts/strings.py`. On the NAS screen, Spanish says “disco” and Japanese counts drives with 台; the RAID tab and the info sheets keep Spanish “unidad” (ruled acceptable in plan 2).
-* **Website (`www/`),** updated for 1.6.0:
+* **Localization:** every string in English, Spanish, French, Italian, Japanese, German, Traditional Chinese, Simplified Chinese, Korean and Brazilian Portuguese, through `scripts/strings.py`. On the NAS screen, Spanish says “disco” and Japanese counts drives with 台; the RAID tab and the info sheets keep Spanish “unidad” (ruled acceptable in plan 2; 1.7.0 corrected the RAID-tab strings that still said “disco”). Glossary for the five languages added in 1.6.5: German “Laufwerk” and “Setup”, with informal “du”; Traditional Chinese 硬碟 counted with 顆, Simplified Chinese 硬盘 counted with 块, both with 配置 for “setup”; Korean 드라이브 counted with 개; Brazilian Portuguese “você”. Japanese counts drives with 台 on both tabs since 1.6.5.
+* **Website (`www/`),** updated for 1.7.0:
   * The FAQ “What doesn’t it cover?” no longer lists RAID 50/60, ZFS or Unraid; expansion units, SSD cache, Unraid’s separate pools and cost/power/IOPS stay on it.
   * The model-presets paragraph is replaced by bay counts.
   * Screenshots refresh for the NAS tab and the iPad layout, including a Compare Systems shot (plan 4, Task 6), in light and dark.
@@ -454,6 +456,39 @@ Motion shows *what a change did to your drives*. The drive strip and bay diagram
 * **Reduce Motion:** every animation falls back to a short (0.2 s) crossfade with no movement. Grouped drive rows crossfade rather than slide.
 * **Restraint:** no decorative or entrance animations; one authored moment per tab.
 
+
+**FR-21: iPhone Duo and iPhone landscape** (1.7.0)
+
+* **iPhone rotates** to both landscape orientations as well as portrait (iPad already supported all four). Apple’s iPhone Duo guidance says not to lock orientation, and every layout already follows width and size class rather than the device.
+* **Layout per pose,** decided by the developer on 2026-10-06 from screenshots of each pose:
+
+| Pose | Display | Layout |
+|---|---|---|
+| Closed | Outer (a 466 × 678 point window, compact width) | One column, beside the system’s vertical tab bar and toolbar on the trailing side |
+| Open flat, landscape | Inner (951 × 669 points) | Two columns |
+| Folded like a book, landscape (vertical fold) | Inner | Two columns, with the fold in the gap between them |
+| Open flat or book, portrait (669 points wide) | Inner | One column. In book portrait the fold is horizontal, and the column scrolls across it |
+
+* **Two columns only in landscape on the inner display.** It’s FR-14’s rule: regular width, at least 800 points wide and at least 600 tall. The inner display is 951 × 669 points in landscape, so `AdaptiveLayout.twoColumnMinWidth` stays 800, which keeps iPad mini in portrait (744 points) in one column. The 600-point height (`AdaptiveLayout.twoColumnMinHeight`) keeps every iPhone in landscape in one column, the Pro Max (956 × 440) included, since it is regular width there.
+* **Book portrait is one column.** A stacked split, with results above the horizontal fold and inputs below, was built and withdrawn: the Ratings card was cut off at the fold, and one long column read better.
+* **How the columns sit around the fold:** on iOS 27.1, on a device with a fold, the two columns are an `ArrangementView` with the split style, which puts the fold between the panes. Each pane takes the system container margin on its inner edge, so the gap at the split (or each side of the fold) matches the outer margin, and the grouped background is painted behind the whole split, so no white strip shows at the fold in light mode. Without a fold (iPad, at any iOS version) and before iOS 27.1, the columns are the 1.6.0 `HStack`, unchanged: the split arrangement is used only where a fold divides the view, and no Simulator can check it on iPad.
+* **Info in place of the inputs, on iPhone Duo only.** In two columns on iPhone Duo, the “i” button shows the info sheet’s content in the inputs pane, with a Close button, so the results stay visible. The inputs stay underneath, hidden, and keep their scroll position. This is keyed on the device having a fold region (`reservedRegions(kind: .division, options: .includeInactive)`), not on the idiom. **iPad keeps the modal sheet,** and so does every single-column layout.
+  * Tried first and dropped: presenting the sheet from the inputs pane (the system still placed it over the results), and an inspector (on iPhone Duo it fell back to a sheet, and on iPad it squeezed both columns instead of covering the inputs).
+* **No fold-aware Compare grid or bay rows.** They were built (plan task 5, commit `e84b7cd`) and reverted, because the split always puts the fold between the panes, so no custom view ever straddles it. Re-apply from history if a pose ever puts a fold through one pane.
+* **Testing:** the two-column UI tests (`testIPad*`) skip unless the two-column layout is on screen, detected by its `twoColumnLayout` accessibility identifier, not by device type. They also run on iPhone Duo’s inner display in landscape. iPhone Duo runs only on the iOS 27.1 Simulator runtime, and its pose and rotation can’t be scripted.
+
+**FR-22: Review fixes** (1.7.0)
+
+* **Tint contrast.** The accent color is dark enough for text: light #C93400, light with Increase Contrast #A82B00, dark #FFB333, dark with Increase Contrast #FFC266. Each meets 4.5:1 against the system, secondary grouped and grouped backgrounds (the lowest is 4.74:1, light on grouped), pinned by a unit test. Graphics that show data (drive strip bars, bay swatches, rating stars) use a separate data color, #FF9500 light and #FFB333 dark, which stays bright and relies on outlines, hatching and the legend rather than text contrast.
+* **The NAS comparison waits for a saved setup.** Until the user saves, the comparison section is one Save as Current Setup row (“Save your drives to compare upgrades against them.”), and no change shows a difference. Once saved, it’s headed “Compared with Your Current Setup”, with a baseline line (“Current setup: 16 TB usable · Synology SHR · 4 bays”) and, after a change, the difference, Save as Current Setup and Revert.
+  * **Revert asks first:** “Revert to your current setup?”, with a destructive Revert.
+  * **What counts as saved,** decided 2026-10-06: the `nas.hasSavedCurrent` flag, or a stored setup (`nas.currentSetup`, or 1.4’s `synology.currentBays`) that differs from the default sample. **A stored setup equal to the sample counts as unsaved,** because 1.6 wrote the baseline on every edit, so a stored sample proves nothing. The cost: a 1.6 user who saved exactly the sample saves once more. The app now writes the baseline only after a save.
+* **Invalid setups are announced.** Beyond dimming (now to 55%), VoiceOver starts the capacity summary with “Not a valid setup.” on both tabs, the failures row is hidden while the setup is invalid, and the warning itself stays at full contrast.
+* **Advice looks different from errors.** Errors keep the multicolor warning triangle. Advice (the rebuild caution, the SnapRAID parity hint, the wide RAID-Z note) gets an info icon, with the VoiceOver hint “Advice, not an error.”, and a one-tap fix where there is one: “Use RAID 6” on the rebuild caution, “Use 2 parity drives” on the SnapRAID hint.
+  * **The advisory icon stays orange,** decided 2026-10-06, rather than a quiet gray: the rebuild caution warns about losing the array, so caution orange fits, and the icon’s shape and the hint carry the difference from an error.
+* **Menus at accessibility sizes.** At accessibility text sizes the standard-level picker and the GB/TB picker become menus, with full level names. The segmented control’s segments also read full names to VoiceOver (“RAID 5”, not “5”).
+* **Narrow groups warn too.** RAID 50 and RAID-Z1 groups too narrow to move up to RAID 60 or RAID-Z2 now get the rebuild caution as well, with no level to suggest: “Wider groups would allow dual parity.” (FR-3).
+
 ---
 
 ### 1.6 Non-functional requirements
@@ -463,12 +498,13 @@ Motion shows *what a change did to your drives*. The drive strip and bay diagram
 * **Offline:** Fully functional offline. No account, analytics, tracking, third-party services or network calls; the App Store privacy label reads “Data Not Collected”.
 * **Accessibility:**
   * Dynamic Type at every size, including the largest accessibility sizes, and VoiceOver throughout.
-  * VoiceOver reads group structure (one element per group, “Group 2 of 3: 3 Data, 1 Parity”), parity assignment and the ZFS caveat, and reads bay diagrams as full sentences (“Bay 1, 16 TB: 8 TB parity, 8 TB unused.”).
+  * Text in the tint meets 4.5:1 contrast in light and dark mode, with Increase Contrast variants (FR-22).
+  * VoiceOver reads group structure (one element per group, “Group 2 of 3: 3 Data, 1 Parity”), each drive within a group (“Group 2 of 3, drive 1: Data”), parity assignment and the ZFS caveat, and reads bay diagrams as full sentences (“Bay 1, 16 TB: 8 TB parity, 8 TB unused.”).
   * Ratings shown as stars also have text labels and spoken equivalents.
-  * Every layout holds at the largest Dynamic Type sizes, in all five languages, in light and dark mode.
-* **Localization:** English, Spanish, French, Italian and Japanese (FR-16).
+  * Every layout holds at the largest Dynamic Type sizes, in all ten languages, in light and dark mode.
+* **Localization:** English, Spanish, French, Italian, Japanese, German, Traditional Chinese, Simplified Chinese, Korean and Brazilian Portuguese (FR-16).
 * **Design:** System typography and SF Symbols; native controls with Liquid Glass styling on buttons and steppers.
-* **Supported iOS version:** iOS 26.0 and later, iPhone and iPad. Native SwiftUI, MVVM-lite, no third-party dependencies.
+* **Supported iOS version:** iOS 26.0 and later, iPhone and iPad; iPhone Duo on iOS 27.1 (FR-21). Built with the iOS 27.1 SDK. Native SwiftUI, MVVM-lite, no third-party dependencies.
 
 ---
 
@@ -496,7 +532,7 @@ Motion shows *what a change did to your drives*. The drive strip and bay diagram
 
 ### 1.9 Decisions
 
-There are no open questions. These were resolved while specifying and building 1.5.0 and 1.6.0:
+There are no open questions. These were resolved while specifying and building 1.5.0, 1.6.0 and 1.7.0:
 
 | Decision | Where |
 |---|---|
@@ -511,10 +547,13 @@ There are no open questions. These were resolved while specifying and building 1
 | No separate “new parity, old parity becomes data” upgrade; ZFS upgrades replace the uniquely smallest drive (plan 2) | FR-12 |
 | Switching system hides drives beyond a lower bay limit but never deletes them (plan 2) | FR-10 |
 | Comparison settings, sort order and the iPhone switch-after-dismiss (plan 3) | FR-13 |
-| Two columns at regular width and 800 pt or more; results lead (plan 3) | FR-14 |
+| Two columns at regular width, 800 pt or more wide and 600 pt or more tall, so iPhone landscape (Pro Max included) is one column; results lead (plan 3; height added 2026-10-07) | FR-14 |
+| iPhone Duo: two columns only in landscape on the inner display; book portrait is one column; info in place of the inputs on iPhone Duo only, iPad keeps the sheet; no fold-aware grid, since the fold always falls between the panes (2026-10-06) | FR-21 |
+| Tint values, with a separate data color; the advisory icon stays orange (2026-10-06) | FR-22 |
+| The NAS comparison waits for a saved setup, and a stored setup equal to the sample counts as unsaved (2026-10-06) | FR-22 |
 | Phase 0 (a 1.4.1 rename to NAS if App Review objected to Synology’s name) was a contingency only; the rename shipped in 1.6.0 | FR-10 |
 
-The plans: `docs/superpowers/plans/2026-10-03-raid-tab-nested-zfs.md` (1.5.0), `2026-10-04-nas-tab.md`, `2026-10-05-compare-and-ipad.md` and `2026-10-05-copy-site-and-rows.md` (1.6.0).
+The plans: `docs/superpowers/plans/2026-10-03-raid-tab-nested-zfs.md` (1.5.0), `2026-10-04-nas-tab.md`, `2026-10-05-compare-and-ipad.md` and `2026-10-05-copy-site-and-rows.md` (1.6.0), and `2026-10-06-1.6.5-polish.md` and `2026-10-06-1.7.0-duo-and-review.md` (1.7.0).
 
 ---
 
@@ -822,7 +861,7 @@ Plus:
 
 * **Persistence:** an unknown stored tab value, such as `"synology"`, opens the RAID tab; stored Synology bays open the NAS tab on Synology, with the same drives; switching to a system with fewer bays hides drives but keeps them.
 * **Review-focus cases** from the plans: a drive-count change that leaves uneven groups offers fixes; zero groups is one group; standard levels ignore groups; the ZFS estimate in GB; fixes never exceed 24 drives; RAID-Z1 at width 2.
-* **UI tests** for FR-19’s field and alert, FR-18’s row, the NAS system switch, compare systems, and the iPad two-column layouts. A Reduce Motion pass is manual, on iPhone and iPad, before tagging a release.
+* **UI tests** for FR-19’s field and alert, FR-18’s row, the NAS system switch, compare systems, and the two-column layouts (which skip unless two columns are on screen, so they run on iPad and on iPhone Duo’s inner display in landscape). A Reduce Motion pass is manual, on iPhone and iPad, before tagging a release.
 
 ---
 

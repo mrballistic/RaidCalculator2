@@ -48,6 +48,11 @@ struct NASComparisonCell: View {
                     .font(.footnote)
                     .foregroundStyle(.secondary)
             }
+            if let all = comparison.readsAllBays {
+                Text(String(format: "compare_all_bays".localized(), all))
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .contentShape(Rectangle())
@@ -65,6 +70,7 @@ struct NASComparisonSheet: View {
     let current: NASSystem
     let select: (NASSystem) -> Void
     @Environment(\.dismiss) private var dismiss
+    @State private var detent: PresentationDetent = .large
 
     var body: some View {
         NavigationStack {
@@ -87,7 +93,7 @@ struct NASComparisonSheet: View {
                 }
             }
         }
-        .presentationDetents([.medium, .large])
+        .presentationDetents([.medium, .large], selection: $detent)
     }
 }
 

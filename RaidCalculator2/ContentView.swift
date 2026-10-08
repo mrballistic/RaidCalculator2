@@ -10,7 +10,7 @@ import SwiftUI
 struct ContentView: View {
     @State private var viewModel = RaidCalculatorViewModel()
     @State private var showingInfoSheet = false
-    @State private var contentWidth: CGFloat = 0
+    @State private var contentSize: CGSize = .zero
     @FocusState private var sizeFieldFocused: Bool
     @State private var awaitingDriveSize = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -21,17 +21,25 @@ struct ContentView: View {
     private let readableWidth: CGFloat = 720
 
     private var twoColumns: Bool {
-        AdaptiveLayout.usesTwoColumns(isRegularWidth: horizontalSizeClass == .regular, width: contentWidth)
+        AdaptiveLayout.usesTwoColumns(isRegularWidth: horizontalSizeClass == .regular, width: contentSize.width, height: contentSize.height)
     }
+
+    /// iPhone Duo has a fold region (flat or folded); iPad never does.
+    @State private var hasFold = false
+    /// On iPhone Duo the system sheet lands over the results, so beside them
+    /// the info takes the inputs' place instead. iPad keeps the sheet.
+    private var infoInPane: Bool { twoColumns && hasFold }
+    @AccessibilityFocusState private var infoButtonFocused: Bool
 
     /// The answer and anything wrong with it.
     @ViewBuilder private var answerSections: some View {
+        let result = viewModel.result
         // The answer comes first, so it stays on screen at every text size.
         Section {
-            CapacitySummary(result: viewModel.result, unit: viewModel.unit, awaitingSize: awaitingDriveSize)
+            CapacitySummary(result: result, unit: viewModel.unit, awaitingSize: awaitingDriveSize)
         }
 
-        if let warning = viewModel.result.warningMessage {
+        if let warning = result.warningMessage {
             Section {
                 Label {
                     Text(warning)
@@ -41,29 +49,36 @@ struct ContentView: View {
                 }
                 .accessibilityIdentifier("configurationWarning")
 
-                if let suggested = viewModel.result.suggestedDriveCount, suggested != viewModel.driveCount {
+                if let suggested = result.suggestedDriveCount, suggested != viewModel.driveCount {
                     // Names the groups too when the fix changes them, as it does from one group to RAID 50 or 60.
-                    Button(viewModel.result.suggestedDriveCountGroups.map { String(format: "use_drive_count_groups".localized(), suggested, $0) }
+                    Button(result.suggestedDriveCountGroups.map { String(format: "use_drive_count_groups".localized(), suggested, $0) }
                            ?? String(format: "use_drive_count".localized(), suggested)) {
                         withAnimation(motion) { viewModel.applySuggestedDriveCount() }
                     }
                     .accessibilityIdentifier("applySuggestedDriveCount")
                 }
 
-                if let suggested = viewModel.result.suggestedGroups, suggested != viewModel.groups {
+                if let suggested = result.suggestedGroups, suggested != viewModel.groups {
                     Button(suggested == 1 ? "use_one_group".localized() : String(format: "use_group_count".localized(), suggested)) {
                         withAnimation(motion) { viewModel.applySuggestedGroups() }
                     }
                     .accessibilityIdentifier("applySuggestedGroups")
                 }
             }
-        } else if viewModel.rebuildCautionSuggestion != nil || viewModel.wideZFSGroupWidth != nil {
+        } else if viewModel.rebuildCaution != nil || viewModel.wideZFSGroupWidth != nil {
             Section {
-                if let safer = viewModel.rebuildCautionSuggestion {
-                    caution(String(format: "rebuild_caution_level".localized(), viewModel.selectedLevel.displayName, safer.displayName))
+                switch viewModel.rebuildCaution {
+                case .suggest(let safer):
+                    AdvisoryLabel(text: String(format: "rebuild_caution_level".localized(), viewModel.selectedLevel.displayName, safer.displayName))
+                    useLevelButton(safer)
+                case .warnOnly:
+                    AdvisoryLabel(text: String(format: warnOnlyCautionKey.localized(), viewModel.selectedLevel.displayName))
+                        .accessibilityIdentifier("narrowGroupCaution")
+                case nil:
+                    EmptyView()
                 }
                 if let width = viewModel.wideZFSGroupWidth {
-                    caution(String(format: (viewModel.groups > 1 ? "wide_zfs_group_caution" : "wide_zfs_group_caution_single").localized(), width))
+                    AdvisoryLabel(text: String(format: (viewModel.groups > 1 ? "wide_zfs_group_caution" : "wide_zfs_group_caution_single").localized(), width))
                         .accessibilityIdentifier("wideGroupCaution")
                 }
             }
@@ -74,46 +89,64 @@ struct ContentView: View {
     /// What the user sets: the level, then the drives.
     @ViewBuilder private var inputSections: some View {
         Section("raid_level".localized()) {
-            Picker("raid_level".localized(), selection: standardLevelSelection) {
-                ForEach(RaidLevel.levels(in: .standard)) { level in
-                    Text(level.shortLabel)
-                        .accessibilityLabel(level.displayName)
-                        .tag(Optional(level))
-                }
-            }
-            .pickerStyle(.segmented)
-            .labelsHidden()
-
-            Menu {
-                Section("nested_levels".localized()) {
-                    ForEach(RaidLevel.levels(in: .nested)) { levelButton($0) }
-                }
-                Section("zfs_levels".localized()) {
-                    ForEach(RaidLevel.levels(in: .zfs)) { levelButton($0) }
-                }
-            } label: {
-                // At accessibility sizes the label sits above the selection,
-                // so neither has to share the row and break mid-word.
-                let layout = dynamicTypeSize.isAccessibilitySize
-                    ? AnyLayout(VStackLayout(alignment: .leading, spacing: 4))
-                    : AnyLayout(HStackLayout())
-                layout {
-                    Text("more_levels".localized())
-                    if !dynamicTypeSize.isAccessibilitySize { Spacer(minLength: 8) }
-                    HStack(spacing: 6) {
-                        if viewModel.selectedLevel.family != .standard {
-                            Text(viewModel.selectedLevel.displayName)
-                                .foregroundStyle(.tint)
+            // Segmented controls stay near 13 pt at accessibility sizes, so
+            // there one menu holds every level, nested and ZFS included, and
+            // the More Levels menu goes.
+            if dynamicTypeSize.isAccessibilitySize {
+                Picker("raid_level".localized(), selection: levelSelection) {
+                    ForEach(RaidLevel.levels(in: .standard)) { level in
+                        Text(level.displayName).tag(level)
+                    }
+                    Section("nested_levels".localized()) {
+                        ForEach(RaidLevel.levels(in: .nested)) { level in
+                            Text(level.displayName).tag(level)
                         }
-                        Image(systemName: "chevron.up.chevron.down")
-                            .font(.caption)
-                            .foregroundStyle(.tertiary)
-                            .accessibilityHidden(true)
+                    }
+                    Section("zfs_levels".localized()) {
+                        ForEach(RaidLevel.levels(in: .zfs)) { level in
+                            Text(level.displayName).tag(level)
+                        }
                     }
                 }
+                .pickerStyle(.menu)
+                .accessibilityIdentifier("levelPicker")
+            } else {
+                Picker("raid_level".localized(), selection: standardLevelSelection) {
+                    ForEach(RaidLevel.levels(in: .standard)) { level in
+                        Text(level.shortLabel)
+                            .tag(Optional(level))
+                            .accessibilityLabel(level.displayName)
+                    }
+                }
+                .pickerStyle(.segmented)
+                .labelsHidden()
+
+                Menu {
+                    Section("nested_levels".localized()) {
+                        ForEach(RaidLevel.levels(in: .nested)) { levelButton($0) }
+                    }
+                    Section("zfs_levels".localized()) {
+                        ForEach(RaidLevel.levels(in: .zfs)) { levelButton($0) }
+                    }
+                } label: {
+                    HStack {
+                        Text("more_levels".localized())
+                        Spacer(minLength: 8)
+                        HStack(spacing: 6) {
+                            if viewModel.selectedLevel.family != .standard {
+                                Text(viewModel.selectedLevel.displayName)
+                                    .foregroundStyle(.tint)
+                            }
+                            Image(systemName: "chevron.up.chevron.down")
+                                .font(.caption)
+                                .foregroundStyle(.tertiary)
+                                .accessibilityHidden(true)
+                        }
+                    }
+                }
+                .tint(.primary)
+                .accessibilityIdentifier("moreLevels")
             }
-            .tint(.primary)
-            .accessibilityIdentifier("moreLevels")
         }
 
         Section {
@@ -182,23 +215,29 @@ struct ContentView: View {
             DriveSizeField(value: $viewModel.driveSize, focus: $sizeFieldFocused, isAwaitingValue: $awaitingDriveSize)
                 .frame(minWidth: 56, maxWidth: dynamicTypeSize.isAccessibilitySize ? .infinity : 140)
 
-            Picker(selection: $viewModel.unit) {
+            let units = Picker(selection: $viewModel.unit) {
                 ForEach(CapacityUnit.allCases) { unit in
                     Text(unit.rawValue).tag(unit)
                 }
             } label: {
                 Text("drive_size".localized())
             }
-            .pickerStyle(.segmented)
             .labelsHidden()
-            .fixedSize()
+
+            // The “Drive Size” title above the row is the visible label.
+            if dynamicTypeSize.isAccessibilitySize {
+                units.pickerStyle(.menu).accessibilityIdentifier("unitPicker")
+            } else {
+                units.pickerStyle(.segmented).fixedSize()
+            }
         }
     }
 
     @ViewBuilder private var ratingsSection: some View {
+        let result = viewModel.result
         Section {
-            RatingRow(title: "speed".localized(), rating: viewModel.result.speedRating)
-            RatingRow(title: "availability".localized(), rating: viewModel.result.availabilityRating)
+            RatingRow(title: "speed".localized(), rating: result.speedRating)
+            RatingRow(title: "availability".localized(), rating: result.availabilityRating)
         } header: {
             Text("ratings".localized())
         } footer: {
@@ -230,13 +269,16 @@ struct ContentView: View {
             if twoColumns {
                 // Results lead so reading and VoiceOver order match the
                 // stacked layout, where the answer comes first.
-                HStack(alignment: .top, spacing: 0) {
+                TwoColumnLayout(hasFold: hasFold, showsInfo: infoInPane && showingInfoSheet) {
                     Form {
                         answerSections
                         ratingsSection
                     }
-                    Divider()
+                } inputs: {
                     Form { inputSections }
+                } info: {
+                    InfoSheet(topic: .level(viewModel.selectedLevel))
+                        .environment(\.closeInfo) { withAnimation(motion) { showingInfoSheet = false } }
                 }
             } else {
                 Form {
@@ -246,7 +288,7 @@ struct ContentView: View {
                 }
                 .contentMargins(
                     .horizontal,
-                    contentWidth > readableWidth + 40 ? (contentWidth - readableWidth) / 2 : nil,
+                    contentSize.width > readableWidth + 40 ? (contentSize.width - readableWidth) / 2 : nil,
                     for: .scrollContent
                 )
             }
@@ -256,12 +298,23 @@ struct ContentView: View {
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
-                    showingInfoSheet = true
+                    if infoInPane {
+                        // The info covers the drive-size field; don't leave
+                        // its keyboard up over the results.
+                        sizeFieldFocused = false
+                        withAnimation(motion) { showingInfoSheet.toggle() }
+                    } else {
+                        showingInfoSheet = true
+                    }
                 } label: {
-                    Image(systemName: "info")
+                    // Titled, so a toolbar that shows titles (iPhone Duo's
+                    // vertical bar) can; the top bar still shows the symbol.
+                    Label(String(format: "about_level".localized(), viewModel.selectedLevel.displayName), systemImage: "info")
                 }
-                .accessibilityLabel(String(format: "about_level".localized(), viewModel.selectedLevel.displayName))
                 .accessibilityIdentifier("raidInfo")
+                // In pane mode the button also closes the info, so it reads as a toggle.
+                .accessibilityAddTraits(infoInPane && showingInfoSheet ? .isSelected : [])
+                .accessibilityFocused($infoButtonFocused)
             }
             ToolbarItemGroup(placement: .keyboard) {
                 Spacer()
@@ -269,11 +322,25 @@ struct ContentView: View {
             }
         }
         .scrollDismissesKeyboard(.interactively)
-        .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { contentWidth = $0 }
+        // The height adds back the bars' safe area, so the two-column
+        // gate compares the window's height, not what's left under them.
+        .onGeometryChange(for: CGSize.self) { proxy in
+            CGSize(width: proxy.size.width,
+                   height: proxy.size.height + proxy.safeAreaInsets.top + proxy.safeAreaInsets.bottom)
+        } action: { contentSize = $0 }
         .sensoryFeedback(.selection, trigger: viewModel.selectedLevel)
-        .sheet(isPresented: $showingInfoSheet) {
+        .sheet(isPresented: Binding(
+            get: { showingInfoSheet && !infoInPane },
+            // The pane has no binding; don't let the idle sheet close it.
+            set: { if !infoInPane { showingInfoSheet = $0 } }
+        )) {
             InfoSheet(topic: .level(viewModel.selectedLevel))
         }
+        .onChange(of: showingInfoSheet) { _, open in
+            // Back to the info button once the pane closes.
+            if !open, infoInPane { infoButtonFocused = true }
+        }
+        .readsFold($hasFold)
     }
 
     /// The segmented control shows only the standard levels; with a nested or
@@ -282,6 +349,14 @@ struct ContentView: View {
         Binding(
             get: { viewModel.selectedLevel.family == .standard ? viewModel.selectedLevel : nil },
             set: { if let level = $0 { withAnimation(motion) { viewModel.selectedLevel = level } } }
+        )
+    }
+
+    /// Every level, for the single menu at accessibility sizes.
+    private var levelSelection: Binding<RaidLevel> {
+        Binding(
+            get: { viewModel.selectedLevel },
+            set: { level in withAnimation(motion) { viewModel.selectedLevel = level } }
         )
     }
 
@@ -303,14 +378,38 @@ struct ContentView: View {
     /// drive strip and results still crossfade through their own animations.
     private var motion: Animation? { reduceMotion ? nil : .snappy }
 
-    private func caution(_ text: String) -> some View {
+    /// A caution with no level to move to: RAID 5 is short of the fourth
+    /// drive RAID 6 needs; RAID 50 and RAID-Z1 have groups too narrow for
+    /// dual parity.
+    private var warnOnlyCautionKey: String {
+        viewModel.selectedLevel == .raid5 ? "rebuild_caution_add_drive" : "rebuild_caution_narrow"
+    }
+
+    /// Switches to the level a caution suggests.
+    private func useLevelButton(_ level: RaidLevel) -> some View {
+        Button(String(format: "use_level".localized(), level.displayName)) {
+            withAnimation(motion) { viewModel.selectedLevel = level }
+        }
+        .accessibilityIdentifier("applyRebuildSuggestion")
+    }
+}
+
+/// Advice about a setup that works: an orange info symbol rather than the
+/// error triangle, so it never reads as something being wrong. VoiceOver
+/// reads the text, then the hint that it's advice; the symbol stays silent.
+struct AdvisoryLabel: View {
+    let text: String
+
+    var body: some View {
         Label {
             Text(text)
                 .font(.subheadline)
         } icon: {
-            Image(systemName: "exclamationmark.triangle.fill")
-                .symbolRenderingMode(.multicolor)
+            Image(systemName: "info.circle.fill")
+                .foregroundStyle(.orange)
+                .accessibilityHidden(true)
         }
+        .accessibilityHint("advisory_hint".localized())
     }
 }
 
@@ -333,7 +432,7 @@ struct CountStepper: View {
                     .accessibilityHidden(true)  // the count below carries it
                 Stepper(value: $value, in: range) {
                     // Reads “Number of Drives, 12”, as the one-row layout does.
-                    count.accessibilityLabel("\(title), \(value.formatted())")
+                    count.accessibilityLabel(Text(verbatim: "\(title), \(value.formatted())"))
                 }
             }
         } else {
@@ -369,7 +468,7 @@ struct CapacitySummary: View {
                     .accessibilityIdentifier("enterDriveSize")
             }
             content
-                .opacity(isValid ? 1 : 0.4)
+                .opacity(isValid ? 1 : 0.55)
                 .animation(.default, value: isValid)
         }
         .padding(.vertical, 6)
@@ -396,13 +495,17 @@ struct CapacitySummary: View {
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
             }
+            .fixedSize(horizontal: false, vertical: true)
             .accessibilityElement(children: .combine)
+            .modifier(InvalidSetupPrefix(active: result.warningMessage != nil))
 
             if !result.driveRoles.isEmpty {
                 DriveStrip(roles: result.driveRoles, groupSize: result.groupSize)
             }
 
-            FailuresToleratedRow(value: result.failuresTolerated)
+            if result.warningMessage == nil {
+                FailuresToleratedRow(value: result.failuresTolerated)
+            }
 
             if isValid, result.usableCapacity > 0 {
                 if let estimate = result.zfsEstimate {
@@ -449,6 +552,23 @@ struct CapacitySummary: View {
     }
 }
 
+/// Puts “Not a valid setup.” ahead of a combined element's own label, so
+/// VoiceOver doesn't read dimmed figures as a real result.
+struct InvalidSetupPrefix: ViewModifier {
+    let active: Bool
+
+    @ViewBuilder func body(content: Content) -> some View {
+        if active {
+            content.accessibilityLabel { label in
+                Text("invalid_setup_prefix".localized())
+                label
+            }
+        } else {
+            content
+        }
+    }
+}
+
 /// “Drive Failures Tolerated … 1” on one line when it fits; otherwise the
 /// label above the value, as before. The value is never shortened to make
 /// it fit (FR-18), so conditional wording and large text sizes stack.
@@ -456,7 +576,10 @@ struct FailuresToleratedRow: View {
     let value: String
 
     var body: some View {
-        Label {
+        HStack(alignment: .firstTextBaseline, spacing: 8) {
+            Image(systemName: "shield.lefthalf.filled")
+                .foregroundStyle(Color.dataFill)
+                .accessibilityHidden(true)
             ViewThatFits(in: .horizontal) {
                 HStack(alignment: .firstTextBaseline, spacing: 12) {
                     title.lineLimit(1)
@@ -468,10 +591,8 @@ struct FailuresToleratedRow: View {
                     valueText
                 }
             }
-        } icon: {
-            Image(systemName: "shield.lefthalf.filled")
-                .foregroundStyle(.tint)
         }
+        .fixedSize(horizontal: false, vertical: true)
         .accessibilityElement(children: .combine)
         .accessibilityIdentifier("failuresTolerated")
     }
@@ -602,13 +723,16 @@ struct DriveStrip: View {
             .font(.caption)
             .foregroundStyle(.secondary)
         }
-        // The summary, then one element per group, so VoiceOver reads the structure.
+        // The summary, then one element per group followed by one per drive in it, so VoiceOver reads the structure.
         .accessibilityRepresentation {
             VStack {
                 Text(accessibilitySummary)
                 if groupCount > 1 {
                     ForEach(0..<groupCount, id: \.self) { group in
                         Text(groupAccessibility(group))
+                        ForEach(Array(groupRange(group).enumerated()), id: \.element) { position, index in
+                            Text(String(format: "drive_strip_drive_accessibility".localized(), group + 1, groupCount, position + 1, Self.name(of: roles[index])))
+                        }
                     }
                 }
             }
@@ -620,7 +744,7 @@ struct DriveStrip: View {
         let parts = presentRoles.compactMap { role -> String? in
             let count = members.filter { $0 == role }.count
             return count > 0 ? String(format: "role_count".localized(), count, Self.name(of: role)) : nil
-        }.joined(separator: ", ")
+        }.formatted(.list(type: .and, width: .narrow))
         return String(format: "drive_strip_group_accessibility".localized(), group + 1, groupCount, parts)
     }
 
@@ -644,9 +768,9 @@ struct DriveStrip: View {
     private func bar(for role: DriveRole) -> some View {
         let shape = RoundedRectangle(cornerRadius: 4, style: .continuous)
         let (fill, stroke): (Color, Color) = switch role {
-        case .data: (.accentColor, .clear)
+        case .data: (Color.dataFill, .clear)
         case .parity: (.indigo, .clear)
-        case .mirror: (.accentColor.opacity(0.22), .accentColor)
+        case .mirror: (Color.dataFill.opacity(0.22), Color.dataFill)
         }
         return shape.fill(fill)
             .overlay(shape.strokeBorder(stroke, lineWidth: 1.5))
@@ -655,7 +779,7 @@ struct DriveStrip: View {
     private var accessibilitySummary: String {
         let parts = presentRoles.map { role in
             String(format: "role_count".localized(), roles.filter { $0 == role }.count, Self.name(of: role))
-        }.joined(separator: ", ")
+        }.formatted(.list(type: .and, width: .narrow))
         if groupCount > 1 {
             return String(format: "drive_strip_groups_accessibility".localized(), roles.count, groupCount, parts)
         }
@@ -735,7 +859,7 @@ struct RatingRow: View {
         HStack(spacing: 2) {
             ForEach(1...5, id: \.self) { star in
                 Image(systemName: star <= rating ? "star.fill" : "star")
-                    .foregroundStyle(star <= rating ? AnyShapeStyle(.tint) : AnyShapeStyle(.tertiary))
+                    .foregroundStyle(star <= rating ? AnyShapeStyle(Color.dataFill) : AnyShapeStyle(.tertiary))
             }
         }
         .font(.footnote)
@@ -745,7 +869,9 @@ struct RatingRow: View {
 /// The drive-size entry. It's trailing-aligned in a frame much wider than a
 /// short number like “4”, so a tap left of the digits would otherwise put the
 /// cursor before them, where backspace deletes nothing. On focus the cursor
-/// moves to the end, wherever the tap landed.
+/// moves to the end, wherever the tap landed. At accessibility sizes the field
+/// sits under its label at full width, so it leads instead; the cursor-to-end
+/// behavior still applies.
 ///
 /// That needs `selection:`, which SwiftUI only offers on text-bound fields, so
 /// the field edits its own text and pushes each value that parses. An empty,
@@ -756,6 +882,7 @@ struct DriveSizeField: View {
     var focus: FocusState<Bool>.Binding
     @Binding var isAwaitingValue: Bool
 
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @State private var text = ""
     @State private var selection: TextSelection?
 
@@ -764,7 +891,7 @@ struct DriveSizeField: View {
     var body: some View {
         TextField("drive_size".localized(), text: $text, selection: $selection)
             .keyboardType(.decimalPad)
-            .multilineTextAlignment(.trailing)
+            .multilineTextAlignment(dynamicTypeSize.isAccessibilitySize ? .leading : .trailing)
             .focused(focus)
             .monospacedDigit()
             .accessibilityIdentifier("driveSizeField")

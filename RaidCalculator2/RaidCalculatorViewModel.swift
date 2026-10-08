@@ -45,8 +45,8 @@ final class RaidCalculatorViewModel {
     /// Recomputed whenever an input changes; Observation tracks the reads.
     var result: RaidResult { calculator.calculate(config: configuration) }
 
-    /// Single parity on drives of 8 TB or more; the dual-parity level to suggest.
-    var rebuildCautionSuggestion: RaidLevel? { calculator.rebuildCautionSuggestion(for: configuration) }
+    /// Single parity on drives of 8 TB or more: a suggested level, or a bare warning.
+    var rebuildCaution: RebuildCaution? { calculator.rebuildCaution(for: configuration) }
 
     /// Width of a RAID-Z group wider than 12 drives; nil otherwise.
     var wideZFSGroupWidth: Int? { calculator.wideZFSGroupWidth(for: configuration) }

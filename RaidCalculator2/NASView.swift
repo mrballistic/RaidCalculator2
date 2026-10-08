@@ -7,7 +7,7 @@ import SwiftUI
 
 struct NASView: View {
     @State private var viewModel = NASViewModel()
-    @State private var contentWidth: CGFloat = 0
+    @State private var contentSize: CGSize = .zero
     @State private var customSizeBay: Int?
     @State private var customSizeText = ""
 
@@ -19,6 +19,7 @@ struct NASView: View {
     @State private var showingInfo = false
     @State private var showingComparison = false
     @State private var pendingSystem: NASSystem?
+    @State private var confirmingRevert = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
@@ -27,12 +28,20 @@ struct NASView: View {
     private let readableWidth: CGFloat = 720
 
     private var twoColumns: Bool {
-        AdaptiveLayout.usesTwoColumns(isRegularWidth: horizontalSizeClass == .regular, width: contentWidth)
+        AdaptiveLayout.usesTwoColumns(isRegularWidth: horizontalSizeClass == .regular, width: contentSize.width, height: contentSize.height)
     }
 
+    /// iPhone Duo has a fold region (flat or folded); iPad never does.
+    @State private var hasFold = false
+    /// On iPhone Duo the system sheet lands over the results, so beside them
+    /// the info takes the inputs' place instead. iPad keeps the sheet.
+    private var infoInPane: Bool { twoColumns && hasFold }
+    @AccessibilityFocusState private var infoButtonFocused: Bool
+
     @ViewBuilder private var summarySection: some View {
+        let result = viewModel.result
         Section {
-            NASSummary(result: viewModel.result, system: viewModel.system)
+            NASSummary(result: result, system: viewModel.system)
             if !twoColumns {
                 Button {
                     showingComparison = true
@@ -109,7 +118,8 @@ struct NASView: View {
 
     /// The warning or suggestion, the hints, and the comparison with the current setup.
     @ViewBuilder private var adviceSections: some View {
-        if let warning = viewModel.result.warningMessage {
+        let result = viewModel.result
+        if let warning = result.warningMessage {
             Section {
                 Label {
                     Text(warning)
@@ -139,36 +149,67 @@ struct NASView: View {
         if !viewModel.hints.isEmpty {
             Section {
                 ForEach(viewModel.hints, id: \.self) { hint in
-                    Label {
-                        Text(Self.text(for: hint))
-                            .font(.subheadline)
-                            .accessibilityIdentifier("nasHint")
-                    } icon: {
-                        Image(systemName: "exclamationmark.triangle.fill")
-                            .symbolRenderingMode(.multicolor)
+                    AdvisoryLabel(text: Self.text(for: hint))
+                        .accessibilityIdentifier("nasHint")
+                    if case .snapraidParity(let recommended, _) = hint {
+                        Button(String(format: "use_parity_count".localized(), recommended)) {
+                            withAnimation(motion) { viewModel.settings.setParity(recommended, for: .snapraid) }
+                        }
+                        .accessibilityIdentifier("applyParityHint")
                     }
                 }
             }
             .transition(.opacity)
         }
 
-        if let delta = viewModel.usableDelta {
+        currentSetupSection
+    }
+
+    /// Changes are compared only with a setup the owner saved: the sample
+    /// drives on a fresh install aren't theirs, so until then it only offers
+    /// to save. Once saved, it says what the comparison is against.
+    @ViewBuilder private var currentSetupSection: some View {
+        if viewModel.hasSavedCurrent {
             Section("compared_header".localized()) {
-                LabeledContent("usable_capacity".localized()) {
-                    Text(Self.signed(delta))
-                        .monospacedDigit()
-                        .contentTransition(.numericText())
-                        .foregroundStyle(delta > 0 ? AnyShapeStyle(.tint) : AnyShapeStyle(.secondary))
-                }
-                .accessibilityIdentifier("usableDelta")
-                Button("save_as_current".localized()) {
-                    withAnimation(motion) { viewModel.saveAsCurrent() }
-                }
-                Button("revert".localized(), role: .destructive) {
-                    withAnimation(motion) { viewModel.revertToCurrent() }
+                Text(Self.baseline(viewModel.currentSummary))
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .accessibilityIdentifier("currentBaseline")
+                if let delta = viewModel.usableDelta {
+                    LabeledContent("usable_capacity".localized()) {
+                        Text(Self.signed(delta))
+                            .monospacedDigit()
+                            .contentTransition(.numericText())
+                            .foregroundStyle(delta > 0 ? AnyShapeStyle(.tint) : AnyShapeStyle(.secondary))
+                    }
+                    .accessibilityIdentifier("usableDelta")
+                    saveAsCurrentButton
+                    Button("revert".localized(), role: .destructive) {
+                        confirmingRevert = true
+                    }
+                    .accessibilityIdentifier("revertToCurrent")
+                    .confirmationDialog("revert_confirm_title".localized(), isPresented: $confirmingRevert, titleVisibility: .visible) {
+                        Button("revert".localized(), role: .destructive) {
+                            withAnimation(motion) { viewModel.revertToCurrent() }
+                        }
+                        Button("cancel".localized(), role: .cancel) {}
+                    }
                 }
             }
+        } else {
+            Section {
+                saveAsCurrentButton
+            } footer: {
+                Text("save_current_prompt_footer".localized())
+            }
         }
+    }
+
+    private var saveAsCurrentButton: some View {
+        Button("save_as_current".localized()) {
+            withAnimation(motion) { viewModel.saveAsCurrent() }
+        }
+        .accessibilityIdentifier("saveAsCurrent")
     }
 
     @ViewBuilder private var drivesSection: some View {
@@ -192,7 +233,7 @@ struct NASView: View {
     var body: some View {
         Group {
             if twoColumns {
-                HStack(alignment: .top, spacing: 0) {
+                TwoColumnLayout(hasFold: hasFold, showsInfo: infoInPane && showingInfo) {
                     Form {
                         summarySection
                         Section("compare_header".localized()) {
@@ -202,11 +243,14 @@ struct NASView: View {
                         }
                         adviceSections
                     }
-                    Divider()
+                } inputs: {
                     Form {
                         setupSection
                         drivesSection
                     }
+                } info: {
+                    InfoSheet(topic: .system(viewModel.system))
+                        .environment(\.closeInfo) { withAnimation(motion) { showingInfo = false } }
                 }
             } else {
                 // Setup sits above every section that comes and goes, so the
@@ -219,7 +263,7 @@ struct NASView: View {
                 }
                 .contentMargins(
                     .horizontal,
-                    contentWidth > readableWidth + 40 ? (contentWidth - readableWidth) / 2 : nil,
+                    contentSize.width > readableWidth + 40 ? (contentSize.width - readableWidth) / 2 : nil,
                     for: .scrollContent
                 )
             }
@@ -229,17 +273,34 @@ struct NASView: View {
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
-                    showingInfo = true
+                    if infoInPane {
+                        withAnimation(motion) { showingInfo.toggle() }
+                    } else {
+                        showingInfo = true
+                    }
                 } label: {
-                    Image(systemName: "info")
+                    // Titled, so a toolbar that shows titles (iPhone Duo's
+                    // vertical bar) can; the top bar still shows the symbol.
+                    Label(String(format: "about_level".localized(), viewModel.system.displayName), systemImage: "info")
                 }
-                .accessibilityLabel(String(format: "about_level".localized(), viewModel.system.displayName))
                 .accessibilityIdentifier("nasInfo")
+                // In pane mode the button also closes the info, so it reads as a toggle.
+                .accessibilityAddTraits(infoInPane && showingInfo ? .isSelected : [])
+                .accessibilityFocused($infoButtonFocused)
             }
         }
-        .sheet(isPresented: $showingInfo) {
+        .sheet(isPresented: Binding(
+            get: { showingInfo && !infoInPane },
+            // The pane has no binding; don't let the idle sheet close it.
+            set: { if !infoInPane { showingInfo = $0 } }
+        )) {
             InfoSheet(topic: .system(viewModel.system))
         }
+        .onChange(of: showingInfo) { _, open in
+            // Back to the info button once the pane closes.
+            if !open, infoInPane { infoButtonFocused = true }
+        }
+        .readsFold($hasFold)
         .sheet(isPresented: $showingComparison, onDismiss: {
             // Applied once the sheet is gone, so the bays visibly re-split.
             if let system = pendingSystem {
@@ -249,12 +310,17 @@ struct NASView: View {
         }) {
             NASComparisonSheet(comparison: viewModel.comparison, current: viewModel.system) { pendingSystem = $0 }
         }
-        .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { contentWidth = $0 }
+        // The height adds back the bars' safe area, so the two-column
+        // gate compares the window's height, not what's left under them.
+        .onGeometryChange(for: CGSize.self) { proxy in
+            CGSize(width: proxy.size.width,
+                   height: proxy.size.height + proxy.safeAreaInsets.top + proxy.safeAreaInsets.bottom)
+        } action: { contentSize = $0 }
         .alert(
             "custom_size".localized(),
             isPresented: Binding(get: { customSizeBay != nil }, set: { if !$0 { customSizeBay = nil } })
         ) {
-            TextField("TB", text: $customSizeText)
+            TextField(String("TB"), text: $customSizeText)
                 .keyboardType(.decimalPad)
             Button("cancel".localized(), role: .cancel) {}
             Button("done".localized()) {
@@ -323,6 +389,13 @@ struct NASView: View {
         CapacitySummary.capacity(value, unit: CapacityUnit.tb.rawValue).replacingOccurrences(of: " ", with: "\u{00A0}")
     }
 
+    /// “Current: 16 TB usable · Synology SHR · 4 bays”. Only Synology has a
+    /// type to name; system names stay untranslated.
+    static func baseline(_ summary: CurrentSummary) -> String {
+        let system = [summary.system.displayName, summary.typeLabel].compactMap { $0 }.joined(separator: " ")
+        return String(format: "current_baseline".localized(), tb(summary.usable), system, summary.bays)
+    }
+
     /// The sign goes on the amount, inside the phrase, so Japanese reads
     /// “使用可能容量 +12 TB” rather than “+使用可能容量 12 TB”.
     static func signed(_ value: Double) -> String {
@@ -370,7 +443,9 @@ struct NASSummary: View {
                     .foregroundStyle(.secondary)
                 }
             }
+            .fixedSize(horizontal: false, vertical: true)
             .accessibilityElement(children: .combine)
+            .modifier(InvalidSetupPrefix(active: !isValid))
 
             BayDiagram(bays: result.bays, system: system)
 
@@ -412,7 +487,7 @@ struct NASSummary: View {
             }
         }
         .padding(.vertical, 6)
-        .opacity(isValid ? 1 : 0.4)
+        .opacity(isValid ? 1 : 0.55)
         .animation(.default, value: isValid)
     }
 }
@@ -573,14 +648,13 @@ struct BayDiagram: View {
     }
 
     private func accessibilityLabel(bay index: Int, segments: [BaySegment]?) -> String {
-        let name = String(format: "bay_n".localized(), index + 1)
-        guard let segments else { return "\(name), \("empty_bay".localized())" }
+        guard let segments else { return String(format: "bay_empty_accessibility".localized(), index + 1) }
         var amounts: [SegmentRole: Double] = [:]
         for segment in segments { amounts[segment.role, default: 0] += segment.size }
         let parts = [SegmentRole.data, .parity, .mirror, .unused].compactMap { role in
             amounts[role].flatMap { $0 > 0 ? String(format: "role_amount".localized(), NASView.tb($0), SegmentSwatch.name(of: role)) : nil }
         }
-        return String(format: "bay_accessibility".localized(), index + 1, NASView.tb(total(segments)), parts.joined(separator: ", "))
+        return String(format: "bay_accessibility".localized(), index + 1, NASView.tb(total(segments)), parts.formatted(.list(type: .and, width: .narrow)))
     }
 }
 
@@ -599,15 +673,15 @@ struct SegmentSwatch: View {
 
     private var fill: Color {
         switch role {
-        case .data: .accentColor
+        case .data: Color.dataFill
         case .parity: .indigo
-        case .mirror: .accentColor.opacity(0.22)
+        case .mirror: Color.dataFill.opacity(0.22)
         case .unused: .secondary.opacity(0.12)
         }
     }
 
     /// Mirrors are outlined so the distinction doesn't rest on colour alone.
-    private var stroke: Color { role == .mirror ? .accentColor : .clear }
+    private var stroke: Color { role == .mirror ? Color.dataFill : .clear }
 
     static func name(of role: SegmentRole) -> String {
         switch role {

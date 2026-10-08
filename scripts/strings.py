@@ -3,7 +3,7 @@
 
   scripts/strings.py add new-strings.json   # {"key": {"en": "…", "es": "…", …}}
   scripts/strings.py remove key [key …]
-  scripts/strings.py check                   # all five languages, matching specifiers
+  scripts/strings.py check                   # every language in LANGS, matching specifiers
 
 Never hand-edit the catalog JSON; Xcode and this script both rewrite it.
 """
@@ -15,7 +15,7 @@ import sys
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 CATALOG = pathlib.Path(os.environ.get("STRINGS_CATALOG", ROOT / "RaidCalculator2" / "Localizable.xcstrings"))
-LANGS = ["en", "es", "fr", "it", "ja"]
+LANGS = ["en", "es", "fr", "it", "ja", "de", "zh-Hant", "zh-Hans", "ko", "pt-BR"]
 # printf-style specifiers as Foundation uses them; %% is a literal percent.
 # No space flag: "50% storage" must not parse as a specifier.
 SPEC = re.compile(r"%(?:(\d+)\$)?[-+0#]*\d*(?:\.\d+)?(ld|lu|lld|[dif@sucxX])")
