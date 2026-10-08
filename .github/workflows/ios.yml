@@ -21,7 +21,7 @@ jobs:
     # The app targets iOS 26 but builds with the 27.1 SDK (ArrangementView needs it).
     # Only the preview `xcode-27` image carries Xcode 27.1; macos-26 stops at 26.6.
     runs-on: xcode-27
-    timeout-minutes: 75
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v7
 
@@ -51,6 +51,8 @@ jobs:
       - name: Check localized strings
         run: python3 scripts/strings.py check
 
+      # Unit tests only: macOS runner minutes are expensive, and the UI
+      # suite (about 15 minutes locally, far longer here) runs locally before release.
       - name: Build and test on the iOS simulator
         run: |
           set -o pipefail
@@ -60,7 +62,7 @@ jobs:
             -destination "id=$SIM_UDID" \
             -resultBundlePath "$RUNNER_TEMP/TestResults.xcresult" \
             -parallel-testing-enabled NO \
-            -skip-testing:"RAID CalcUITests/RaidCalculator2UITestsLaunchTests" \
+            -only-testing:"RAID CalcTests" \
             build test | xcbeautify
 
       - name: Upload test results
