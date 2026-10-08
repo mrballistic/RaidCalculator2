@@ -42,13 +42,15 @@ It is a focused, native, offline utility that does one calculation well and teac
 
 ## Brand Commitments
 
-- Name: **RAID Calculator** (RAID in capitals). “RAIDGauge” in the README and PRD was a working name and should not appear in product copy. The home-screen display name currently reads “Raid Calculator.”
+- Name: **RAID Calculator** (RAID in capitals). “RAIDGauge” in the original README and PRD was a working name and should not appear in product copy. The home-screen display name currently reads “Raid Calculator.”
 - Must feel first-party iOS: system typography, SF Symbols, native controls and materials.
 - Privacy is part of the product: the app has no data collection, analytics, third-party services or network calls (`privacy.md`). The website (`www/`) is separate: it loads Google Analytics only after visitors consent, and the policy says so.
 
 ## Evidence on Hand
 
 - `prd.md`: requirements, personas, formulas, ratings and decisions, current as of 1.7.0, in progress (the 1.5.0/1.6.0 delta from `prd-update.md` was merged in on 2026-10-05).
+- `README.md`: the product overview. `CHANGELOG.md`: what changed in each version, 1.3 to 1.7.0.
+- `ARCHITECTURE.md`: how the app is built. `DEPLOY.md`: CI, App Store uploads, the website deploy and the release checklist.
 - `privacy.md`: published privacy policy, live at <https://mrballistic.com/raid/privacy/>.
 - `www/`: the product page, live at <https://mrballistic.com/raid/>.
 - `marketing/screenshots/`: App Store screenshots, iPhone and iPad (iPhone Duo sets are due with 1.7.0).

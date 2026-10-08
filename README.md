@@ -1,6 +1,10 @@
 # RAID Calculator
 
-A native iOS and iPadOS app, for iPhone, iPad and iPhone Duo, that shows how much space a set of drives actually gives you, how many can fail, and which drive is worth buying next. It's on the App Store as [RAID Calculator](https://apps.apple.com/app/id395601653), with a product page at [mrballistic.com/raid](https://mrballistic.com/raid/).
+A native iOS and iPadOS app, for iPhone, iPad and iPhone Duo, that shows how much space a set of drives actually gives you, how many can fail, and which drive is worth buying next. It’s on the App Store as [RAID Calculator](https://apps.apple.com/app/id395601653), with a product page at [mrballistic.com/raid](https://mrballistic.com/raid/).
+
+## Who it’s for
+
+Mostly home-lab and NAS owners: people who self-host, know roughly what RAID is, and want to check usable space and redundancy before buying drives or building an array. It also suits people new to RAID who want to see what changes between levels, and IT generalists who need rough capacity numbers offline, in a meeting or at a whiteboard.
 
 ## What it does
 
@@ -27,83 +31,25 @@ A native iOS and iPadOS app, for iPhone, iPad and iPhone Duo, that shows how muc
 - iPhone rotates to landscape.
 - At accessibility text sizes the level and unit pickers become menus.
 - Light and dark mode, a tint dark enough for text contrast (darker still with Increase Contrast), Dynamic Type up to the largest accessibility sizes, VoiceOver (which reads each drive within a group), and Reduce Motion.
-- English, Spanish, French, Italian, Japanese, German, Traditional Chinese, Simplified Chinese, Korean and Brazilian Portuguese.
-- No account, no analytics, no network calls.
 
-## Building
+## Platforms
 
-- Xcode 27.1 or later (iPhone Duo’s layout uses the iOS 27.1 SDK), iOS 26.0 deployment target, Swift 6 with default MainActor isolation. No third-party dependencies.
-- Open `RAID Calculator.xcodeproj` and run the **RAID Calc** scheme.
-- Folders are synchronized, so new `.swift` files are picked up without editing the project file.
+iPhone and iPad on iOS and iPadOS 26.0 or later, and iPhone Duo on iOS 27.1, in portrait and landscape. It works fully offline.
 
-## Testing
+## Languages
 
-Unit tests use Swift Testing (target "RAID CalcTests", folder `RaidCalculator2Tests/`), and UI tests use XCTest (target "RAID CalcUITests", folder `RaidCalculator2UITests/`). Always pass `-parallel-testing-enabled NO`; parallel Simulator clones time out.
+English, Spanish, French, Italian, Japanese, German, Traditional Chinese, Simplified Chinese, Korean and Brazilian Portuguese.
 
-CI (`.github/workflows/ios.yml`) runs only the strings check and the unit tests, on the `xcode-27` runner with Xcode 27.1 and a 30-minute cap. UI tests and launch tests don't run there, because GitHub macOS minutes cost money. Run the UI suite locally before each release (about 15 minutes):
+## Privacy
 
-```bash
-# Unit tests only, as CI runs them
-xcodebuild test -project "RAID Calculator.xcodeproj" -scheme "RAID Calc" \
-  -destination 'platform=iOS Simulator,name=iPhone 17' \
-  -parallel-testing-enabled NO -only-testing:"RAID CalcTests"
+No account, no analytics, no tracking and no network calls: the app collects no data. The [privacy policy](https://mrballistic.com/raid/privacy/) is on the product page.
 
-# The UI suite, run locally
-xcodebuild test -project "RAID Calculator.xcodeproj" -scheme "RAID Calc" \
-  -destination 'platform=iOS Simulator,name=iPhone 17' \
-  -parallel-testing-enabled NO -only-testing:"RAID CalcUITests"
-```
+## More
 
-`launchApp` passes `-selectedTab raid`, so tests start on the RAID tab. The `testIPad*` UI tests skip unless the two-column layout is on screen (they look for its `twoColumnLayout` identifier, and that layout follows size class and window size, not device type), so they skip on iPhone in portrait and run on an iPad Simulator (for example `name=iPad Pro 13-inch (M5)`) and on iPhone Duo’s inner display in landscape. iPhone Duo needs the iOS 27.1 Simulator runtime, and its pose and rotation can’t be scripted: set them in the Simulator and Xcode’s Device Hub.
-
-## Strings
-
-All user-facing text lives in `RaidCalculator2/Localizable.xcstrings`, in all ten languages. Never hand-edit the catalog; use the script:
-
-```bash
-python3 scripts/strings.py add new-strings.json   # {"key": {"en": "…", "es": "…", "fr": "…", "it": "…", "ja": "…", "de": "…", "zh-Hant": "…", "zh-Hans": "…", "ko": "…", "pt-BR": "…"}}
-python3 scripts/strings.py remove key [key …]
-python3 scripts/strings.py check                   # must print 0 problem(s)
-```
-
-Copy uses smart punctuation and American spelling, and keeps system names (Synology, SHR, Unraid, ZFS, SnapRAID, Btrfs RAID1) untranslated.
-
-## Project layout
-
-```
-RaidCalculator2/
-├── Models.swift, RaidCalculator.swift      # RAID levels, configurations and the RAID tab's math
-├── RaidCalculatorViewModel.swift           # RAID tab state and persistence
-├── ContentView.swift                       # RAID tab UI, shared rows and the drive strip
-├── ZFSEstimate.swift                       # What ZFS reports: padding and slop space
-├── Bays.swift                              # Bay segments, results and suggestions shared by NAS systems
-├── NAS.swift                               # NAS systems, settings, setups, hints, comparison
-├── Synology.swift, ParityArrayCalculator.swift, ZFSMixedCalculator.swift, BtrfsRaid1Calculator.swift
-├── NASViewModel.swift                      # Shared drives, per-system lens, current setup, persistence
-├── NASView.swift, NASComparisonViews.swift # NAS tab UI, bay diagram, Compare Systems
-├── AdaptiveLayout.swift                    # Two-column and bay-row rules (regular width, 800 × 600 pt or more)
-├── TwoColumnLayout.swift                   # Results beside inputs; the fold-aware split and the info pane on iPhone Duo
-├── Colors.swift                            # Data-mark fill color, kept apart from the contrast-darkened tint
-├── InfoSheet.swift                         # The shared info sheet
-├── Extensions.swift                        # Small shared helpers
-├── Localizable.xcstrings                   # Every user-facing string, in ten languages
-└── RaidCalculator2App.swift                # Tabs
-```
-
-## Docs
-
-- `prd.md`: the product requirements, including every decision made for 1.5, 1.6 and 1.7.
-- `PRODUCT.md`: who the app is for and how it should feel.
-- `docs/RELEASE.md`: how App Store builds and the website ship.
-- `docs/app-store-assets-brief.md`: the 1.7.0 store deliverables, sizes and the iPhone Duo traps.
-- `docs/superpowers/plans/`: the implementation plans behind 1.5.0, 1.6.0 and 1.7.0, including the 1.6.5 polish, which ships in 1.7.0. The 1.7.0 plan is `2026-10-06-1.7.0-duo-and-review.md`.
-- `scripts/store-assets/`: `compose.py` builds the composed App Store screenshots, `capture_duo.sh` captures iPhone Duo poses; see its README.
-- `www/`: the product page. `marketing/`: listing copy and screenshots (`marketing/screenshots/1.7.0/`: `store/`, `raw/`, `ax-sweep/`).
-
-## Releasing
-
-- **App:** 1.7.0 is archived and uploaded from **local** Xcode 27.1 (27A9275). `.github/workflows/deploy.yml` can do it from a `v*` tag or a manual dispatch (it reuses `ios.yml` as its gate, then archives and uploads after approval in the `app-store` environment), but the `xcode-27` runner image carries a beta 27.1 build (27A9269) and App Store Connect rejects uploads built with a beta Xcode, so it isn’t used for 1.7.0. See `docs/RELEASE.md`.
-- **Website:** push a `www-v<version>` tag. `.github/workflows/www.yml` deploys `www/` to the server.
+- [ARCHITECTURE.md](ARCHITECTURE.md): how the app is built, the calculation model, persistence, layout, accessibility, strings and testing.
+- [DEPLOY.md](DEPLOY.md): CI, App Store uploads, the website deploy and the release checklist.
+- [CHANGELOG.md](CHANGELOG.md): what changed in each version, from 1.3 to 1.7.0.
+- [prd.md](prd.md): the product requirements and every decision behind them. [PRODUCT.md](PRODUCT.md): who the app is for and how it should feel.
 
 ## Trademarks
 
