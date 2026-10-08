@@ -38,14 +38,23 @@ A native iOS and iPadOS app, for iPhone, iPad and iPhone Duo, that shows how muc
 
 ## Testing
 
-Unit tests use Swift Testing (`RaidCalculator2Tests/`), and UI tests use XCTest (`RaidCalculator2UITests/`). Run them serially; parallel Simulator clones time out.
+Unit tests use Swift Testing (target "RAID CalcTests", folder `RaidCalculator2Tests/`), and UI tests use XCTest (target "RAID CalcUITests", folder `RaidCalculator2UITests/`). Always pass `-parallel-testing-enabled NO`; parallel Simulator clones time out.
+
+CI (`.github/workflows/ios.yml`) runs only the strings check and the unit tests, on the `xcode-27` runner with Xcode 27.1 and a 30-minute cap. UI tests and launch tests don't run there, because GitHub macOS minutes cost money. Run the UI suite locally before each release (about 15 minutes):
 
 ```bash
+# Unit tests only, as CI runs them
 xcodebuild test -project "RAID Calculator.xcodeproj" -scheme "RAID Calc" \
-  -destination 'platform=iOS Simulator,name=iPhone 17' -parallel-testing-enabled NO
+  -destination 'platform=iOS Simulator,name=iPhone 17' \
+  -parallel-testing-enabled NO -only-testing:"RAID CalcTests"
+
+# The UI suite, run locally
+xcodebuild test -project "RAID Calculator.xcodeproj" -scheme "RAID Calc" \
+  -destination 'platform=iOS Simulator,name=iPhone 17' \
+  -parallel-testing-enabled NO -only-testing:"RAID CalcUITests"
 ```
 
-The `testIPad*` UI tests skip unless the two-column layout is on screen (they look for its `twoColumnLayout` identifier, and that layout follows size class and window size, not device type), so they skip on iPhone in portrait and run on an iPad Simulator (for example `name=iPad Pro 13-inch (M5)`) and on iPhone Duo’s inner display in landscape. iPhone Duo needs the iOS 27.1 Simulator runtime, and its pose and rotation can’t be scripted: set them in the Simulator and Xcode’s Device Hub.
+`launchApp` passes `-selectedTab raid`, so tests start on the RAID tab. The `testIPad*` UI tests skip unless the two-column layout is on screen (they look for its `twoColumnLayout` identifier, and that layout follows size class and window size, not device type), so they skip on iPhone in portrait and run on an iPad Simulator (for example `name=iPad Pro 13-inch (M5)`) and on iPhone Duo’s inner display in landscape. iPhone Duo needs the iOS 27.1 Simulator runtime, and its pose and rotation can’t be scripted: set them in the Simulator and Xcode’s Device Hub.
 
 ## Strings
 
@@ -72,8 +81,12 @@ RaidCalculator2/
 ├── Synology.swift, ParityArrayCalculator.swift, ZFSMixedCalculator.swift, BtrfsRaid1Calculator.swift
 ├── NASViewModel.swift                      # Shared drives, per-system lens, current setup, persistence
 ├── NASView.swift, NASComparisonViews.swift # NAS tab UI, bay diagram, Compare Systems
-├── AdaptiveLayout.swift                    # Two-column and bay-row rules
+├── AdaptiveLayout.swift                    # Two-column and bay-row rules (regular width, 800 × 600 pt or more)
+├── TwoColumnLayout.swift                   # Results beside inputs; the fold-aware split and the info pane on iPhone Duo
+├── Colors.swift                            # Data-mark fill color, kept apart from the contrast-darkened tint
 ├── InfoSheet.swift                         # The shared info sheet
+├── Extensions.swift                        # Small shared helpers
+├── Localizable.xcstrings                   # Every user-facing string, in ten languages
 └── RaidCalculator2App.swift                # Tabs
 ```
 
@@ -81,13 +94,15 @@ RaidCalculator2/
 
 - `prd.md`: the product requirements, including every decision made for 1.5, 1.6 and 1.7.
 - `PRODUCT.md`: who the app is for and how it should feel.
-- `docs/RELEASE.md`: how App Store builds ship.
-- `docs/superpowers/plans/`: the implementation plans behind 1.5.0, 1.6.0 and 1.7.0 (including the 1.6.5 polish, which ships in 1.7.0).
-- `www/`: the product page. `marketing/`: listing copy and screenshots.
+- `docs/RELEASE.md`: how App Store builds and the website ship.
+- `docs/app-store-assets-brief.md`: the 1.7.0 store deliverables, sizes and the iPhone Duo traps.
+- `docs/superpowers/plans/`: the implementation plans behind 1.5.0, 1.6.0 and 1.7.0, including the 1.6.5 polish, which ships in 1.7.0. The 1.7.0 plan is `2026-10-06-1.7.0-duo-and-review.md`.
+- `scripts/store-assets/`: `compose.py` builds the composed App Store screenshots, `capture_duo.sh` captures iPhone Duo poses; see its README.
+- `www/`: the product page. `marketing/`: listing copy and screenshots (`marketing/screenshots/1.7.0/`: `store/`, `raw/`, `ax-sweep/`).
 
 ## Releasing
 
-- **App:** push a `v<version>` tag (for example `v1.7.0`). `.github/workflows/deploy.yml` runs the full CI gate, archives and uploads to App Store Connect after approval in the `app-store` environment. See `docs/RELEASE.md`. App Store Connect rejects uploads built with a beta Xcode, so if the CI image’s Xcode 27.1 is still a beta, archive and upload 1.7.0 locally from Xcode instead.
+- **App:** 1.7.0 is archived and uploaded from **local** Xcode 27.1 (27A9275). `.github/workflows/deploy.yml` can do it from a `v*` tag or a manual dispatch (it reuses `ios.yml` as its gate, then archives and uploads after approval in the `app-store` environment), but the `xcode-27` runner image carries a beta 27.1 build (27A9269) and App Store Connect rejects uploads built with a beta Xcode, so it isn’t used for 1.7.0. See `docs/RELEASE.md`.
 - **Website:** push a `www-v<version>` tag. `.github/workflows/www.yml` deploys `www/` to the server.
 
 ## Trademarks

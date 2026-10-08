@@ -12,6 +12,10 @@
   /tmp/raid-assets/venv/bin/pip install pillow
   ```
 
+## Sizes
+
+iPhone: 1320 × 2868 (Pro Max, the capture size), plus the 1206 × 2622 and 1179 × 2556 sizes App Store Connect asks for, laid out natively from the Pro Max raws. iPad 13″: 2064 × 2752. iPhone Duo: inner 2007 × 2853 and 2853 × 2007, outer 1398 × 2034 and 2034 × 1398. Header and search images: 3840 × 1646, 5244 × 2950, 3840 × 2560 and 1920 × 1280.
+
 ## Folders
 
 ```
@@ -39,6 +43,14 @@ marketing/screenshots/1.7.0/
   --raw raw.png --out out.png --size 1320x2868 \
   --bg orange --device iphone --headline "See what your next drive adds"
 ```
+
+Header and search images are placed inside Apple’s template “Art Safe Area”, held as named constants at the top of the header section of `compose.py` (`SAFE_HEADER_21x9`, `SAFE_UNIVERSAL_16x9`, `SAFE_SEARCH_3x2`, mapped by size in `SAFE_RECTS`). Change those if Apple updates the templates. `--debug-safe` (with `--headers`) also writes overlays of the safe rectangle and a crude phone-preview crop to `/tmp/raid-assets/debug`:
+
+```bash
+/tmp/raid-assets/venv/bin/python scripts/store-assets/compose.py --headers --debug-safe
+```
+
+Visual rules: backgrounds are orange `#FF9500` or indigo `#5856D6`, headlines are near-black on orange and white on indigo, set in SF Pro Display Bold, with a flat 20% long shadow behind the device.
 
 Backgrounds: `orange` (near-black text) and `indigo` (white text); the script asserts both pairs pass 4.5:1. Devices: `iphone`, `ipad`, `duo-outer`, `duo-inner`. Portrait canvases put the headline on top; landscape canvases put it on the left.
 
