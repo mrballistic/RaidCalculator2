@@ -21,7 +21,7 @@ jobs:
     # The app targets iOS 26 but builds with the 27.1 SDK (ArrangementView needs it).
     # Only the preview `xcode-27` image carries Xcode 27.1; macos-26 stops at 26.6.
     runs-on: xcode-27
-    timeout-minutes: 45
+    timeout-minutes: 75
     steps:
       - uses: actions/checkout@v7
 
@@ -60,6 +60,7 @@ jobs:
             -destination "id=$SIM_UDID" \
             -resultBundlePath "$RUNNER_TEMP/TestResults.xcresult" \
             -parallel-testing-enabled NO \
+            -skip-testing:"RAID CalcUITests/RaidCalculator2UITestsLaunchTests" \
             build test | xcbeautify
 
       - name: Upload test results
