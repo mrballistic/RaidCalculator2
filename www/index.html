@@ -124,7 +124,8 @@
   .badge-row .badge img { height: var(--badge-h); }
   .store-badge.google { display: block; line-height: 0; }
   .store-badge.google img { height: calc(var(--badge-h) * 250 / 168); width: auto; margin: calc(var(--badge-h) * -41 / 168); }
-  .store-badge.soon { cursor: default; }
+  /* Not on Google Play yet: dimmed and desaturated, as on the Wax Wishlist site. */
+  .store-badge.soon { cursor: default; opacity: 0.4; filter: grayscale(1); }
   .cta-note { margin-top: 14px; font-size: 15px; color: var(--ink-3); }
 
   .h2 { font-size: clamp(29px, 4vw, 46px); line-height: 1.08; letter-spacing: -0.03em; font-weight: 700; }
