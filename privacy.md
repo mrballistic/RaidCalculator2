@@ -1,8 +1,8 @@
 # Privacy Policy – RAID Calculator
 
-**Last updated: October 1, 2026**
+**Last updated: October 9, 2026**
 
-This Privacy Policy describes how RAID Calculator ("the App") handles information when you use it. RAID Calculator is developed and operated by mrBallistic ("we", "us", or "our").
+This Privacy Policy describes how RAID Calculator ("the App") handles information when you use it, on iPhone and iPad (from the App Store) and on Android (from Google Play). RAID Calculator is developed and operated by mrBallistic ("we", "us", or "our").
 
 ## 1. Information We Do Not Collect
 
@@ -12,12 +12,14 @@ We do not collect, store, or share any personal data from you. Specifically:
 - We do not collect device identifiers
 - We do not collect location data
 - We do not collect usage analytics or telemetry
-- We do not receive your RAID configurations or any values you enter into the App
+- We do not receive your configurations, drive sizes, saved setups, or any other values you enter into the App
 - We do not use cookies or similar tracking technologies
 
-Your last configuration is saved only on your device so the App can restore it. It is never sent to us or anyone else.
+Your last configuration, and any setup you save, is stored only on your device so the App can restore it. It is never sent to us or anyone else.
 
-All RAID-related calculations are performed locally on your device. The data you enter never leaves your device as part of the App's functionality.
+If you have turned on your device’s own backup (for example, backup to your Google account on Android), your device may include that saved configuration in its backup, so it can return when you restore or move to a new device. That backup is handled by your device’s platform under your account. We never receive it and cannot read it.
+
+All calculations are performed locally on your device. The data you enter never leaves your device as part of the App's functionality.
 
 ## 2. No Third-Party Services
 
@@ -25,6 +27,7 @@ The App does not use:
 
 - Third-party analytics services
 - Third-party advertising networks
+- Crash reporting services
 - Social media or login integrations
 - Cloud backends
 
@@ -48,7 +51,7 @@ with an updated "Last updated" date. Your continued use of the App after changes
 
 ## 6. This Website
 
-This policy covers the App. The website at https://mrballistic.com/raid/ is separate: if you accept analytics cookies, it uses Google Analytics to count visits and see which pages people read. If you decline, Google's code isn't loaded at all and no analytics cookies are set. You can change your choice at any time with "Cookie settings" at the bottom of each page. Nothing from the App is ever sent to the website, and the App itself makes no network calls.
+This policy covers the App. The website at https://mrballistic.com/raid/ is separate: if you accept analytics cookies, it uses Google Analytics to count visits and see which pages people read. If you decline, Google's code isn't loaded at all and no analytics cookies are set. You can change your choice at any time with "Cookie settings" at the bottom of each page. Nothing from the App is ever sent to the website, and the App itself makes no network calls. On Android, the App does not even request permission to use the internet.
 
 ## 7. Contact
 
