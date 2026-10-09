@@ -4,14 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>RAID Calculator for iPhone and iPad</title>
-<meta name="description" content="Usable capacity, how many drives can fail, and the next drive to buy, for classic RAID and for Synology, Unraid, ZFS, SnapRAID and Btrfs. For iPhone and iPad.">
+<meta name="description" content="Usable capacity, how many drives can fail, and the next drive to buy, for classic RAID and for Synology, Unraid, ZFS, SnapRAID and Btrfs. For iPhone and iPad, with Android coming soon.">
 <link rel="canonical" href="https://mrballistic.com/raid/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="RAID Calculator">
 <meta property="og:locale" content="en_US">
 <meta property="og:url" content="https://mrballistic.com/raid/">
 <meta property="og:title" content="RAID Calculator for iPhone and iPad">
-<meta property="og:description" content="Usable capacity, fault tolerance and the one drive worth buying next. RAID 0 to 60, ZFS RAID-Z, Synology SHR, Unraid, SnapRAID and Btrfs RAID1, for iPhone and iPad.">
+<meta property="og:description" content="Usable capacity, fault tolerance and the one drive worth buying next. RAID 0 to 60, ZFS RAID-Z, Synology SHR, Unraid, SnapRAID and Btrfs RAID1, for iPhone and iPad. Android is coming soon.">
 <meta property="og:image" content="https://mrballistic.com/raid/assets/og-image.jpg">
 <meta property="og:image:type" content="image/jpeg">
 <meta property="og:image:width" content="1200">
@@ -19,7 +19,7 @@
 <meta property="og:image:alt" content="RAID Calculator: “How much space will you actually get?” beside the app showing 16 TB usable from four mixed drives in Synology SHR, and a RAID 5 rebuild caution in dark mode behind it.">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="RAID Calculator for iPhone and iPad">
-<meta name="twitter:description" content="Usable capacity, fault tolerance and the one drive worth buying next. RAID 0 to 60, ZFS RAID-Z, Synology SHR, Unraid, SnapRAID and Btrfs RAID1, for iPhone and iPad.">
+<meta name="twitter:description" content="Usable capacity, fault tolerance and the one drive worth buying next. RAID 0 to 60, ZFS RAID-Z, Synology SHR, Unraid, SnapRAID and Btrfs RAID1, for iPhone and iPad. Android is coming soon.">
 <meta name="twitter:image" content="https://mrballistic.com/raid/assets/og-image.jpg">
 <meta name="twitter:image:alt" content="RAID Calculator: “How much space will you actually get?” beside the app showing 16 TB usable from four mixed drives in Synology SHR, and a RAID 5 rebuild caution in dark mode behind it.">
 <meta name="apple-mobile-web-app-title" content="RAID Calculator">
@@ -115,6 +115,17 @@
   .quiet { color: var(--ink-3); }
   .badge { display: block; line-height: 0; }
   .badge img { width: auto; }
+  /* Store badges side by side. The Google Play PNG is Google's official
+     artwork, used unmodified: its 564×168 badge sits inside 41px of built-in
+     clear space (646×250), so it's sized from the App Store badge's height
+     (--badge-h) and the padding is pulled back with a negative margin. The
+     20px gap keeps clear space of at least a quarter of the badge height. */
+  .badge-row { display: flex; flex-wrap: wrap; align-items: center; gap: 20px; }
+  .badge-row .badge img { height: var(--badge-h); }
+  .store-badge.google { display: block; line-height: 0; }
+  .store-badge.google img { height: calc(var(--badge-h) * 250 / 168); width: auto; margin: calc(var(--badge-h) * -41 / 168); }
+  .store-badge.soon { cursor: default; }
+  .cta-note { margin-top: 14px; font-size: 15px; color: var(--ink-3); }
 
   .h2 { font-size: clamp(29px, 4vw, 46px); line-height: 1.08; letter-spacing: -0.03em; font-weight: 700; }
   .lede { font-size: 19px; color: var(--ink-2); margin-top: 18px; }
@@ -145,7 +156,7 @@
   .hero > * { min-width: 0; }
   .hero h1 { font-size: clamp(40px, 6vw, 66px); line-height: 1.02; letter-spacing: -0.035em; font-weight: 700; }
   .hero-sub { font-size: clamp(18px, 2vw, 21px); color: var(--ink-2); max-width: 30em; margin-top: 22px; }
-  .hero-cta { margin-top: 34px; }
+  .hero-cta { margin-top: 34px; --badge-h: 54px; }
   /* Two phones stacked in one grid cell: the NAS tab in front, the
      RAID tab's rebuild caution in dark mode behind it. As the page scrolls away from the hero they
      fan apart, like the drives in the photo below. The static overlap is the
@@ -236,6 +247,28 @@
     .duo-shot { grid-column: 2; grid-row: 2; }
   }
 
+  /* Android */
+  .android .wrap { padding-top: 80px; padding-bottom: 84px; }
+  .android .h2 { max-width: 20em; }
+  .android .lede { max-width: 36em; }
+  .android-shots { display: flex; gap: 24px; align-items: flex-end; margin-top: 48px; max-width: 860px; }
+  .android-shots figure { margin: 0; min-width: 0; }
+  .android-shots .fold-shot { flex: 2.4 1 0; }
+  .android-shots .phone-shot { flex: 1 1 0; }
+  /* Android's screen corners are tighter than iPhone's. */
+  .android-shots .phone img { border-radius: 9cqi; }
+  .android-shots figcaption { margin-top: 12px; font-size: 15px; }
+  /* An unfolded foldable: the same bezel treatment as iPhone Duo, in ink. */
+  .fold { container-type: inline-size; }
+  .fold img { box-sizing: border-box; width: 100%; height: auto; border: 1.6cqi solid var(--ink); border-radius: 4.5cqi; box-shadow: 0 30px 60px -24px rgba(28, 25, 23, 0.35); }
+  .android-notes { display: grid; grid-template-columns: 1fr; gap: 28px 56px; margin-top: 44px; }
+  .android-notes > * { min-width: 0; }
+  .android-notes h3 { font-size: 18px; letter-spacing: -0.015em; margin-bottom: 6px; }
+  .android-notes p { color: var(--ink-2); font-size: 16px; max-width: 34em; }
+  @media (min-width: 760px) {
+    .android-notes { grid-template-columns: repeat(2, 1fr); }
+  }
+
   /* Privacy */
   .privacy { padding-top: 84px; padding-bottom: 84px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 56px; align-items: center; }
   .privacy > * { min-width: 0; }
@@ -270,7 +303,8 @@
   .closing-inner > img { width: 84px; height: 84px; border-radius: 20px; margin-bottom: 26px; }
   .closing .h2 { font-size: clamp(30px, 4vw, 52px); line-height: 1.04; letter-spacing: -0.035em; max-width: 11em; }
   .closing .lede { color: var(--night-ink-2); margin-top: 18px; max-width: 22em; }
-  .closing .badge-row { display: flex; margin-top: 32px; }
+  .closing .badge-row { margin-top: 32px; --badge-h: 58px; }
+  .closing .cta-note { color: var(--night-ink-3); }
   .closing a:focus-visible { outline-color: var(--paper); }
   @media (max-width: 759px) {
     .closing-photo { height: 62%; object-position: 72% 50%; }
@@ -295,6 +329,9 @@
     .hero-shots .phone:last-child { translate: 20% 8%; }
     .hero-shots .phone:first-child { animation-name: hero-front-narrow; }
     .hero-shots .phone:last-child { animation-name: hero-back-narrow; }
+    /* Both store badges on one line at 390px. */
+    .hero-cta, .closing .badge-row { --badge-h: 48px; }
+    .android-shots { gap: 16px; }
   }
 </style>
 </head>
@@ -313,7 +350,17 @@
       <h1>How much space will you actually get?</h1>
       <p class="hero-sub">RAID Calculator for iPhone and iPad shows your usable capacity, how many drives can fail, and which drive to buy next, whether your NAS runs Synology, Unraid, ZFS, SnapRAID or Btrfs.</p>
       <div class="hero-cta">
-        <a class="badge" href="https://apps.apple.com/app/id395601653"><img src="assets/app-store-badge.svg" alt="Download on the App Store" height="54" width="162" style="height:54px"></a>
+        <div class="badge-row">
+          <a class="badge" href="https://apps.apple.com/app/id395601653"><img src="assets/app-store-badge.svg" alt="Download on the App Store" height="54" width="162"></a>
+          <!-- Google Play: not live yet. To enable, swap this <span> for
+               <a class="store-badge google" href="(data-href value)"> with
+               alt="Get it on Google Play" on the img, and delete the
+               “coming soon” notes here and in the closing section. -->
+          <span class="store-badge google soon" data-href="https://play.google.com/store/apps/details?id=com.mrballistic.raidcalculator" role="img" aria-label="Google Play: coming soon">
+            <img src="assets/google-play-badge.png" alt="" width="646" height="250">
+          </span>
+        </div>
+        <p class="cta-note">Android is coming soon.</p>
       </div>
     </div>
     <div class="hero-shots">
@@ -417,6 +464,33 @@
     </div>
   </section>
 
+  <section class="band android" id="android">
+    <div class="wrap">
+      <h2 class="h2">The same calculator, on Android.</h2>
+      <p class="lede">RAID Calculator for Android is in testing now and coming to Google Play. It has the same RAID and NAS tabs, Compare Systems, Biggest Upgrade and Current Setup, built natively with Material 3, in the same ten languages.</p>
+      <div class="android-shots">
+        <figure class="fold-shot">
+          <div class="fold"><img src="assets/android-foldable-nas-two-panes-light.webp" width="1200" height="1000" loading="lazy" alt="The NAS tab on an unfolded Android foldable: results on the left, with 20 TB usable of 36 TB raw from 16, 8, 8 and 4 TB drives in Synology SHR and 8 TB unused; the setup and the four bays on the right"></div>
+          <figcaption class="quiet">Unfolded, in two panes</figcaption>
+        </figure>
+        <figure class="phone-shot">
+          <div class="phone"><img src="assets/android-phone-nas-shr-light.webp" width="640" height="1138" loading="lazy" alt="The NAS tab on an Android phone: 16, 8, 8 and 4 TB drives in Synology SHR, 20 TB usable of 36 TB raw, 56% efficient, with the top of the 16 TB drive hatched as 8 TB unused"></div>
+          <figcaption class="quiet">On a phone</figcaption>
+        </figure>
+      </div>
+      <div class="android-notes">
+        <div>
+          <h3>Two panes on foldables and tablets</h3>
+          <p>On a tablet or an unfolded foldable, results sit beside the inputs. On a foldable the panes split at the fold, so nothing sits on the crease.</p>
+        </div>
+        <div>
+          <h3>Not even an internet permission</h3>
+          <p>Like the iPhone app, it makes no network calls. On Android it doesn’t even ask for permission to use the internet.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section class="wrap privacy">
     <div>
       <h2 class="h2">No account, no analytics, no network calls.</h2>
@@ -470,8 +544,13 @@
       <h2 class="h2">Know what you’ll get before you buy the drive.</h2>
       <p class="lede">RAID Calculator for iPhone and iPad.</p>
       <div class="badge-row">
-        <a class="badge" href="https://apps.apple.com/app/id395601653"><img src="assets/app-store-badge.svg" alt="Download on the App Store" height="58" width="174" style="height:58px" loading="lazy"></a>
+        <a class="badge" href="https://apps.apple.com/app/id395601653"><img src="assets/app-store-badge.svg" alt="Download on the App Store" height="58" width="174" loading="lazy"></a>
+        <!-- Google Play: not live yet (see the hero comment to enable). -->
+        <span class="store-badge google soon" data-href="https://play.google.com/store/apps/details?id=com.mrballistic.raidcalculator" role="img" aria-label="Google Play: coming soon">
+          <img src="assets/google-play-badge.png" alt="" width="646" height="250" loading="lazy">
+        </span>
       </div>
+      <p class="cta-note">Android is coming soon.</p>
     </div>
   </section>
 
