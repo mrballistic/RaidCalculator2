@@ -11,6 +11,7 @@ struct RetirementSheet: View {
     let phase: Retirement.Phase
     @Environment(\.dismiss) private var dismiss
     @Environment(\.openURL) private var openURL
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     var body: some View {
         ScrollView {
@@ -51,9 +52,14 @@ struct RetirementSheet: View {
             }
             .frame(maxWidth: 480)
             .padding(.horizontal, 24)
+            .padding(.top, 12)
             .padding(.bottom, 8)
+            .frame(maxWidth: .infinity)
+            // The copy scrolls under the buttons; keep it from showing through.
+            .background(.bar)
         }
-        .presentationDetents([.medium, .large])
+        // At accessibility sizes the copy needs the whole screen.
+        .presentationDetents(dynamicTypeSize.isAccessibilitySize ? [.large] : [.medium, .large])
     }
 }
 
@@ -62,16 +68,21 @@ struct RetirementSheet: View {
 struct RetirementBanner: View {
     let phase: Retirement.Phase
     @Environment(\.openURL) private var openURL
+    /// At accessibility sizes the symbols go, so the words get the whole
+    /// width and never break mid-word.
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     var body: some View {
         Button {
             AppStorePage.open(fallback: openURL)
         } label: {
             HStack(spacing: 12) {
-                Image(systemName: "arrow.down.app.fill")
-                    .font(.title2)
-                    .foregroundStyle(.tint)
-                    .accessibilityHidden(true)
+                if !dynamicTypeSize.isAccessibilitySize {
+                    Image(systemName: "arrow.down.app.fill")
+                        .font(.title2)
+                        .foregroundStyle(.tint)
+                        .accessibilityHidden(true)
+                }
                 VStack(alignment: .leading, spacing: 2) {
                     Text(Retirement.bannerTitle(phase))
                         .font(.subheadline.weight(.semibold))
@@ -82,10 +93,12 @@ struct RetirementBanner: View {
                 }
                 .fixedSize(horizontal: false, vertical: true)
                 Spacer(minLength: 0)
-                Image(systemName: "chevron.right")
-                    .font(.footnote.weight(.semibold))
-                    .foregroundStyle(.tertiary)
-                    .accessibilityHidden(true)
+                if !dynamicTypeSize.isAccessibilitySize {
+                    Image(systemName: "chevron.right")
+                        .font(.footnote.weight(.semibold))
+                        .foregroundStyle(.tertiary)
+                        .accessibilityHidden(true)
+                }
             }
         }
         .accessibilityIdentifier("retirementBanner")

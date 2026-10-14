@@ -484,6 +484,28 @@ final class RaidCalculator2UITests: XCTestCase {
         XCTAssertTrue(banner.label.contains("December 31, 2026"), banner.label)
     }
 
+    /// At accessibility sizes the sheet opens at full height, so its copy
+    /// isn't squeezed behind the buttons.
+    @MainActor
+    func testRetirementSheetOpensFullHeightAtAccessibilitySizes() throws {
+        let app = launchApp(contentSize: "UICTContentSizeCategoryAccessibilityXXXL", showNotice: true)
+        let title = app.staticTexts["retirementTitle"]
+        XCTAssertTrue(title.waitForExistence(timeout: 5))
+        let window = app.windows.firstMatch.frame
+        XCTAssertLessThan(title.frame.minY, window.minY + window.height * 0.3, "the sheet should open at full height")
+    }
+
+    /// At the largest size the banner drops its symbols, so its words get the
+    /// whole width and don't break mid-word, and it leaves room for the answer.
+    @MainActor
+    func testBannerStaysCompactAtLargestTextSize() throws {
+        let app = launchApp(contentSize: "UICTContentSizeCategoryAccessibilityXXXL")
+        let banner = app.buttons["retirementBanner"]
+        XCTAssertTrue(banner.waitForExistence(timeout: 5))
+        let window = app.windows.firstMatch.frame
+        XCTAssertLessThan(banner.frame.height, window.height * 0.4, "banner is \(banner.frame.height) of \(window.height)")
+    }
+
     /// The Simulator has no App Store, so the in-app product page can't load:
     /// it must close and hand over to the App Store web page in Safari, from
     /// the banner and from the sheet, and the sheet must still be there after.
