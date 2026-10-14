@@ -404,14 +404,14 @@ KEY_CONTENT = {
 DEBUG_DIR = "/tmp/raid-assets/debug"
 
 
-def compose_centered(raw, out, size, kind, headline, key, debug=False):
+def compose_centered(raw, out, size, kind, headline, key, debug=False, bg="orange"):
     """Full-bleed header / search art: the device centred on the safe area,
     sized so its key content fills (but stays inside) the safe rect, free to
     run off the canvas. With `headline`, the line is centred across the top
     of the safe rect and the key content fits beneath it."""
     W, H = size
     sx0, sy0, sx1, sy1 = SAFE_RECTS[size]
-    pal = BACKGROUNDS["orange"]
+    pal = BACKGROUNDS[bg]
     canvas = Image.new("RGBA", size, pal["bg"] + (255,))
     d = ImageDraw.Draw(canvas)
     shot = Image.open(raw)
@@ -471,6 +471,18 @@ HEADERS = [
     ("header-1920x1280", (1920, 1280), HEADER_RAW, "iphone", USABLE),
 ]
 
+# RAID Calc2 1.8.0: the usable-space shot. Its key content runs from the
+# “RAID Calc2” title through the drive strip, so the banner (“Retiring on
+# December 31, 2026 · Get RAID Calculator”) reads large and is the note
+# that the app is retiring. No headline, like 1.7.0's header art: one
+# would shrink the device to fit wholly below it.
+LEGACY_HEADER_RAW = "iphone-1320x2868/02-usable-space-light.png"
+LEGACY_KEY_CONTENT = {LEGACY_HEADER_RAW: (0.04, 0.115, 0.96, 0.465)}
+LEGACY_HEADERS = [
+    ("header-3840x1646", (3840, 1646), LEGACY_HEADER_RAW, "iphone", None),
+    ("header-5244x2950", (5244, 2950), LEGACY_HEADER_RAW, "iphone", None),
+]
+
 
 def main():
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -490,8 +502,6 @@ def main():
     global RAW, OUT
     shots = SHOTS
     if a.legacy:
-        if a.headers:
-            p.error("--legacy has no header images")
         RAW, OUT, shots = LEGACY_RAW, LEGACY_OUT, LEGACY_SHOTS
     if a.raw:
         if not (a.out and a.size and a.bg and a.headline):
@@ -510,13 +520,14 @@ def main():
         print(compose(src, os.path.join(OUT, folder, f"{name}.png"), size, bg, headline, kind))
         sets.add(folder)
     if a.headers:
-        for name, size, raw, kind, headline in HEADERS:
+        headers, keys, bg = (LEGACY_HEADERS, LEGACY_KEY_CONTENT, "graphite") if a.legacy else (HEADERS, KEY_CONTENT, "orange")
+        for name, size, raw, kind, headline in headers:
             src = latest(os.path.join(RAW, raw))
             if not os.path.exists(src):
                 print(f"skip header/{name}: missing {src}", file=sys.stderr)
                 continue
             out = os.path.join(OUT, "header", f"{name}.png")
-            print(compose_centered(src, out, size, kind, headline, KEY_CONTENT[raw], debug=a.debug_safe))
+            print(compose_centered(src, out, size, kind, headline, keys[raw], debug=a.debug_safe, bg=bg))
         sets.add("header")
     if a.contact:
         for folder in sorted(sets):
