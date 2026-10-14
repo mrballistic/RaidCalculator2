@@ -9,12 +9,13 @@
 (() => {
   const LANGS = {
     en: "English", es: "Español", fr: "Français", it: "Italiano", ja: "日本語", de: "Deutsch",
-    "zh-Hant": "繁體中文", "zh-Hans": "简体中文", ko: "한국어", "pt-BR": "Português (BR)",
+    "zh-Hant": "繁體中文", "zh-Hans": "简体中文", ko: "한국어", "pt-BR": "Português (BR)", ru: "Русский",
   };
   const KEY = "rc-lang";
   const ATTRS = ["alt", "aria-label", "content"];
   const base = new URL("i18n/", document.currentScript.src);
   const badges = new URL("badges/", document.currentScript.src);
+  const assets = new URL("./", document.currentScript.src);
   const BADGE_TYPE = { "app-store": "svg", "google-play": "png" };
   const root = document.documentElement;
 
@@ -83,6 +84,13 @@
       if (!el.dataset.enSrc) el.dataset.enSrc = el.getAttribute("src");
       const kind = el.dataset.badge;
       el.src = current === "en" ? el.dataset.enSrc : new URL(`${kind}-${current}.${BADGE_TYPE[kind]}`, badges).href;
+    });
+    // App screenshots in the page's language: l10n/<lang>/ holds each
+    // [data-shot] image under its English name (scripts/www_shots.py).
+    scope.querySelectorAll("[data-shot]").forEach((el) => {
+      if (!el.dataset.enSrc) el.dataset.enSrc = el.getAttribute("src");
+      const file = el.dataset.enSrc.split("/").pop();
+      el.src = current === "en" ? el.dataset.enSrc : new URL(`l10n/${current}/${file}`, assets).href;
     });
     // Shown in every language but English, such as the privacy page's note.
     scope.querySelectorAll("[data-i18n-not-en]").forEach((el) => { el.hidden = current === "en"; });

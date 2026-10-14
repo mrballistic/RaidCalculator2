@@ -19,7 +19,7 @@ import sys
 ROOT = pathlib.Path(__file__).resolve().parent.parent / "www"
 PAGES = {"index": ROOT / "index.html", "privacy": ROOT / "privacy" / "index.html"}
 I18N = ROOT / "assets" / "i18n"
-LANGS = ["en", "es", "fr", "it", "ja", "de", "zh-Hant", "zh-Hans", "ko", "pt-BR"]
+LANGS = ["en", "es", "fr", "it", "ja", "de", "zh-Hant", "zh-Hans", "ko", "pt-BR", "ru"]
 # Strings that are names, not copy.
 KEEP = {"RAID Calculator", "mrBallistic", "mrballistic.com", "mrballistic@gmail.com"}
 # Copy the scripts create, which no page contains.
@@ -132,6 +132,9 @@ def check():
         for badge in (f"app-store-{lang}.svg", f"google-play-{lang}.png"):
             if not (ROOT / "assets" / "badges" / badge).is_file():
                 problems.append(f"{lang}: missing assets/badges/{badge}")
+        for shot in re.findall(r'<img data-shot src="assets/([^"]+)"', PAGES["index"].read_text(encoding="utf-8")):
+            if not (ROOT / "assets" / "l10n" / lang / shot).is_file():
+                problems.append(f"{lang}: missing assets/l10n/{lang}/{shot} (scripts/www_shots.py)")
     print("\n".join(problems) or f"{len(LANGS) - 1} languages × {len(en)} strings: ok")
     return 1 if problems else 0
 
