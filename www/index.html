@@ -3,25 +3,25 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>RAID Calculator for iPhone and iPad</title>
-<meta name="description" content="Usable capacity, how many drives can fail, and the next drive to buy, for classic RAID and for Synology, Unraid, ZFS, SnapRAID and Btrfs. For iPhone and iPad, with Android coming soon.">
+<title data-i18n="index.001">RAID Calculator for iPhone and iPad</title>
+<meta name="description" content="Usable capacity, how many drives can fail, and the next drive to buy, for classic RAID and for Synology, Unraid, ZFS, SnapRAID and Btrfs. For iPhone and iPad, with Android coming soon." data-i18n-content="index.002">
 <link rel="canonical" href="https://mrballistic.com/raid/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="RAID Calculator">
 <meta property="og:locale" content="en_US">
 <meta property="og:url" content="https://mrballistic.com/raid/">
-<meta property="og:title" content="RAID Calculator for iPhone and iPad">
-<meta property="og:description" content="Usable capacity, fault tolerance and the one drive worth buying next. RAID 0 to 60, ZFS RAID-Z, Synology SHR, Unraid, SnapRAID and Btrfs RAID1, for iPhone and iPad. Android is coming soon.">
+<meta property="og:title" content="RAID Calculator for iPhone and iPad" data-i18n-content="index.003">
+<meta property="og:description" content="Usable capacity, fault tolerance and the one drive worth buying next. RAID 0 to 60, ZFS RAID-Z, Synology SHR, Unraid, SnapRAID and Btrfs RAID1, for iPhone and iPad. Android is coming soon." data-i18n-content="index.004">
 <meta property="og:image" content="https://mrballistic.com/raid/assets/og-image.jpg">
 <meta property="og:image:type" content="image/jpeg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="RAID Calculator: “How much space will you actually get?” beside the app showing 16 TB usable from four mixed drives in Synology SHR, and a RAID 5 rebuild caution in dark mode behind it.">
+<meta property="og:image:alt" content="RAID Calculator: “How much space will you actually get?” beside the app showing 16 TB usable from four mixed drives in Synology SHR, and a RAID 5 rebuild caution in dark mode behind it." data-i18n-content="index.005">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="RAID Calculator for iPhone and iPad">
-<meta name="twitter:description" content="Usable capacity, fault tolerance and the one drive worth buying next. RAID 0 to 60, ZFS RAID-Z, Synology SHR, Unraid, SnapRAID and Btrfs RAID1, for iPhone and iPad. Android is coming soon.">
+<meta name="twitter:title" content="RAID Calculator for iPhone and iPad" data-i18n-content="index.006">
+<meta name="twitter:description" content="Usable capacity, fault tolerance and the one drive worth buying next. RAID 0 to 60, ZFS RAID-Z, Synology SHR, Unraid, SnapRAID and Btrfs RAID1, for iPhone and iPad. Android is coming soon." data-i18n-content="index.007">
 <meta name="twitter:image" content="https://mrballistic.com/raid/assets/og-image.jpg">
-<meta name="twitter:image:alt" content="RAID Calculator: “How much space will you actually get?” beside the app showing 16 TB usable from four mixed drives in Synology SHR, and a RAID 5 rebuild caution in dark mode behind it.">
+<meta name="twitter:image:alt" content="RAID Calculator: “How much space will you actually get?” beside the app showing 16 TB usable from four mixed drives in Synology SHR, and a RAID 5 rebuild caution in dark mode behind it." data-i18n-content="index.008">
 <meta name="apple-mobile-web-app-title" content="RAID Calculator">
 <link rel="manifest" href="site.webmanifest">
 <script type="application/ld+json">
@@ -45,7 +45,8 @@
     "zh-Hant",
     "zh-Hans",
     "ko",
-    "pt-BR"
+    "pt-BR",
+    "ru"
   ],
   "image": "https://mrballistic.com/raid/assets/og-image.jpg",
   "screenshot": [
@@ -66,6 +67,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="stylesheet" href="assets/topbar.css">
 <link rel="stylesheet" href="assets/consent.css">
+<script src="assets/i18n.js"></script>
 <script src="assets/consent.js" defer></script>
 <script src="assets/topbar.js" defer></script>
 <style>
@@ -341,123 +343,123 @@
 <header class="topbar">
   <div class="topbar-inner">
     <a class="brand" href="./"><img src="assets/app-icon.png" alt="" width="36" height="36"><span>RAID Calculator</span></a>
-    <a class="badge" href="https://apps.apple.com/app/id395601653"><img src="assets/app-store-badge.svg" alt="Download on the App Store" height="36" width="108"></a>
+    <a class="badge" href="https://apps.apple.com/app/id395601653"><img data-badge="app-store" src="assets/app-store-badge.svg" alt="Download on the App Store" height="36" width="108" data-i18n-alt="index.085"></a>
   </div>
 </header>
 
 <main>
   <section class="wrap hero">
     <div>
-      <h1>How much space will you actually get?</h1>
-      <p class="hero-sub">RAID Calculator for iPhone and iPad shows your usable capacity, how many drives can fail, and which drive to buy next, whether your NAS runs Synology, Unraid, ZFS, SnapRAID or Btrfs.</p>
+      <h1 data-i18n="index.009">How much space will you actually get?</h1>
+      <p class="hero-sub" data-i18n="index.010">RAID Calculator for iPhone and iPad shows your usable capacity, how many drives can fail, and which drive to buy next, whether your NAS runs Synology, Unraid, ZFS, SnapRAID or Btrfs.</p>
       <div class="hero-cta">
         <div class="badge-row">
-          <a class="badge" href="https://apps.apple.com/app/id395601653"><img src="assets/app-store-badge.svg" alt="Download on the App Store" height="54" width="162"></a>
+          <a class="badge" href="https://apps.apple.com/app/id395601653"><img data-badge="app-store" src="assets/app-store-badge.svg" alt="Download on the App Store" height="54" width="162" data-i18n-alt="index.086"></a>
           <!-- Google Play: not live yet. To enable, swap this <span> for
                an <a class="store-badge google"> link to the data-href URL, with
                alt="Get it on Google Play" on the img, and delete the
                “coming soon” notes here and in the closing section. -->
-          <span class="store-badge google soon" data-href="https://play.google.com/store/apps/details?id=com.mrballistic.raidcalculator" role="img" aria-label="Google Play: coming soon">
-            <img src="assets/google-play-badge.png" alt="" width="646" height="250">
+          <span class="store-badge google soon" data-href="https://play.google.com/store/apps/details?id=com.mrballistic.raidcalculator" role="img" aria-label="Google Play: coming soon" data-i18n-aria-label="index.087">
+            <img data-badge="google-play" src="assets/google-play-badge.png" alt="" width="646" height="250">
           </span>
         </div>
-        <p class="cta-note">Android is coming soon.</p>
+        <p class="cta-note" data-i18n="index.011">Android is coming soon.</p>
       </div>
     </div>
     <div class="hero-shots">
       <div class="phone">
-        <img src="assets/17-iphone-nas-shr-light.webp" width="640" height="1391" fetchpriority="high" alt="The NAS tab on iPhone: 4, 4, 8 and 8 TB drives in Synology SHR, 16 TB usable of 24 TB raw, 67% efficient, with part of one 8 TB drive as a mirror copy and one drive failure tolerated">
+        <img data-shot src="assets/17-iphone-nas-shr-light.webp" width="640" height="1391" fetchpriority="high" alt="The NAS tab on iPhone: 4, 4, 8 and 8 TB drives in Synology SHR, 16 TB usable of 24 TB raw, 67% efficient, with part of one 8 TB drive as a mirror copy and one drive failure tolerated" data-i18n-alt="index.088">
       </div>
       <div class="phone">
-        <img src="assets/17-iphone-raid5-caution-dark.webp" width="640" height="1391" alt="The RAID tab on iPhone in dark mode: RAID 5 on eight 20 TB drives, 140 TB usable of 160 TB raw, with a caution that a rebuild can take days and a one-tap Use RAID 6 button">
+        <img data-shot src="assets/17-iphone-raid5-caution-dark.webp" width="640" height="1391" alt="The RAID tab on iPhone in dark mode: RAID 5 on eight 20 TB drives, 140 TB usable of 160 TB raw, with a caution that a rebuild can take days and a one-tap Use RAID 6 button" data-i18n-alt="index.089">
       </div>
     </div>
   </section>
 
   <section class="band">
     <div class="wrap synology">
-      <h2 class="h2">Most calculators assume identical drives. Your NAS has a 4&nbsp;TB from 2019 next to last month’s 16&nbsp;TB.</h2>
-      <img class="mixed-drives" src="assets/photo-mixed-drives-1100.webp" srcset="assets/photo-mixed-drives-1100.webp 1100w, assets/photo-mixed-drives-2200.webp 2200w" sizes="(min-width: 1140px) 1092px, calc(100vw - 48px)" width="2200" height="886" loading="lazy" alt="Six opened hard drives of different makes and ages, fanned out side by side">
+      <h2 class="h2" data-i18n="index.012">Most calculators assume identical drives. Your NAS has a 4&nbsp;TB from 2019 next to last month’s 16&nbsp;TB.</h2>
+      <img class="mixed-drives" src="assets/photo-mixed-drives-1100.webp" srcset="assets/photo-mixed-drives-1100.webp 1100w, assets/photo-mixed-drives-2200.webp 2200w" sizes="(min-width: 1140px) 1092px, calc(100vw - 48px)" width="2200" height="886" loading="lazy" alt="Six opened hard drives of different makes and ages, fanned out side by side" data-i18n-alt="index.090">
       <div class="synology-grid">
         <div class="features">
-          <div><strong>Every bay, modeled separately</strong><span class="muted">Set each bay’s drive size or leave it empty. Every drive is drawn to scale and split into what it actually holds: data, parity, a mirror copy, or nothing at all.</span></div>
-          <div><strong>Five systems, the same drives</strong><span class="muted">Switch between Synology, Unraid, ZFS, SnapRAID and Btrfs RAID1 and watch the same bays re-split. Compare Systems lines them all up, most usable space first, and says when a system reads fewer bays than you set up, or more than the one you’re viewing.</span></div>
-          <div><strong>Wasted space, made visible</strong><span class="muted">Unused capacity is hatched, with the number spelled out: “8&nbsp;TB unused with this mix of drives.”</span></div>
-          <div><strong>The one drive worth buying</strong><span class="muted">Biggest Upgrade names the single purchase that unlocks the most space: “Replace bay 4 (4&nbsp;TB) with 16&nbsp;TB, +12&nbsp;TB usable.” One tap tries it.</span></div>
-          <div><strong>Compared with what you own</strong><span class="muted">Save as Current Setup once, and every later change is measured against it (“+4&nbsp;TB usable”), with Revert to go back.</span></div>
+          <div><strong data-i18n="index.013">Every bay, modeled separately</strong><span class="muted" data-i18n="index.014">Set each bay’s drive size or leave it empty. Every drive is drawn to scale and split into what it actually holds: data, parity, a mirror copy, or nothing at all.</span></div>
+          <div><strong data-i18n="index.015">Five systems, the same drives</strong><span class="muted" data-i18n="index.016">Switch between Synology, Unraid, ZFS, SnapRAID and Btrfs RAID1 and watch the same bays re-split. Compare Systems lines them all up, most usable space first, and says when a system reads fewer bays than you set up, or more than the one you’re viewing.</span></div>
+          <div><strong data-i18n="index.017">Wasted space, made visible</strong><span class="muted" data-i18n="index.018">Unused capacity is hatched, with the number spelled out: “8&nbsp;TB unused with this mix of drives.”</span></div>
+          <div><strong data-i18n="index.019">The one drive worth buying</strong><span class="muted" data-i18n="index.020">Biggest Upgrade names the single purchase that unlocks the most space: “Replace bay 4 (4&nbsp;TB) with 16&nbsp;TB, +12&nbsp;TB usable.” One tap tries it.</span></div>
+          <div><strong data-i18n="index.021">Compared with what you own</strong><span class="muted" data-i18n="index.022">Save as Current Setup once, and every later change is measured against it (“+4&nbsp;TB usable”), with Revert to go back.</span></div>
           <div class="compare">
-            <p class="quiet">Same drives, two layouts</p>
+            <p class="quiet" data-i18n="index.023">Same drives, two layouts</p>
             <p class="muted" style="margin-top:12px">2&nbsp;×&nbsp;4&nbsp;TB + 2&nbsp;×&nbsp;8&nbsp;TB</p>
             <div class="compare-figures">
-              <div><div class="compare-figure">12&nbsp;TB</div><div class="quiet">classic RAID 5</div></div>
-              <div><div class="compare-figure win">16&nbsp;TB</div><div class="quiet">Synology Hybrid RAID</div></div>
+              <div><div class="compare-figure">12&nbsp;TB</div><div class="quiet" data-i18n="index.024">classic RAID 5</div></div>
+              <div><div class="compare-figure win">16&nbsp;TB</div><div class="quiet" data-i18n="index.025">Synology Hybrid RAID</div></div>
             </div>
-            <p class="muted" style="margin-top:16px">Upgrading one drive in an SHR array often gains less than you’d expect until a second large drive joins it. The app shows that number before you spend.</p>
+            <p class="muted" style="margin-top:16px" data-i18n="index.026">Upgrading one drive in an SHR array often gains less than you’d expect until a second large drive joins it. The app shows that number before you spend.</p>
           </div>
         </div>
         <figure class="synology-shot" style="margin:0">
           <div class="ipad">
-            <img src="assets/17-ipad-nas-saved-light.webp" width="1400" height="1492" loading="lazy" alt="The NAS tab on iPad: 8, 4, 8 and 8 TB drives in Synology SHR, 20 TB usable of 28 TB raw; Synology, Unraid and SnapRAID 20 TB, Btrfs RAID1 14 TB and ZFS 12 TB compared beneath; and, against a current setup of 16 TB usable, +4 TB usable">
+            <img data-shot src="assets/17-ipad-nas-saved-light.webp" width="1400" height="1492" loading="lazy" alt="The NAS tab on iPad: 8, 4, 8 and 8 TB drives in Synology SHR, 20 TB usable of 28 TB raw; Synology, Unraid and SnapRAID 20 TB, Btrfs RAID1 14 TB and ZFS 12 TB compared beneath; and, against a current setup of 16 TB usable, +4 TB usable" data-i18n-alt="index.091">
           </div>
-          <figcaption class="quiet">8, 4, 8 and 8&nbsp;TB drives in SHR on iPad, with every system compared and the gain over the saved setup.</figcaption>
+          <figcaption class="quiet" data-i18n="index.027">8, 4, 8 and 8&nbsp;TB drives in SHR on iPad, with every system compared and the gain over the saved setup.</figcaption>
         </figure>
       </div>
-      <p class="models muted">Pick a bay count from 2 to 12 for Synology, or up to 30 for Unraid, ZFS, SnapRAID and Btrfs RAID1. SHR and SHR-2 sit alongside Synology’s RAID 1, 5 and 6. Unraid and SnapRAID put parity on your largest drives automatically, and for ZFS the app also shows the figure ZFS will report, labeled as an estimate.</p>
+      <p class="models muted" data-i18n="index.028">Pick a bay count from 2 to 12 for Synology, or up to 30 for Unraid, ZFS, SnapRAID and Btrfs RAID1. SHR and SHR-2 sit alongside Synology’s RAID 1, 5 and 6. Unraid and SnapRAID put parity on your largest drives automatically, and for ZFS the app also shows the figure ZFS will report, labeled as an estimate.</p>
     </div>
   </section>
 
   <section class="wrap raid">
-    <h2 class="h2">RAID 0 to 60, RAID-Z and JBOD. The answer first, the reasoning right under it.</h2>
-    <p class="lede">Set the number of drives (1–24) and a size in GB or TB. Usable capacity is the biggest thing on screen, with raw capacity and efficiency beneath it. Your last setup is remembered. Nested levels and RAID-Z show their groups, and RAID-Z adds what ZFS itself will report.</p>
+    <h2 class="h2" data-i18n="index.029">RAID 0 to 60, RAID-Z and JBOD. The answer first, the reasoning right under it.</h2>
+    <p class="lede" data-i18n="index.030">Set the number of drives (1–24) and a size in GB or TB. Usable capacity is the biggest thing on screen, with raw capacity and efficiency beneath it. Your last setup is remembered. Nested levels and RAID-Z show their groups, and RAID-Z adds what ZFS itself will report.</p>
     <div class="raid-grid">
       <div>
-        <div class="phone"><img src="assets/08-iphone-raid-raid10-dark.webp" width="640" height="1391" loading="lazy" alt="RAID 10 with eight 12 TB drives in dark mode: mirrored pairs, and up to 4 drive failures depending on which drives fail"></div>
+        <div class="phone"><img data-shot src="assets/08-iphone-raid-raid10-dark.webp" width="640" height="1391" loading="lazy" alt="RAID 10 with eight 12 TB drives in dark mode: mirrored pairs, and up to 4 drive failures depending on which drives fail" data-i18n-alt="index.092"></div>
         <div class="card-text">
-          <h3>See why RAID 10 costs half your drives</h3>
-          <p>One bar per drive, colored by what it does: data, parity or mirror, so the mirrored pairs are plain to see. Fault tolerance is honest about the conditional cases: “Up to 4 (depends on which drives fail).”</p>
+          <h3 data-i18n="index.031">See why RAID 10 costs half your drives</h3>
+          <p data-i18n="index.032">One bar per drive, colored by what it does: data, parity or mirror, so the mirrored pairs are plain to see. Fault tolerance is honest about the conditional cases: “Up to 4 (depends on which drives fail).”</p>
         </div>
       </div>
       <div>
-        <div class="phone"><img src="assets/17-iphone-raid5-caution-light.webp" width="640" height="1391" loading="lazy" alt="RAID 5 on eight 20 TB drives, 140 TB usable of 160 TB raw, with a caution that a rebuild can take days and a one-tap Use RAID 6 button"></div>
+        <div class="phone"><img data-shot src="assets/17-iphone-raid5-caution-light.webp" width="640" height="1391" loading="lazy" alt="RAID 5 on eight 20 TB drives, 140 TB usable of 160 TB raw, with a caution that a rebuild can take days and a one-tap Use RAID 6 button" data-i18n-alt="index.093"></div>
         <div class="card-text">
-          <h3>A warning while it still matters</h3>
-          <p>RAID 5, RAID 50 and RAID-Z1 on drives of 8&nbsp;TB or more warn that a rebuild can take days and that a second failure during it loses the array. When the groups are wide enough to move up, one tap switches to RAID 6, RAID 60 or RAID-Z2.</p>
+          <h3 data-i18n="index.033">A warning while it still matters</h3>
+          <p data-i18n="index.034">RAID 5, RAID 50 and RAID-Z1 on drives of 8&nbsp;TB or more warn that a rebuild can take days and that a second failure during it loses the array. When the groups are wide enough to move up, one tap switches to RAID 6, RAID 60 or RAID-Z2.</p>
         </div>
       </div>
       <div>
-        <div class="phone"><img src="assets/17-iphone-raid6-invalid-light.webp" width="640" height="1391" loading="lazy" alt="RAID 6 with three 12 TB drives: results dimmed, and RAID 6 requires at least 4 drives, with a one-tap Use 4 drives fix"></div>
+        <div class="phone"><img data-shot src="assets/17-iphone-raid6-invalid-light.webp" width="640" height="1391" loading="lazy" alt="RAID 6 with three 12 TB drives: results dimmed, and RAID 6 requires at least 4 drives, with a one-tap Use 4 drives fix" data-i18n-alt="index.094"></div>
         <div class="card-text">
-          <h3>Invalid setups fix themselves</h3>
-          <p>“RAID 6 requires at least 4 drives.” Tap “Use 4 drives” and the numbers come back. Every level and every NAS system has an info sheet: overview, pros, cons and typical uses, plus ratings for RAID levels and how the app calculates RAID-Z and each NAS system.</p>
+          <h3 data-i18n="index.035">Invalid setups fix themselves</h3>
+          <p data-i18n="index.036">“RAID 6 requires at least 4 drives.” Tap “Use 4 drives” and the numbers come back. Every level and every NAS system has an info sheet: overview, pros, cons and typical uses, plus ratings for RAID levels and how the app calculates RAID-Z and each NAS system.</p>
         </div>
       </div>
     </div>
-    <p class="footnote quiet">Speed and availability ratings compare RAID levels with each other; they aren’t benchmarks. Capacity uses the standard simplified formulas, and the app also shows the figure most NAS systems report (“≈&nbsp;58.2&nbsp;TiB”).</p>
+    <p class="footnote quiet" data-i18n="index.037">Speed and availability ratings compare RAID levels with each other; they aren’t benchmarks. Capacity uses the standard simplified formulas, and the app also shows the figure most NAS systems report (“≈&nbsp;58.2&nbsp;TiB”).</p>
   </section>
 
   <section class="ios" data-topbar="dark">
     <div class="wrap">
-      <h2 class="h2">Native SwiftUI on iPhone and iPad. Light mode, dark mode, ten languages.</h2>
-      <p class="lede">Liquid Glass, Dynamic Type at every size including the largest accessibility sizes, and VoiceOver that reads diagrams as full sentences: “Bay 1, 16&nbsp;TB: 8&nbsp;TB parity, 8&nbsp;TB unused.” It also reads each drive within a group. English, Spanish, French, Italian, Japanese, German, Traditional Chinese, Simplified Chinese, Korean and Brazilian Portuguese.</p>
+      <h2 class="h2" data-i18n="index.038">Native SwiftUI on iPhone and iPad. Light mode, dark mode, eleven languages.</h2>
+      <p class="lede" data-i18n="index.039">Liquid Glass, Dynamic Type at every size including the largest accessibility sizes, and VoiceOver that reads diagrams as full sentences: “Bay 1, 16&nbsp;TB: 8&nbsp;TB parity, 8&nbsp;TB unused.” It also reads each drive within a group. English, Spanish, French, Italian, Japanese, German, Traditional Chinese, Simplified Chinese, Korean, Brazilian Portuguese and Russian.</p>
       <div class="ios-grid">
         <div>
-          <div class="ipad ipad-dark"><img src="assets/17-ipad-unraid-30-bays-dark.webp" width="1400" height="1234" loading="lazy" alt="The NAS tab on iPad in dark mode: thirty bays from 4 to 20 TB in Unraid with two parity drives, 230 TB usable of 270 TB raw, two drive failures tolerated, and SnapRAID 250 TB, Synology 146 TB, Btrfs RAID1 135 TB and ZFS 116 TB compared beneath"></div>
-          <h3>On iPad</h3>
-          <p>Results beside inputs, every system compared at a glance, and up to 30 bays on screen at once. It adapts to split view too.</p>
-          <h3>On iPhone Duo</h3>
-          <p>Closed, the outer display shows a single column beside the system’s side bars. Opened in landscape, results sit beside inputs with the fold in the gap between them, and a level’s or system’s info opens in place of the inputs, so the results stay in view.</p>
+          <div class="ipad ipad-dark"><img data-shot src="assets/17-ipad-unraid-30-bays-dark.webp" width="1400" height="1234" loading="lazy" alt="The NAS tab on iPad in dark mode: thirty bays from 4 to 20 TB in Unraid with two parity drives, 230 TB usable of 270 TB raw, two drive failures tolerated, and SnapRAID 250 TB, Synology 146 TB, Btrfs RAID1 135 TB and ZFS 116 TB compared beneath" data-i18n-alt="index.095"></div>
+          <h3 data-i18n="index.040">On iPad</h3>
+          <p data-i18n="index.041">Results beside inputs, every system compared at a glance, and up to 30 bays on screen at once. It adapts to split view too.</p>
+          <h3 data-i18n="index.042">On iPhone Duo</h3>
+          <p data-i18n="index.043">Closed, the outer display shows a single column beside the system’s side bars. Opened in landscape, results sit beside inputs with the fold in the gap between them, and a level’s or system’s info opens in place of the inputs, so the results stay in view.</p>
         </div>
         <figure class="duo-shot">
-          <div class="duo"><img src="assets/17-duo-inner-landscape-light.webp" width="1200" height="844" loading="lazy" alt="The NAS tab on iPhone Duo’s inner display, open in landscape: results on the left, with 16 TB usable of 24 TB raw from 4, 4, 8 and 8 TB drives in Synology SHR and Synology, Unraid and SnapRAID at 16 TB each; the setup and the four bays on the right"></div>
-          <figcaption>iPhone Duo, open in landscape</figcaption>
+          <div class="duo"><img src="assets/17-duo-inner-landscape-light.webp" width="1200" height="844" loading="lazy" alt="The NAS tab on iPhone Duo’s inner display, open in landscape: results on the left, with 16 TB usable of 24 TB raw from 4, 4, 8 and 8 TB drives in Synology SHR and Synology, Unraid and SnapRAID at 16 TB each; the setup and the four bays on the right" data-i18n-alt="index.096"></div>
+          <figcaption data-i18n="index.044">iPhone Duo, open in landscape</figcaption>
         </figure>
         <div class="ios-phones">
           <figure>
-            <div class="phone-dark"><img src="assets/17-iphone-nas-saved-dark.webp" width="640" height="1391" loading="lazy" alt="The NAS tab on iPhone in dark mode: 8, 4, 8 and 8 TB drives in Synology SHR, compared with a current setup of 16 TB usable, Synology SHR, 4 bays: +4 TB usable, with Save as Current Setup and Revert"></div>
-            <figcaption>Dark mode</figcaption>
+            <div class="phone-dark"><img data-shot src="assets/17-iphone-nas-saved-dark.webp" width="640" height="1391" loading="lazy" alt="The NAS tab on iPhone in dark mode: 8, 4, 8 and 8 TB drives in Synology SHR, compared with a current setup of 16 TB usable, Synology SHR, 4 bays: +4 TB usable, with Save as Current Setup and Revert" data-i18n-alt="index.097"></div>
+            <figcaption data-i18n="index.045">Dark mode</figcaption>
           </figure>
           <figure>
-            <div class="phone-dark"><img src="assets/06-iphone-nas-ja.webp" width="640" height="1391" loading="lazy" alt="The NAS tab on iPhone in Japanese: 16, 8, 8 and 4 TB drives in SHR, 20 TB usable of 36 TB raw"></div>
+            <div class="phone-dark"><img src="assets/06-iphone-nas-ja.webp" width="640" height="1391" loading="lazy" alt="The NAS tab on iPhone in Japanese: 16, 8, 8 and 4 TB drives in SHR, 20 TB usable of 36 TB raw" data-i18n-alt="index.098"></div>
             <figcaption lang="ja">日本語</figcaption>
           </figure>
         </div>
@@ -467,26 +469,26 @@
 
   <section class="band android" id="android">
     <div class="wrap">
-      <h2 class="h2">The same calculator, on Android.</h2>
-      <p class="lede">RAID Calculator for Android is in testing now and coming to Google Play. It has the same RAID and NAS tabs, Compare Systems, Biggest Upgrade and Current Setup, built natively with Material 3, in the same ten languages.</p>
+      <h2 class="h2" data-i18n="index.046">The same calculator, on Android.</h2>
+      <p class="lede" data-i18n="index.047">RAID Calculator for Android is in testing now and coming to Google Play. It has the same RAID and NAS tabs, Compare Systems, Biggest Upgrade and Current Setup, built natively with Material 3, in ten languages.</p>
       <div class="android-shots">
         <figure class="fold-shot">
-          <div class="fold"><img src="assets/android-foldable-nas-two-panes-light.webp" width="1200" height="1000" loading="lazy" alt="The NAS tab on an unfolded Android foldable: results on the left, with 20 TB usable of 36 TB raw from 16, 8, 8 and 4 TB drives in Synology SHR and 8 TB unused; the setup and the four bays on the right"></div>
-          <figcaption class="quiet">Unfolded, in two panes</figcaption>
+          <div class="fold"><img src="assets/android-foldable-nas-two-panes-light.webp" width="1200" height="1000" loading="lazy" alt="The NAS tab on an unfolded Android foldable: results on the left, with 20 TB usable of 36 TB raw from 16, 8, 8 and 4 TB drives in Synology SHR and 8 TB unused; the setup and the four bays on the right" data-i18n-alt="index.099"></div>
+          <figcaption class="quiet" data-i18n="index.048">Unfolded, in two panes</figcaption>
         </figure>
         <figure class="phone-shot">
-          <div class="phone"><img src="assets/android-phone-nas-shr-light.webp" width="640" height="1138" loading="lazy" alt="The NAS tab on an Android phone: 16, 8, 8 and 4 TB drives in Synology SHR, 20 TB usable of 36 TB raw, 56% efficient, with the top of the 16 TB drive hatched as 8 TB unused"></div>
-          <figcaption class="quiet">On a phone</figcaption>
+          <div class="phone"><img src="assets/android-phone-nas-shr-light.webp" width="640" height="1138" loading="lazy" alt="The NAS tab on an Android phone: 16, 8, 8 and 4 TB drives in Synology SHR, 20 TB usable of 36 TB raw, 56% efficient, with the top of the 16 TB drive hatched as 8 TB unused" data-i18n-alt="index.100"></div>
+          <figcaption class="quiet" data-i18n="index.049">On a phone</figcaption>
         </figure>
       </div>
       <div class="android-notes">
         <div>
-          <h3>Two panes on foldables and tablets</h3>
-          <p>On a tablet or an unfolded foldable, results sit beside the inputs. On a foldable the panes split at the fold, so nothing sits on the crease.</p>
+          <h3 data-i18n="index.050">Two panes on foldables and tablets</h3>
+          <p data-i18n="index.051">On a tablet or an unfolded foldable, results sit beside the inputs. On a foldable the panes split at the fold, so nothing sits on the crease.</p>
         </div>
         <div>
-          <h3>Not even an internet permission</h3>
-          <p>Like the iPhone app, it makes no network calls. On Android it doesn’t even ask for permission to use the internet.</p>
+          <h3 data-i18n="index.052">Not even an internet permission</h3>
+          <p data-i18n="index.053">Like the iPhone app, it makes no network calls. On Android it doesn’t even ask for permission to use the internet.</p>
         </div>
       </div>
     </div>
@@ -494,45 +496,45 @@
 
   <section class="wrap privacy">
     <div>
-      <h2 class="h2">No account, no analytics, no network calls.</h2>
-      <p class="lede">Every calculation happens on your device, so the app works in a server room or anywhere else with no signal. The App Store privacy label reads Data Not Collected, and there are no third-party services.</p>
-      <p><a href="privacy/">Read the privacy policy</a></p>
+      <h2 class="h2" data-i18n="index.054">No account, no analytics, no network calls.</h2>
+      <p class="lede" data-i18n="index.055">Every calculation happens on your device, so the app works in a server room or anywhere else with no signal. The App Store privacy label reads Data Not Collected, and there are no third-party services.</p>
+      <p data-i18n="index.056"><a href="privacy/">Read the privacy policy</a></p>
     </div>
     <div class="privacy-card">
-      <span class="quiet">App Store privacy label</span>
-      <strong>Data Not Collected</strong>
+      <span class="quiet" data-i18n="index.057">App Store privacy label</span>
+      <strong data-i18n="index.058">Data Not Collected</strong>
       <ul>
-        <li>No account or sign-in</li>
-        <li>No analytics, tracking or advertising</li>
-        <li>No network calls; works fully offline</li>
-        <li>No third-party services</li>
+        <li data-i18n="index.059">No account or sign-in</li>
+        <li data-i18n="index.060">No analytics, tracking or advertising</li>
+        <li data-i18n="index.061">No network calls; works fully offline</li>
+        <li data-i18n="index.062">No third-party services</li>
       </ul>
     </div>
   </section>
 
   <section class="band faq">
     <div class="wrap">
-      <h2 class="h2">Questions</h2>
+      <h2 class="h2" data-i18n="index.063">Questions</h2>
       <div class="faq-grid">
         <div>
-          <h3>What is SHR?</h3>
-          <p>Synology Hybrid RAID builds RAID in layers of matching capacity, so mixed drive sizes waste less space than classic RAID. The app supports SHR and SHR-2, and lets you compare them with classic RAID on the same drives.</p>
+          <h3 data-i18n="index.064">What is SHR?</h3>
+          <p data-i18n="index.065">Synology Hybrid RAID builds RAID in layers of matching capacity, so mixed drive sizes waste less space than classic RAID. The app supports SHR and SHR-2, and lets you compare them with classic RAID on the same drives.</p>
         </div>
         <div>
-          <h3>Which systems does it cover?</h3>
-          <p>On identical drives: RAID 0, 1, 5, 6, 10, 50 and 60, JBOD, and ZFS RAID&#8209;Z1, Z2 and Z3. With mixed drives, bay by bay: Synology SHR and SHR&#8209;2, Unraid, ZFS, SnapRAID and Btrfs RAID1.</p>
+          <h3 data-i18n="index.066">Which systems does it cover?</h3>
+          <p data-i18n="index.067">On identical drives: RAID 0, 1, 5, 6, 10, 50 and 60, JBOD, and ZFS RAID&#8209;Z1, Z2 and Z3. With mixed drives, bay by bay: Synology SHR and SHR&#8209;2, Unraid, ZFS, SnapRAID and Btrfs RAID1.</p>
         </div>
         <div>
-          <h3>Why does my NAS show less than I expected?</h3>
-          <p>Drives are sold in TB and most NAS systems report TiB. RAID Calculator shows both, so the number on the page matches the number you see after setup. For ZFS it also estimates what ZFS itself will report after padding and reserved space, and labels it an estimate.</p>
+          <h3 data-i18n="index.068">Why does my NAS show less than I expected?</h3>
+          <p data-i18n="index.069">Drives are sold in TB and most NAS systems report TiB. RAID Calculator shows both, so the number on the page matches the number you see after setup. For ZFS it also estimates what ZFS itself will report after padding and reserved space, and labels it an estimate.</p>
         </div>
         <div>
-          <h3>What doesn’t it cover?</h3>
-          <p>Synology expansion units, SSD cache, and Unraid’s separate pools outside its main array aren’t covered. It doesn’t estimate cost, power or IOPS, and it never touches your actual disks.</p>
+          <h3 data-i18n="index.070">What doesn’t it cover?</h3>
+          <p data-i18n="index.071">Synology expansion units, SSD cache, and Unraid’s separate pools outside its main array aren’t covered. It doesn’t estimate cost, power or IOPS, and it never touches your actual disks.</p>
         </div>
         <div>
-          <h3>Are the speed ratings benchmarks?</h3>
-          <p>No. Speed and availability are 1–5 star comparisons between RAID levels, labeled as such in the app. Capacity figures use standard simplified formulas and don’t account for a specific filesystem’s overhead, apart from the labeled ZFS estimate. NAS systems get no stars at all, since their speed depends on how each one is set up.</p>
+          <h3 data-i18n="index.072">Are the speed ratings benchmarks?</h3>
+          <p data-i18n="index.073">No. Speed and availability are 1–5 star comparisons between RAID levels, labeled as such in the app. Capacity figures use standard simplified formulas and don’t account for a specific filesystem’s overhead, apart from the labeled ZFS estimate. NAS systems get no stars at all, since their speed depends on how each one is set up.</p>
         </div>
       </div>
     </div>
@@ -542,16 +544,16 @@
     <img class="closing-photo" src="assets/photo-drive-swap-1200.webp" srcset="assets/photo-drive-swap-1200.webp 1200w, assets/photo-drive-swap-2400.webp 2400w" sizes="100vw" width="2400" height="1200" loading="lazy" alt="">
     <div class="wrap closing-inner">
       <img src="assets/app-icon.png" alt="" width="84" height="84" loading="lazy">
-      <h2 class="h2">Know what you’ll get before you buy the drive.</h2>
-      <p class="lede">RAID Calculator for iPhone and iPad.</p>
+      <h2 class="h2" data-i18n="index.074">Know what you’ll get before you buy the drive.</h2>
+      <p class="lede" data-i18n="index.075">RAID Calculator for iPhone and iPad.</p>
       <div class="badge-row">
-        <a class="badge" href="https://apps.apple.com/app/id395601653"><img src="assets/app-store-badge.svg" alt="Download on the App Store" height="58" width="174" loading="lazy"></a>
+        <a class="badge" href="https://apps.apple.com/app/id395601653"><img data-badge="app-store" src="assets/app-store-badge.svg" alt="Download on the App Store" height="58" width="174" loading="lazy" data-i18n-alt="index.101"></a>
         <!-- Google Play: not live yet (see the hero comment to enable). -->
-        <span class="store-badge google soon" data-href="https://play.google.com/store/apps/details?id=com.mrballistic.raidcalculator" role="img" aria-label="Google Play: coming soon">
-          <img src="assets/google-play-badge.png" alt="" width="646" height="250" loading="lazy">
+        <span class="store-badge google soon" data-href="https://play.google.com/store/apps/details?id=com.mrballistic.raidcalculator" role="img" aria-label="Google Play: coming soon" data-i18n-aria-label="index.102">
+          <img data-badge="google-play" src="assets/google-play-badge.png" alt="" width="646" height="250" loading="lazy">
         </span>
       </div>
-      <p class="cta-note">Android is coming soon.</p>
+      <p class="cta-note" data-i18n="index.076">Android is coming soon.</p>
     </div>
   </section>
 
@@ -562,16 +564,16 @@
   <div class="wrap">
     <div class="footer-info">
       <strong>RAID Calculator</strong>
-      <span class="quiet">By mrBallistic. English, Spanish, French, Italian, Japanese, German, Traditional Chinese, Simplified Chinese, Korean and Brazilian Portuguese. Privacy: Data Not Collected.</span>
-      <span class="quiet">Not affiliated with or endorsed by Synology Inc. Synology and SHR are trademarks of Synology Inc.</span>
-      <span class="quiet">Not affiliated with or endorsed by Lime Technology, Inc. Unraid is a trademark of Lime Technology, Inc.</span>
-      <span class="quiet">ZFS is a trademark of Oracle and/or its affiliates. Not affiliated with or endorsed by Oracle.</span>
+      <span class="quiet" data-i18n="index.077">By mrBallistic. English, Spanish, French, Italian, Japanese, German, Traditional Chinese, Simplified Chinese, Korean, Brazilian Portuguese and Russian. Privacy: Data Not Collected.</span>
+      <span class="quiet" data-i18n="index.078">Not affiliated with or endorsed by Synology Inc. Synology and SHR are trademarks of Synology Inc.</span>
+      <span class="quiet" data-i18n="index.079">Not affiliated with or endorsed by Lime Technology, Inc. Unraid is a trademark of Lime Technology, Inc.</span>
+      <span class="quiet" data-i18n="index.080">ZFS is a trademark of Oracle and/or its affiliates. Not affiliated with or endorsed by Oracle.</span>
     </div>
-    <nav class="footer-links" aria-label="Footer">
-      <a href="https://apps.apple.com/app/id395601653">App Store</a>
-      <a href="privacy/">Privacy policy</a>
-      <a href="mailto:mrballistic@gmail.com">Contact</a>
-      <button type="button" class="consent-open" data-consent-open>Cookie settings</button>
+    <nav class="footer-links" aria-label="Footer" data-i18n-aria-label="index.103">
+      <a href="https://apps.apple.com/app/id395601653" data-i18n="index.081">App Store</a>
+      <a href="privacy/" data-i18n="index.082">Privacy policy</a>
+      <a href="https://mrballistic.com/#contact" data-i18n="index.083">Contact</a>
+      <button type="button" class="consent-open" data-consent-open data-i18n="index.084">Cookie settings</button>
     </nav>
   </div>
 </footer>

@@ -95,7 +95,8 @@ jobs:
           import pathlib, re, sys
           root = pathlib.Path("www")
           required = ["index.html", "privacy/index.html", "site.webmanifest",
-                      "assets/consent.js", "assets/topbar.js", "assets/og-image.jpg"]
+                      "assets/consent.js", "assets/topbar.js", "assets/og-image.jpg",
+                      "assets/i18n.js", "assets/i18n/en.json"]
           missing = [p for p in required if not (root / p).is_file()]
           broken = []
           for page in [*root.rglob("*.html"), *root.rglob("*.css")]:

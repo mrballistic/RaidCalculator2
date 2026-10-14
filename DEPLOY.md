@@ -74,6 +74,15 @@ Pushing a `www-v<MAJOR.MINOR.PATCH>` tag deploys `www/` to <https://mrballistic.
 - **Secrets:** an SSH private key and the server’s known-hosts line, in the `website` environment, which admits only `www-v*` tags. A run from a branch or a fork can’t reach them.
 - **Manual runs** default to `dry_run`, which lists every file it would add, change or delete without writing. Because the environment admits only `www-v*` tags, dispatch it from a `www-v*` tag ref.
 
+### Translations
+
+The site is in the app’s ten languages, chosen by the menu in the top bar. `assets/i18n.js` picks the language in this order: `?lang=`, then the visitor’s saved choice, then the browser’s languages, then English. It swaps in `assets/i18n/<lang>.json`, the store badges in `assets/badges/`, and the app screenshots in `assets/l10n/<lang>/`.
+
+- **The HTML is the English source.** After editing English copy, run `python3 scripts/www_i18n.py extract`, translate the changed keys in every `i18n/*.json`, then run `python3 scripts/www_i18n.py check`. It reports missing keys, markup that differs from the English, straight quotes, and missing badges or screenshots.
+- **New copy needs tagging.** An element only translates if it carries `data-i18n="<key>"`; an attribute needs `data-i18n-alt`, `data-i18n-aria-label` or `data-i18n-content`.
+- **Screenshots.** First capture with `WEB=1 scripts/store-assets/capture_localized.sh iphone|ipad <lang>…`, plus the App Store run, on the app branch. Then run `scripts/www_shots.py <marketing/screenshots/1.7.1> [<lang>…]`. The iPhone Duo and Android images stay English.
+- **The privacy policy’s translations** say that the English version applies if they differ.
+
 ## Release checklist
 
 In order:
