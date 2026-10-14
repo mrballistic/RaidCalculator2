@@ -13,14 +13,22 @@
 # and are never overwritten (a re-run adds -v2, -v3...). Composed images go to
 # marketing/screenshots/1.7.0/store/<same set>/, plus a contact sheet.
 #
-# Env: DUO_UDID (default: RAID Duo), PY (default: /tmp/raid-assets/venv/bin/python).
+# Env: DUO_UDID (default: RAID Duo), PY (default: /tmp/raid-assets/venv/bin/python),
+# BUNDLE (default: 53Q4825KDF), LEGACY=1 for RAID Calc2 1.8.0 (scenes 01-moving and
+# 02-usable-space, folders under marketing/screenshots/raidcalc2-1.8.0/).
 set -euo pipefail
 
 HERE="$(cd "$(dirname "$0")" && pwd)"
 REPO="$(cd "$HERE/../.." && pwd)"
 U="${DUO_UDID:-E9EE5C1F-BDED-41CD-9C51-CDCA75209EE7}"
 PY="${PY:-/tmp/raid-assets/venv/bin/python}"
-BUNDLE=53Q4825KDF
+BUNDLE="${BUNDLE:-53Q4825KDF}"
+# LEGACY=1: RAID Calc2 1.8.0 scenes and folders (legacy branch).
+if [ "${LEGACY:-0}" = 1 ]; then
+  SHOTS_ROOT="marketing/screenshots/raidcalc2-1.8.0"; SCENES="01-moving 02-usable-space"; COMPOSE=(--legacy)
+else
+  SHOTS_ROOT="marketing/screenshots/1.7.0"; SCENES="01-usable-space 02-rebuild-caution"; COMPOSE=()
+fi
 TMP="$(mktemp -d /tmp/raid-duo.XXXXXX)"
 
 case "${1:-}" in
@@ -31,7 +39,7 @@ case "${1:-}" in
   *) echo "usage: $0 outer-portrait|outer-landscape|inner-portrait|inner-landscape" >&2; exit 2 ;;
 esac
 SET="duo-${1%%-*}-${W}x${H}"
-RAW="$REPO/marketing/screenshots/1.7.0/raw/$SET"
+RAW="$REPO/$SHOTS_ROOT/raw/$SET"
 
 [ -x "$PY" ] || { echo "Pillow venv missing: python3 -m venv /tmp/raid-assets/venv && /tmp/raid-assets/venv/bin/pip install pillow" >&2; exit 1; }
 xcrun simctl list devices | grep -q "$U) (Booted)" || { echo "Device $U is not booted. Boot RAID Duo in Simulator first." >&2; exit 1; }
@@ -91,12 +99,18 @@ keep() {
 echo "Capturing $SET on display $DISPLAY_ID"
 for mode in light dark; do
   xcrun simctl ui "$U" appearance "$mode"
-  for scene in 01-usable-space 02-rebuild-caution; do
+  for scene in $SCENES; do
     xcrun simctl terminate "$U" "$BUNDLE" >/dev/null 2>&1 || true
     case "$scene" in
       01-usable-space)
         xcrun simctl launch "$U" "$BUNDLE" "${NAS[@]}" -synology.bays "<$(hex '[4,4,8,8]')>" \
           -synology.currentBays "" -nas.hasSavedCurrent NO "${COMMON[@]}" >/dev/null ;;
+      01-moving)
+        xcrun simctl launch "$U" "$BUNDLE" -legacy.resetNotice YES -selectedLevel "R 6" -driveCount 6 \
+          -driveSize 12 "${COMMON[@]}" >/dev/null ;;
+      02-usable-space)
+        xcrun simctl launch "$U" "$BUNDLE" -legacy.hasSeenRetirementNotice YES -selectedLevel "R 6" -driveCount 6 \
+          -driveSize 12 "${COMMON[@]}" >/dev/null ;;
       02-rebuild-caution)
         xcrun simctl launch "$U" "$BUNDLE" -selectedTab raid -selectedLevel "R 5" -driveCount 8 \
           -driveSize 20 -groups 1 "${COMMON[@]}" >/dev/null ;;
@@ -108,5 +122,5 @@ for mode in light dark; do
   done
 done
 
-"$PY" "$HERE/compose.py" --only "$SET" --contact
+"$PY" "$HERE/compose.py" ${COMPOSE[@]+"${COMPOSE[@]}"} --only "$SET" --contact
 echo "Done. Check the contact sheet above before moving on to the next pose."
