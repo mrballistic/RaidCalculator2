@@ -32,7 +32,8 @@ Success means:
 - App target: `PRODUCT_BUNDLE_IDENTIFIER = com.mrballistic.RaidCalculator2`, `INFOPLIST_KEY_CFBundleDisplayName = "RAID Calc2"`, `MARKETING_VERSION = 1.8.0`, `CURRENT_PROJECT_VERSION` reset to 1. The team stays the same.
 - Test targets keep their bundle IDs (`com.mrballistic.RaidCalculator2Tests` / `UITests`).
 - DEPLOY.md: a short "Legacy app" section covering the branch, the bundle ID, and removing the app from sale in App Store Connect on 2026-12-31.
-- The branch doesn't change `www/`, `marketing/`, `scripts/store-assets/` or the CHANGELOG's history. It adds a 1.8.0 entry to the CHANGELOG on the branch only.
+- The branch doesn't change `www/` or the CHANGELOG's history. It adds a 1.8.0 entry to the CHANGELOG on the branch only. Its store assets and listing copy (section 5) are new files on the branch; the RAID Calculator listing and 1.7.0 screenshots are left alone.
+- No `v*` tag on this branch: a `v*` push triggers `deploy.yml`, and `v1.8.0` would look like a RAID Calculator release. Upload from local Xcode (the 1.7.0 path in DEPLOY.md). If a tag is wanted for the record, use `legacy-v1.8.0`.
 
 ## 2. Removals
 
@@ -85,7 +86,35 @@ On iPad the body says "this iPad". Pick the device word from the idiom, or use d
 - `icon.json`: the automatic background fill becomes a neutral gray solid fill for the default and dark appearances. Tinted mode is left alone, because the system tints it anyway.
 - Gate: render light, dark and tinted previews (Icon Composer export or a Simulator Home Screen screenshot), and get the user's approval before the release build.
 
-## 5. Testing
+## 5. Store listing and graphics
+
+The RAID Calc2 record (6755641457) needs a full set of listing copy and screenshots for 1.8.0. They go in `marketing/raidcalc2-1.8.0-listing.md` and `marketing/screenshots/raidcalc2-1.8.0/`, both committed on the branch.
+
+**Copy, in English first:**
+
+| Field | Limit | Content |
+|---|---|---|
+| Name | 30 | RAID Calc2, unchanged. |
+| Subtitle | 30 | Moving to RAID Calculator |
+| Promotional text | 170 | Says it's retiring on December 31, 2026, and that RAID Calculator, with NAS planning, RAID 50 and 60, and ZFS, is where to go next. |
+| Description | 4000 | Opens with the retirement and a pointer to RAID Calculator by name. Then it describes, honestly, what the app does: RAID 0, 1, 5, 6, 10 and JBOD; usable and raw capacity, efficiency, the drive strip, failures tolerated, speed and availability ratings, and rebuild advice; iPad and iPhone Duo layouts, 10 languages, Dynamic Type and VoiceOver. It closes with what RAID Calculator adds. |
+| What's New | 4000 | The retirement notice and date, plus what changed from 1.3.2 that a user will notice: the iOS 26 design, the 10 languages, the iPad and iPhone Duo layouts, rebuild advice with one-tap fixes, and accessibility. |
+| Keywords | 100 | Kept short and honest: raid, calculator, storage, capacity, drives, parity, mirror. No competitor names. |
+
+- **Copy rules,** from `docs/app-store-assets-brief.md` section 3: no em-dashes, "iPhone" and "iPad" exactly so, trademarks spelled exactly and used descriptively, and no prices, URLs or awards. Curly punctuation. Character counts are checked and written next to each field, as in the RAID Calculator listing.
+- **App Store links** can't go in the copy (no URLs), so it names "RAID Calculator" and says to search for it or use the button in the app.
+- **Localized listings:** all 10 app languages (en-US, es, fr, it, ja, de, zh-Hant, zh-Hans, ko, pt-BR), translated from the final English. Each is marked for a native-speaker check before submission, following the release checklist rule that machine translations aren't submitted unreviewed.
+- **App Review notes:** the RAID calculator is fully functional; the notice points to the developer's own app, RAID Calculator (395601653), which supersedes it; and the store page opens with `SKStoreProductViewController`.
+
+**Screenshots,** composed with `scripts/store-assets/compose.py` from fresh simulator captures of this build:
+
+- **Sizes:** iPhone at 1320 × 2868, plus the 1206 × 2622 and 1179 × 2556 sizes laid out from the same raws, and iPad 13″ at 2064 × 2752. iPhone Duo sizes are included only if App Store Connect requires them for this record. Check the record's media manager. If they're optional, skip them. No header or search images, since a retiring app won't be nominated for featuring.
+- **Shot list:** four images on iPhone and three on iPad. The first shows the retirement sheet ("Moving to RAID Calculator"), then usable space, the rebuild caution with its one-tap fix, and the invalid-setup fix. iPad drops the invalid-setup fix.
+- **Background:** a neutral graphite background, added to `compose.py` next to orange and indigo, with white text and the script's existing 4.5:1 contrast assertion. It matches the desaturated icon. The 1.7.0 shot list in `compose.py` stays as it is; the legacy shots are a separate list, selected by a flag.
+- **Raws** go under `marketing/screenshots/raidcalc2-1.8.0/raw/`, and composed images under `.../store/`. The checks are the same as for 1.7.0: exact pixel sizes, no alpha channel, and a contact sheet per set for review.
+- **Gate:** the user approves the contact sheets and the English copy before the translations are made and before upload.
+
+## 6. Testing
 
 **Unit:**
 - `Retirement.phase`: the day before, the day itself, and January 1, in more than one time zone.
