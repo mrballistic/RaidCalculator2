@@ -426,7 +426,7 @@ HEADLINES["ru"] = {
     FIX: "Рабочая конфигурация одним касанием",
     BAYS: "До 30 отсеков в точном масштабе",
 }
-LOCALIZED_SETS = ("iphone-", "ipad-")
+LOCALIZED_SETS = ("iphone-", "ipad-", "duo-outer-1398x2034")  # Duo: the closed display only
 # The localized usable-space capture is unscrolled, with the large title
 # showing, so its key content (“16 TB” through “Drive Failures Tolerated”)
 # sits lower than in the English one.
