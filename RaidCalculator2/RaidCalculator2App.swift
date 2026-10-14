@@ -9,25 +9,10 @@ import SwiftUI
 
 @main
 struct RaidCalculator2App: App {
-    @AppStorage("selectedTab") private var selectedTab = "raid"
-
     var body: some Scene {
         WindowGroup {
-            TabView(selection: $selectedTab) {
-                Tab("tab_raid".localized(), systemImage: "square.stack.3d.up", value: "raid") {
-                    NavigationStack {
-                        ContentView()
-                    }
-                }
-                Tab("tab_nas".localized(), systemImage: "externaldrive.connected.to.line.below", value: "nas") {
-                    NavigationStack {
-                        NASView()
-                    }
-                }
-            }
-            // A value from an older build (such as "synology") matches no tab.
-            .onAppear {
-                if !["raid", "nas"].contains(selectedTab) { selectedTab = "raid" }
+            NavigationStack {
+                ContentView()
             }
         }
     }

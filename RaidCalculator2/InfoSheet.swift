@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-/// What an info sheet is about: a RAID level on the RAID tab, or a NAS system.
+/// What an info sheet is about: a RAID level.
 struct InfoTopic {
     let title: String
     /// Copy lives in Localizable.xcstrings as <prefix>_description, _pros,
@@ -26,10 +26,6 @@ struct InfoTopic {
             ratings: (calculator.speedRating(for: level), calculator.availabilityRating(for: level)),
             footnoteKey: level.isZFS ? "zfs_not_affiliated" : nil
         )
-    }
-
-    static func system(_ system: NASSystem) -> InfoTopic {
-        InfoTopic(title: system.displayName, keyPrefix: system.stringKeyPrefix, ratings: nil, footnoteKey: system.notAffiliatedKey)
     }
 }
 
