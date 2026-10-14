@@ -21,13 +21,12 @@ final class RaidCalculator2UITests: XCTestCase {
     /// Launches with a known configuration. Launch arguments override the
     /// persisted UserDefaults, so each test starts from RAID 5, 4 × 4 TB.
     @MainActor
-    private func launchApp(level: String = "R 5", drives: Int = 4, size: Int = 4, groups: Int = 1, language: String = "en", locale: String = "en_US", contentSize: String? = nil) -> XCUIApplication {
+    private func launchApp(level: String = "R 5", drives: Int = 4, size: Int = 4, language: String = "en", locale: String = "en_US", contentSize: String? = nil) -> XCUIApplication {
         let app = XCUIApplication()
         app.launchArguments += [
             "-selectedLevel", level,
             "-driveCount", "\(drives)",
             "-driveSize", "\(size)",
-            "-groups", "\(groups)",
             "-unit", "TB",
             "-AppleLanguages", "(\(language))",
             "-AppleLocale", locale,
@@ -356,103 +355,6 @@ final class RaidCalculator2UITests: XCTestCase {
         XCTAssertTrue(tbButton.isSelected)
     }
 
-    /// Nested levels live in the More Levels menu; RAID 60 needs two groups,
-    /// and the one-tap fix applies them.
-    @MainActor
-    func testNestedLevelFromMenu() throws {
-        let app = launchApp(drives: 12)
-        let menu = app.buttons["moreLevels"]
-        XCTAssertTrue(menu.waitForExistence(timeout: 5))
-        menu.tap()
-        app.buttons["RAID 60"].tap()
-
-        XCTAssertTrue(app.descendants(matching: .any)["configurationWarning"].waitForExistence(timeout: 5))
-        let fix = app.buttons["applySuggestedGroups"]
-        XCTAssertTrue(fix.waitForExistence(timeout: 2))
-        fix.tap()
-
-        XCTAssertTrue(capacity(app).hasPrefix("Usable Capacity, 32 TB,"), capacity(app))  // 2 groups of 6 × 4 TB, 2 parity each
-        XCTAssertEqual(app.staticTexts["groupCount"].label.components(separatedBy: ", ").last, "2")
-    }
-
-    /// From the defaults (4 drives, one group), RAID 50 needs more drives and a
-    /// second group; its single fix applies both in one tap.
-    @MainActor
-    func testNestedLevelFixFromDefaults() throws {
-        let app = launchApp()
-        let menu = app.buttons["moreLevels"]
-        XCTAssertTrue(menu.waitForExistence(timeout: 5))
-        menu.tap()
-        app.buttons["RAID 50"].tap()
-
-        let fix = app.buttons["applySuggestedDriveCount"]
-        XCTAssertTrue(fix.waitForExistence(timeout: 5))
-        XCTAssertEqual(fix.label, "Use 6 drives in 2 groups")
-        XCTAssertFalse(app.buttons["applySuggestedGroups"].exists)
-        fix.tap()
-
-        let warning = app.descendants(matching: .any)["configurationWarning"]
-        XCTAssertTrue(warning.waitForNonExistence(timeout: 5))
-        XCTAssertTrue(capacity(app).hasPrefix("Usable Capacity, 16 TB,"), capacity(app))  // 2 groups of 3 × 4 TB, 1 parity each
-        XCTAssertEqual(driveCount(app), "6")
-    }
-
-    /// Choosing a standard level again from the segmented control clears the
-    /// menu's selection and drops the Groups row.
-    @MainActor
-    func testStandardLevelHidesGroups() throws {
-        let app = launchApp(level: "R 60", drives: 12, groups: 2)
-        XCTAssertTrue(app.staticTexts["groupCount"].waitForExistence(timeout: 5))
-        app.segmentedControls.firstMatch.buttons.element(boundBy: 2).tap()  // RAID 5
-        XCTAssertTrue(app.staticTexts["groupCount"].waitForNonExistence(timeout: 5))
-        XCTAssertTrue(capacity(app).hasPrefix("Usable Capacity, 44 TB,"), capacity(app))
-    }
-
-    /// §1.6: within a grouped level VoiceOver reaches each drive
-    /// (“Group 2 of 2, drive 1: Data”); an ungrouped level stays a summary.
-    @MainActor
-    func testDriveStripReadsEachDrive() throws {
-        let app = launchApp(level: "R 60", drives: 12, groups: 2)
-        XCTAssertTrue(app.staticTexts.matching(identifier: "usableCapacity").firstMatch.waitForExistence(timeout: 5))
-        let groupTwo = app.staticTexts.matching(NSPredicate(format: "label BEGINSWITH %@", "Group 2 of 2, drive "))
-        XCTAssertEqual(groupTwo.count, 6)
-        XCTAssertTrue(app.staticTexts["Group 2 of 2, drive 1: Data"].exists)
-        app.terminate()
-
-        let raid5 = launchApp()
-        XCTAssertTrue(raid5.staticTexts.matching(identifier: "usableCapacity").firstMatch.waitForExistence(timeout: 5))
-        XCTAssertEqual(raid5.staticTexts.matching(NSPredicate(format: "label CONTAINS %@", ", drive ")).count, 0)
-    }
-
-    /// §1.6: VoiceOver reads group structure, one element per group.
-    @MainActor
-    func testDriveStripReadsEachGroup() throws {
-        let app = launchApp(level: "R 60", drives: 12, groups: 2)
-        XCTAssertTrue(app.staticTexts.matching(identifier: "usableCapacity").firstMatch.waitForExistence(timeout: 5))
-        for group in 1...2 {
-            let element = app.staticTexts.matching(NSPredicate(format: "label BEGINSWITH %@", "Group \(group) of 2: ")).firstMatch
-            XCTAssertTrue(element.exists, "group \(group)")
-            XCTAssertTrue(element.label.contains("4 Data") && element.label.contains("2 Parity"), element.label)
-        }
-        // The summary is still read, ahead of the groups.
-        XCTAssertTrue(app.staticTexts["12 drives in 2 groups: 8 Data, 4 Parity"].exists)
-
-        // An ungrouped level reads the summary alone.
-        let ungrouped = launchApp()
-        XCTAssertTrue(ungrouped.staticTexts.matching(identifier: "usableCapacity").firstMatch.waitForExistence(timeout: 5))
-        XCTAssertTrue(ungrouped.staticTexts["4 drives: 3 Data, 1 Parity"].exists)
-        XCTAssertFalse(ungrouped.staticTexts.matching(NSPredicate(format: "label BEGINSWITH %@", "Group ")).firstMatch.exists)
-    }
-
-    /// RAID-Z shows what ZFS will report, labeled as an estimate.
-    @MainActor
-    func testZFSEstimateShown() throws {
-        let app = launchApp(level: "Z2", drives: 6)
-        let note = app.staticTexts["zfsReportedNote"]
-        XCTAssertTrue(note.waitForExistence(timeout: 5))
-        XCTAssertTrue(note.label.contains("as ZFS reports it (estimate)"), note.label)
-    }
-
     /// RAID 5 on 20 TB drives gets the rebuild caution, and its button
     /// switches to the suggested RAID 6, which needs no caution.
     @MainActor
@@ -466,14 +368,6 @@ final class RaidCalculator2UITests: XCTestCase {
         XCTAssertTrue(app.segmentedControls.firstMatch.buttons["RAID 6"].isSelected)
         XCTAssertTrue(fix.waitForNonExistence(timeout: 5))
         XCTAssertTrue(capacity(app).hasPrefix("Usable Capacity, 120 TB,"), capacity(app))
-    }
-
-    /// Narrow RAID 50 groups on large drives warn, but offer no level to move to.
-    @MainActor
-    func testNarrowGroupsWarnWithoutSuggestion() throws {
-        let app = launchApp(level: "R 50", drives: 6, size: 12, groups: 2)
-        XCTAssertTrue(app.staticTexts["narrowGroupCaution"].waitForExistence(timeout: 5))
-        XCTAssertFalse(app.buttons["applyRebuildSuggestion"].exists)
     }
 
     /// Three-drive RAID 5 can't become RAID 6, so the caution asks for a
@@ -509,17 +403,6 @@ final class RaidCalculator2UITests: XCTestCase {
         XCTAssertTrue(app.buttons["unitPicker"].label.contains("GB"), app.buttons["unitPicker"].label)
     }
 
-    /// At accessibility sizes one menu holds every level, so a nested level
-    /// shows its name there instead of an empty row.
-    @MainActor
-    func testAccessibilityLevelMenuShowsNestedLevel() throws {
-        let app = launchApp(level: "R 50", drives: 6, groups: 2, contentSize: "UICTContentSizeCategoryAccessibilityXXXL")
-        let level = app.buttons["levelPicker"]
-        reveal(level, in: app)
-        XCTAssertTrue(level.label.contains("RAID 50"), level.label)
-        XCTAssertFalse(app.buttons["moreLevels"].exists)
-    }
-
     /// VoiceOver reads each segment as the full level name, not “5”.
     @MainActor
     func testSegmentsReadFullLevelNames() throws {
@@ -528,28 +411,6 @@ final class RaidCalculator2UITests: XCTestCase {
         XCTAssertTrue(picker.waitForExistence(timeout: 5))
         XCTAssertEqual(picker.buttons.allElementsBoundByIndex.map(\.label),
                        ["RAID 0", "RAID 1", "RAID 5", "RAID 6", "RAID 10", "JBOD"])
-    }
-
-    /// A RAID-Z group wider than 12 drives gets the slow-rebuild caution.
-    @MainActor
-    func testWideRaidZGroupCaution() throws {
-        let app = launchApp(level: "Z2", drives: 14)
-        XCTAssertTrue(app.staticTexts["wideGroupCaution"].waitForExistence(timeout: 5))
-    }
-
-    /// RAID-Z's info sheet explains the estimate in its “How the App
-    /// Calculates This” section, near the bottom.
-    @MainActor
-    func testRaidZInfoSheetExplainsEstimate() throws {
-        let app = launchApp(level: "Z2", drives: 6)
-        app.buttons["raidInfo"].tap()
-        XCTAssertTrue(app.navigationBars["RAID-Z2"].waitForExistence(timeout: 5))
-        let section = app.staticTexts["howCalculated"]
-        for _ in 0..<5 where !section.exists {
-            app.swipeUp()
-        }
-        XCTAssertTrue(section.waitForExistence(timeout: 2))
-        XCTAssertTrue(section.label.contains("128 GiB"), section.label)
     }
 
     /// RAID 5's info sheet has no such section: it shows only the formula.

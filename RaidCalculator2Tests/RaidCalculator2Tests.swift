@@ -255,4 +255,29 @@ struct RaidCalculator2Tests {
         #expect(raid10Result.warningMessage == nil)
         #expect(jbodResult.warningMessage == nil)
     }
+
+    // Moved from GroupedLevelTests when the nested and ZFS levels went (RAID Calc2 1.8.0).
+    @Test func rebuildCautionOnlyForLargeRaid5() {
+        func caution(_ level: RaidLevel, size: Double, drives: Int = 8) -> RebuildCaution? {
+            calculator.rebuildCaution(for: RaidConfiguration(level: level, driveCount: drives, driveSize: size, unit: .tb))
+        }
+        #expect(caution(.raid5, size: 8) == .suggest(.raid6))
+        #expect(caution(.raid5, size: 4) == nil)
+        #expect(caution(.raid6, size: 20) == nil)
+        #expect(caution(.raid5, size: 8, drives: 2) == nil)   // invalid configurations get no caution
+    }
+
+    @Test func raid5SuggestsRaid6WhenItFits() {
+        let three = RaidConfiguration(level: .raid5, driveCount: 3, driveSize: 12, unit: .tb)
+        #expect(calculator.rebuildCaution(for: three) == .warnOnly)
+        for count in [4, 5, 12] {
+            let config = RaidConfiguration(level: .raid5, driveCount: count, driveSize: 12, unit: .tb)
+            #expect(calculator.rebuildCaution(for: config) == .suggest(.raid6))
+        }
+    }
+
+    @Test func rebuildCautionCountsGigabytes() {
+        #expect(calculator.rebuildCaution(for: RaidConfiguration(level: .raid5, driveCount: 6, driveSize: 8_000, unit: .gb)) == .suggest(.raid6))
+        #expect(calculator.rebuildCaution(for: RaidConfiguration(level: .raid5, driveCount: 6, driveSize: 4_000, unit: .gb)) == nil)
+    }
 }

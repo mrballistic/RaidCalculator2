@@ -29,30 +29,18 @@ final class RaidCalculatorViewModel {
     }
     var unit: CapacityUnit = .tb { didSet { saveConfiguration() } }
 
-    /// Striped groups for RAID 50/60 and RAID-Z. Kept when switching to a
-    /// standard level, which ignores it, so switching back restores the layout.
-    var groups: Int = 1 {
-        didSet {
-            let clamped = min(max(groups, 1), Self.driveCountRange.upperBound)
-            if clamped != groups { groups = clamped } else { saveConfiguration() }
-        }
-    }
-
     private var configuration: RaidConfiguration {
-        RaidConfiguration(level: selectedLevel, driveCount: driveCount, driveSize: driveSize, unit: unit, groups: groups)
+        RaidConfiguration(level: selectedLevel, driveCount: driveCount, driveSize: driveSize, unit: unit)
     }
 
     /// Recomputed whenever an input changes; Observation tracks the reads.
     var result: RaidResult { calculator.calculate(config: configuration) }
 
-    /// Single parity on drives of 8 TB or more: a suggested level, or a bare warning.
+    /// RAID 5 on drives of 8 TB or more: a suggested level, or a bare warning.
     var rebuildCaution: RebuildCaution? { calculator.rebuildCaution(for: configuration) }
 
-    /// Width of a RAID-Z group wider than 12 drives; nil otherwise.
-    var wideZFSGroupWidth: Int? { calculator.wideZFSGroupWidth(for: configuration) }
-
     @ObservationIgnored private let calculator = RaidCalculator()
-    @ObservationIgnored private let userDefaults = UserDefaults.standard
+    @ObservationIgnored private let userDefaults: UserDefaults
     @ObservationIgnored private var isLoading = false
 
     private struct Keys {
@@ -60,27 +48,16 @@ final class RaidCalculatorViewModel {
         static let driveCount = "driveCount"
         static let driveSize = "driveSize"
         static let unit = "unit"
-        static let groups = "groups"
     }
 
-    init() {
+    init(userDefaults: UserDefaults = .standard) {
+        self.userDefaults = userDefaults
         loadConfiguration()
     }
 
-    /// Applies the drive-count fix, with the groups it assumes when those
-    /// change too, in one change so it animates as one transition.
     func applySuggestedDriveCount() {
-        let result = result
-        guard let suggested = result.suggestedDriveCount else { return }
-        driveCount = suggested
-        if let groups = result.suggestedDriveCountGroups {
-            self.groups = groups
-        }
-    }
-
-    func applySuggestedGroups() {
-        if let suggested = result.suggestedGroups {
-            groups = suggested
+        if let suggested = result.suggestedDriveCount {
+            driveCount = suggested
         }
     }
 
@@ -90,13 +67,14 @@ final class RaidCalculatorViewModel {
         userDefaults.set(driveCount, forKey: Keys.driveCount)
         userDefaults.set(driveSize, forKey: Keys.driveSize)
         userDefaults.set(unit.rawValue, forKey: Keys.unit)
-        userDefaults.set(groups, forKey: Keys.groups)
     }
 
     private func loadConfiguration() {
         isLoading = true
         defer { isLoading = false }
 
+        // A level a newer build saved (RAID 50, RAID-Z…) matches nothing here,
+        // so the default, RAID 5, stays.
         if let levelString = userDefaults.string(forKey: Keys.selectedLevel),
            let level = RaidLevel.allCases.first(where: { $0.rawValue == levelString }) {
             selectedLevel = level
@@ -112,8 +90,5 @@ final class RaidCalculatorViewModel {
            let loadedUnit = CapacityUnit.allCases.first(where: { $0.rawValue == unitString }) {
             unit = loadedUnit
         }
-
-        groups = userDefaults.integer(forKey: Keys.groups)
-        if groups == 0 { groups = 1 }
     }
 }

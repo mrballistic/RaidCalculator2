@@ -50,36 +50,21 @@ struct ContentView: View {
                 .accessibilityIdentifier("configurationWarning")
 
                 if let suggested = result.suggestedDriveCount, suggested != viewModel.driveCount {
-                    // Names the groups too when the fix changes them, as it does from one group to RAID 50 or 60.
-                    Button(result.suggestedDriveCountGroups.map { String(format: "use_drive_count_groups".localized(), suggested, $0) }
-                           ?? String(format: "use_drive_count".localized(), suggested)) {
+                    Button(String(format: "use_drive_count".localized(), suggested)) {
                         withAnimation(motion) { viewModel.applySuggestedDriveCount() }
                     }
                     .accessibilityIdentifier("applySuggestedDriveCount")
                 }
-
-                if let suggested = result.suggestedGroups, suggested != viewModel.groups {
-                    Button(suggested == 1 ? "use_one_group".localized() : String(format: "use_group_count".localized(), suggested)) {
-                        withAnimation(motion) { viewModel.applySuggestedGroups() }
-                    }
-                    .accessibilityIdentifier("applySuggestedGroups")
-                }
             }
-        } else if viewModel.rebuildCaution != nil || viewModel.wideZFSGroupWidth != nil {
+        } else if let caution = viewModel.rebuildCaution {
             Section {
-                switch viewModel.rebuildCaution {
+                switch caution {
                 case .suggest(let safer):
                     AdvisoryLabel(text: String(format: "rebuild_caution_level".localized(), viewModel.selectedLevel.displayName, safer.displayName))
                     useLevelButton(safer)
                 case .warnOnly:
-                    AdvisoryLabel(text: String(format: warnOnlyCautionKey.localized(), viewModel.selectedLevel.displayName))
+                    AdvisoryLabel(text: String(format: "rebuild_caution_add_drive".localized(), viewModel.selectedLevel.displayName))
                         .accessibilityIdentifier("narrowGroupCaution")
-                case nil:
-                    EmptyView()
-                }
-                if let width = viewModel.wideZFSGroupWidth {
-                    AdvisoryLabel(text: String(format: (viewModel.groups > 1 ? "wide_zfs_group_caution" : "wide_zfs_group_caution_single").localized(), width))
-                        .accessibilityIdentifier("wideGroupCaution")
                 }
             }
             .transition(.opacity)
@@ -90,62 +75,25 @@ struct ContentView: View {
     @ViewBuilder private var inputSections: some View {
         Section("raid_level".localized()) {
             // Segmented controls stay near 13 pt at accessibility sizes, so
-            // there one menu holds every level, nested and ZFS included, and
-            // the More Levels menu goes.
+            // there the levels move into a menu with their full names.
             if dynamicTypeSize.isAccessibilitySize {
                 Picker("raid_level".localized(), selection: levelSelection) {
-                    ForEach(RaidLevel.levels(in: .standard)) { level in
+                    ForEach(RaidLevel.allCases) { level in
                         Text(level.displayName).tag(level)
-                    }
-                    Section("nested_levels".localized()) {
-                        ForEach(RaidLevel.levels(in: .nested)) { level in
-                            Text(level.displayName).tag(level)
-                        }
-                    }
-                    Section("zfs_levels".localized()) {
-                        ForEach(RaidLevel.levels(in: .zfs)) { level in
-                            Text(level.displayName).tag(level)
-                        }
                     }
                 }
                 .pickerStyle(.menu)
                 .accessibilityIdentifier("levelPicker")
             } else {
-                Picker("raid_level".localized(), selection: standardLevelSelection) {
-                    ForEach(RaidLevel.levels(in: .standard)) { level in
+                Picker("raid_level".localized(), selection: levelSelection) {
+                    ForEach(RaidLevel.allCases) { level in
                         Text(level.shortLabel)
-                            .tag(Optional(level))
+                            .tag(level)
                             .accessibilityLabel(level.displayName)
                     }
                 }
                 .pickerStyle(.segmented)
                 .labelsHidden()
-
-                Menu {
-                    Section("nested_levels".localized()) {
-                        ForEach(RaidLevel.levels(in: .nested)) { levelButton($0) }
-                    }
-                    Section("zfs_levels".localized()) {
-                        ForEach(RaidLevel.levels(in: .zfs)) { levelButton($0) }
-                    }
-                } label: {
-                    HStack {
-                        Text("more_levels".localized())
-                        Spacer(minLength: 8)
-                        HStack(spacing: 6) {
-                            if viewModel.selectedLevel.family != .standard {
-                                Text(viewModel.selectedLevel.displayName)
-                                    .foregroundStyle(.tint)
-                            }
-                            Image(systemName: "chevron.up.chevron.down")
-                                .font(.caption)
-                                .foregroundStyle(.tertiary)
-                                .accessibilityHidden(true)
-                        }
-                    }
-                }
-                .tint(.primary)
-                .accessibilityIdentifier("moreLevels")
             }
         }
 
@@ -156,22 +104,6 @@ struct ContentView: View {
                 range: RaidCalculatorViewModel.driveCountRange,
                 identifier: "driveCount"
             )
-
-            if viewModel.selectedLevel.usesGroups {
-                CountStepper(
-                    title: "groups".localized(),
-                    value: Binding(
-                        get: { viewModel.groups },
-                        set: { value in withAnimation(motion) { viewModel.groups = value } }
-                    ),
-                    range: 1...max(1, viewModel.driveCount),
-                    identifier: "groupCount"
-                )
-                .sensoryFeedback(.selection, trigger: viewModel.groups)
-                // Under Reduce Motion the row change runs without animation
-                // (see `motion`), so the row appears in place rather than sliding.
-                .transition(reduceMotion ? .opacity : .opacity.combined(with: .move(edge: .top)))
-            }
 
             Group {
                 if dynamicTypeSize.isAccessibilitySize {
@@ -187,22 +119,10 @@ struct ContentView: View {
         } header: {
             Text("drive_configuration".localized())
         } footer: {
-            let showsLayout = viewModel.selectedLevel.usesGroups && viewModel.result.warningMessage == nil
-            if awaitingDriveSize || showsLayout {
-                VStack(alignment: .leading, spacing: 4) {
-                    // The card's prompt can be under the keyboard; this one sits by the field.
-                    if awaitingDriveSize {
-                        Text("enter_drive_size".localized())
-                            .accessibilityIdentifier("enterDriveSizeFooter")
-                    }
-                    if showsLayout {
-                        let groups = max(viewModel.groups, 1)
-                        let width = viewModel.driveCount / groups
-                        Text(groups == 1
-                             ? String(format: "group_layout_single".localized(), width)
-                             : String(format: "group_layout".localized(), groups, width))
-                    }
-                }
+            // The card's prompt can be under the keyboard; this one sits by the field.
+            if awaitingDriveSize {
+                Text("enter_drive_size".localized())
+                    .accessibilityIdentifier("enterDriveSizeFooter")
             }
         }
         .onChange(of: awaitingDriveSize) { _, awaiting in
@@ -343,16 +263,7 @@ struct ContentView: View {
         .readsFold($hasFold)
     }
 
-    /// The segmented control shows only the standard levels; with a nested or
-    /// ZFS level chosen, nothing in it is highlighted.
-    private var standardLevelSelection: Binding<RaidLevel?> {
-        Binding(
-            get: { viewModel.selectedLevel.family == .standard ? viewModel.selectedLevel : nil },
-            set: { if let level = $0 { withAnimation(motion) { viewModel.selectedLevel = level } } }
-        )
-    }
-
-    /// Every level, for the single menu at accessibility sizes.
+    /// The selected level, animated.
     private var levelSelection: Binding<RaidLevel> {
         Binding(
             get: { viewModel.selectedLevel },
@@ -360,30 +271,10 @@ struct ContentView: View {
         )
     }
 
-    private func levelButton(_ level: RaidLevel) -> some View {
-        Button {
-            withAnimation(motion) { viewModel.selectedLevel = level }
-        } label: {
-            if viewModel.selectedLevel == level {
-                Label(level.displayName, systemImage: "checkmark")
-            } else {
-                Text(level.displayName)
-            }
-        }
-        .accessibilityAddTraits(viewModel.selectedLevel == level ? .isSelected : [])
-    }
-
     /// Animation for layout changes. None under Reduce Motion, so Form rows
     /// appear and go in place instead of sliding the rows around them; the
     /// drive strip and results still crossfade through their own animations.
     private var motion: Animation? { reduceMotion ? nil : .snappy }
-
-    /// A caution with no level to move to: RAID 5 is short of the fourth
-    /// drive RAID 6 needs; RAID 50 and RAID-Z1 have groups too narrow for
-    /// dual parity.
-    private var warnOnlyCautionKey: String {
-        viewModel.selectedLevel == .raid5 ? "rebuild_caution_add_drive" : "rebuild_caution_narrow"
-    }
 
     /// Switches to the level a caution suggests.
     private func useLevelButton(_ level: RaidLevel) -> some View {
@@ -413,7 +304,7 @@ struct AdvisoryLabel: View {
     }
 }
 
-/// A count with a stepper: the drive count and the groups. Normally the label,
+/// A count with a stepper, for the drive count. Normally the label,
 /// count and stepper share one row. At accessibility sizes the label gets its
 /// own line above the count and stepper, so a long label (“Nombre de Disques”,
 /// “ドライブ数”) never squeezes into a narrow column and breaks mid-word.
@@ -500,7 +391,7 @@ struct CapacitySummary: View {
             .modifier(InvalidSetupPrefix(active: result.warningMessage != nil))
 
             if !result.driveRoles.isEmpty {
-                DriveStrip(roles: result.driveRoles, groupSize: result.groupSize)
+                DriveStrip(roles: result.driveRoles)
             }
 
             if result.warningMessage == nil {
@@ -508,24 +399,9 @@ struct CapacitySummary: View {
             }
 
             if isValid, result.usableCapacity > 0 {
-                if let estimate = result.zfsEstimate {
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text(String(format: "zfs_reported_note".localized(), Self.binaryBytes(estimate.reportedBytes, unit: unit)))
-                            .accessibilityIdentifier("zfsReportedNote")
-                            // The info sheet's caveat, for VoiceOver users who don't open it.
-                            .accessibilityHint("zfs_estimate_hint".localized())
-                        if estimate.paddingLoss > 0.01 {
-                            Text(String(format: "zfs_padding_note".localized(), estimate.paddingLoss.formatted(.percent.precision(.fractionLength(0)))))
-                        }
-                    }
+                Text(String(format: "binary_capacity_note".localized(), Self.binaryCapacity(result.usableCapacity, unit: unit)))
                     .font(.footnote)
                     .foregroundStyle(.secondary)
-                    .contentTransition(.numericText())
-                } else {
-                    Text(String(format: "binary_capacity_note".localized(), Self.binaryCapacity(result.usableCapacity, unit: unit)))
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
-                }
             }
         }
     }
@@ -540,14 +416,6 @@ struct CapacitySummary: View {
         switch unit {
         case .tb: capacity(value * 1e12 / 1_099_511_627_776, unit: "TiB", maxFractionDigits: 1)
         case .gb: capacity(value * 1e9 / 1_073_741_824, unit: "GiB", maxFractionDigits: 1)
-        }
-    }
-
-    /// A byte count in the binary unit matching the chosen decimal one.
-    static func binaryBytes(_ bytes: Double, unit: CapacityUnit) -> String {
-        switch unit {
-        case .tb: capacity(bytes / 1_099_511_627_776, unit: "TiB", maxFractionDigits: 1)
-        case .gb: capacity(bytes / 1_073_741_824, unit: "GiB", maxFractionDigits: 1)
         }
     }
 }

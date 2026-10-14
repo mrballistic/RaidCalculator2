@@ -24,7 +24,7 @@ struct InfoTopic {
             title: level.displayName,
             keyPrefix: level.stringKeyPrefix,
             ratings: (calculator.speedRating(for: level), calculator.availabilityRating(for: level)),
-            footnoteKey: level.isZFS ? "zfs_not_affiliated" : nil
+            footnoteKey: nil
         )
     }
 }

@@ -15,10 +15,4 @@ struct InfoSheetCopyTests {
             #expect(key.localized() != key, "missing \(key)")
         }
     }
-
-    @Test(arguments: [RaidLevel.raidz1, .raidz2, .raidz3])
-    func zfsLevelsExplainTheEstimate(level: RaidLevel) {
-        let key = "\(level.stringKeyPrefix)_calculation"
-        #expect(key.localized().contains("128 GiB"), "missing or wrong \(key)")
-    }
 }

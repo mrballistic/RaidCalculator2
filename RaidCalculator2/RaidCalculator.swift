@@ -12,9 +12,6 @@ struct RaidCalculator {
     static let driveCountRange = 1...24
 
     func validate(_ config: RaidConfiguration) -> String? {
-        if let message = groupedValidationMessage(config) {
-            return message
-        }
         if let count = invalidDriveCountKey(config) {
             return count.localized()
         }
@@ -24,11 +21,9 @@ struct RaidCalculator {
         return nil
     }
 
-    /// Nearest valid drive count, when the count is what makes the configuration
-    /// invalid: the smallest at or above the current one, or for a grouped level
-    /// at the 24-drive limit, the largest below it. Drives the one-tap fix.
+    /// Nearest valid drive count at or above the current one, when the count
+    /// is what makes the configuration invalid. Drives the one-tap fix.
     func suggestedDriveCount(for config: RaidConfiguration) -> Int? {
-        if config.level.usesGroups { return groupedDriveCountFix(config)?.drives }
         let n = config.driveCount
         guard invalidDriveCountKey(config) != nil else { return nil }
         switch config.level {
@@ -37,92 +32,19 @@ struct RaidCalculator {
         case .raid5: return max(n, 3)
         case .raid6: return max(n, 4)
         case .raid10: return max(n + n % 2, 4)
-        case .raid50, .raid60, .raidz1, .raidz2, .raidz3: return nil
         }
     }
 
-    /// The groups the drive-count fix assumes, when they differ from the
-    /// current ones. Applied together with the count, so one tap is enough.
-    func suggestedDriveCountGroups(for config: RaidConfiguration) -> Int? {
-        guard let fix = groupedDriveCountFix(config) else { return nil }
-        return fix.groups == groupCount(config) ? nil : fix.groups
-    }
-
-    /// The drive count and groups for a grouped level's drive-count fix. Groups
-    /// rise to the level's minimum, and fall to as many as fit within 24
-    /// drives. The count is the smallest that fills every group at or above
-    /// the current one; when that's over 24, the largest below it. Nil when
-    /// the count wouldn't change, since then only the groups need to.
-    private func groupedDriveCountFix(_ config: RaidConfiguration) -> (drives: Int, groups: Int)? {
-        let level = config.level
-        guard groupedValidationMessage(config) != nil else { return nil }
-        let n = config.driveCount
-        let limit = Self.driveCountRange.upperBound
-        let groups = min(max(groupCount(config), level.minimumGroups), limit / level.minimumGroupWidth)
-        let upward = groups * max(level.minimumGroupWidth, (n + groups - 1) / groups)
-        // Over the limit only when n doesn't divide evenly and each group is
-        // already past its minimum, so rounding down still leaves wide enough groups.
-        let count = upward <= limit ? upward : (n / groups) * groups
-        return count == n ? nil : (count, groups)
-    }
-
-    /// The valid group count for the current drive count nearest the current
-    /// one (ties go to fewer, wider groups). Drives the “Use N groups” fix.
-    func suggestedGroups(for config: RaidConfiguration) -> Int? {
-        guard config.level.usesGroups, groupedValidationMessage(config) != nil else { return nil }
-        let n = config.driveCount
-        let current = groupCount(config)
-        let candidates = (config.level.minimumGroups...max(config.level.minimumGroups, n)).filter {
-            n % $0 == 0 && n / $0 >= config.level.minimumGroupWidth
-        }
-        let best = candidates.min { (abs($0 - current), $0) < (abs($1 - current), $1) }
-        return best == current ? nil : best
-    }
-
-    /// Single-parity layouts on drives of 8 TB or more: a rebuild takes days,
-    /// and a second failure during it loses the array.
+    /// RAID 5 on drives of 8 TB or more: a rebuild takes days, and a second
+    /// failure during it loses the array.
     func rebuildCaution(for config: RaidConfiguration) -> RebuildCaution? {
-        guard validate(config) == nil else { return nil }
+        guard validate(config) == nil, config.level == .raid5 else { return nil }
         let terabytes = config.unit == .tb ? config.driveSize : config.driveSize / 1000
         guard terabytes >= 8 else { return nil }
-        let safer: RaidLevel
-        switch config.level {
-        case .raid5:
-            // RAID 6 needs a fourth drive; below that, warn without a level to move to.
-            var raid6 = config
-            raid6.level = .raid6
-            return validate(raid6) == nil ? .suggest(.raid6) : .warnOnly
-        case .raid50: safer = .raid60
-        case .raidz1: safer = .raidz2
-        default: return nil
-        }
-        return config.driveCount / groupCount(config) >= safer.minimumGroupWidth ? .suggest(safer) : .warnOnly
-    }
-
-    /// Group width when a RAID-Z group is wider than 12 drives, which rebuilds slowly.
-    func wideZFSGroupWidth(for config: RaidConfiguration) -> Int? {
-        guard config.level.isZFS, validate(config) == nil else { return nil }
-        let width = config.driveCount / groupCount(config)
-        return width > 12 ? width : nil
-    }
-
-    private func groupCount(_ config: RaidConfiguration) -> Int { max(config.groups, 1) }
-
-    private func groupedValidationMessage(_ config: RaidConfiguration) -> String? {
-        let level = config.level
-        guard level.usesGroups else { return nil }
-        let n = config.driveCount
-        let groups = groupCount(config)
-        if groups < level.minimumGroups, let single = level.singleGroupEquivalent {
-            return String(format: "nested_needs_two_groups".localized(), level.displayName, single.displayName)
-        }
-        if n % groups != 0 {
-            return String(format: "groups_uneven".localized(), n, groups)
-        }
-        if n / groups < level.minimumGroupWidth {
-            return String(format: "group_too_narrow".localized(), level.displayName, level.minimumGroupWidth)
-        }
-        return nil
+        // RAID 6 needs a fourth drive; below that, warn without a level to move to.
+        var raid6 = config
+        raid6.level = .raid6
+        return validate(raid6) == nil ? .suggest(.raid6) : .warnOnly
     }
 
     private func invalidDriveCountKey(_ config: RaidConfiguration) -> String? {
@@ -134,20 +56,16 @@ struct RaidCalculator {
         case .raid6: return n < 4 ? "raid6_validation" : nil
         case .raid10: return n < 4 || n % 2 != 0 ? "raid10_validation" : nil
         case .jbod: return n < 1 ? "jbod_validation" : nil
-        case .raid50, .raid60, .raidz1, .raidz2, .raidz3: return nil
         }
     }
 
     func calculate(config: RaidConfiguration) -> RaidResult {
         let n = config.driveCount
         let size = config.driveSize  // assume already in chosen unit
-        let warning = validate(config)
 
         var usable: Double
         var failures: String
         var roles: [DriveRole]
-        var groupSize: Int?
-        var zfsEstimate: ZFSEstimate?
 
         switch config.level {
         case .raid0:
@@ -175,29 +93,7 @@ struct RaidCalculator {
             usable = Double(n) * size
             failures = "jbod_failures".localized()
             roles = Array(repeating: .data, count: n)
-        case .raid50, .raid60, .raidz1, .raidz2, .raidz3:
-            let parity = config.level.parityPerGroup ?? 1
-            let groups = groupCount(config)
-            let width = n / groups
-            usable = Double(groups * max(0, width - parity)) * size
-            failures = groups > 1
-                ? String(format: "grouped_failures".localized(), parity, groups * parity)
-                : String(parity)
-            // Each group's data drives, then its parity: data, data, parity | data, data, parity…
-            roles = (0..<groups).flatMap { _ in
-                Array(repeating: DriveRole.data, count: max(0, width - parity)) + Array(repeating: .parity, count: min(parity, width))
-            }
-            if warning == nil {
-                if groups > 1 { groupSize = width }
-                if config.level.isZFS {
-                    let bytesPerUnit = config.unit == .tb ? 1e12 : 1e9
-                    zfsEstimate = ZFSEstimate(groups: groups, width: width, parity: parity, driveBytes: size * bytesPerUnit)
-                }
-            }
         }
-
-        // One bar per drive even when the drives don't divide into groups.
-        if roles.count < n { roles += Array(repeating: .data, count: n - roles.count) }
 
         return RaidResult(
             usableCapacity: usable,
@@ -205,31 +101,27 @@ struct RaidCalculator {
             failuresTolerated: failures,
             speedRating: speedRating(for: config.level),
             availabilityRating: availabilityRating(for: config.level),
-            warningMessage: warning,
+            warningMessage: validate(config),
             suggestedDriveCount: suggestedDriveCount(for: config),
-            suggestedDriveCountGroups: suggestedDriveCountGroups(for: config),
-            driveRoles: Array(roles.prefix(n)),
-            groupSize: groupSize,
-            suggestedGroups: suggestedGroups(for: config),
-            zfsEstimate: zfsEstimate
+            driveRoles: Array(roles.prefix(n))
         )
     }
 
     func speedRating(for level: RaidLevel) -> Int {
         switch level {
         case .raid0: return 5
-        case .raid10, .raid50: return 4
-        case .raid5, .raid60, .raidz1: return 3
-        case .raid6, .raid1, .jbod, .raidz2, .raidz3: return 2
+        case .raid10: return 4
+        case .raid5: return 3
+        case .raid6, .raid1, .jbod: return 2
         }
     }
 
     func availabilityRating(for level: RaidLevel) -> Int {
         switch level {
         case .raid0, .jbod: return 1
-        case .raid5, .raid50, .raidz1: return 3
-        case .raid6, .raid60, .raidz2: return 4
-        case .raid1, .raid10, .raidz3: return 5
+        case .raid5: return 3
+        case .raid6: return 4
+        case .raid1, .raid10: return 5
         }
     }
 
@@ -247,9 +139,8 @@ struct RaidCalculator {
 }
 
 enum RebuildCaution: Equatable {
-    /// A dual-parity level this setup's groups are wide enough to become.
+    /// RAID 6, which this setup has the drives for.
     case suggest(RaidLevel)
-    /// Large drives on single parity, but the groups are too narrow for the
-    /// dual-parity level; warn without a suggestion.
+    /// RAID 5 on three large drives: one short of RAID 6, so warn without a suggestion.
     case warnOnly
 }
