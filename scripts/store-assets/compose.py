@@ -479,8 +479,8 @@ HEADERS = [
 LEGACY_HEADER_RAW = "iphone-1320x2868/02-usable-space-light.png"
 LEGACY_KEY_CONTENT = {LEGACY_HEADER_RAW: (0.04, 0.115, 0.96, 0.465)}
 LEGACY_HEADERS = [
-    ("header-3840x1646", (3840, 1646), LEGACY_HEADER_RAW, "iphone", None),
     ("header-5244x2950", (5244, 2950), LEGACY_HEADER_RAW, "iphone", None),
+    ("header-3840x2560", (3840, 2560), LEGACY_HEADER_RAW, "iphone", None),
 ]
 
 
