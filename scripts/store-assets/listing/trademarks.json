@@ -1,0 +1,38 @@
+{
+ "not_affiliated": {
+  "de": "Steht in keiner Verbindung zu Synology Inc. und wird von Synology Inc. weder unterstützt noch empfohlen. Synology und SHR sind Marken von Synology Inc.",
+  "en": "Not affiliated with or endorsed by Synology Inc. Synology and SHR are trademarks of Synology Inc.",
+  "es": "Sin afiliación ni respaldo de Synology Inc. Synology y SHR son marcas comerciales de Synology Inc.",
+  "fr": "Non affilié à Synology Inc. ni approuvé par elle. Synology et SHR sont des marques de Synology Inc.",
+  "it": "Non affiliato né approvato da Synology Inc. Synology e SHR sono marchi di Synology Inc.",
+  "ja": "Synology Inc.とは提携しておらず、同社の承認も受けていません。SynologyおよびSHRはSynology Inc.の商標です。",
+  "ko": "Synology Inc.와 제휴 관계가 없으며 Synology Inc.의 승인을 받지 않았습니다. Synology 및 SHR은 Synology Inc.의 상표입니다.",
+  "pt-BR": "Não afiliado à Synology Inc. nem endossado por ela. Synology e SHR são marcas comerciais da Synology Inc.",
+  "zh-Hans": "本 App 与 Synology Inc. 无关联，亦未获其认可。Synology 和 SHR 是 Synology Inc. 的商标。",
+  "zh-Hant": "本 App 與 Synology Inc. 無任何關係，亦未獲其認可。Synology 和 SHR 是 Synology Inc. 的商標。"
+ },
+ "unraid_not_affiliated": {
+  "de": "Steht in keiner Verbindung zu Lime Technology, Inc. und wird von Lime Technology, Inc. weder unterstützt noch empfohlen. Unraid ist eine Marke von Lime Technology, Inc.",
+  "en": "Not affiliated with or endorsed by Lime Technology, Inc. Unraid is a trademark of Lime Technology, Inc.",
+  "es": "Sin afiliación ni respaldo de Lime Technology, Inc. Unraid es una marca comercial de Lime Technology, Inc.",
+  "fr": "Non affilié à Lime Technology, Inc. ni approuvé par elle. Unraid est une marque de Lime Technology, Inc.",
+  "it": "Non affiliato né approvato da Lime Technology, Inc. Unraid è un marchio di Lime Technology, Inc.",
+  "ja": "Lime Technology, Inc.とは提携しておらず、同社の承認も受けていません。UnraidはLime Technology, Inc.の商標です。",
+  "ko": "Lime Technology, Inc.와 제휴 관계가 없으며 Lime Technology, Inc.의 승인을 받지 않았습니다. Unraid는 Lime Technology, Inc.의 상표입니다.",
+  "pt-BR": "Não afiliado à Lime Technology, Inc. nem endossado por ela. Unraid é uma marca comercial da Lime Technology, Inc.",
+  "zh-Hans": "本 App 与 Lime Technology, Inc. 无关联，亦未获其认可。Unraid 是 Lime Technology, Inc. 的商标。",
+  "zh-Hant": "本 App 與 Lime Technology, Inc. 無任何關係，亦未獲其認可。Unraid 是 Lime Technology, Inc. 的商標。"
+ },
+ "zfs_not_affiliated": {
+  "de": "ZFS ist eine Marke von Oracle und/oder seinen verbundenen Unternehmen. Steht in keiner Verbindung zu Oracle und wird von Oracle weder unterstützt noch empfohlen.",
+  "en": "ZFS is a trademark of Oracle and/or its affiliates. Not affiliated with or endorsed by Oracle.",
+  "es": "ZFS es una marca comercial de Oracle y/o sus filiales. Sin afiliación ni respaldo de Oracle.",
+  "fr": "ZFS est une marque d’Oracle et/ou de ses filiales. Non affilié à Oracle ni approuvé par elle.",
+  "it": "ZFS è un marchio di Oracle e/o delle sue affiliate. Non affiliato né approvato da Oracle.",
+  "ja": "ZFSはOracleおよびその関連会社の商標です。Oracleとは提携しておらず、同社の承認も受けていません。",
+  "ko": "ZFS는 Oracle 및/또는 그 계열사의 상표입니다. Oracle과 제휴 관계가 없으며 Oracle의 승인을 받지 않았습니다.",
+  "pt-BR": "ZFS é uma marca comercial da Oracle e/ou de suas afiliadas. Não afiliado à Oracle nem endossado por ela.",
+  "zh-Hans": "ZFS 是 Oracle 和/或其关联公司的商标。本 App 与 Oracle 无关联，亦未获其认可。",
+  "zh-Hant": "ZFS 是 Oracle 及／或其關係企業的商標。本 App 與 Oracle 無任何關係，亦未獲其認可。"
+ }
+}
