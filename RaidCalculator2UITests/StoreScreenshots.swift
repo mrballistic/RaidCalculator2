@@ -47,7 +47,7 @@ final class StoreScreenshots: XCTestCase {
     @MainActor
     func test03SavedSetup() throws {
         // The website's iPad shot is this scene; the store's iPad set isn't.
-        try XCTSkipIf(isPad && env["STORE_WEB"] == nil, "Not in the iPad set.")
+        try XCTSkipIf(isPad && (env["STORE_WEB"] ?? "").isEmpty, "Not in the iPad set.")
         let app = launchNAS(bays: [8, 4, 8, 8], current: [4, 4, 8, 8])
         let delta = app.descendants(matching: .any).matching(identifier: "usableDelta").firstMatch
         XCTAssertTrue(app.staticTexts.matching(identifier: "nasUsableCapacity").firstMatch.waitForExistence(timeout: 10))
