@@ -419,6 +419,10 @@ HEADLINES = {
               FIX: "Um toque para uma configuração válida", BAYS: "Até 30 baias, em escala"},
 }
 LOCALIZED_SETS = ("iphone-", "ipad-")
+# The localized usable-space capture is unscrolled, with the large title
+# showing, so its key content (“16 TB” through “Drive Failures Tolerated”)
+# sits lower than in the English one.
+LOCALIZED_HEADER_KEY = (0.05, 0.185, 0.95, 0.52)
 
 # Header / search images. Apple's templates mark an "Art Safe Area": the only
 # part every placement shows (the iPhone product page crops a header to its
@@ -533,8 +537,6 @@ def main():
     global RAW, OUT, LANG
     shots = SHOTS
     if a.lang:
-        if a.headers:
-            p.error("--lang has no header images")
         LANG = a.lang
         RAW = os.path.join(REPO, "marketing/screenshots/1.7.1/raw", a.lang)
         OUT = os.path.join(REPO, "marketing/screenshots/1.7.1/store", a.lang)
@@ -557,13 +559,19 @@ def main():
         print(compose(src, os.path.join(OUT, folder, f"{name}.png"), size, bg, headline, kind))
         sets.add(folder)
     if a.headers:
-        for name, size, raw, kind, headline in HEADERS:
+        headers = HEADERS
+        if a.lang:
+            # The iPhone headers from this language's own capture; Duo's stay English.
+            headers = [(n, size, raw, kind, HEADLINES[a.lang][h] if h else None)
+                       for n, size, raw, kind, h in HEADERS if kind == "iphone"]
+        for name, size, raw, kind, headline in headers:
             src = latest(os.path.join(RAW, raw))
             if not os.path.exists(src):
                 print(f"skip header/{name}: missing {src}", file=sys.stderr)
                 continue
             out = os.path.join(OUT, "header", f"{name}.png")
-            print(compose_centered(src, out, size, kind, headline, KEY_CONTENT[raw], debug=a.debug_safe))
+            key = LOCALIZED_HEADER_KEY if a.lang else KEY_CONTENT[raw]
+            print(compose_centered(src, out, size, kind, headline, key, debug=a.debug_safe))
         sets.add("header")
     if a.contact:
         for folder in sorted(sets):

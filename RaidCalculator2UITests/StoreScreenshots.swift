@@ -46,7 +46,8 @@ final class StoreScreenshots: XCTestCase {
 
     @MainActor
     func test03SavedSetup() throws {
-        try XCTSkipIf(isPad, "Not in the iPad set.")
+        // The website's iPad shot is this scene; the store's iPad set isn't.
+        try XCTSkipIf(isPad && env["STORE_WEB"] == nil, "Not in the iPad set.")
         let app = launchNAS(bays: [8, 4, 8, 8], current: [4, 4, 8, 8])
         let delta = app.descendants(matching: .any).matching(identifier: "usableDelta").firstMatch
         XCTAssertTrue(app.staticTexts.matching(identifier: "nasUsableCapacity").firstMatch.waitForExistence(timeout: 10))
@@ -80,6 +81,14 @@ final class StoreScreenshots: XCTestCase {
         let app = launchNAS(system: "unraid", bays: bays, settings: #"{"synologyType":"SHR","unraidParity":2,"snapraidParity":1,"zfsParity":1}"#)
         XCTAssertTrue(app.staticTexts.matching(identifier: "nasUsableCapacity").firstMatch.waitForExistence(timeout: 10))
         save("06-thirty-bays", app)
+    }
+
+    /// The website's RAID 10 shot: mirrored pairs, “Up to 4”.
+    @MainActor
+    func test07Raid10() throws {
+        let app = launchRAID(level: "R 10", drives: 8, size: 12)
+        XCTAssertTrue(app.staticTexts.matching(identifier: "usableCapacity").firstMatch.waitForExistence(timeout: 10))
+        save("07-raid10", app)
     }
 
     // MARK: Helpers

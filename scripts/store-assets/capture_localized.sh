@@ -12,8 +12,13 @@
 # marketing/screenshots/1.7.1/raw/<lang>/<set>/ (never overwritten: a re-run
 # adds -v2, -v3...), composed images to marketing/screenshots/1.7.1/store/<lang>/.
 #
+# WEB=1 captures the extra scenes the website uses instead (iPhone: rebuild
+# caution light, saved setup and RAID 10 dark; iPad: saved setup light, 30
+# bays dark) into marketing/screenshots/1.7.1/web/<lang>/<set>/, without
+# composing; scripts/www_shots.py turns them into the site's images.
+#
 # Env: UDID (default: iPhone 17 Pro Max or iPad Pro 13-inch (M5)),
-#      PY (default: /tmp/raid-assets/venv/bin/python).
+#      PY (default: /tmp/raid-assets/venv/bin/python), WEB.
 # One Simulator and one xcodebuild at a time: shut others down first.
 set -euo pipefail
 
@@ -50,7 +55,8 @@ trap cleanup EXIT
 
 for lang in "$@"; do
   loc=$(locale_for "$lang")
-  RAW="$REPO/marketing/screenshots/1.7.1/raw/$lang/$SET"
+  if [ "${WEB:-0}" = 1 ]; then RAW="$REPO/marketing/screenshots/1.7.1/web/$lang/$SET"
+  else RAW="$REPO/marketing/screenshots/1.7.1/raw/$lang/$SET"; fi
   TMP="$(mktemp -d /tmp/raid-171/shots.XXXXXX)"
   echo "== $lang ($loc) on $SET"
 
@@ -66,14 +72,21 @@ for lang in "$@"; do
 
   for mode in light dark; do
     xcrun simctl ui "$U" appearance "$mode"
-    if [ "$mode" = light ]; then
+    if [ "${WEB:-0}" = 1 ]; then
+      case "$KIND-$mode" in
+        iphone-light) tests=(test04RebuildCaution) ;;
+        iphone-dark)  tests=(test03SavedSetup test07Raid10) ;;
+        ipad-light)   tests=(test03SavedSetup) ;;
+        ipad-dark)    tests=(test06ThirtyBays) ;;
+      esac
+    elif [ "$mode" = light ]; then
       tests=(test01UsableSpace test02CompareSystems test03SavedSetup test05InvalidFix test06ThirtyBays)
     else
       tests=(test04RebuildCaution)
     fi
     only=()
     for t in "${tests[@]}"; do only+=(-only-testing:"RAID CalcUITests/StoreScreenshots/$t"); done
-    TEST_RUNNER_STORE_SHOTS_DIR="$TMP" TEST_RUNNER_STORE_LANG="$lang" TEST_RUNNER_STORE_LOCALE="$loc" TEST_RUNNER_STORE_MODE="$mode" \
+    TEST_RUNNER_STORE_WEB="${WEB:-}" TEST_RUNNER_STORE_SHOTS_DIR="$TMP" TEST_RUNNER_STORE_LANG="$lang" TEST_RUNNER_STORE_LOCALE="$loc" TEST_RUNNER_STORE_MODE="$mode" \
       xcodebuild test-without-building -project "$REPO/RAID Calculator.xcodeproj" -scheme "RAID Calc" \
       -destination "id=$U" -derivedDataPath "$DD" -parallel-testing-enabled NO "${only[@]}" \
       > "/tmp/raid-171/test-$KIND-$lang-$mode.log" 2>&1 \
@@ -92,7 +105,7 @@ for lang in "$@"; do
   echo "  $(ls "$TMP" | wc -l | tr -d ' ') raws in $RAW"
   rm -r "$TMP"
 
-  "$PY" "$HERE/compose.py" --lang "$lang" --only "${KIND}-" --contact
+  [ "${WEB:-0}" = 1 ] || "$PY" "$HERE/compose.py" --lang "$lang" --only "${KIND}-" --contact
 done
 
 # Back to English for whoever uses the Simulator next.
