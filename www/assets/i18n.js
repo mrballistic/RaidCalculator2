@@ -14,6 +14,8 @@
   const KEY = "rc-lang";
   const ATTRS = ["alt", "aria-label", "content"];
   const base = new URL("i18n/", document.currentScript.src);
+  const badges = new URL("badges/", document.currentScript.src);
+  const BADGE_TYPE = { "app-store": "svg", "google-play": "png" };
   const root = document.documentElement;
 
   // A browser tag (fr-CA, zh-TW, pt-PT…) to a language the site has, or null.
@@ -75,6 +77,13 @@
         if (s != null) el.setAttribute(attr, s);
       });
     }
+    // Store badges in the page's language: Apple's and Google's official
+    // localized artwork in badges/, the page's own English files otherwise.
+    scope.querySelectorAll("[data-badge]").forEach((el) => {
+      if (!el.dataset.enSrc) el.dataset.enSrc = el.getAttribute("src");
+      const kind = el.dataset.badge;
+      el.src = current === "en" ? el.dataset.enSrc : new URL(`${kind}-${current}.${BADGE_TYPE[kind]}`, badges).href;
+    });
     // Shown in every language but English, such as the privacy page's note.
     scope.querySelectorAll("[data-i18n-not-en]").forEach((el) => { el.hidden = current === "en"; });
   }

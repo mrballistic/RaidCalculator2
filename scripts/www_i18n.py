@@ -129,6 +129,9 @@ def check():
             elif '"' in re.sub(r"<[^>]+>", "", tr[key]):
                 problems.append(f"{lang}: {key} has a straight quote")
         problems += [f"{lang}: {k} isn't in en.json" for k in tr if k not in en]
+        for badge in (f"app-store-{lang}.svg", f"google-play-{lang}.png"):
+            if not (ROOT / "assets" / "badges" / badge).is_file():
+                problems.append(f"{lang}: missing assets/badges/{badge}")
     print("\n".join(problems) or f"{len(LANGS) - 1} languages × {len(en)} strings: ok")
     return 1 if problems else 0
 
