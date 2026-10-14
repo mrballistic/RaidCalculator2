@@ -21,7 +21,7 @@ final class RaidCalculator2UITests: XCTestCase {
     /// Launches with a known configuration. Launch arguments override the
     /// persisted UserDefaults, so each test starts from RAID 5, 4 × 4 TB.
     @MainActor
-    private func launchApp(level: String = "R 5", drives: Int = 4, size: Int = 4, language: String = "en", locale: String = "en_US", contentSize: String? = nil) -> XCUIApplication {
+    private func launchApp(level: String = "R 5", drives: Int = 4, size: Int = 4, language: String = "en", locale: String = "en_US", contentSize: String? = nil, showNotice: Bool = false, now: String? = nil) -> XCUIApplication {
         let app = XCUIApplication()
         app.launchArguments += [
             "-selectedLevel", level,
@@ -32,6 +32,11 @@ final class RaidCalculator2UITests: XCTestCase {
             "-AppleLocale", locale,
         ]
         if let contentSize { app.launchArguments += ["-UIPreferredContentSizeCategoryName", contentSize] }
+        // Every other test starts with the notice already seen. Showing it
+        // removes the saved flag instead of overriding it, so Not Now can
+        // still save it during the test.
+        app.launchArguments += showNotice ? ["-legacy.resetNotice", "YES"] : ["-legacy.hasSeenRetirementNotice", "YES"]
+        if let now { app.launchArguments += ["-legacy.now", now] }
         app.launch()
         return app
     }
@@ -425,6 +430,90 @@ final class RaidCalculator2UITests: XCTestCase {
         // The ratings are the sheet's last section, so the whole sheet has been seen.
         XCTAssertTrue(app.staticTexts["Performance Ratings"].exists || app.otherElements["Performance Ratings"].exists)
         XCTAssertFalse(app.staticTexts["howCalculated"].exists)
+    }
+
+    // MARK: Retirement notice (RAID Calc2 1.8.0)
+
+    @MainActor
+    func testRetirementNoticeShowsOnce() throws {
+        let app = launchApp(showNotice: true)
+        let title = app.staticTexts["retirementTitle"]
+        XCTAssertTrue(title.waitForExistence(timeout: 5))
+        XCTAssertEqual(title.label, "RAID Calc2 is retiring")
+        XCTAssertTrue(app.buttons["retirementGet"].exists)
+        app.buttons["retirementNotNow"].tap()
+        XCTAssertTrue(app.buttons["retirementBanner"].waitForExistence(timeout: 5))
+        app.terminate()
+
+        // No reset and no seeded flag: only what Not Now saved decides.
+        let relaunched = XCUIApplication()
+        relaunched.launchArguments += ["-AppleLanguages", "(en)", "-AppleLocale", "en_US"]
+        relaunched.launch()
+        XCTAssertTrue(relaunched.buttons["retirementBanner"].waitForExistence(timeout: 5))
+        XCTAssertFalse(relaunched.staticTexts["retirementTitle"].exists)
+    }
+
+    @MainActor
+    func testBannerGivesTheDateThenSaysItIsGone() throws {
+        let before = launchApp(now: "2026-12-30")
+        let banner = before.buttons["retirementBanner"]
+        XCTAssertTrue(banner.waitForExistence(timeout: 5))
+        XCTAssertTrue(banner.label.contains("December 31, 2026"), banner.label)
+        before.terminate()
+
+        let after = launchApp(now: "2027-01-02")
+        let gone = after.buttons["retirementBanner"]
+        XCTAssertTrue(gone.waitForExistence(timeout: 5))
+        XCTAssertTrue(gone.label.contains("No longer on the App Store"), gone.label)
+        XCTAssertFalse(gone.label.contains("2026"), gone.label)
+    }
+
+    /// At the largest text size, both sheet buttons stay on screen and the
+    /// banner keeps its full sentence.
+    @MainActor
+    func testRetirementNoticeAtLargestTextSize() throws {
+        let app = launchApp(contentSize: "UICTContentSizeCategoryAccessibilityXXXL", showNotice: true)
+        let notNow = app.buttons["retirementNotNow"]
+        XCTAssertTrue(notNow.waitForExistence(timeout: 5))
+        XCTAssertTrue(notNow.isHittable)
+        XCTAssertTrue(app.buttons["retirementGet"].isHittable)
+        notNow.tap()
+        let banner = app.buttons["retirementBanner"]
+        XCTAssertTrue(banner.waitForExistence(timeout: 5))
+        XCTAssertTrue(banner.isHittable)
+        XCTAssertTrue(banner.label.contains("December 31, 2026"), banner.label)
+    }
+
+    /// The Simulator has no App Store, so the in-app product page can't load:
+    /// it must close and hand over to the App Store web page in Safari, from
+    /// the banner and from the sheet, and the sheet must still be there after.
+    @MainActor
+    func testStorePageFallsBackToTheWebWhenItCantLoad() throws {
+        #if !targetEnvironment(simulator)
+        throw XCTSkip("A device can load the real product page.")
+        #else
+        let safari = XCUIApplication(bundleIdentifier: "com.apple.mobilesafari")
+        let app = launchApp(showNotice: true)
+        let get = app.buttons["retirementGet"]
+        XCTAssertTrue(get.waitForExistence(timeout: 5))
+        get.tap()
+        XCTAssertTrue(safari.wait(for: .runningForeground, timeout: 15), "Safari didn’t open the App Store page")
+        safari.terminate()
+
+        app.activate()
+        let notNow = app.buttons["retirementNotNow"]
+        XCTAssertTrue(notNow.waitForExistence(timeout: 5), "the sheet should still be there")
+        notNow.tap()
+
+        let banner = app.buttons["retirementBanner"]
+        XCTAssertTrue(banner.waitForExistence(timeout: 5))
+        banner.tap()
+        XCTAssertTrue(safari.wait(for: .runningForeground, timeout: 15), "Safari didn’t open from the banner")
+        safari.terminate()
+        app.activate()
+        XCTAssertTrue(banner.waitForExistence(timeout: 5), "no store modal should be left over the form")
+        XCTAssertTrue(banner.isHittable)
+        #endif
     }
 
     /// The form loads its rows lazily, so a row below the fold isn't in the

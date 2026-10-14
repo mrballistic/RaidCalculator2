@@ -31,6 +31,14 @@ struct ContentView: View {
     private var infoInPane: Bool { twoColumns && hasFold }
     @AccessibilityFocusState private var infoButtonFocused: Bool
 
+    @AppStorage(Retirement.seenKey) private var hasSeenRetirementNotice = false
+    private var retirementPhase: Retirement.Phase { Retirement.phase(now: Retirement.now()) }
+
+    /// Always first in the form, so it's the first thing read and seen.
+    private var retirementSection: some View {
+        Section { RetirementBanner(phase: retirementPhase) }
+    }
+
     /// The answer and anything wrong with it.
     @ViewBuilder private var answerSections: some View {
         let result = viewModel.result
@@ -195,13 +203,17 @@ struct ContentView: View {
                         ratingsSection
                     }
                 } inputs: {
-                    Form { inputSections }
+                    Form {
+                        retirementSection
+                        inputSections
+                    }
                 } info: {
                     InfoSheet(topic: .level(viewModel.selectedLevel))
                         .environment(\.closeInfo) { withAnimation(motion) { showingInfoSheet = false } }
                 }
             } else {
                 Form {
+                    retirementSection
                     answerSections
                     inputSections
                     ratingsSection
@@ -255,6 +267,12 @@ struct ContentView: View {
             set: { if !infoInPane { showingInfoSheet = $0 } }
         )) {
             InfoSheet(topic: .level(viewModel.selectedLevel))
+        }
+        .sheet(isPresented: Binding(
+            get: { !hasSeenRetirementNotice },
+            set: { if !$0 { hasSeenRetirementNotice = true } }
+        )) {
+            RetirementSheet(phase: retirementPhase)
         }
         .onChange(of: showingInfoSheet) { _, open in
             // Back to the info button once the pane closes.

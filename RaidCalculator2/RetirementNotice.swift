@@ -1,0 +1,104 @@
+//
+//  RetirementNotice.swift
+//  RaidCalculator2
+//
+
+import SwiftUI
+
+/// Shown once, on the first launch of 1.8.0: RAID Calc2 is retiring, and
+/// RAID Calculator is where to go next.
+struct RetirementSheet: View {
+    let phase: Retirement.Phase
+    @Environment(\.dismiss) private var dismiss
+    @Environment(\.openURL) private var openURL
+
+    var body: some View {
+        ScrollView {
+            VStack(spacing: 16) {
+                Image(systemName: "arrow.down.app.fill")
+                    .font(.system(size: 56))
+                    .foregroundStyle(.tint)
+                    .accessibilityHidden(true)
+                Text("retirement_title".localized())
+                    .font(.title2.bold())
+                    .accessibilityAddTraits(.isHeader)
+                    .accessibilityIdentifier("retirementTitle")
+                Text(Retirement.body(phase))
+                Text("retirement_pitch".localized())
+                    .foregroundStyle(.secondary)
+            }
+            .multilineTextAlignment(.center)
+            .frame(maxWidth: 480)
+            .padding(24)
+            .frame(maxWidth: .infinity)
+        }
+        // Both buttons stay on screen at every text size; the copy scrolls.
+        .safeAreaInset(edge: .bottom) {
+            VStack(spacing: 8) {
+                Button {
+                    AppStorePage.open(fallback: openURL)
+                } label: {
+                    Text("retirement_get".localized())
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.glassProminent)
+                .controlSize(.large)
+                .accessibilityIdentifier("retirementGet")
+
+                Button("retirement_not_now".localized()) { dismiss() }
+                    .controlSize(.large)
+                    .accessibilityIdentifier("retirementNotNow")
+            }
+            .frame(maxWidth: 480)
+            .padding(.horizontal, 24)
+            .padding(.bottom, 8)
+        }
+        .presentationDetents([.medium, .large])
+    }
+}
+
+/// A permanent row at the top of the form: the date, or that the app is gone,
+/// and a way to RAID Calculator. It wraps at large sizes rather than truncating.
+struct RetirementBanner: View {
+    let phase: Retirement.Phase
+    @Environment(\.openURL) private var openURL
+
+    var body: some View {
+        Button {
+            AppStorePage.open(fallback: openURL)
+        } label: {
+            HStack(spacing: 12) {
+                Image(systemName: "arrow.down.app.fill")
+                    .font(.title2)
+                    .foregroundStyle(.tint)
+                    .accessibilityHidden(true)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(Retirement.bannerTitle(phase))
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(.primary)
+                    Text("retirement_get".localized())
+                        .font(.subheadline)
+                        .foregroundStyle(.tint)
+                }
+                .fixedSize(horizontal: false, vertical: true)
+                Spacer(minLength: 0)
+                Image(systemName: "chevron.right")
+                    .font(.footnote.weight(.semibold))
+                    .foregroundStyle(.tertiary)
+                    .accessibilityHidden(true)
+            }
+        }
+        .accessibilityIdentifier("retirementBanner")
+    }
+}
+
+#Preview("Sheet") {
+    Color.clear.sheet(isPresented: .constant(true)) { RetirementSheet(phase: .retiring) }
+}
+
+#Preview("Banner") {
+    Form {
+        Section { RetirementBanner(phase: .retiring) }
+        Section { RetirementBanner(phase: .retired) }
+    }
+}
