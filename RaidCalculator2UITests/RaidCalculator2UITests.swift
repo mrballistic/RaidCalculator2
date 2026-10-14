@@ -506,6 +506,25 @@ final class RaidCalculator2UITests: XCTestCase {
         XCTAssertLessThan(banner.frame.height, window.height * 0.4, "banner is \(banner.frame.height) of \(window.height)")
     }
 
+    /// French and German have the longest notice copy. At the largest size
+    /// both sheet buttons must still be reachable, and the banner too.
+    @MainActor
+    func testRetirementNoticeFitsLongLanguagesAtLargestTextSize() throws {
+        for (language, locale) in [("fr", "fr_FR"), ("de", "de_DE")] {
+            let app = launchApp(language: language, locale: locale, contentSize: "UICTContentSizeCategoryAccessibilityXXXL", showNotice: true)
+            let notNow = app.buttons["retirementNotNow"]
+            XCTAssertTrue(notNow.waitForExistence(timeout: 5), language)
+            XCTAssertTrue(notNow.isHittable, language)
+            XCTAssertTrue(app.buttons["retirementGet"].isHittable, language)
+            notNow.tap()
+            let banner = app.buttons["retirementBanner"]
+            XCTAssertTrue(banner.waitForExistence(timeout: 5), language)
+            XCTAssertTrue(banner.isHittable, language)
+            XCTAssertLessThan(banner.frame.height, app.windows.firstMatch.frame.height * 0.5, language)
+            app.terminate()
+        }
+    }
+
     /// The Simulator has no App Store, so the in-app product page can't load:
     /// it must close and hand over to the App Store web page in Safari, from
     /// the banner and from the sheet, and the sheet must still be there after.

@@ -22,11 +22,12 @@ HERE="$(cd "$(dirname "$0")" && pwd)"
 REPO="$(cd "$HERE/../.." && pwd)"
 U="${DUO_UDID:-E9EE5C1F-BDED-41CD-9C51-CDCA75209EE7}"
 PY="${PY:-/tmp/raid-assets/venv/bin/python}"
-BUNDLE="${BUNDLE:-53Q4825KDF}"
-# LEGACY=1: RAID Calc2 1.8.0 scenes and folders (legacy branch).
+# LEGACY=1: RAID Calc2 1.8.0's bundle, scenes and folders (legacy branch).
 if [ "${LEGACY:-0}" = 1 ]; then
+  BUNDLE="${BUNDLE:-com.mrballistic.RaidCalculator2}"
   SHOTS_ROOT="marketing/screenshots/raidcalc2-1.8.0"; SCENES="01-moving 02-usable-space"; COMPOSE=(--legacy)
 else
+  BUNDLE="${BUNDLE:-53Q4825KDF}"
   SHOTS_ROOT="marketing/screenshots/1.7.0"; SCENES="01-usable-space 02-rebuild-caution"; COMPOSE=()
 fi
 TMP="$(mktemp -d /tmp/raid-duo.XXXXXX)"
