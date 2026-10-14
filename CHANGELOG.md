@@ -2,6 +2,15 @@
 
 How RAID Calculator got from 1.3 to 1.7, newest first. Dates come from the release tags or, where there is no tag, the commit that finished the release. Requirement numbers (FR-*n*) refer to [prd.md](prd.md), and the implementation plans are in `docs/superpowers/plans/`.
 
+## 1.7.1
+
+A store-page release: the app is 1.7.0 with only the version number changed. It ships App Store screenshots for iPhone and iPad in all ten languages, captured with the app running in each one and headlined in it (`marketing/screenshots/1.7.1/`). The Duo sets and all listing copy stay as in 1.7.0.
+
+**Under the hood**
+
+- `StoreScreenshots` (UI tests) drives each store scene. It's skipped unless `STORE_SHOTS_DIR` is set, so CI and the normal suite never run it.
+- `scripts/store-assets/capture_localized.sh` runs it per language: it sets the Simulator's language and appearance, then composes. `compose.py --lang` holds the translated headlines and uses Hiragino Sans, PingFang and Apple SD Gothic Neo for Japanese, Chinese and Korean.
+
 ## 1.7.0 (2026-10-08)
 
 Merged to `main` on 2026-10-08 and uploaded from local Xcode 27.1, so there is no `v1.7.0` tag (see [DEPLOY.md](DEPLOY.md)). It also carries everything from 1.6.5, listed separately below. Plan: `2026-10-06-1.7.0-duo-and-review.md`; requirements FR-21 and FR-22.

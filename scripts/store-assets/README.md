@@ -94,3 +94,14 @@ scripts/store-assets/capture_duo.sh outer-landscape   # closed, rotated (if Devi
 ```
 
 The script checks the capture size matches the pose and that the display is lit, sets the status bar, captures each scene in light and dark into `raw/duo-…/`, composes that set, and writes its contact sheet. It uses the “RAID Duo” simulator unless `DUO_UDID` is set.
+
+## Localized sets (1.7.1)
+
+`capture_localized.sh iphone|ipad <lang>…` captures the iPhone and iPad sets with the app running in each language (es, fr, it, ja, de, zh-Hant, zh-Hans, ko, pt-BR), then composes them with `compose.py --lang <lang>`:
+
+- The scenes come from the `StoreScreenshots` UI test, which is skipped unless `STORE_SHOTS_DIR` is set.
+- The script also sets the Simulator's own language, so the iPad status bar's date matches, and resets it to English at the end.
+- Raws go to `marketing/screenshots/1.7.1/raw/<lang>/`, and composed images to `marketing/screenshots/1.7.1/store/<lang>/`.
+- Headlines are in `HEADLINES` in `compose.py`. Chinese and Japanese mark their allowed line breaks with `|`, between phrases.
+- The headline faces are Hiragino Sans W7 (ja), PingFang TC/SC Semibold (zh) and Apple SD Gothic Neo Bold (ko).
+- English and every Duo set stay as in 1.7.0.
