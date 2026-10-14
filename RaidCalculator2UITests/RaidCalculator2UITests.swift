@@ -332,6 +332,21 @@ final class RaidCalculator2UITests: XCTestCase {
         XCTAssertTrue(app.navigationBars["RAID 계산기"].waitForExistence(timeout: 5), app.debugDescription)
     }
 
+    /// 1.7.1: Russian, with the decimal comma.
+    @MainActor
+    func testLaunchesInRussian() throws {
+        let app = launchApp(language: "ru", locale: "ru_RU")
+        XCTAssertTrue(app.staticTexts["Количество дисков"].waitForExistence(timeout: 5), app.debugDescription)
+
+        let sizeField = app.textFields["driveSizeField"]
+        XCTAssertTrue(sizeField.waitForExistence(timeout: 5))
+        sizeField.coordinate(withNormalizedOffset: CGVector(dx: 0.3, dy: 0.5)).tap()
+        sizeField.typeText(XCUIKeyboardKey.delete.rawValue + "2,5")
+        app.buttons["Готово"].tap()
+        XCTAssertEqual(sizeField.value as? String, "2,5")
+        XCTAssertTrue(capacity(app).contains("7,5"), capacity(app))
+    }
+
     @MainActor
     func testLaunchesInBrazilianPortuguese() throws {
         let app = launchApp(language: "pt-BR", locale: "pt_BR")

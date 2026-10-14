@@ -13,7 +13,11 @@
 # and are never overwritten (a re-run adds -v2, -v3...). Composed images go to
 # marketing/screenshots/1.7.0/store/<same set>/, plus a contact sheet.
 #
-# Env: DUO_UDID (default: RAID Duo), PY (default: /tmp/raid-assets/venv/bin/python).
+# Env: DUO_UDID (default: RAID Duo), PY (default: /tmp/raid-assets/venv/bin/python),
+# L10N=<lang> (es fr it ja de zh-Hant zh-Hans ko pt-BR ru) for 1.7.1's localized
+# sets: raws in marketing/screenshots/1.7.1/raw/<lang>/, composed with that
+# language's headlines. Only the app runs in <lang>; the Simulator's own
+# language is left alone so the pose survives.
 set -euo pipefail
 
 HERE="$(cd "$(dirname "$0")" && pwd)"
@@ -31,7 +35,8 @@ case "${1:-}" in
   *) echo "usage: $0 outer-portrait|outer-landscape|inner-portrait|inner-landscape" >&2; exit 2 ;;
 esac
 SET="duo-${1%%-*}-${W}x${H}"
-RAW="$REPO/marketing/screenshots/1.7.0/raw/$SET"
+if [ -n "${L10N:-}" ]; then RAW="$REPO/marketing/screenshots/1.7.1/raw/$L10N/$SET"; COMPOSE=(--lang "$L10N")
+else RAW="$REPO/marketing/screenshots/1.7.0/raw/$SET"; COMPOSE=(); fi
 
 [ -x "$PY" ] || { echo "Pillow venv missing: python3 -m venv /tmp/raid-assets/venv && /tmp/raid-assets/venv/bin/pip install pillow" >&2; exit 1; }
 xcrun simctl list devices | grep -q "$U) (Booted)" || { echo "Device $U is not booted. Boot RAID Duo in Simulator first." >&2; exit 1; }
@@ -78,7 +83,13 @@ check "$TMP/probe.png"
 xcrun simctl status_bar "$U" override --time 9:41 --batteryState discharging --batteryLevel 100 --cellularBars 4 --wifiBars 3
 
 hex() { printf '%s' "$1" | xxd -p | tr -d '\n'; }
-COMMON=(-unit TB -AppleLanguages "(en)" -AppleLocale en_US)
+LANG_CODE="${L10N:-en}"
+case "$LANG_CODE" in
+  en) LOC=en_US ;; es) LOC=es_ES ;; fr) LOC=fr_FR ;; it) LOC=it_IT ;; ja) LOC=ja_JP ;; de) LOC=de_DE ;;
+  zh-Hant) LOC=zh_TW ;; zh-Hans) LOC=zh_CN ;; ko) LOC=ko_KR ;; pt-BR) LOC=pt_BR ;; ru) LOC=ru_RU ;;
+  *) echo "unsupported L10N: $LANG_CODE" >&2; exit 2 ;;
+esac
+COMMON=(-unit TB -AppleLanguages "($LANG_CODE)" -AppleLocale "$LOC")
 NAS=(-selectedTab nas -nas.system synology -nas.bayCount 4 -nas.settings "" -nas.currentSetup "")
 
 # keep <src> <dest base>: copy without ever overwriting an existing raw.
@@ -108,5 +119,5 @@ for mode in light dark; do
   done
 done
 
-"$PY" "$HERE/compose.py" --only "$SET" --contact
+"$PY" "$HERE/compose.py" ${COMPOSE[@]+"${COMPOSE[@]}"} --only "$SET" --contact
 echo "Done. Check the contact sheet above before moving on to the next pose."

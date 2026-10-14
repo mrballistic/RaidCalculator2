@@ -61,6 +61,8 @@ The project’s `PRODUCT_BUNDLE_IDENTIFIER` decides it; there is no setting in t
 - Make sure the original record’s **Pricing and Availability** is set to available when you submit.
 - After the new version is live, remove RAID Calc2 from sale. People with the original app get the new version as an update; RAID Calc2 owners keep what they have.
 - If `53Q4825KDF` isn’t registered under the current team (developer.apple.com → Identifiers), cloud signing fails with a profile error.
+- **Archive guard.** The app target’s last build phase, “Check App Store record”, runs only when archiving. On `legacy/raidcalc2` the bundle ID must be `com.mrballistic.RaidCalculator2`; on every other branch it must be `53Q4825KDF`. A mismatch stops the archive before anything can be uploaded. The branch comes from Xcode Cloud’s `CI_BRANCH`, or else from `.git/HEAD`; if neither is readable, the guard warns and lets the archive through.
+- **Xcode Cloud** ties its product to one App Store Connect app. Create it with `main` checked out, never the legacy branch, or its builds belong to RaidCalc2.
 
 ## Website: `www.yml`
 

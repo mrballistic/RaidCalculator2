@@ -38,7 +38,7 @@ RaidCalculator2/
 ├── InfoSheet.swift               # The info sheet shared by RAID levels and NAS systems
 ├── Colors.swift                  # Color.dataFill, the data-mark color kept apart from the tint
 ├── Extensions.swift              # String.localized()
-├── Localizable.xcstrings         # Every user-facing string, in ten languages
+├── Localizable.xcstrings         # Every user-facing string, in eleven languages
 ├── Assets.xcassets               # AccentColor (the tint), DataColor, the Messages sticker icon
 ├── AppIcon.icon                  # App icon, with appearance variants
 └── Preview Content/
@@ -163,14 +163,14 @@ Layouts follow size class and window size, never the device idiom.
 
 ## Strings and localization
 
-All user-facing text lives in `RaidCalculator2/Localizable.xcstrings`, read with `"key".localized()`, in ten languages: `en`, `es`, `fr`, `it`, `ja`, `de`, `zh-Hant`, `zh-Hans`, `ko`, `pt-BR`. Info-sheet copy follows a key pattern: `<prefix>_description`, `_pros`, `_cons`, `_use_cases` and optionally `_calculation`, where the prefix is `RaidLevel.stringKeyPrefix` or the NAS system’s raw value.
+All user-facing text lives in `RaidCalculator2/Localizable.xcstrings`, read with `"key".localized()`, in eleven languages: `en`, `es`, `fr`, `it`, `ja`, `de`, `zh-Hant`, `zh-Hans`, `ko`, `pt-BR`, `ru`. Info-sheet copy follows a key pattern: `<prefix>_description`, `_pros`, `_cons`, `_use_cases` and optionally `_calculation`, where the prefix is `RaidLevel.stringKeyPrefix` or the NAS system’s raw value.
 
 Never hand-edit the catalog; Xcode and the script both rewrite it. Use `scripts/strings.py`:
 
 ```bash
-# Add keys from a JSON file; every key needs all ten languages
+# Add keys from a JSON file; every key needs all eleven languages
 python3 scripts/strings.py add new-strings.json
-# {"key": {"en": "…", "es": "…", "fr": "…", "it": "…", "ja": "…", "de": "…", "zh-Hant": "…", "zh-Hans": "…", "ko": "…", "pt-BR": "…"}}
+# {"key": {"en": "…", "es": "…", "fr": "…", "it": "…", "ja": "…", "de": "…", "zh-Hant": "…", "zh-Hans": "…", "ko": "…", "pt-BR": "…", "ru": "…"}}
 
 # Remove keys (to change a string: remove, then add)
 python3 scripts/strings.py remove key [key …]

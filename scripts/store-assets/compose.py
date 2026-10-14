@@ -19,6 +19,7 @@ Usage:
 Paths in SHOTS are relative to the repo root.
 """
 import argparse
+import re
 import os
 import sys
 
@@ -63,7 +64,28 @@ for name, pair in BACKGROUNDS.items():
     assert contrast(pair["bg"], pair["ink"]) >= 4.5, f"{name}: headline contrast below 4.5:1"
 
 
+# Headline faces for scripts SF Pro doesn't cover (1.7.1 localized sets):
+# (file, index in the collection). PingFang ships as a mobile asset, so look
+# it up rather than hard-coding the asset hash.
+def _pingfang():
+    import glob
+    found = glob.glob("/System/Library/AssetsV2/com_apple_MobileAsset_Font*/*/AssetData/PingFang.ttc")
+    return found[0] if found else None
+CJK_FACES = {
+    "ja": ("/System/Library/Fonts/ヒラギノ角ゴシック W7.ttc", 0),   # Hiragino Sans W7
+    "zh-Hant": (_pingfang(), 10),                                 # PingFang TC Semibold
+    "zh-Hans": (_pingfang(), 11),                                 # PingFang SC Semibold
+    "ko": ("/System/Library/Fonts/AppleSDGothicNeo.ttc", 6),      # Apple SD Gothic Neo Bold
+}
+# Languages written without spaces between words, wrapped by character.
+NO_SPACES = {"ja", "zh-Hant", "zh-Hans"}
+LANG = None  # set by --lang
+
+
 def font(px, weight=700):
+    if LANG in CJK_FACES:
+        path, index = CJK_FACES[LANG]
+        return ImageFont.truetype(path, max(8, round(px)), index=index)
     f = ImageFont.truetype(SF, max(8, round(px)))
     # Axes: Width, Optical Size, GRAD, Weight. 96 is the display cut.
     f.set_variation_by_axes([100, 96, 400, weight])
@@ -84,11 +106,20 @@ def check_copy(text):
         raise SystemExit(f"copy rule broken in {text!r}: {', '.join(problems)}")
 
 
+def tokens(text):
+    """The units a headline may break between, and the string that joins
+    them. Chinese and Japanese have no spaces, so their headlines mark the
+    places a line may break with |, between phrases, never inside a word."""
+    if LANG in NO_SPACES:
+        return [t for t in text.split("|") if t], ""
+    return text.split(), " "
+
+
 def wrap(d, text, f, max_w):
     """Greedy wrap, then rebalance two lines so neither is a lone word."""
-    words, lines, line = text.split(), [], ""
+    (words, sep), lines, line = tokens(text), [], ""
     for w in words:
-        trial = f"{line} {w}".strip()
+        trial = f"{line}{sep}{w}".strip() if sep else line + w
         if d.textlength(trial, font=f) <= max_w or not line:
             line = trial
         else:
@@ -98,7 +129,7 @@ def wrap(d, text, f, max_w):
     if len(lines) == 2:
         best = None
         for i in range(1, len(words)):
-            a, b = " ".join(words[:i]), " ".join(words[i:])
+            a, b = sep.join(words[:i]), sep.join(words[i:])
             wa, wb = d.textlength(a, font=f), d.textlength(b, font=f)
             if max(wa, wb) <= max_w and (best is None or abs(wa - wb) < best[0]):
                 best = (abs(wa - wb), [a, b])
@@ -122,7 +153,8 @@ def fit_headline(d, text, max_w, size, max_lines=2, floor=0.7):
 
 def draw_lines(d, lines, f, ink, box_x, box_w, top, align, leading=1.08):
     asc, desc = f.getmetrics()
-    step = round((asc + desc) * leading)
+    # CJK faces carry tall ascent and descent; space their lines by size.
+    step = round(f.size * 1.22) if LANG in CJK_FACES else round((asc + desc) * leading)
     for i, line in enumerate(lines):
         w = d.textlength(line, font=f)
         x = box_x + (box_w - w) / 2 if align == "center" else box_x
@@ -351,6 +383,55 @@ for _size in ((1206, 2622), (1179, 2556)):
     SHOTS += [(f"iphone-{_size[0]}x{_size[1]}",) + shot[1:3] + (_size,) + shot[4:]
               for shot in SHOTS if shot[0] == "iphone-1320x2868"]
 
+
+# 1.7.1: the iPhone and iPad sets in every other language the app ships in,
+# captured by capture_localized.sh. Duo stays English. Terms follow each
+# language's own strings in the app (Bahías, Baies, Alloggiamenti, ベイ…).
+FIX = "One tap to a valid setup"
+BAYS = "Up to 30 bays, drawn to scale"
+HEADLINES = {
+    "es": {USABLE: "Conoce tu espacio útil real", COMPARE: "Todos los sistemas, los mismos discos",
+           SAVED: "Mira cuánto añade tu próximo disco", REBUILD: "Te avisa antes de una reconstrucción arriesgada",
+           FIX: "Un toque para una configuración válida", BAYS: "Hasta 30 bahías, a escala"},
+    "fr": {USABLE: "Votre espace utile réel", COMPARE: "Tous les systèmes, mêmes disques",
+           SAVED: "Ce qu’apporte votre prochain disque", REBUILD: "Prévenu avant une reconstruction risquée",
+           FIX: "Une configuration valide en un geste", BAYS: "Jusqu’à 30 baies, à l’échelle"},
+    "it": {USABLE: "Scopri il tuo spazio utile reale", COMPARE: "Tutti i sistemi, stessi dischi",
+           SAVED: "Scopri cosa aggiunge il prossimo disco", REBUILD: "Ti avvisa prima di una ricostruzione rischiosa",
+           FIX: "Una configurazione valida in un tocco", BAYS: "Fino a 30 alloggiamenti, in scala"},
+    "ja": {USABLE: "本当の|使用可能容量が|わかる", COMPARE: "同じドライブで|全システムを|比較",
+           SAVED: "次のドライブで|増える容量が|わかる", REBUILD: "危険な|再構築の|前に|警告",
+           FIX: "ワンタップで|正しい構成に", BAYS: "最大30ベイを|実寸どおりに|表示"},
+    "de": {USABLE: "Dein echter nutzbarer Speicher", COMPARE: "Alle Systeme, dieselben Laufwerke",
+           SAVED: "Sieh, was dein nächstes Laufwerk bringt", REBUILD: "Warnt dich vor einem riskanten Rebuild",
+           FIX: "Mit einem Tipp zum gültigen Setup", BAYS: "Bis zu 30 Schächte, maßstabsgetreu"},
+    "zh-Hant": {USABLE: "掌握|真正的|可用容量", COMPARE: "同樣的硬碟，|比較所有系統",
+                SAVED: "看看|下一顆硬碟|能多出多少", REBUILD: "在有風險的|重建前|提醒你",
+                FIX: "一點即可|修正配置", BAYS: "最多30個硬碟槽，|依比例繪製"},
+    "zh-Hans": {USABLE: "掌握|真正的|可用容量", COMPARE: "同样的硬盘，|比较所有系统",
+                SAVED: "看看|下一块硬盘|能多出多少", REBUILD: "在有风险的|重建前|提醒你",
+                FIX: "轻点即可|修正配置", BAYS: "最多30个盘位，|按比例绘制"},
+    "ko": {USABLE: "실제 사용 가능 용량을 한눈에", COMPARE: "같은 드라이브로 모든 시스템 비교",
+           SAVED: "다음 드라이브로 늘어나는 용량 확인", REBUILD: "위험한 재구축 전에 미리 경고",
+           FIX: "탭 한 번으로 올바른 구성", BAYS: "최대 30개 베이를 실제 비율로"},
+    "pt-BR": {USABLE: "Saiba seu espaço útil real", COMPARE: "Todos os sistemas, os mesmos discos",
+              SAVED: "Veja quanto o próximo disco acrescenta", REBUILD: "Avisa antes de uma reconstrução arriscada",
+              FIX: "Um toque para uma configuração válida", BAYS: "Até 30 baias, em escala"},
+}
+HEADLINES["ru"] = {
+    USABLE: "Узнайте реальную полезную ёмкость",
+    COMPARE: "Все системы на одних и тех же дисках",
+    SAVED: "Посмотрите, что даст новый диск",
+    REBUILD: "Предупреждает о риске восстановления",
+    FIX: "Рабочая конфигурация одним касанием",
+    BAYS: "До 30 отсеков в точном масштабе",
+}
+LOCALIZED_SETS = ("iphone-", "ipad-", "duo-outer-1398x2034")  # Duo: the closed display only
+# The localized usable-space capture is unscrolled, with the large title
+# showing, so its key content (“16 TB” through “Drive Failures Tolerated”)
+# sits lower than in the English one.
+LOCALIZED_HEADER_KEY = (0.05, 0.185, 0.95, 0.52)
+
 # Header / search images. Apple's templates mark an "Art Safe Area": the only
 # part every placement shows (the iPhone product page crops a header to its
 # centre and covers top and bottom). Rects are (x0, y0, x1, y1) in pixels,
@@ -459,7 +540,16 @@ def main():
     p.add_argument("--bg", choices=sorted(BACKGROUNDS))
     p.add_argument("--device", choices=sorted(DEVICES), default="iphone")
     p.add_argument("--headline")
+    p.add_argument("--lang", choices=sorted(HEADLINES), help="1.7.1 localized iPhone and iPad sets, from marketing/screenshots/1.7.1/raw/<lang>")
     a = p.parse_args()
+    global RAW, OUT, LANG
+    shots = SHOTS
+    if a.lang:
+        LANG = a.lang
+        RAW = os.path.join(REPO, "marketing/screenshots/1.7.1/raw", a.lang)
+        OUT = os.path.join(REPO, "marketing/screenshots/1.7.1/store", a.lang)
+        table = HEADLINES[a.lang]
+        shots = [s[:6] + (table[s[6]],) for s in SHOTS if s[0].startswith(LOCALIZED_SETS)]
     if a.raw:
         if not (a.out and a.size and a.bg and a.headline):
             p.error("--raw needs --out, --size, --bg and --headline")
@@ -467,7 +557,7 @@ def main():
         print(compose(a.raw, a.out, (w, h), a.bg, a.headline, a.device))
         return
     sets = set()
-    for folder, name, raw, size, bg, kind, headline in SHOTS:
+    for folder, name, raw, size, bg, kind, headline in shots:
         if a.only and a.only not in folder and a.only not in name:
             continue
         src = latest(os.path.join(RAW, raw))
@@ -477,13 +567,19 @@ def main():
         print(compose(src, os.path.join(OUT, folder, f"{name}.png"), size, bg, headline, kind))
         sets.add(folder)
     if a.headers:
-        for name, size, raw, kind, headline in HEADERS:
+        headers = HEADERS
+        if a.lang:
+            # The iPhone headers from this language's own capture; Duo's stay English.
+            headers = [(n, size, raw, kind, HEADLINES[a.lang][h] if h else None)
+                       for n, size, raw, kind, h in HEADERS if kind == "iphone"]
+        for name, size, raw, kind, headline in headers:
             src = latest(os.path.join(RAW, raw))
             if not os.path.exists(src):
                 print(f"skip header/{name}: missing {src}", file=sys.stderr)
                 continue
             out = os.path.join(OUT, "header", f"{name}.png")
-            print(compose_centered(src, out, size, kind, headline, KEY_CONTENT[raw], debug=a.debug_safe))
+            key = LOCALIZED_HEADER_KEY if a.lang else KEY_CONTENT[raw]
+            print(compose_centered(src, out, size, kind, headline, key, debug=a.debug_safe))
         sets.add("header")
     if a.contact:
         for folder in sorted(sets):
