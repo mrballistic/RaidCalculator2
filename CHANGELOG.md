@@ -2,6 +2,15 @@
 
 How RAID Calculator got from 1.3 to 1.7, newest first. Dates come from the release tags or, where there is no tag, the commit that finished the release. Requirement numbers (FR-*n*) refer to [prd.md](prd.md), and the implementation plans are in `docs/superpowers/plans/`.
 
+## RAID Calc2 1.8.0 (legacy, branch `legacy/raidcalc2`)
+
+The last release of RAID Calc2 (`com.mrballistic.RaidCalculator2`), built from 1.7.0 with the NAS tab and the nested and ZFS levels removed. Never merged into `main`. Spec: `docs/superpowers/specs/2026-10-13-raidcalc2-legacy-design.md`.
+
+- **Retirement notice.** On first launch, a sheet says RAID Calc2 leaves the App Store on December 31, 2026, and offers RAID Calculator’s App Store page in the app. A banner at the top of the form stays, and says “No longer on the App Store” from January 1, 2027.
+- **Classic levels only:** RAID 0, 1, 5, 6, 10 and JBOD, as in 1.3.2. A level saved by a newer build opens as RAID 5.
+- **Desaturated icon.**
+- Everything else from 1.7.0 stays: ten languages, iPad and iPhone Duo layouts, rebuild advice and accessibility.
+
 ## 1.7.0 (2026-10-08)
 
 Merged to `main` on 2026-10-08 and uploaded from local Xcode 27.1, so there is no `v1.7.0` tag (see [DEPLOY.md](DEPLOY.md)). It also carries everything from 1.6.5, listed separately below. Plan: `2026-10-06-1.7.0-duo-and-review.md`; requirements FR-21 and FR-22.

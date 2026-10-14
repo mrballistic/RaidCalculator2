@@ -62,6 +62,15 @@ The project’s `PRODUCT_BUNDLE_IDENTIFIER` decides it; there is no setting in t
 - After the new version is live, remove RAID Calc2 from sale. People with the original app get the new version as an update; RAID Calc2 owners keep what they have.
 - If `53Q4825KDF` isn’t registered under the current team (developer.apple.com → Identifiers), cloud signing fails with a profile error.
 
+### Legacy app: RAID Calc2 1.8.0 (branch `legacy/raidcalc2`)
+
+The final RAID Calc2 release ships from the `legacy/raidcalc2` branch, never from `main`. That branch sets `PRODUCT_BUNDLE_IDENTIFIER = com.mrballistic.RaidCalculator2`, so its builds land on the **RAID Calc2** record (Apple ID `6755641457`). Never open a pull request from it.
+
+- **Upload from local Xcode 27.1** (the release build), as for 1.7.0. Don't push a `v*` tag from the branch: `deploy.yml` would run, and the tag would read as a RAID Calculator release. Tag `legacy-v1.8.0` if a marker is wanted.
+- **Listing and screenshots:** `marketing/raidcalc2-1.8.0-listing.md` and `marketing/screenshots/raidcalc2-1.8.0/store/`, on the branch.
+- **On 2026-12-31:** in App Store Connect, RAID Calc2 → Pricing and Availability → remove from sale in every country. Installed copies keep working, and the in-app notice switches to “No longer on the App Store” on January 1.
+- If signing fails, check that `com.mrballistic.RaidCalculator2` is registered under the current team (developer.apple.com → Identifiers).
+
 ## Website: `www.yml`
 
 Pushing a `www-v<MAJOR.MINOR.PATCH>` tag deploys `www/` to <https://mrballistic.com/raid/>.
