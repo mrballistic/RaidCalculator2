@@ -33,6 +33,7 @@ Success means:
 - Test targets keep their bundle IDs (`com.mrballistic.RaidCalculator2Tests` / `UITests`).
 - DEPLOY.md: a short "Legacy app" section covering the branch, the bundle ID, and removing the app from sale in App Store Connect on 2026-12-31.
 - The branch doesn't change `www/` or the CHANGELOG's history. It adds a 1.8.0 entry to the CHANGELOG on the branch only. Its store assets and listing copy (section 5) are new files on the branch; the RAID Calculator listing and 1.7.0 screenshots are left alone.
+- The branch is pushed to GitHub but **never opened as a pull request** and never merged into `main`. Pushing a non-`main` branch triggers no workflow (`ios.yml` runs on pushes to and PRs into `main`, `deploy.yml` on `v*` tags, `www.yml` on `www-v*` tags). The branch README starts with a one-line notice saying not to open a PR.
 - No `v*` tag on this branch: a `v*` push triggers `deploy.yml`, and `v1.8.0` would look like a RAID Calculator release. Upload from local Xcode (the 1.7.0 path in DEPLOY.md). If a tag is wanted for the record, use `legacy-v1.8.0`.
 
 ## 2. Removals
@@ -108,8 +109,9 @@ The RAID Calc2 record (6755641457) needs a full set of listing copy and screensh
 
 **Screenshots,** composed with `scripts/store-assets/compose.py` from fresh simulator captures of this build:
 
-- **Sizes:** iPhone at 1320 × 2868, plus the 1206 × 2622 and 1179 × 2556 sizes laid out from the same raws, and iPad 13″ at 2064 × 2752. iPhone Duo sizes are included only if App Store Connect requires them for this record. Check the record's media manager. If they're optional, skip them. No header or search images, since a retiring app won't be nominated for featuring.
-- **Shot list:** four images on iPhone and three on iPad. The first shows the retirement sheet ("Moving to RAID Calculator"), then usable space, the rebuild caution with its one-tap fix, and the invalid-setup fix. iPad drops the invalid-setup fix.
+- **Sizes (all required; App Store Connect won't accept the submission without them, because the build targets iPhone, iPad and iPhone Duo):** iPhone at 1320 × 2868, plus the 1206 × 2622 and 1179 × 2556 sizes laid out from the same raws; iPad 13″ at 2064 × 2752; iPhone Duo inner at 2007 × 2853 and 2853 × 2007; and iPhone Duo outer at 1398 × 2034 and 2034 × 1398. No header or search images, since a retiring app won't be nominated for featuring.
+- **Shot list:** four images on iPhone and three on iPad. The first shows the retirement sheet ("Moving to RAID Calculator"), then usable space, the rebuild caution with its one-tap fix, and the invalid-setup fix. iPad drops the invalid-setup fix. Each Duo set has two images, retirement and usable space; the inner landscape set shows the two-column layout.
+- **Duo capture:** reuse `scripts/store-assets/capture_duo.sh`, with the bundle ID, output root and scenes made configurable through environment variables. The 1.7.0 defaults stay as they are. Neither `simctl` nor XCUITest can set the Duo's pose or rotation, so the user sets each of the four poses by hand: the pose in Xcode's Device Hub, rotation with Device › Rotate Left. The script then checks the capture size and that the display is lit, captures and composes.
 - **Background:** a neutral graphite background, added to `compose.py` next to orange and indigo, with white text and the script's existing 4.5:1 contrast assertion. It matches the desaturated icon. The 1.7.0 shot list in `compose.py` stays as it is; the legacy shots are a separate list, selected by a flag.
 - **Raws** go under `marketing/screenshots/raidcalc2-1.8.0/raw/`, and composed images under `.../store/`. The checks are the same as for 1.7.0: exact pixel sizes, no alpha channel, and a contact sheet per set for review.
 - **Gate:** the user approves the contact sheets and the English copy before the translations are made and before upload.
