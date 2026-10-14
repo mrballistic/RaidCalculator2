@@ -418,6 +418,14 @@ HEADLINES = {
               SAVED: "Veja quanto o próximo disco acrescenta", REBUILD: "Avisa antes de uma reconstrução arriscada",
               FIX: "Um toque para uma configuração válida", BAYS: "Até 30 baias, em escala"},
 }
+HEADLINES["ru"] = {
+    USABLE: "Узнайте реальную полезную ёмкость",
+    COMPARE: "Все системы на одних и тех же дисках",
+    SAVED: "Посмотрите, что даст новый диск",
+    REBUILD: "Предупреждает о риске восстановления",
+    FIX: "Рабочая конфигурация одним касанием",
+    BAYS: "До 30 отсеков в точном масштабе",
+}
 LOCALIZED_SETS = ("iphone-", "ipad-")
 # The localized usable-space capture is unscrolled, with the large title
 # showing, so its key content (“16 TB” through “Drive Failures Tolerated”)

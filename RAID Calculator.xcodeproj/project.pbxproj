@@ -102,6 +102,7 @@
 				05D08A9B2ED247C700011453 /* Sources */,
 				05D08A9C2ED247C700011453 /* Frameworks */,
 				05D08A9D2ED247C700011453 /* Resources */,
+				05D0C0DE2ED247CB00011453 /* Check App Store record */,
 			);
 			buildRules = (
 			);
@@ -202,6 +203,7 @@
 				"pt-BR",
 				"zh-Hans",
 				"zh-Hant",
+				ru,
 			);
 			mainGroup = 05D08A962ED247C700011453;
 			minimizedProjectReferenceProxies = 1;
@@ -240,6 +242,30 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		05D0C0DE2ED247CB00011453 /* Check App Store record */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/.git/HEAD",
+			);
+			name = "Check App Store record";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Archiving only: stop an upload landing on the wrong App Store record.\n# The legacy/raidcalc2 branch ships RAID Calc2 (com.mrballistic.RaidCalculator2);\n# every other branch ships RAID Calculator (53Q4825KDF). See DEPLOY.md.\n[ \"$ACTION\" = install ] || exit 0\nbranch=\"${CI_BRANCH:-}\"\nif [ -z \"$branch\" ] && [ -r \"$SRCROOT/.git/HEAD\" ]; then\n  branch=$(sed -n 's|^ref: refs/heads/||p' \"$SRCROOT/.git/HEAD\")\nfi\ncase \"$branch\" in\n  legacy/*) expected=com.mrballistic.RaidCalculator2 ;;\n  \"\") echo \"warning: couldn't read the git branch; not checking which App Store record this archive is for.\"; exit 0 ;;\n  *) expected=53Q4825KDF ;;\nesac\nif [ \"$PRODUCT_BUNDLE_IDENTIFIER\" != \"$expected\" ]; then\n  echo \"error: branch $branch should archive $expected, but the target's bundle ID is $PRODUCT_BUNDLE_IDENTIFIER. Check out the right branch before archiving (RAID Calc2 is legacy/raidcalc2 only).\"\n  exit 1\nfi\necho \"Archiving $PRODUCT_BUNDLE_IDENTIFIER from $branch.\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		05D08A9B2ED247C700011453 /* Sources */ = {

@@ -52,6 +52,12 @@
             "value" : "Sobre o %@"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Справка: %@"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -115,6 +121,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Um conselho, não um erro."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Это совет, а не ошибка."
           }
         },
         "zh-Hans" : {
@@ -182,6 +194,12 @@
             "value" : "Calculadora RAID"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "RAID-калькулятор"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -245,6 +263,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Disponibilidade"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Доступность"
           }
         },
         "zh-Hans" : {
@@ -312,6 +336,12 @@
             "value" : "Baia %1$d, %2$@: %3$@"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отсек %1$d, %2$@: %3$@"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -375,6 +405,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Baias"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отсеки"
           }
         },
         "zh-Hans" : {
@@ -442,6 +478,12 @@
             "value" : "Baia %d, Vazia"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отсек %d, пусто"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -505,6 +547,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Baia %d"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отсек %d"
           }
         },
         "zh-Hans" : {
@@ -572,6 +620,12 @@
             "value" : "Tamanhos em TB"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ёмкость в TB"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -635,6 +689,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "≈ %@ como a maioria dos NAS informa"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "≈ %@, как показывает большинство NAS"
           }
         },
         "zh-Hans" : {
@@ -702,6 +762,12 @@
             "value" : "O espaço utilizável é metade do total, a menos que uma unidade seja maior que todas as outras juntas; nesse caso, é a soma das unidades menores, e o restante da unidade maior aparece como sem uso. Cada unidade é desenhada metade dados, metade cópia."
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Полезная ёмкость равна половине общей, если только один диск не больше всех остальных вместе взятых; тогда она равна сумме меньших дисков, а остаток самого большого диска показан как неиспользуемый. Каждый диск изображён наполовину данными, наполовину копией."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -765,6 +831,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Metade do espaço total guarda a segunda cópia\nSobrevive a apenas uma falha de unidade, não importa quantas unidades haja\nUma unidade maior que todas as outras juntas não pode ser espelhada por completo"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Половина общей ёмкости занята второй копией\nВыдерживает отказ только одного диска, сколько бы дисков ни было\nДиск, который больше всех остальных вместе взятых, нельзя зеркалировать полностью"
           }
         },
         "zh-Hans" : {
@@ -832,6 +904,12 @@
             "value" : "O Btrfs RAID1 mantém duas cópias de cada bloco de dados, em duas unidades diferentes. As unidades podem ter tamanhos diferentes; o Btrfs distribui as cópias de forma equilibrada."
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Btrfs RAID1 хранит две копии каждого блока данных на двух разных дисках. Диски могут быть разной ёмкости: Btrfs размещает копии так, чтобы они были сбалансированы."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -895,6 +973,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Combina unidades de tamanhos diferentes com pouco espaço desperdiçado\nPermite adicionar ou remover unidades e rebalancear com o volume online\nSomas de verificação detectam corrupção e a reparam com a outra cópia"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Диски разной ёмкости почти без потерь места\nДиски можно добавлять и удалять с перебалансировкой, не отключая том\nКонтрольные суммы выявляют повреждения и исправляют их по другой копии"
           }
         },
         "zh-Hans" : {
@@ -962,6 +1046,12 @@
             "value" : "O Btrfs RAID1 precisa de pelo menos 2 discos."
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Для Btrfs RAID1 нужно минимум 2 диска."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1025,6 +1115,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pequenos servidores domésticos com poucas unidades de tamanhos diferentes\nServidores Linux e sistemas NAS baseados em Btrfs\nConfigurações que crescem uma unidade por vez"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Небольшие домашние серверы с несколькими разными дисками\nСерверы Linux и NAS на базе Btrfs\nКонфигурации, которые растут по одному диску"
           }
         },
         "zh-Hans" : {
@@ -1092,6 +1188,12 @@
             "value" : "Cancelar"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отменить"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1155,6 +1257,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Usa todas as %d baias"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Используются все отсеки (%d)"
           }
         },
         "zh-Hans" : {
@@ -1222,6 +1330,12 @@
             "value" : "Falhas toleradas: %d"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Допустимо отказов: %d"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1285,6 +1399,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Usa as primeiras %d baias"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Используются отсеки с 1 по %d"
           }
         },
         "zh-Hans" : {
@@ -1352,6 +1472,12 @@
             "value" : "Todos os sistemas, mesmos discos"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Все системы, одни и те же диски"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1415,6 +1541,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Muda a aba NAS para este sistema."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Переключает вкладку NAS на эту систему."
           }
         },
         "zh-Hans" : {
@@ -1482,6 +1614,12 @@
             "value" : "Comparar sistemas"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сравнить системы"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1545,6 +1683,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ sem uso"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ не используется"
           }
         },
         "zh-Hans" : {
@@ -1612,6 +1756,12 @@
             "value" : "Comparado com sua configuração atual"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "В сравнении с текущей конфигурацией"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1675,6 +1825,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Contras"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Минусы"
           }
         },
         "zh-Hans" : {
@@ -1742,6 +1898,12 @@
             "value" : "Configuração atual: %1$@ utilizáveis · %2$@ · %3$d baias"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Текущая конфигурация: %1$@ полезной ёмкости · %2$@ · отсеков: %3$d"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1805,6 +1967,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tamanho personalizado…"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Своя ёмкость…"
           }
         },
         "zh-Hans" : {
@@ -1872,6 +2040,12 @@
             "value" : "%@ utilizáveis"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ полезной ёмкости"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1935,6 +2109,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "OK"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Готово"
           }
         },
         "zh-Hans" : {
@@ -2002,6 +2182,12 @@
             "value" : "Configuração das unidades"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Конфигурация дисков"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2065,6 +2251,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Falhas de unidade toleradas"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Допустимые отказы"
           }
         },
         "zh-Hans" : {
@@ -2132,6 +2324,12 @@
             "value" : "Tamanho da unidade"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ёмкость диска"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2195,6 +2393,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Digite um tamanho de disco maior que zero."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Введите ёмкость диска больше нуля."
           }
         },
         "zh-Hans" : {
@@ -2262,6 +2466,12 @@
             "value" : "%1$d discos: %2$@"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Дисков: %1$d; %2$@"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2325,6 +2535,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Grupo %1$d de %2$d, disco %3$d: %4$@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Группа %1$d из %2$d, диск %3$d: %4$@"
           }
         },
         "zh-Hans" : {
@@ -2392,6 +2608,12 @@
             "value" : "Grupo %1$d de %2$d: %3$@"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Группа %1$d из %2$d: %3$@"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2455,6 +2677,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$d discos em %2$d grupos: %3$@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Дисков: %1$d, групп: %2$d; %3$@"
           }
         },
         "zh-Hans" : {
@@ -2522,6 +2750,12 @@
             "value" : "Discos"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Диски"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2585,6 +2819,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Vazia"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пусто"
           }
         },
         "zh-Hans" : {
@@ -2652,6 +2892,12 @@
             "value" : "Digite um tamanho de unidade."
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Введите ёмкость диска."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2715,6 +2961,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$d grupos de %2$d unidades"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Групп: %1$d, дисков в каждой: %2$d"
           }
         },
         "zh-Hans" : {
@@ -2782,6 +3034,12 @@
             "value" : "Um grupo de %d unidades"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Одна группа, дисков: %d"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2845,6 +3103,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cada grupo %1$@ precisa de pelo menos %2$d unidades."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Минимум дисков в каждой группе %1$@: %2$d."
           }
         },
         "zh-Hans" : {
@@ -2912,6 +3176,12 @@
             "value" : "%1$d, até %2$d (depende de quais unidades falharem)"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$d, до %2$d (зависит от того, какие диски откажут)"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2975,6 +3245,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Grupos"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Группы"
           }
         },
         "zh-Hans" : {
@@ -3042,6 +3318,12 @@
             "value" : "O número de unidades (%1$d) não se divide igualmente em %2$d grupos."
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Количество дисков (%1$d) не делится поровну на число групп (%2$d)."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3105,6 +3387,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Alta"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Высокая"
           }
         },
         "zh-Hans" : {
@@ -3172,6 +3460,12 @@
             "value" : "Como o app calcula isso"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Как считает приложение"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3235,6 +3529,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Configuração inválida."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Недопустимая конфигурация."
           }
         },
         "zh-Hans" : {
@@ -3302,6 +3602,12 @@
             "value" : "Sem redundância ou proteção de dados\nA falha de uma unidade afeta apenas os dados dessa unidade\nSem os ganhos de desempenho do striping"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нет избыточности и защиты данных\nОтказ диска затрагивает только данные на этом диске\nНет прироста скорости от чередования"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3365,6 +3671,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "O JBOD (Just a Bunch Of Disks) combina várias unidades em um único volume grande, sem recursos de RAID. Cada unidade funciona de forma independente."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "JBOD (Just a Bunch Of Disks) объединяет несколько дисков в один большой том без функций RAID. Каждый диск работает независимо."
           }
         },
         "zh-Hans" : {
@@ -3432,6 +3744,12 @@
             "value" : "0 (você perde os dados de qualquer unidade que falhar)"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "0 (данные на отказавшем диске теряются)"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3495,6 +3813,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Simples e flexível\nAproveitamento total da capacidade de todas as unidades\nSem sobrecarga de desempenho dos cálculos de RAID"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Просто и гибко\nИспользуется вся ёмкость дисков\nНет накладных расходов на вычисления RAID"
           }
         },
         "zh-Hans" : {
@@ -3562,6 +3886,12 @@
             "value" : "Necessidade de armazenamento em um único volume grande\nSistemas de arquivamento e backup\nServidores e bibliotecas de mídia"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Большое хранилище в одном томе\nАрхивы и системы резервного копирования\nМедиасерверы и медиатеки"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3625,6 +3955,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "O JBOD requer pelo menos 1 unidade."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Для JBOD нужен минимум 1 диск."
           }
         },
         "zh-Hans" : {
@@ -3692,6 +4028,12 @@
             "value" : "Baixa"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Низкая"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3755,6 +4097,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Média"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Средняя"
           }
         },
         "zh-Hans" : {
@@ -3822,6 +4170,12 @@
             "value" : "Mais níveis"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Другие уровни"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3885,6 +4239,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Configuração"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Конфигурация"
           }
         },
         "zh-Hans" : {
@@ -3952,6 +4312,12 @@
             "value" : "Sistema"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Система"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4015,6 +4381,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Calculadora NAS"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "NAS-калькулятор"
           }
         },
         "zh-Hans" : {
@@ -4082,6 +4454,12 @@
             "value" : "Nível RAID-Z"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Уровень RAID-Z"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4145,6 +4523,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Aninhados"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вложенные"
           }
         },
         "zh-Hans" : {
@@ -4212,6 +4596,12 @@
             "value" : "O %1$@ precisa de pelo menos dois grupos. Com um só grupo, ele é um %2$@."
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ требует не менее двух групп. С одной группой это %2$@."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4275,6 +4665,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Adicione um disco a uma baia para começar."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Установите диск в отсек, чтобы начать."
           }
         },
         "zh-Hans" : {
@@ -4342,6 +4738,12 @@
             "value" : "Não afiliado à Synology Inc. nem endossado por ela. Synology e SHR são marcas comerciais da Synology Inc."
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Приложение не связано с компанией Synology Inc. и не одобрено ею. Synology и SHR являются товарными знаками Synology Inc."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4405,6 +4807,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Número de unidades"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Количество дисков"
           }
         },
         "zh-Hans" : {
@@ -4472,6 +4880,12 @@
             "value" : "Visão geral"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Обзор"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4535,6 +4949,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Discos de paridade"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Диски чётности"
           }
         },
         "zh-Hans" : {
@@ -4602,6 +5022,12 @@
             "value" : "O %@ precisa de pelo menos um disco de dados além dos discos de paridade."
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Для %@ нужен хотя бы один диск данных помимо дисков чётности."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4665,6 +5091,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Os discos maiores são usados como paridade, então a paridade é sempre pelo menos tão grande quanto cada disco de dados."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Под чётность отводятся самые большие диски, поэтому чётность всегда не меньше любого диска данных."
           }
         },
         "zh-Hans" : {
@@ -4732,6 +5164,12 @@
             "value" : "Avaliações de desempenho"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Оценки производительности"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4795,6 +5233,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Prós"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Плюсы"
           }
         },
         "zh-Hans" : {
@@ -4862,6 +5306,12 @@
             "value" : "Prós e contras"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Плюсы и минусы"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4925,6 +5375,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sem redundância ou proteção de dados\nA falha de uma única unidade causa perda total dos dados\nNão é adequado para dados críticos"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Нет избыточности и защиты данных\nОтказ одного диска ведёт к потере всех данных\nНе подходит для важных данных"
           }
         },
         "zh-Hans" : {
@@ -4992,6 +5448,12 @@
             "value" : "O RAID 0 (striping) divide os dados entre várias unidades para obter o máximo desempenho, mas não oferece redundância. Se alguma unidade falhar, todos os dados são perdidos."
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "RAID 0 (чередование) распределяет данные по нескольким дискам ради максимальной скорости, но не даёт избыточности. При отказе любого диска теряются все данные."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5052,6 +5514,12 @@
           }
         },
         "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "0"
+          }
+        },
+        "ru" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "0"
@@ -5122,6 +5590,12 @@
             "value" : "Máximo desempenho e velocidade\nAproveitamento total da capacidade de armazenamento\nSimples de implementar"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Максимальная производительность и скорость\nИспользуется вся ёмкость хранилища\nПростая настройка"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5185,6 +5659,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Edição de vídeo e arquivos de trabalho temporários\nJogos e apps que precisam de E/S rápida\nCache ou sistemas de armazenamento temporário"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Видеомонтаж и временные рабочие файлы\nИгры и приложения, которым нужен быстрый ввод-вывод\nКеш и временные хранилища"
           }
         },
         "zh-Hans" : {
@@ -5252,6 +5732,12 @@
             "value" : "O RAID 0 requer pelo menos 1 unidade."
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Для RAID 0 нужен минимум 1 диск."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5272,61 +5758,67 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "50 % Speichereffizienz\nBraucht eine gerade Anzahl Laufwerke (mindestens 4)\nHöhere Kosten pro nutzbarem GB"
+            "value" : "Nur die Hälfte der Bruttokapazität ist nutzbar\nBraucht eine gerade Anzahl Laufwerke (mindestens 4)\nHöhere Kosten pro nutzbarem GB"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "50% storage capacity efficiency\nRequires even number of drives (minimum 4)\nHigher cost per usable GB"
+            "value" : "Only half the raw capacity is usable\nRequires even number of drives (minimum 4)\nHigher cost per usable GB"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Eficiencia de capacidad de almacenamiento del 50%\nRequiere número par de unidades (mínimo 4)\nCosto más alto por GB utilizable"
+            "value" : "Solo se aprovecha la mitad de la capacidad bruta\nRequiere número par de unidades (mínimo 4)\nCosto más alto por GB utilizable"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Efficacité de capacité de stockage de 50%\nNécessite un nombre pair de disques (minimum 4)\nCoût plus élevé par GB utilisable"
+            "value" : "Seule la moitié de la capacité brute est utilisable\nNécessite un nombre pair de disques (minimum 4)\nCoût plus élevé par GB utilisable"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Efficienza capacità di archiviazione del 50%\nRichiede numero pari di dischi (minimo 4)\nCosto più alto per GB utilizzabile"
+            "value" : "È utilizzabile solo metà della capacità lorda\nRichiede numero pari di dischi (minimo 4)\nCosto più alto per GB utilizzabile"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ストレージ容量効率50%\n偶数のドライブが必要（最小4）\n使用可能GBあたりのコストが高い"
+            "value" : "使用できるのは総容量の半分だけ\n偶数のドライブが必要（最小4）\n使用可能GBあたりのコストが高い"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "스토리지 용량 효율 50%\n짝수 개의 드라이브 필요(최소 4개)\n사용 가능 GB당 비용이 높음"
+            "value" : "전체 용량의 절반만 사용 가능\n짝수 개의 드라이브 필요(최소 4개)\n사용 가능 GB당 비용이 높음"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "50% de eficiência da capacidade de armazenamento\nRequer um número par de unidades (mínimo de 4)\nCusto mais alto por GB utilizável"
+            "value" : "Só metade da capacidade bruta é utilizável\nRequer um número par de unidades (mínimo de 4)\nCusto mais alto por GB utilizável"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Доступна только половина общей ёмкости\nНужно чётное число дисков (минимум 4)\nВыше стоимость гигабайта полезной ёмкости"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "存储容量利用率为 50%\n需要偶数块硬盘（至少 4 块）\n每 GB 可用容量的成本较高"
+            "value" : "只能使用一半的原始容量\n需要偶数块硬盘（至少 4 块）\n每 GB 可用容量的成本较高"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "儲存容量效率為 50%\n需要偶數顆硬碟（至少 4 顆）\n每 GB 可用容量的成本較高"
+            "value" : "只能使用一半的原始容量\n需要偶數顆硬碟（至少 4 顆）\n每 GB 可用容量的成本較高"
           }
         }
       }
@@ -5380,6 +5872,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "O RAID 10 (stripe de espelhos) combina espelhamento e striping. Oferece excelente desempenho e redundância, mas requer um número par de unidades."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "RAID 10 (чередование зеркал) сочетает зеркалирование и чередование. Обеспечивает отличную производительность и избыточность, но требует чётного числа дисков."
           }
         },
         "zh-Hans" : {
@@ -5447,6 +5945,12 @@
             "value" : "Até %d (depende de quais unidades falharem)"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "До %d (зависит от того, какие диски откажут)"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5510,6 +6014,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Excelente desempenho de leitura e gravação\nAlta redundância com reconstrução rápida\nPode sobreviver a várias falhas de unidade (se estiverem em espelhos diferentes)"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отличная скорость чтения и записи\nВысокая избыточность и быстрое восстановление\nМожет пережить отказ нескольких дисков (если они в разных зеркалах)"
           }
         },
         "zh-Hans" : {
@@ -5577,6 +6087,12 @@
             "value" : "Bancos de dados de alto desempenho\nVirtualização e clusters de servidores\nAplicações críticas que precisam de velocidade e redundância"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Высокопроизводительные базы данных\nВиртуализация и кластеры серверов\nВажные приложения, которым нужны и скорость, и избыточность"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5642,6 +6158,12 @@
             "value" : "O RAID 10 requer um número par de unidades (4 ou mais)."
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Для RAID 10 нужно чётное число дисков (4 или больше)."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5662,61 +6184,67 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "50 % Speichereffizienz\nHöhere Kosten pro nutzbarem GB\nSchreibleistung wie bei einem einzelnen Laufwerk"
+            "value" : "Nur die Kapazität eines Laufwerks ist nutzbar\nHöhere Kosten pro nutzbarem GB\nSchreibleistung wie bei einem einzelnen Laufwerk"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "50% storage capacity efficiency\nHigher cost per usable GB\nWrite performance similar to single drive"
+            "value" : "Only one drive’s worth of space is usable\nHigher cost per usable GB\nWrite performance similar to single drive"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Eficiencia de capacidad de almacenamiento del 50%\nCosto más alto por GB utilizable\nRendimiento de escritura similar a unidad única"
+            "value" : "Solo se aprovecha la capacidad de una unidad\nCosto más alto por GB utilizable\nRendimiento de escritura similar a unidad única"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Efficacité de capacité de stockage de 50%\nCoût plus élevé par GB utilisable\nPerformances en écriture similaires à un seul disque"
+            "value" : "Seule la capacité d’un disque est utilisable\nCoût plus élevé par GB utilisable\nPerformances en écriture similaires à un seul disque"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Efficienza capacità di archiviazione del 50%\nCosto più alto per GB utilizzabile\nPrestazioni in scrittura simili a un singolo disco"
+            "value" : "È utilizzabile solo la capacità di un disco\nCosto più alto per GB utilizzabile\nPrestazioni in scrittura simili a un singolo disco"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ストレージ容量効率50%\n使用可能GBあたりのコストが高い\n単一ドライブに類似した書き込みパフォーマンス"
+            "value" : "使用できるのはドライブ1台分の容量だけ\n使用可能GBあたりのコストが高い\n単一ドライブに類似した書き込みパフォーマンス"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "스토리지 용량 효율 50%\n사용 가능 GB당 비용이 높음\n쓰기 성능이 단일 드라이브와 비슷함"
+            "value" : "드라이브 1개 용량만 사용 가능\n사용 가능 GB당 비용이 높음\n쓰기 성능이 단일 드라이브와 비슷함"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "50% de eficiência da capacidade de armazenamento\nCusto mais alto por GB utilizável\nDesempenho de gravação semelhante ao de uma única unidade"
+            "value" : "Só a capacidade de uma unidade é utilizável\nCusto mais alto por GB utilizável\nDesempenho de gravação semelhante ao de uma única unidade"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Доступна ёмкость только одного диска\nВыше стоимость гигабайта полезной ёмкости\nСкорость записи как у одного диска"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "存储容量利用率为 50%\n每 GB 可用容量的成本较高\n写入性能与单块硬盘相近"
+            "value" : "只能使用一块硬盘的容量\n每 GB 可用容量的成本较高\n写入性能与单块硬盘相近"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "儲存容量效率為 50%\n每 GB 可用容量的成本較高\n寫入效能與單顆硬碟相近"
+            "value" : "只能使用一顆硬碟的容量\n每 GB 可用容量的成本較高\n寫入效能與單顆硬碟相近"
           }
         }
       }
@@ -5770,6 +6298,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "O RAID 1 (espelhamento) cria cópias exatas dos dados em várias unidades. Oferece excelente redundância, mas reduz pela metade a capacidade utilizável."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "RAID 1 (зеркалирование) создаёт точные копии данных на нескольких дисках. Обеспечивает отличную избыточность, но вдвое уменьшает полезную ёмкость."
           }
         },
         "zh-Hans" : {
@@ -5832,6 +6366,12 @@
           }
         },
         "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%d"
+          }
+        },
+        "ru" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%d"
@@ -5902,6 +6442,12 @@
             "value" : "Redundância completa dos dados\nLeitura rápida\nRecuperação simples após falha de unidade"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Полная избыточность данных\nБыстрое чтение\nПростое восстановление после отказа диска"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5965,6 +6511,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Unidades de inicialização e sistemas operacionais\nBancos de dados e aplicações críticas\nServidores de pequenas empresas"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Загрузочные диски и операционные системы\nВажные базы данных и приложения\nСерверы малого бизнеса"
           }
         },
         "zh-Hans" : {
@@ -6032,6 +6584,12 @@
             "value" : "O RAID 1 requer pelo menos 2 unidades."
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Для RAID 1 нужно минимум 2 диска."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6095,6 +6653,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Duas falhas no mesmo grupo fazem perder o conjunto inteiro\nPrecisa de pelo menos seis unidades\nDedica uma unidade por grupo à paridade"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Два отказа в одной группе губят весь массив\nНужно минимум шесть дисков\nВ каждой группе один диск уходит под чётность"
           }
         },
         "zh-Hans" : {
@@ -6162,6 +6726,12 @@
             "value" : "O RAID 50 distribui os dados em faixas entre dois ou mais grupos RAID 5, e cada um reserva o equivalente a uma unidade para paridade. As gravações se espalham entre os grupos, então ele é mais rápido que um único conjunto RAID 5. Uma reconstrução afeta apenas um grupo."
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "RAID 50 распределяет данные с чередованием по двум или более группам RAID 5, и в каждой группе под чётность отведена ёмкость одного диска. Запись распределяется по группам, поэтому он быстрее одного массива RAID 5. Восстановление затрагивает только одну группу."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6225,6 +6795,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mais rápido que o RAID 5, porque as gravações se espalham entre os grupos\nUma reconstrução lê apenas as unidades de um grupo\nPode sobreviver a uma falha em cada grupo"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Быстрее RAID 5, потому что запись распределяется по группам\nПри восстановлении читаются диски только одной группы\nВыдерживает по одному отказу в каждой группе"
           }
         },
         "zh-Hans" : {
@@ -6292,6 +6868,12 @@
             "value" : "Conjuntos grandes que precisam de mais velocidade que o RAID 5\nBancos de dados e máquinas virtuais em muitas unidades\nControladoras RAID de hardware compatíveis com níveis aninhados"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Большие массивы, которым нужна скорость выше, чем у RAID 5\nБазы данных и виртуальные машины на множестве дисков\nАппаратные RAID-контроллеры с поддержкой вложенных уровней"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6355,6 +6937,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Gravação mais lenta devido ao cálculo de paridade\nA reconstrução pode ser lenta com unidades grandes\nRisco de perda de dados durante a reconstrução se outra unidade falhar"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Запись медленнее из-за вычисления чётности\nВосстановление на больших дисках может идти долго\nРиск потери данных, если во время восстановления откажет ещё один диск"
           }
         },
         "zh-Hans" : {
@@ -6422,6 +7010,12 @@
             "value" : "O RAID 5 (striping com paridade) distribui dados e paridade entre todas as unidades. Oferece bom desempenho e redundância com perda mínima de capacidade."
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "RAID 5 (чередование с чётностью) распределяет данные и чётность по всем дискам. Обеспечивает хорошую производительность и избыточность при минимальных потерях ёмкости."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6482,6 +7076,12 @@
           }
         },
         "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1"
+          }
+        },
+        "ru" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "1"
@@ -6552,6 +7152,12 @@
             "value" : "Bom equilíbrio entre desempenho e redundância\nUso eficiente da capacidade de armazenamento\nPode sobreviver à falha de uma unidade"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Хороший баланс производительности и избыточности\nЭффективное использование ёмкости\nВыдерживает отказ одного диска"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6615,6 +7221,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Servidores de arquivos e armazenamento conectado à rede\nArmazenamento de servidor para uso geral\nSistemas de backup e arquivamento"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Файловые серверы и сетевые хранилища (NAS)\nСерверные хранилища общего назначения\nСистемы резервного копирования и архивы"
           }
         },
         "zh-Hans" : {
@@ -6682,6 +7294,12 @@
             "value" : "O RAID 5 requer pelo menos 3 unidades."
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Для RAID 5 нужно минимум 3 диска."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6745,6 +7363,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Dedica duas unidades por grupo à paridade\nPrecisa de pelo menos oito unidades\nGravação mais lenta que a do RAID 50"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "В каждой группе два диска уходят под чётность\nНужно минимум восемь дисков\nЗапись медленнее, чем у RAID 50"
           }
         },
         "zh-Hans" : {
@@ -6812,6 +7436,12 @@
             "value" : "O RAID 60 distribui os dados em faixas entre dois ou mais grupos RAID 6. Cada grupo reserva o equivalente a duas unidades para paridade, então quaisquer duas unidades podem falhar, e muitas vezes mais."
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "RAID 60 распределяет данные с чередованием по двум или более группам RAID 6. В каждой группе под чётность отведена ёмкость двух дисков, поэтому могут отказать любые два диска, а часто и больше."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6875,6 +7505,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sobrevive à falha de quaisquer duas unidades, e de até duas por grupo\nMais rápido que um único conjunto RAID 6\nUma reconstrução lê apenas as unidades de um grupo"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Выдерживает отказ любых двух дисков и до двух в каждой группе\nБыстрее одного массива RAID 6\nПри восстановлении читаются диски только одной группы"
           }
         },
         "zh-Hans" : {
@@ -6942,6 +7578,12 @@
             "value" : "Conjuntos grandes em que perder dados não é uma opção\nServidores de backup e arquivamento com muitas unidades grandes\nControladoras RAID de hardware compatíveis com níveis aninhados"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Большие массивы, где потеря данных недопустима\nСерверы резервного копирования и архивов с множеством больших дисков\nАппаратные RAID-контроллеры с поддержкой вложенных уровней"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7005,6 +7647,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Perda de capacidade maior que a do RAID 5\nGravação mais lenta que a do RAID 5\nImplementação mais complexa"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Больше потерь ёмкости, чем у RAID 5\nЗапись медленнее, чем у RAID 5\nБолее сложная реализация"
           }
         },
         "zh-Hans" : {
@@ -7072,6 +7720,12 @@
             "value" : "O RAID 6 (striping com paridade dupla) é semelhante ao RAID 5, mas com dois conjuntos de paridade. Pode sobreviver à falha simultânea de duas unidades."
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "RAID 6 (чередование с двойной чётностью) похож на RAID 5, но использует два набора чётности. Выдерживает одновременный отказ двух дисков."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7132,6 +7786,12 @@
           }
         },
         "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "2"
+          }
+        },
+        "ru" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "2"
@@ -7202,6 +7862,12 @@
             "value" : "Excelente redundância (tolera a falha de 2 unidades)\nBoa proteção durante as reconstruções\nAdequado para unidades de grande capacidade"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Отличная избыточность (выдерживает отказ 2 дисков)\nХорошая защита во время восстановления\nПодходит для дисков большой ёмкости"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7265,6 +7931,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Grandes sistemas de armazenamento corporativo\nArquivos de dados críticos\nSistemas com reconstruções demoradas"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Крупные корпоративные системы хранения\nАрхивы важных данных\nСистемы с долгим восстановлением"
           }
         },
         "zh-Hans" : {
@@ -7332,6 +8004,12 @@
             "value" : "O RAID 6 requer pelo menos 4 unidades."
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Для RAID 6 нужно минимум 4 диска."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7395,6 +8073,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nível RAID"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Уровень RAID"
           }
         },
         "zh-Hans" : {
@@ -7462,6 +8146,12 @@
             "value" : "Tipo de RAID"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Тип RAID"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7525,6 +8215,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "O espaço utilizável é mostrado de duas formas. O primeiro número é a fórmula simples: unidades menos paridade, em cada grupo. O segundo é uma estimativa do que o ZFS vai informar com as configurações padrão (setores de 4K e registros de 128K). Ele subtrai o preenchimento de alocação do RAID-Z, que torna algumas larguras de grupo menos eficientes que outras, e o espaço que o ZFS reserva: 1/32 do pool, no máximo 128 GiB. A compressão, o tamanho de registro e o tamanho de setor alteram o número real, e uma pequena quantidade de metadados em disco não é contada."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Полезная ёмкость показана двумя способами. Первое значение рассчитано по простой формуле: число дисков минус диски чётности, в каждой группе. Второе оценивает, что покажет ZFS при настройках по умолчанию (секторы 4K и записи 128K). Из него вычитаются выравнивание (padding) RAID-Z, из-за которого одни ширины групп менее эффективны, чем другие, и место, которое резервирует ZFS: 1/32 пула, но не более 128 GiB. Сжатие, размер записи и размер сектора меняют реальное значение, а небольшой объём метаданных на дисках не учитывается."
           }
         },
         "zh-Hans" : {
@@ -7592,6 +8288,12 @@
             "value" : "Sobrevive a apenas uma falha por grupo\nArriscado com unidades grandes, porque as reconstruções demoram muito\nUsa mais memória que o RAID de hardware"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Выдерживает только один отказ в группе\nРискованно с большими дисками, потому что восстановление идёт долго\nТребует больше памяти, чем аппаратный RAID"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7655,6 +8357,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "O RAID-Z1 é o layout de paridade simples do ZFS, semelhante ao RAID 5. Um pool pode distribuir em faixas vários grupos RAID-Z1."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "RAID-Z1 — схема ZFS с одинарной чётностью, похожая на RAID 5. Пул может объединять с чередованием несколько групп RAID-Z1."
           }
         },
         "zh-Hans" : {
@@ -7722,6 +8430,12 @@
             "value" : "Somas de verificação detectam e reparam corrupção silenciosa\nSem o “write hole” do RAID 5, porque o ZFS nunca sobrescreve dados existentes\nO maior espaço utilizável entre os níveis RAID-Z"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Контрольные суммы выявляют и исправляют скрытые повреждения\nНет «дыры записи», как у RAID 5, ведь ZFS никогда не перезаписывает данные на месте\nБольше всего полезной ёмкости среди уровней RAID-Z"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7785,6 +8499,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pequenos servidores domésticos com poucas unidades\nBibliotecas de mídia com backup em outro lugar\nTrueNAS, Proxmox e outros sistemas ZFS"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Небольшие домашние серверы с несколькими дисками\nМедиатеки, резервные копии которых хранятся в другом месте\nTrueNAS, Proxmox и другие системы на ZFS"
           }
         },
         "zh-Hans" : {
@@ -7852,6 +8572,12 @@
             "value" : "O espaço utilizável é mostrado de duas formas. O primeiro número é a fórmula simples: unidades menos paridade, em cada grupo. O segundo é uma estimativa do que o ZFS vai informar com as configurações padrão (setores de 4K e registros de 128K). Ele subtrai o preenchimento de alocação do RAID-Z, que torna algumas larguras de grupo menos eficientes que outras, e o espaço que o ZFS reserva: 1/32 do pool, no máximo 128 GiB. A compressão, o tamanho de registro e o tamanho de setor alteram o número real, e uma pequena quantidade de metadados em disco não é contada."
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Полезная ёмкость показана двумя способами. Первое значение рассчитано по простой формуле: число дисков минус диски чётности, в каждой группе. Второе оценивает, что покажет ZFS при настройках по умолчанию (секторы 4K и записи 128K). Из него вычитаются выравнивание (padding) RAID-Z, из-за которого одни ширины групп менее эффективны, чем другие, и место, которое резервирует ZFS: 1/32 пула, но не более 128 GiB. Сжатие, размер записи и размер сектора меняют реальное значение, а небольшой объём метаданных на дисках не учитывается."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -7915,6 +8641,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Dedica duas unidades por grupo à paridade\nAlgumas larguras de grupo perdem espaço extra com o preenchimento\nUsa mais memória que o RAID de hardware"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "В каждой группе два диска уходят под чётность\nПри некоторых ширинах групп выравнивание отнимает дополнительное место\nТребует больше памяти, чем аппаратный RAID"
           }
         },
         "zh-Hans" : {
@@ -7982,6 +8714,12 @@
             "value" : "O RAID-Z2 é o layout de paridade dupla do ZFS, semelhante ao RAID 6. Quaisquer duas unidades de um grupo podem falhar."
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "RAID-Z2 — схема ZFS с двойной чётностью, похожая на RAID 6. В группе могут отказать любые два диска."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8045,6 +8783,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sobrevive a quaisquer duas falhas por grupo\nSomas de verificação detectam e reparam corrupção silenciosa\nA escolha mais comum para pools domésticos grandes"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Выдерживает любые два отказа в группе\nКонтрольные суммы выявляют и исправляют скрытые повреждения\nОбычный выбор для больших домашних пулов"
           }
         },
         "zh-Hans" : {
@@ -8112,6 +8856,12 @@
             "value" : "Pools domésticos e de pequenos escritórios com 6 a 12 unidades\nArquivos de fotos e documentos\nTrueNAS, Proxmox e outros sistemas ZFS"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Пулы на 6–12 дисков для дома и небольшого офиса\nАрхивы фотографий и документов\nTrueNAS, Proxmox и другие системы на ZFS"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8175,6 +8925,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "O espaço utilizável é mostrado de duas formas. O primeiro número é a fórmula simples: unidades menos paridade, em cada grupo. O segundo é uma estimativa do que o ZFS vai informar com as configurações padrão (setores de 4K e registros de 128K). Ele subtrai o preenchimento de alocação do RAID-Z, que torna algumas larguras de grupo menos eficientes que outras, e o espaço que o ZFS reserva: 1/32 do pool, no máximo 128 GiB. A compressão, o tamanho de registro e o tamanho de setor alteram o número real, e uma pequena quantidade de metadados em disco não é contada."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Полезная ёмкость показана двумя способами. Первое значение рассчитано по простой формуле: число дисков минус диски чётности, в каждой группе. Второе оценивает, что покажет ZFS при настройках по умолчанию (секторы 4K и записи 128K). Из него вычитаются выравнивание (padding) RAID-Z, из-за которого одни ширины групп менее эффективны, чем другие, и место, которое резервирует ZFS: 1/32 пула, но не более 128 GiB. Сжатие, размер записи и размер сектора меняют реальное значение, а небольшой объём метаданных на дисках не учитывается."
           }
         },
         "zh-Hans" : {
@@ -8242,6 +8998,12 @@
             "value" : "Dedica três unidades por grupo à paridade\nO mais lento dos níveis RAID-Z\nPrecisa de pelo menos quatro unidades por grupo"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "В каждой группе три диска уходят под чётность\nСамый медленный из уровней RAID-Z\nНужно минимум четыре диска в группе"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8305,6 +9067,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "O RAID-Z3 é o layout de paridade tripla do ZFS. Quaisquer três unidades de um grupo podem falhar, o que o torna adequado para grupos muito largos de unidades muito grandes."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "RAID-Z3 — схема ZFS с тройной чётностью. В группе могут отказать любые три диска, поэтому она подходит для очень широких групп из очень больших дисков."
           }
         },
         "zh-Hans" : {
@@ -8372,6 +9140,12 @@
             "value" : "Sobrevive a quaisquer três falhas por grupo\nA escolha mais segura para grupos largos de unidades grandes\nSomas de verificação detectam e reparam corrupção silenciosa"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Выдерживает любые три отказа в группе\nСамый надёжный выбор для широких групп из больших дисков\nКонтрольные суммы выявляют и исправляют скрытые повреждения"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8435,6 +9209,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Grupos muito largos, em que as reconstruções levam dias\nArquivos de longo prazo\nPools grandes com unidades de 18 TB ou mais"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Очень широкие группы, восстановление которых занимает дни\nДолгосрочные архивы\nБольшие пулы из дисков от 18 TB"
           }
         },
         "zh-Hans" : {
@@ -8502,6 +9282,12 @@
             "value" : "%1$@, %2$d de 5, %3$@"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@, %2$d из 5, %3$@"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8565,6 +9351,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Avaliações"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Оценки"
           }
         },
         "zh-Hans" : {
@@ -8632,6 +9424,12 @@
             "value" : "As avaliações comparam os níveis RAID entre si. Não são benchmarks."
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Оценки сравнивают уровни RAID между собой. Это не тесты производительности."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8695,6 +9493,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "de %1$@ brutos · %2$@ de eficiência"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "из %1$@ общей ёмкости · эффективность %2$@"
           }
         },
         "zh-Hans" : {
@@ -8762,6 +9566,12 @@
             "value" : "Reconstruir um %@ com discos tão grandes pode levar dias, e uma segunda falha durante a reconstrução faz perder o conjunto. Um quarto disco permitiria o RAID 6."
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Восстановление %@ на таких больших дисках может занять дни, а второй отказ во время восстановления погубит массив. С четвёртым диском станет доступен RAID 6."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8825,6 +9635,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Reconstruir um %1$@ com discos tão grandes pode levar dias, e uma segunda falha durante a reconstrução faz perder o conjunto. Considere o %2$@."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Восстановление %1$@ на таких больших дисках может занять дни, а второй отказ во время восстановления погубит массив. Рассмотрите %2$@."
           }
         },
         "zh-Hans" : {
@@ -8892,6 +9708,12 @@
             "value" : "Reconstruir um %@ com discos tão grandes pode levar dias, e uma segunda falha durante a reconstrução faz perder o conjunto. Grupos mais largos permitiriam paridade dupla."
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Восстановление %@ на таких больших дисках может занять дни, а второй отказ во время восстановления погубит массив. С более широкими группами станет доступна двойная чётность."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -8955,6 +9777,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Remover disco"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Удалить диск"
           }
         },
         "zh-Hans" : {
@@ -9022,6 +9850,12 @@
             "value" : "Resultados"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Результаты"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9085,6 +9919,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Reverter"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вернуть"
           }
         },
         "zh-Hans" : {
@@ -9152,6 +9992,12 @@
             "value" : "Reverter para sua configuração atual?"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Вернуть текущую конфигурацию?"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9215,6 +10061,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$@ %2$@"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%2$@: %1$@"
           }
         },
         "zh-Hans" : {
@@ -9282,6 +10134,12 @@
             "value" : "%1$d %2$@"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%2$@: %1$d"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9345,6 +10203,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Dados"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Данные"
           }
         },
         "zh-Hans" : {
@@ -9412,6 +10276,12 @@
             "value" : "Espelho"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Зеркало"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9475,6 +10345,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Paridade"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Чётность"
           }
         },
         "zh-Hans" : {
@@ -9542,6 +10418,12 @@
             "value" : "Sem uso"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Не используется"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9605,6 +10487,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Salvar como configuração atual"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сохранить как текущую конфигурацию"
           }
         },
         "zh-Hans" : {
@@ -9672,6 +10560,12 @@
             "value" : "Salve seus discos para compará-los com os upgrades."
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сохраните диски, чтобы сравнивать с ними варианты улучшения."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9735,6 +10629,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "O SHR-2 precisa de pelo menos 4 discos."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Для SHR-2 нужно минимум 4 диска."
           }
         },
         "zh-Hans" : {
@@ -9802,6 +10702,12 @@
             "value" : "As unidades maiores viram paridade, então a paridade é sempre pelo menos tão grande quanto cada unidade de dados. O espaço utilizável é a soma das unidades de dados, e o conjunto sobrevive a tantas falhas de unidade quantas forem as unidades de paridade, de acordo com a última sincronização. O SnapRAID recomenda mais paridade à medida que o número de unidades de dados cresce."
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Под чётность отводятся самые большие диски, поэтому чётность всегда не меньше любого диска данных. Полезная ёмкость равна сумме дисков данных, а набор выдерживает столько отказов дисков, сколько в нём дисков чётности, на момент последней синхронизации. С ростом числа дисков данных SnapRAID рекомендует увеличивать чётность."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9865,6 +10771,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "A proteção só está atualizada até a última sincronização, então arquivos alterados desde então não estão protegidos\nCada unidade de paridade precisa ser pelo menos tão grande quanto sua maior unidade de dados\nNão é adequado para dados que mudam o tempo todo"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Защита актуальна лишь на момент последней синхронизации, поэтому изменённые после неё файлы не защищены\nКаждый диск чётности должен быть не меньше самого большого диска данных\nНе подходит для постоянно меняющихся данных"
           }
         },
         "zh-Hans" : {
@@ -9932,6 +10844,12 @@
             "value" : "O SnapRAID protege um conjunto de unidades de dados com até seis unidades de paridade, calculada quando você executa uma sincronização, e não à medida que grava. As unidades podem ter qualquer tamanho, e toda a capacidade de cada unidade de dados é utilizável."
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SnapRAID защищает набор дисков данных с помощью до шести дисков чётности, которая вычисляется при запуске синхронизации, а не во время записи. Диски могут быть любой ёмкости, и вся ёмкость каждого диска данных остаётся полезной."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -9995,6 +10913,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "O SnapRAID recomenda %1$d discos de paridade para %2$@ discos de dados."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Дисков данных: %2$@. SnapRAID рекомендует дисков чётности: %1$d."
           }
         },
         "zh-Hans" : {
@@ -10062,6 +10986,12 @@
             "value" : "Combina livremente unidades de tamanhos diferentes, sem perder espaço\nAté seis unidades de paridade para coleções grandes\nSomas de verificação detectam corrupção silenciosa, e os arquivos das unidades que sobrevivem continuam legíveis"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Диски любой ёмкости без потерь места\nДо шести дисков чётности для больших коллекций\nКонтрольные суммы выявляют скрытые повреждения, а файлы на уцелевших дисках остаются доступны"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10125,6 +11055,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Bibliotecas de mídia que raramente mudam\nArquivos em unidades antigas e novas misturadas\nServidores domésticos com uma ferramenta de agrupamento de unidades"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Медиатеки, которые редко меняются\nАрхивы на старых и новых дисках вперемешку\nДомашние серверы вместе с программой для объединения дисков в пул"
           }
         },
         "zh-Hans" : {
@@ -10192,6 +11128,12 @@
             "value" : "Velocidade"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Скорость"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10255,6 +11197,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Adicionar um disco de %1$@ na baia %2$d"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Установить диск %1$@ в отсек %2$d"
           }
         },
         "zh-Hans" : {
@@ -10322,6 +11270,12 @@
             "value" : "Substituir a baia %1$d (%2$@) por %3$@"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Заменить диск в отсеке %1$d (%2$@) на %3$@"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10385,6 +11339,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Melhor ampliação"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Лучшее улучшение"
           }
         },
         "zh-Hans" : {
@@ -10452,6 +11412,12 @@
             "value" : "O SHR divide as unidades em camadas a cada tamanho de unidade distinto e monta o RAID entre as unidades que alcançam cada camada. Uma camada sem unidades suficientes para ser protegida aparece como sem uso até que uma unidade maior entre nela. O RAID clássico trata cada unidade como se tivesse o tamanho da menor. A Synology distribui a paridade em cada camada; aqui ela é desenhada nas unidades maiores para manter o gráfico legível."
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SHR разбивает диски на слои по каждой отличающейся ёмкости и строит RAID из дисков, которые достигают каждого слоя. Слой, в котором слишком мало дисков для защиты, показан как неиспользуемый, пока к нему не добавится диск побольше. Классический RAID считает каждый диск равным самому маленькому. Synology распределяет чётность по каждому слою; для наглядности она изображена на самых больших дисках."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10515,6 +11481,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Uma única unidade grande não é totalmente aproveitada até que uma segunda se junte a ela\nDisponível apenas em NAS Synology\nO RAID clássico desperdiça espaço com unidades de tamanhos diferentes"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Один большой диск нельзя использовать полностью, пока к нему не добавится второй\nДоступно только на NAS Synology\nКлассический RAID теряет место при дисках разной ёмкости"
           }
         },
         "zh-Hans" : {
@@ -10582,6 +11554,12 @@
             "value" : "O Synology Hybrid RAID (SHR) monta o RAID em camadas de mesma capacidade, então unidades de tamanhos diferentes desperdiçam menos espaço que no RAID clássico. O SHR-2 reserva o equivalente a duas unidades para paridade. Os RAID 1, 5 e 6 clássicos da Synology tratam cada unidade como se tivesse o tamanho da menor."
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Synology Hybrid RAID (SHR) строит RAID слоями одинаковой ёмкости, поэтому с дисками разной ёмкости теряется меньше места, чем в классическом RAID. SHR-2 отводит под чётность ёмкость двух дисков. Классические RAID 1, 5 и 6 в Synology считают каждый диск равным самому маленькому."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10645,6 +11623,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Unidades de tamanhos diferentes desperdiçam pouco ou nenhum espaço\nPermite adicionar unidades maiores com o tempo, uma de cada vez\nO SHR-2 sobrevive à falha de quaisquer duas unidades"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Диски разной ёмкости почти или совсем не теряют места\nБолее ёмкие диски можно добавлять со временем, по одному\nSHR-2 выдерживает отказ любых двух дисков"
           }
         },
         "zh-Hans" : {
@@ -10712,6 +11696,12 @@
             "value" : "NAS domésticos ampliados ao longo dos anos com unidades de tamanhos diferentes\nPlex e bibliotecas de mídia\nArmazenamento de fotos de família e backups"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Домашний NAS, годами собранный из разных дисков\nPlex и медиатеки\nХранилище семейных фото и резервных копий"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10772,6 +11762,12 @@
           }
         },
         "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "NAS"
+          }
+        },
+        "ru" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "NAS"
@@ -10842,6 +11838,12 @@
             "value" : "RAID"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "RAID"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -10905,6 +11907,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Casos de uso típicos"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Типичные сценарии"
           }
         },
         "zh-Hans" : {
@@ -10972,6 +11980,12 @@
             "value" : "As unidades maiores viram paridade, então a paridade é sempre pelo menos tão grande quanto cada unidade de dados. A paridade é atualizada a cada gravação, então a proteção está sempre em dia. O espaço utilizável é a soma das unidades de dados, e o conjunto sobrevive a tantas falhas de unidade quantas forem as unidades de paridade. Os pools de cache e ZFS separados do Unraid não estão incluídos."
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Под чётность отводятся самые большие диски, поэтому чётность всегда не меньше любого диска данных. Чётность обновляется при записи, поэтому защита всегда актуальна. Полезная ёмкость равна сумме дисков данных, а массив выдерживает столько отказов дисков, сколько в нём дисков чётности. Отдельные кеш-пулы и пулы ZFS в Unraid не учитываются."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11035,6 +12049,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cada unidade de paridade precisa ser pelo menos tão grande quanto sua maior unidade de dados\nA gravação é mais lenta que em um RAID com striping\nA leitura não é mais rápida que a de uma única unidade"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Каждый диск чётности должен быть не меньше самого большого диска данных\nЗапись медленнее, чем в RAID с чередованием\nЧтение не быстрее, чем с одного диска"
           }
         },
         "zh-Hans" : {
@@ -11102,6 +12122,12 @@
             "value" : "Um conjunto do Unraid comporta até 28 discos de dados mais 2 discos de paridade."
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Массив Unraid вмещает до 28 дисков данных и 2 диска чётности."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11165,6 +12191,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "O Unraid mantém cada unidade de dados com seu próprio sistema de arquivos e as protege com uma ou duas unidades de paridade. As unidades podem ter qualquer tamanho, e toda a capacidade de cada unidade de dados é utilizável."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unraid хранит на каждом диске данных отдельную файловую систему и защищает диски одним или двумя дисками чётности. Диски могут быть любой ёмкости, и вся ёмкость каждого диска данных остаётся полезной."
           }
         },
         "zh-Hans" : {
@@ -11232,6 +12264,12 @@
             "value" : "Não afiliado à Lime Technology, Inc. nem endossado por ela. Unraid é uma marca comercial da Lime Technology, Inc."
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Приложение не связано с компанией Lime Technology, Inc. и не одобрено ею. Unraid является товарным знаком Lime Technology, Inc."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11295,6 +12333,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Combina livremente unidades de tamanhos diferentes, sem perder espaço\nPermite adicionar uma unidade de cada vez\nSe falharem mais unidades do que a paridade cobre, as unidades de dados que sobrevivem mantêm seus arquivos"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Диски любой ёмкости без потерь места\nДиски можно добавлять по одному\nЕсли откажет больше дисков, чем покрывает чётность, на уцелевших дисках данных файлы сохранятся"
           }
         },
         "zh-Hans" : {
@@ -11362,6 +12406,12 @@
             "value" : "Servidores de mídia domésticos que crescem uma unidade por vez\nColeções mistas de unidades antigas e novas\nServidores que também executam apps e máquinas virtuais"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Домашние медиасерверы, которые растут по одному диску\nКоллекции из старых и новых дисков вперемешку\nСерверы, на которых также работают приложения и виртуальные машины"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11425,6 +12475,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ sem uso com esta combinação de discos"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ не используется при таком наборе дисков"
           }
         },
         "zh-Hans" : {
@@ -11492,6 +12548,12 @@
             "value" : "Capacidade utilizável"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Полезная ёмкость"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11555,6 +12617,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Usar %d discos"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Использовать дисков: %d"
           }
         },
         "zh-Hans" : {
@@ -11622,6 +12690,12 @@
             "value" : "Usar %1$d discos em %2$d grupos"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Использовать дисков: %1$d, групп: %2$d"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11685,6 +12759,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Usar %d grupos"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Использовать групп: %d"
           }
         },
         "zh-Hans" : {
@@ -11752,6 +12832,12 @@
             "value" : "Usar o %@"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Использовать %@"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11815,6 +12901,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Usar um grupo"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Использовать одну группу"
           }
         },
         "zh-Hans" : {
@@ -11882,6 +12974,12 @@
             "value" : "Usar %d discos de paridade"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Использовать дисков чётности: %d"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -11945,6 +13043,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Muito alta"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Очень высокая"
           }
         },
         "zh-Hans" : {
@@ -12012,6 +13116,12 @@
             "value" : "Muito baixa"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Очень низкая"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12075,6 +13185,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cada grupo RAID‑Z tem %d unidades de largura. Grupos muito largos demoram muito para se reconstruir após uma falha; mais grupos, e mais estreitos, se reconstroem mais rápido."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "В каждой группе RAID‑Z дисков: %d. Очень широкие группы долго восстанавливаются после отказа; несколько более узких групп восстанавливаются быстрее."
           }
         },
         "zh-Hans" : {
@@ -12142,6 +13258,12 @@
             "value" : "Este grupo RAID‑Z tem %d unidades de largura. Grupos muito largos demoram muito para se reconstruir após uma falha; mais grupos, e mais estreitos, se reconstroem mais rápido."
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "В этой группе RAID‑Z дисков: %d. Очень широкие группы долго восстанавливаются после отказа; несколько более узких групп восстанавливаются быстрее."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12205,6 +13327,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cada unidade só conta até o tamanho da menor; o restante aparece como sem uso. O espaço utilizável é mostrado de duas formas. A primeira é o número de unidades menos a paridade, vezes o tamanho da menor unidade. A segunda é uma estimativa do que o ZFS vai informar com as configurações padrão (setores de 4K e registros de 128K): ela subtrai o preenchimento de alocação do RAID-Z e o espaço que o ZFS reserva, 1/32 do pool, no máximo 128 GiB. A compressão, o tamanho de registro e o tamanho de setor alteram o número real."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Каждый диск учитывается только в пределах ёмкости самого маленького; остаток показан как неиспользуемый. Полезная ёмкость показана двумя способами. Первое значение: число дисков минус диски чётности, умноженное на ёмкость самого маленького диска. Второе оценивает, что покажет ZFS при настройках по умолчанию (секторы 4K и записи 128K): из него вычитаются выравнивание (padding) RAID-Z и место, которое резервирует ZFS, 1/32 пула, но не более 128 GiB. Сжатие, размер записи и размер сектора меняют реальное значение."
           }
         },
         "zh-Hans" : {
@@ -12272,6 +13400,12 @@
             "value" : "Cada unidade só conta até o tamanho da menor unidade\nAumentar um grupo exige substituir todas as unidades, ou usar o OpenZFS 2.3 ou posterior para adicionar uma unidade de cada vez\nUsa mais memória que outros sistemas"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Каждый диск учитывается только в пределах ёмкости самого маленького\nЧтобы расширить группу, нужно заменить все диски или использовать OpenZFS 2.3 и новее, чтобы добавлять по одному диску\nТребует больше памяти, чем другие системы"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12335,6 +13469,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Aqui é modelado um grupo RAID-Z do ZFS (vdev) formado pelas unidades destas baias. O RAID-Z1, o Z2 e o Z3 reservam o equivalente a uma, duas ou três unidades para paridade, e esse mesmo número de unidades pode falhar sem perda de dados."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Здесь рассчитывается одна группа ZFS RAID-Z (vdev) из дисков в этих отсеках. RAID-Z1, Z2 и Z3 отводят под чётность ёмкость одного, двух или трёх дисков, и столько же дисков может отказать без потери данных."
           }
         },
         "zh-Hans" : {
@@ -12402,6 +13542,12 @@
             "value" : "Estimativa para as configurações padrão do ZFS. A compressão, o tamanho de registro e o tamanho de setor alteram o número real."
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Оценка для настроек ZFS по умолчанию. Сжатие, размер записи и размер сектора меняют реальное значение."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12462,6 +13608,12 @@
           }
         },
         "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ZFS"
+          }
+        },
+        "ru" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "ZFS"
@@ -12532,6 +13684,12 @@
             "value" : "ZFS é uma marca comercial da Oracle e/ou de suas afiliadas. Não afiliado à Oracle nem endossado por ela."
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ZFS является товарным знаком компании Oracle и (или) её аффилированных лиц. Приложение не связано с Oracle и не одобрено этой компанией."
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12595,6 +13753,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Esta largura de grupo perde cerca de %@ a mais com o preenchimento do RAID‑Z."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "При такой ширине группы выравнивание RAID‑Z (padding) отнимает ещё около %@."
           }
         },
         "zh-Hans" : {
@@ -12662,6 +13826,12 @@
             "value" : "Somas de verificação detectam e reparam corrupção silenciosa\nSnapshots e replicação integrados\nO RAID-Z2 e o Z3 protegem bem pools grandes"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Контрольные суммы выявляют и исправляют скрытые повреждения\nВстроенные снимки и репликация\nRAID-Z2 и Z3 надёжно защищают большие пулы"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12727,6 +13897,12 @@
             "value" : "≈ %@ como o ZFS informa (estimativa)"
           }
         },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "≈ %@, как показывает ZFS (оценка)"
+          }
+        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
@@ -12790,6 +13966,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "TrueNAS, Proxmox e outros servidores ZFS\nArquivos de fotos, documentos e backups\nPools em que a integridade dos dados é o mais importante"
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "TrueNAS, Proxmox и другие серверы на ZFS\nАрхивы фотографий, документов и резервных копий\nПулы, где важнее всего целостность данных"
           }
         },
         "zh-Hans" : {

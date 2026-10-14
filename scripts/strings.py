@@ -3,6 +3,7 @@
 
   scripts/strings.py add new-strings.json   # {"key": {"en": "…", "es": "…", …}}
   scripts/strings.py remove key [key …]
+  scripts/strings.py merge ru ru.json        # {"key": "…"}: add one language to every existing key
   scripts/strings.py check                   # every language in LANGS, matching specifiers
 
 Never hand-edit the catalog JSON; Xcode and this script both rewrite it.
@@ -15,7 +16,7 @@ import sys
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 CATALOG = pathlib.Path(os.environ.get("STRINGS_CATALOG", ROOT / "RaidCalculator2" / "Localizable.xcstrings"))
-LANGS = ["en", "es", "fr", "it", "ja", "de", "zh-Hant", "zh-Hans", "ko", "pt-BR"]
+LANGS = ["en", "es", "fr", "it", "ja", "de", "zh-Hant", "zh-Hans", "ko", "pt-BR", "ru"]
 # printf-style specifiers as Foundation uses them; %% is a literal percent.
 # No space flag: "50% storage" must not parse as a specifier.
 SPEC = re.compile(r"%(?:(\d+)\$)?[-+0#]*\d*(?:\.\d+)?(ld|lu|lld|[dif@sucxX])")
@@ -56,6 +57,22 @@ def add(path):
     print(f"added {len(new)} key(s)")
 
 
+def merge(lang, path):
+    """Adds or replaces one language on keys already in the catalog, leaving
+    the others alone. Every translated key must be covered."""
+    values = json.loads(pathlib.Path(path).read_text(encoding="utf-8"))
+    doc = load()
+    wanted = [k for k, e in doc["strings"].items() if e.get("localizations") and e.get("shouldTranslate") is not False]
+    missing = [k for k in wanted if not values.get(k)]
+    extra = [k for k in values if k not in doc["strings"]]
+    if missing or extra:
+        sys.exit(f"missing: {missing}\nnot in catalog: {extra}")
+    for key in wanted:
+        doc["strings"][key]["localizations"][lang] = {"stringUnit": {"state": "translated", "value": values[key]}}
+    save(doc)
+    print(f"merged {lang} into {len(wanted)} key(s)")
+
+
 def remove(keys):
     doc = load()
     for key in keys:
@@ -93,6 +110,8 @@ if __name__ == "__main__":
         add(args[0])
     elif command == "remove" and args:
         remove(args)
+    elif command == "merge" and len(args) == 2:
+        merge(*args)
     elif command == "check" and not args:
         sys.exit(check())
     else:

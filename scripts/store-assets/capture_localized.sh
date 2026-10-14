@@ -5,7 +5,7 @@
 #   scripts/store-assets/capture_localized.sh iphone|ipad <lang> [<lang>...]
 #   e.g. scripts/store-assets/capture_localized.sh iphone fr de ja
 #
-# Languages: es fr it ja de zh-Hant zh-Hans ko pt-BR (en is the 1.7.0 set).
+# Languages: es fr it ja de zh-Hant zh-Hans ko pt-BR ru (en is the 1.7.0 set).
 # For each language it sets the Simulator's own language too (so the iPad
 # status bar's date matches), reboots it, overrides the status bar, then runs
 # the StoreScreenshots UI test in light and in dark. Raws go to
@@ -40,7 +40,7 @@ U="${UDID:-$DEFAULT}"
 locale_for() {
   case "$1" in
     es) echo es_ES ;; fr) echo fr_FR ;; it) echo it_IT ;; ja) echo ja_JP ;; de) echo de_DE ;;
-    zh-Hant) echo zh_TW ;; zh-Hans) echo zh_CN ;; ko) echo ko_KR ;; pt-BR) echo pt_BR ;;
+    zh-Hant) echo zh_TW ;; zh-Hans) echo zh_CN ;; ko) echo ko_KR ;; pt-BR) echo pt_BR ;; ru) echo ru_RU ;;
     *) echo "unsupported language: $1" >&2; exit 2 ;;
   esac
 }
