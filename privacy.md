@@ -35,11 +35,11 @@ Because we do not use these services, they cannot collect any data about your us
 
 ## 3. Children's Privacy
 
-Because the App does not collect any personal data, it does not knowingly collect information from children under 13 (or under the age required in your jurisdiction). If you believe a child has provided us with personal information, please contact us at mrballistic@gmail.com. However, in the normal use of the App, no data is sent to us at all.
+Because the App does not collect any personal data, it does not knowingly collect information from children under 13 (or under the age required in your jurisdiction). If you believe a child has provided us with personal information, please contact us through the contact form at https://mrballistic.com/#contact. However, in the normal use of the App, no data is sent to us at all.
 
 ## 4. Your Rights
 
-Since we do not collect or store any personal data, there is nothing for you to access, correct, or delete. If you have questions about this policy, you can always contact us at mrballistic@gmail.com.
+Since we do not collect or store any personal data, there is nothing for you to access, correct, or delete. If you have questions about this policy, you can always reach us through the contact form at https://mrballistic.com/#contact.
 
 ## 5. Changes to This Privacy Policy
 
@@ -59,7 +59,7 @@ If you have any questions about this Privacy Policy, please contact us:
 
 **mrBallistic**  
 Website: https://mrballistic.com  
-Email: mrballistic@gmail.com
+Contact form: https://mrballistic.com/#contact
 
 ---
 
@@ -126,4 +126,4 @@ These Terms shall be governed by and construed in accordance with the laws of th
 
 If you have any questions about these Terms, please contact us at:
 
-**mrballistic@gmail.com**
+the contact form at **https://mrballistic.com/#contact**

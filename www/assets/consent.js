@@ -36,11 +36,13 @@
     banner = document.createElement("section");
     banner.className = "consent";
     banner.setAttribute("aria-label", "Analytics cookies");
+    banner.setAttribute("data-i18n-aria-label", "consent.label");
+    // Tagged for i18n.js, which translates it now and on every language change.
     banner.innerHTML =
-      '<p>This site uses Google Analytics cookies to count visits. The app itself collects nothing. <a href="' + privacyHref + '">Privacy policy</a></p>' +
+      '<p><span data-i18n="consent.text">This site uses Google Analytics cookies to count visits. The app itself collects nothing.</span> <a href="' + privacyHref + '" data-i18n="consent.policy">Privacy policy</a></p>' +
       '<div class="consent-actions">' +
-      '<button type="button" data-choice="denied">Decline</button>' +
-      '<button type="button" data-choice="granted">Accept</button>' +
+      '<button type="button" data-choice="denied" data-i18n="consent.decline">Decline</button>' +
+      '<button type="button" data-choice="granted" data-i18n="consent.accept">Accept</button>' +
       "</div>";
     banner.addEventListener("click", (event) => {
       const choice = event.target.closest("[data-choice]")?.dataset.choice;
@@ -53,6 +55,7 @@
       else if (previous === "granted" && loaded) location.reload();
     });
     document.body.appendChild(banner);
+    window.RCI18N?.apply(banner);
   }
 
   const choice = read();
