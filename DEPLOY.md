@@ -66,6 +66,7 @@ The project’s `PRODUCT_BUNDLE_IDENTIFIER` decides it; there is no setting in t
 
 The final RAID Calc2 release ships from the `legacy/raidcalc2` branch, never from `main`. That branch sets `PRODUCT_BUNDLE_IDENTIFIER = com.mrballistic.RaidCalculator2`, so its builds land on the **RAID Calc2** record (Apple ID `6755641457`). Never open a pull request from it.
 
+- **Archive guard:** the app target’s “Check App Store record” build phase stops an archive whose bundle ID doesn’t match the branch: `com.mrballistic.RaidCalculator2` here, `53Q4825KDF` everywhere else.
 - **Upload from local Xcode 27.1** (the release build), as for 1.7.0. Don't push a `v*` tag from the branch: `deploy.yml` would run, and the tag would read as a RAID Calculator release. Tag `legacy-v1.8.0` if a marker is wanted.
 - **Listing and screenshots:** `marketing/raidcalc2-1.8.0-listing.md` and `marketing/screenshots/raidcalc2-1.8.0/store/`, on the branch.
 - **On 2026-12-31:** in App Store Connect, RAID Calc2 → Pricing and Availability → remove from sale in every country. Installed copies keep working, and the in-app notice switches to “No longer on the App Store” on January 1.
