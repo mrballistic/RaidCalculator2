@@ -3,7 +3,7 @@ Usage: python3 -I check_store_copy.py [path] [--table]
 Prints every problem found, or "No problems." Exit status 1 if any problem."""
 import json, re, sys
 
-REPO = "/Users/todd.greco/current_work/RaidCalculator2"
+REPO = str(__import__("pathlib").Path(__file__).resolve().parents[3])
 args = [a for a in sys.argv[1:] if not a.startswith("--")]
 HERE = __import__("pathlib").Path(__file__).resolve().parent
 PATH = args[0] if args else str(HERE / "store-copy-1.7.1.json")
