@@ -32,6 +32,7 @@ SF = "/System/Library/Fonts/SFNS.ttf"
 BACKGROUNDS = {
     "orange": {"bg": (0xFF, 0x95, 0x00), "ink": (0x1C, 0x19, 0x17)},
     "indigo": {"bg": (0x58, 0x56, 0xD6), "ink": (0xFF, 0xFF, 0xFF)},
+    "graphite": {"bg": (0x3A, 0x3A, 0x3C), "ink": (0xFF, 0xFF, 0xFF)},
 }
 
 # Screen corner radius and bezel, as fractions of the screen's short side.
@@ -351,6 +352,31 @@ for _size in ((1206, 2622), (1179, 2556)):
     SHOTS += [(f"iphone-{_size[0]}x{_size[1]}",) + shot[1:3] + (_size,) + shot[4:]
               for shot in SHOTS if shot[0] == "iphone-1320x2868"]
 
+# RAID Calc2 1.8.0 (legacy branch): graphite to match the desaturated icon.
+LEGACY_RAW = os.path.join(REPO, "marketing/screenshots/raidcalc2-1.8.0/raw")
+LEGACY_OUT = os.path.join(REPO, "marketing/screenshots/raidcalc2-1.8.0/store")
+MOVING = "Moving to RAID Calculator"
+FIX = "One tap to a valid setup"
+G = "graphite"
+LEGACY_SHOTS = [
+    ("iphone-1320x2868", "01-moving", "iphone-1320x2868/01-moving-light.png", IPHONE, G, "iphone", MOVING),
+    ("iphone-1320x2868", "02-usable-space", "iphone-1320x2868/02-usable-space-light.png", IPHONE, G, "iphone", USABLE),
+    ("iphone-1320x2868", "03-rebuild-caution", "iphone-1320x2868/03-rebuild-caution-dark.png", IPHONE, G, "iphone", REBUILD),
+    ("iphone-1320x2868", "04-invalid-fix", "iphone-1320x2868/04-invalid-fix-light.png", IPHONE, G, "iphone", FIX),
+    ("ipad-2064x2752", "01-moving", "ipad-2064x2752/01-moving-light.png", IPAD, G, "ipad", MOVING),
+    ("ipad-2064x2752", "02-usable-space", "ipad-2064x2752/02-usable-space-light.png", IPAD, G, "ipad", USABLE),
+    ("ipad-2064x2752", "03-rebuild-caution", "ipad-2064x2752/03-rebuild-caution-dark.png", IPAD, G, "ipad", REBUILD),
+]
+for _set, _size, _kind in (("duo-inner-2853x2007", DUO_IL, "duo-inner"), ("duo-inner-2007x2853", DUO_IP, "duo-inner"),
+                           ("duo-outer-1398x2034", DUO_OP, "duo-outer"), ("duo-outer-2034x1398", DUO_OL, "duo-outer")):
+    LEGACY_SHOTS += [
+        (_set, "01-moving", f"{_set}/01-moving-light.png", _size, G, _kind, MOVING),
+        (_set, "02-usable-space", f"{_set}/02-usable-space-light.png", _size, G, _kind, USABLE),
+    ]
+for _size in ((1206, 2622), (1179, 2556)):
+    LEGACY_SHOTS += [(f"iphone-{_size[0]}x{_size[1]}",) + shot[1:3] + (_size,) + shot[4:]
+                     for shot in LEGACY_SHOTS if shot[0] == "iphone-1320x2868"]
+
 # Header / search images. Apple's templates mark an "Art Safe Area": the only
 # part every placement shows (the iPhone product page crops a header to its
 # centre and covers top and bottom). Rects are (x0, y0, x1, y1) in pixels,
@@ -459,7 +485,14 @@ def main():
     p.add_argument("--bg", choices=sorted(BACKGROUNDS))
     p.add_argument("--device", choices=sorted(DEVICES), default="iphone")
     p.add_argument("--headline")
+    p.add_argument("--legacy", action="store_true", help="RAID Calc2 1.8.0: legacy shots, raws and output folders")
     a = p.parse_args()
+    global RAW, OUT
+    shots = SHOTS
+    if a.legacy:
+        if a.headers:
+            p.error("--legacy has no header images")
+        RAW, OUT, shots = LEGACY_RAW, LEGACY_OUT, LEGACY_SHOTS
     if a.raw:
         if not (a.out and a.size and a.bg and a.headline):
             p.error("--raw needs --out, --size, --bg and --headline")
@@ -467,7 +500,7 @@ def main():
         print(compose(a.raw, a.out, (w, h), a.bg, a.headline, a.device))
         return
     sets = set()
-    for folder, name, raw, size, bg, kind, headline in SHOTS:
+    for folder, name, raw, size, bg, kind, headline in shots:
         if a.only and a.only not in folder and a.only not in name:
             continue
         src = latest(os.path.join(RAW, raw))
