@@ -137,61 +137,61 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "RAID-Rechner"
+            "value" : "RAID Calc2"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "RAID Calculator"
+            "value" : "RAID Calc2"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Calculadora RAID"
+            "value" : "RAID Calc2"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Calculateur RAID"
+            "value" : "RAID Calc2"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Calcolatore RAID"
+            "value" : "RAID Calc2"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "RAID計算機"
+            "value" : "RAID Calc2"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "RAID 계산기"
+            "value" : "RAID Calc2"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Calculadora RAID"
+            "value" : "RAID Calc2"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "RAID 计算器"
+            "value" : "RAID Calc2"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "RAID 計算機"
+            "value" : "RAID Calc2"
           }
         }
       }

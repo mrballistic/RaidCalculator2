@@ -1,3 +1,5 @@
+> **Branch `legacy/raidcalc2`:** the final RAID Calc2 release (`com.mrballistic.RaidCalculator2`, App Store 6755641457). Never open a pull request from this branch or merge it into `main`. Spec: `docs/superpowers/specs/2026-10-13-raidcalc2-legacy-design.md`.
+
 # RAID Calculator
 
 A native iOS and iPadOS app, for iPhone, iPad and iPhone Duo, that shows how much space a set of drives actually gives you, how many can fail, and which drive is worth buying next. It’s on the App Store as [RAID Calculator](https://apps.apple.com/app/id395601653), with a product page at [mrballistic.com/raid](https://mrballistic.com/raid/).

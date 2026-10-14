@@ -126,7 +126,7 @@ final class RaidCalculator2UITests: XCTestCase {
     @MainActor
     func testAppLaunchesSuccessfully() throws {
         let app = launchApp()
-        XCTAssertTrue(app.navigationBars["RAID Calculator"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.navigationBars["RAID Calc2"].waitForExistence(timeout: 5))
         XCTAssertTrue(capacity(app).hasPrefix("Usable Capacity, 12 TB,"), capacity(app))
         XCTAssertTrue(app.staticTexts["Number of Drives"].exists)
         XCTAssertTrue(app.staticTexts["Drive Size"].exists)
@@ -298,12 +298,12 @@ final class RaidCalculator2UITests: XCTestCase {
         XCTAssertEqual(sizeField.value as? String, "12,5")
     }
 
-    // MARK: Added languages (1.6.5): each launches with its own title; de and pt-BR also take a decimal comma.
+    // MARK: Added languages (1.6.5): each launches with its own labels (the title, “RAID Calc2”, isn’t translated); de and pt-BR also take a decimal comma.
 
     @MainActor
     func testLaunchesInGerman() throws {
         let app = launchApp(language: "de", locale: "de_DE")
-        XCTAssertTrue(app.navigationBars["RAID-Rechner"].waitForExistence(timeout: 5), app.debugDescription)
+        XCTAssertTrue(app.staticTexts["Anzahl Laufwerke"].waitForExistence(timeout: 5), app.debugDescription)
 
         let sizeField = app.textFields["driveSizeField"]
         XCTAssertTrue(sizeField.waitForExistence(timeout: 5))
@@ -317,25 +317,25 @@ final class RaidCalculator2UITests: XCTestCase {
     @MainActor
     func testLaunchesInTraditionalChinese() throws {
         let app = launchApp(language: "zh-Hant", locale: "zh_TW")
-        XCTAssertTrue(app.navigationBars["RAID 計算機"].waitForExistence(timeout: 5), app.debugDescription)
+        XCTAssertTrue(app.staticTexts["硬碟數量"].waitForExistence(timeout: 5), app.debugDescription)
     }
 
     @MainActor
     func testLaunchesInSimplifiedChinese() throws {
         let app = launchApp(language: "zh-Hans", locale: "zh_CN")
-        XCTAssertTrue(app.navigationBars["RAID 计算器"].waitForExistence(timeout: 5), app.debugDescription)
+        XCTAssertTrue(app.staticTexts["硬盘数量"].waitForExistence(timeout: 5), app.debugDescription)
     }
 
     @MainActor
     func testLaunchesInKorean() throws {
         let app = launchApp(language: "ko", locale: "ko_KR")
-        XCTAssertTrue(app.navigationBars["RAID 계산기"].waitForExistence(timeout: 5), app.debugDescription)
+        XCTAssertTrue(app.staticTexts["드라이브 수"].waitForExistence(timeout: 5), app.debugDescription)
     }
 
     @MainActor
     func testLaunchesInBrazilianPortuguese() throws {
         let app = launchApp(language: "pt-BR", locale: "pt_BR")
-        XCTAssertTrue(app.navigationBars["Calculadora RAID"].waitForExistence(timeout: 5), app.debugDescription)
+        XCTAssertTrue(app.staticTexts["Número de unidades"].waitForExistence(timeout: 5), app.debugDescription)
 
         let sizeField = app.textFields["driveSizeField"]
         XCTAssertTrue(sizeField.waitForExistence(timeout: 5))
@@ -389,7 +389,7 @@ final class RaidCalculator2UITests: XCTestCase {
         XCTAssertTrue(app.navigationBars["RAID 5"].waitForExistence(timeout: 5))
 
         app.buttons["closeInfo"].tap()
-        XCTAssertTrue(app.navigationBars["RAID Calculator"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.navigationBars["RAID Calc2"].waitForExistence(timeout: 5))
     }
 
     @MainActor

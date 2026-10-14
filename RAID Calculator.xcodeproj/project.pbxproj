@@ -416,7 +416,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"RaidCalculator2/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = "RAID Calculator";
+				INFOPLIST_KEY_CFBundleDisplayName = "RAID Calc2";
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -428,8 +428,8 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.7.0;
-				PRODUCT_BUNDLE_IDENTIFIER = 53Q4825KDF;
+				MARKETING_VERSION = 1.8.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.mrballistic.RaidCalculator2;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -455,7 +455,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"RaidCalculator2/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = "RAID Calculator";
+				INFOPLIST_KEY_CFBundleDisplayName = "RAID Calc2";
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -467,8 +467,8 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.7.0;
-				PRODUCT_BUNDLE_IDENTIFIER = 53Q4825KDF;
+				MARKETING_VERSION = 1.8.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.mrballistic.RaidCalculator2;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
