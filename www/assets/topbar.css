@@ -1,8 +1,11 @@
 /* Glass top bar, shared by every page. Sticky rather than fixed, so it keeps
-   its place in the flow and nothing below needs an offset. It starts clear
-   over the page and frosts in (tint, blur, hairline) over the first 120px of
-   scroll; browsers without scroll timelines get the frosted bar from the
-   start, and Reduce Transparency gets a solid one. */
+   its place in the flow and nothing below needs an offset. The blur is always
+   on; the tint and hairline fade in over the first 120px of scroll, and
+   browsers without scroll timelines get them from the start. The blur itself
+   is never animated: Safari dropped a scroll-animated backdrop-filter after a
+   language switch restyled the page, and at the top of the page there's only
+   the flat page colour behind the bar anyway. Reduce Transparency gets a
+   solid bar. */
 .topbar {
   position: sticky; top: 0; z-index: 50;
   background: rgba(250, 248, 245, 0.72);
@@ -17,8 +20,6 @@
 }
 .topbar .brand { display: inline-flex; align-items: center; gap: 12px; min-height: 44px; font-weight: 600; letter-spacing: -0.01em; color: #1C1917; }
 .topbar .brand img { width: 36px; height: 36px; border-radius: 9px; display: block; }
-.topbar .badge { display: block; line-height: 0; }
-.topbar .badge img { display: block; height: 36px; width: auto; }
 
 /* Over dark sections (set by topbar.js) the bar becomes dark glass. */
 .topbar--dark {
@@ -38,8 +39,6 @@
 @keyframes topbar-frost {
   from {
     background: rgba(250, 248, 245, 0);
-    -webkit-backdrop-filter: saturate(100%) blur(0);
-    backdrop-filter: saturate(100%) blur(0);
     box-shadow: 0 1px 0 rgba(28, 25, 23, 0);
   }
 }
@@ -49,27 +48,8 @@
   .topbar--dark { background: #1C1917; box-shadow: 0 1px 0 #39342F; }
 }
 
-/* Phones: the hero's own badge is right below the bar, so the bar's badge
-   waits until the hero has scrolled away. Without scroll timelines it stays
-   hidden, as before. */
-@media (max-width: 599px) {
-  .topbar .badge { display: none; }
-  @supports (animation-timeline: scroll()) {
-    .topbar .badge {
-      display: block;
-      animation: topbar-badge linear both;
-      animation-timeline: scroll(root);
-      animation-range: 45vh 65vh;
-    }
-  }
-}
-@keyframes topbar-badge {
-  from { opacity: 0; visibility: hidden; }
-  to { opacity: 1; visibility: visible; }
-}
-
-/* Language menu (assets/i18n.js), between the name and the badge. */
-.topbar .lang { margin-left: auto; margin-right: 12px; display: inline-flex; align-items: center; }
+/* Language menu (assets/i18n.js), across from the name. */
+.topbar .lang { margin-left: auto; display: inline-flex; align-items: center; }
 .lang-select {
   appearance: none; -webkit-appearance: none;
   font: inherit; font-size: 15px; color: #1C1917;
@@ -84,6 +64,5 @@
 html.i18n-pending body { visibility: hidden; }
 @media (max-width: 480px) {
   .topbar .brand span { white-space: nowrap; }
-  .topbar .lang { margin-right: 0; }
   .lang-select { font-size: 14px; padding: 0 26px 0 10px; background-position: right 10px center; max-width: 9.5em; }
 }
