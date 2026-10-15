@@ -139,8 +139,8 @@
     select.value = current;
     select.addEventListener("change", () => use(select.value, true));
     label.append(select);
-    // Between the name and the App Store badge.
-    bar.insertBefore(label, bar.querySelector(".badge"));
+    // At the end of the bar, across from the name.
+    bar.append(label);
   }
 
   window.RCI18N = { apply, get language() { return current; } };

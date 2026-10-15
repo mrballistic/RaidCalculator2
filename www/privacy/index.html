@@ -57,6 +57,8 @@
   li + li { margin-top: 4px; }
   footer { border-top: 1px solid var(--rule); background: var(--surface); }
   footer .wrap { padding-top: 32px; padding-bottom: 48px; font-size: 14px; color: var(--ink-3); }
+  /* Korean breaks between words, not inside them (the browser default breaks anywhere). */
+  :lang(ko) { word-break: keep-all; }
 </style>
 </head>
 <body>
@@ -64,7 +66,6 @@
 <header class="topbar">
   <div class="topbar-inner">
     <a class="brand" href="../"><img src="../assets/app-icon.png" alt="" width="36" height="36"><span>RAID Calculator</span></a>
-    <a class="badge" href="https://apps.apple.com/app/id395601653"><img data-badge="app-store" src="../assets/app-store-badge.svg" alt="Download on the App Store" height="36" width="108" data-i18n-alt="privacy.046"></a>
   </div>
 </header>
 

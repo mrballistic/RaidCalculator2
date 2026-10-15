@@ -117,15 +117,15 @@
   .quiet { color: var(--ink-3); }
   .badge { display: block; line-height: 0; }
   .badge img { width: auto; }
-  /* Store badges side by side. The Google Play PNG is Google's official
-     artwork, used unmodified: its 564×168 badge sits inside 41px of built-in
-     clear space (646×250), so it's sized from the App Store badge's height
-     (--badge-h) and the padding is pulled back with a negative margin. The
-     20px gap keeps clear space of at least a quarter of the badge height. */
+  /* Store badges side by side, the same height. Both are the stores' official
+     artwork, trimmed to the badge itself: Google's localized PNGs come with
+     different transparent margins from the English one, so untrimmed they
+     rendered at different sizes. The 20px gap keeps clear space of at least a
+     quarter of the badge height. */
   .badge-row { display: flex; flex-wrap: wrap; align-items: center; gap: 20px; }
   .badge-row .badge img { height: var(--badge-h); }
   .store-badge.google { display: block; line-height: 0; }
-  .store-badge.google img { height: calc(var(--badge-h) * 250 / 168); width: auto; margin: calc(var(--badge-h) * -41 / 168); }
+  .store-badge.google img { height: var(--badge-h); width: auto; }
   /* Not on Google Play yet: dimmed and desaturated, as on the Wax Wishlist site. */
   .store-badge.soon { cursor: default; opacity: 0.4; filter: grayscale(1); }
   .cta-note { margin-top: 14px; font-size: 15px; color: var(--ink-3); }
@@ -336,6 +336,8 @@
     .hero-cta, .closing .badge-row { --badge-h: 48px; }
     .android-shots { gap: 16px; }
   }
+  /* Korean breaks between words, not inside them (the browser default breaks anywhere). */
+  :lang(ko) { word-break: keep-all; }
 </style>
 </head>
 <body>
@@ -343,7 +345,6 @@
 <header class="topbar">
   <div class="topbar-inner">
     <a class="brand" href="./"><img src="assets/app-icon.png" alt="" width="36" height="36"><span>RAID Calculator</span></a>
-    <a class="badge" href="https://apps.apple.com/app/id395601653"><img data-badge="app-store" src="assets/app-store-badge.svg" alt="Download on the App Store" height="36" width="108" data-i18n-alt="index.085"></a>
   </div>
 </header>
 
@@ -360,7 +361,7 @@
                alt="Get it on Google Play" on the img, and delete the
                “coming soon” notes here and in the closing section. -->
           <span class="store-badge google soon" data-href="https://play.google.com/store/apps/details?id=com.mrballistic.raidcalculator" role="img" aria-label="Google Play: coming soon" data-i18n-aria-label="index.087">
-            <img data-badge="google-play" src="assets/google-play-badge.png" alt="" width="646" height="250">
+            <img data-badge="google-play" src="assets/google-play-badge.png" alt="" width="564" height="168">
           </span>
         </div>
         <p class="cta-note" data-i18n="index.011">Android is coming soon.</p>
@@ -550,7 +551,7 @@
         <a class="badge" href="https://apps.apple.com/app/id395601653"><img data-badge="app-store" src="assets/app-store-badge.svg" alt="Download on the App Store" height="58" width="174" loading="lazy" data-i18n-alt="index.101"></a>
         <!-- Google Play: not live yet (see the hero comment to enable). -->
         <span class="store-badge google soon" data-href="https://play.google.com/store/apps/details?id=com.mrballistic.raidcalculator" role="img" aria-label="Google Play: coming soon" data-i18n-aria-label="index.102">
-          <img data-badge="google-play" src="assets/google-play-badge.png" alt="" width="646" height="250" loading="lazy">
+          <img data-badge="google-play" src="assets/google-play-badge.png" alt="" width="564" height="168" loading="lazy">
         </span>
       </div>
       <p class="cta-note" data-i18n="index.076">Android is coming soon.</p>
