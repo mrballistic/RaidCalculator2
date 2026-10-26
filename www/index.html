@@ -3,23 +3,23 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title data-i18n="index.001">RAID Calculator for iPhone and iPad</title>
-<meta name="description" content="Usable capacity, how many drives can fail, and the next drive to buy, for classic RAID and for Synology, Unraid, ZFS, SnapRAID and Btrfs. For iPhone and iPad, with Android coming soon." data-i18n-content="index.002">
+<title data-i18n="index.001">RAID Calculator for iPhone, iPad and Android</title>
+<meta name="description" content="Usable capacity, how many drives can fail, and the next drive to buy, for classic RAID and for Synology, Unraid, ZFS, SnapRAID and Btrfs. For iPhone, iPad and Android." data-i18n-content="index.002">
 <link rel="canonical" href="https://mrballistic.com/raid/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="RAID Calculator">
 <meta property="og:locale" content="en_US">
 <meta property="og:url" content="https://mrballistic.com/raid/">
-<meta property="og:title" content="RAID Calculator for iPhone and iPad" data-i18n-content="index.003">
-<meta property="og:description" content="Usable capacity, fault tolerance and the one drive worth buying next. RAID 0 to 60, ZFS RAID-Z, Synology SHR, Unraid, SnapRAID and Btrfs RAID1, for iPhone and iPad. Android is coming soon." data-i18n-content="index.004">
+<meta property="og:title" content="RAID Calculator for iPhone, iPad and Android" data-i18n-content="index.003">
+<meta property="og:description" content="Usable capacity, fault tolerance and the one drive worth buying next. RAID 0 to 60, ZFS RAID-Z, Synology SHR, Unraid, SnapRAID and Btrfs RAID1, for iPhone, iPad and Android." data-i18n-content="index.004">
 <meta property="og:image" content="https://mrballistic.com/raid/assets/og-image.jpg">
 <meta property="og:image:type" content="image/jpeg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="RAID Calculator: “How much space will you actually get?” beside the app showing 16 TB usable from four mixed drives in Synology SHR, and a RAID 5 rebuild caution in dark mode behind it." data-i18n-content="index.005">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="RAID Calculator for iPhone and iPad" data-i18n-content="index.006">
-<meta name="twitter:description" content="Usable capacity, fault tolerance and the one drive worth buying next. RAID 0 to 60, ZFS RAID-Z, Synology SHR, Unraid, SnapRAID and Btrfs RAID1, for iPhone and iPad. Android is coming soon." data-i18n-content="index.007">
+<meta name="twitter:title" content="RAID Calculator for iPhone, iPad and Android" data-i18n-content="index.006">
+<meta name="twitter:description" content="Usable capacity, fault tolerance and the one drive worth buying next. RAID 0 to 60, ZFS RAID-Z, Synology SHR, Unraid, SnapRAID and Btrfs RAID1, for iPhone, iPad and Android." data-i18n-content="index.007">
 <meta name="twitter:image" content="https://mrballistic.com/raid/assets/og-image.jpg">
 <meta name="twitter:image:alt" content="RAID Calculator: “How much space will you actually get?” beside the app showing 16 TB usable from four mixed drives in Synology SHR, and a RAID 5 rebuild caution in dark mode behind it." data-i18n-content="index.008">
 <meta name="apple-mobile-web-app-title" content="RAID Calculator">
@@ -31,9 +31,15 @@
   "name": "RAID Calculator",
   "description": "Shows usable capacity, how many drives can fail, and which drive to buy next. RAID 0, 1, 5, 6, 10, 50, 60, JBOD and RAID-Z on identical drives; Synology SHR and SHR-2, Unraid, ZFS, SnapRAID and Btrfs RAID1 with mixed drives.",
   "url": "https://mrballistic.com/raid/",
-  "downloadUrl": "https://apps.apple.com/app/id395601653",
-  "installUrl": "https://apps.apple.com/app/id395601653",
-  "operatingSystem": "iOS, iPadOS",
+  "downloadUrl": [
+    "https://apps.apple.com/app/id395601653",
+    "https://play.google.com/store/apps/details?id=com.mrballistic.raidcalculator"
+  ],
+  "installUrl": [
+    "https://apps.apple.com/app/id395601653",
+    "https://play.google.com/store/apps/details?id=com.mrballistic.raidcalculator"
+  ],
+  "operatingSystem": "iOS, iPadOS, Android",
   "applicationCategory": "UtilitiesApplication",
   "inLanguage": [
     "en",
@@ -126,9 +132,6 @@
   .badge-row .badge img { height: var(--badge-h); }
   .store-badge.google { display: block; line-height: 0; }
   .store-badge.google img { height: var(--badge-h); width: auto; }
-  /* Not on Google Play yet: dimmed and desaturated, as on the Wax Wishlist site. */
-  .store-badge.soon { cursor: default; opacity: 0.4; filter: grayscale(1); }
-  .cta-note { margin-top: 14px; font-size: 15px; color: var(--ink-3); }
 
   .h2 { font-size: clamp(29px, 4vw, 46px); line-height: 1.08; letter-spacing: -0.03em; font-weight: 700; }
   .lede { font-size: 19px; color: var(--ink-2); margin-top: 18px; }
@@ -307,7 +310,6 @@
   .closing .h2 { font-size: clamp(30px, 4vw, 52px); line-height: 1.04; letter-spacing: -0.035em; max-width: 11em; }
   .closing .lede { color: var(--night-ink-2); margin-top: 18px; max-width: 22em; }
   .closing .badge-row { margin-top: 32px; --badge-h: 58px; }
-  .closing .cta-note { color: var(--night-ink-3); }
   .closing a:focus-visible { outline-color: var(--paper); }
   @media (max-width: 759px) {
     .closing-photo { height: 62%; object-position: 72% 50%; }
@@ -352,19 +354,12 @@
   <section class="wrap hero">
     <div>
       <h1 data-i18n="index.009">How much space will you actually get?</h1>
-      <p class="hero-sub" data-i18n="index.010">RAID Calculator for iPhone and iPad shows your usable capacity, how many drives can fail, and which drive to buy next, whether your NAS runs Synology, Unraid, ZFS, SnapRAID or Btrfs.</p>
+      <p class="hero-sub" data-i18n="index.010">RAID Calculator for iPhone, iPad and Android shows your usable capacity, how many drives can fail, and which drive to buy next, whether your NAS runs Synology, Unraid, ZFS, SnapRAID or Btrfs.</p>
       <div class="hero-cta">
         <div class="badge-row">
           <a class="badge" href="https://apps.apple.com/app/id395601653"><img data-badge="app-store" src="assets/app-store-badge.svg" alt="Download on the App Store" height="54" width="162" data-i18n-alt="index.086"></a>
-          <!-- Google Play: not live yet. To enable, swap this <span> for
-               an <a class="store-badge google"> link to the data-href URL, with
-               alt="Get it on Google Play" on the img, and delete the
-               “coming soon” notes here and in the closing section. -->
-          <span class="store-badge google soon" data-href="https://play.google.com/store/apps/details?id=com.mrballistic.raidcalculator" role="img" aria-label="Google Play: coming soon" data-i18n-aria-label="index.087">
-            <img data-badge="google-play" src="assets/google-play-badge.png" alt="" width="564" height="168">
-          </span>
+          <a class="store-badge google" href="https://play.google.com/store/apps/details?id=com.mrballistic.raidcalculator"><img data-badge="google-play" src="assets/google-play-badge.png" alt="Get it on Google Play" width="564" height="168" data-i18n-alt="index.087"></a>
         </div>
-        <p class="cta-note" data-i18n="index.011">Android is coming soon.</p>
       </div>
     </div>
     <div class="hero-shots">
@@ -471,7 +466,7 @@
   <section class="band android" id="android">
     <div class="wrap">
       <h2 class="h2" data-i18n="index.046">The same calculator, on Android.</h2>
-      <p class="lede" data-i18n="index.047">RAID Calculator for Android is in testing now and coming to Google Play. It has the same RAID and NAS tabs, Compare Systems, Biggest Upgrade and Current Setup, built natively with Material 3, in ten languages.</p>
+      <p class="lede" data-i18n="index.047">RAID Calculator for Android is on <a href="https://play.google.com/store/apps/details?id=com.mrballistic.raidcalculator">Google Play</a> now. It has the same RAID and NAS tabs, Compare Systems, Biggest Upgrade and Current Setup, built natively with Material 3, in eleven languages.</p>
       <div class="android-shots">
         <figure class="fold-shot">
           <div class="fold"><img src="assets/android-foldable-nas-two-panes-light.webp" width="1200" height="1000" loading="lazy" alt="The NAS tab on an unfolded Android foldable: results on the left, with 20 TB usable of 36 TB raw from 16, 8, 8 and 4 TB drives in Synology SHR and 8 TB unused; the setup and the four bays on the right" data-i18n-alt="index.099"></div>
@@ -546,15 +541,11 @@
     <div class="wrap closing-inner">
       <img src="assets/app-icon.png" alt="" width="84" height="84" loading="lazy">
       <h2 class="h2" data-i18n="index.074">Know what you’ll get before you buy the drive.</h2>
-      <p class="lede" data-i18n="index.075">RAID Calculator for iPhone and iPad.</p>
+      <p class="lede" data-i18n="index.075">RAID Calculator for iPhone, iPad and Android.</p>
       <div class="badge-row">
         <a class="badge" href="https://apps.apple.com/app/id395601653"><img data-badge="app-store" src="assets/app-store-badge.svg" alt="Download on the App Store" height="58" width="174" loading="lazy" data-i18n-alt="index.101"></a>
-        <!-- Google Play: not live yet (see the hero comment to enable). -->
-        <span class="store-badge google soon" data-href="https://play.google.com/store/apps/details?id=com.mrballistic.raidcalculator" role="img" aria-label="Google Play: coming soon" data-i18n-aria-label="index.102">
-          <img data-badge="google-play" src="assets/google-play-badge.png" alt="" width="564" height="168" loading="lazy">
-        </span>
+        <a class="store-badge google" href="https://play.google.com/store/apps/details?id=com.mrballistic.raidcalculator"><img data-badge="google-play" src="assets/google-play-badge.png" alt="Get it on Google Play" width="564" height="168" loading="lazy" data-i18n-alt="index.102"></a>
       </div>
-      <p class="cta-note" data-i18n="index.076">Android is coming soon.</p>
     </div>
   </section>
 
